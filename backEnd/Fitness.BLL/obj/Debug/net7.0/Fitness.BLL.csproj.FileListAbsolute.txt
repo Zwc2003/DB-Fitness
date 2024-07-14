@@ -1,0 +1,17 @@
+D:\DB-back_end\Fitness\Fitness.BLL\bin\Debug\net7.0\Fitness.BLL.deps.json
+D:\DB-back_end\Fitness\Fitness.BLL\bin\Debug\net7.0\Fitness.BLL.dll
+D:\DB-back_end\Fitness\Fitness.BLL\bin\Debug\net7.0\Fitness.BLL.pdb
+D:\DB-back_end\Fitness\Fitness.BLL\bin\Debug\net7.0\Fitness.DAL.dll
+D:\DB-back_end\Fitness\Fitness.BLL\bin\Debug\net7.0\Fitness.Models.dll
+D:\DB-back_end\Fitness\Fitness.BLL\bin\Debug\net7.0\Fitness.DAL.pdb
+D:\DB-back_end\Fitness\Fitness.BLL\bin\Debug\net7.0\Fitness.Models.pdb
+D:\DB-back_end\Fitness\Fitness.BLL\obj\Debug\net7.0\Fitness.BLL.csproj.AssemblyReference.cache
+D:\DB-back_end\Fitness\Fitness.BLL\obj\Debug\net7.0\Fitness.BLL.GeneratedMSBuildEditorConfig.editorconfig
+D:\DB-back_end\Fitness\Fitness.BLL\obj\Debug\net7.0\Fitness.BLL.AssemblyInfoInputs.cache
+D:\DB-back_end\Fitness\Fitness.BLL\obj\Debug\net7.0\Fitness.BLL.AssemblyInfo.cs
+D:\DB-back_end\Fitness\Fitness.BLL\obj\Debug\net7.0\Fitness.BLL.csproj.CoreCompileInputs.cache
+D:\DB-back_end\Fitness\Fitness.BLL\obj\Debug\net7.0\Fitness.BLL.csproj.CopyComplete
+D:\DB-back_end\Fitness\Fitness.BLL\obj\Debug\net7.0\Fitness.BLL.dll
+D:\DB-back_end\Fitness\Fitness.BLL\obj\Debug\net7.0\refint\Fitness.BLL.dll
+D:\DB-back_end\Fitness\Fitness.BLL\obj\Debug\net7.0\Fitness.BLL.pdb
+D:\DB-back_end\Fitness\Fitness.BLL\obj\Debug\net7.0\ref\Fitness.BLL.dll
