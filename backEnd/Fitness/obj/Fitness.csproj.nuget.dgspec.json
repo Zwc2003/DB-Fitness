@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj": {}
+    "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj": {}
   },
   "projects": {
-    "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {
+    "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
+        "projectUniqueName": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
         "projectName": "Fitness.BLL",
-        "projectPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
+        "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
         "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.BLL\\obj\\",
+        "outputPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.BLL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -29,11 +29,11 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
-                "projectPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj"
+              "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
+                "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj"
               },
-              "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
-                "projectPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
+              "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+                "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
               }
             }
           }
@@ -81,14 +81,14 @@
         }
       }
     },
-    "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
+    "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
+        "projectUniqueName": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
         "projectName": "Fitness.DAL",
-        "projectPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
+        "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
         "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.DAL\\obj\\",
+        "outputPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.DAL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -106,8 +106,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
-                "projectPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
+              "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+                "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
               }
             }
           }
@@ -155,14 +155,14 @@
         }
       }
     },
-    "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+    "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+        "projectUniqueName": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
         "projectName": "Fitness.Models",
-        "projectPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+        "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
         "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
+        "outputPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -225,14 +225,14 @@
         }
       }
     },
-    "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj": {
+    "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj",
+        "projectUniqueName": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj",
         "projectName": "Fitness",
-        "projectPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj",
+        "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj",
         "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness\\obj\\",
+        "outputPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -250,11 +250,11 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {
-                "projectPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj"
+              "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {
+                "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj"
               },
-              "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
-                "projectPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
+              "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+                "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
               }
             }
           }

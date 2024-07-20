@@ -8,8 +8,8 @@ namespace Fitness.DAL.Core
 {
     public static class OSSHelper
     {
-          
 
+        
         public static bool PutObjectFromLocalFile(string objectName, string localFilename)
         {
             OssClient client = new(endpoint, accessKeyId, accessKeySecret);

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "bIUBMpeWqfg968trmdHqxjvTP44FsDy6tjZdepgdBdbTNqj76Nywep13dt59YLV+6Up0u+YSP73n8gC1QaPvIw==",
+  "dgSpecHash": "qBAlzbbJB8eA8MiYarnzWIaPI8E+MQKHwC1EFNGuZP0cMutRQ0bitU6NmytaKyCc+mtgcNI3Tul4Zmgln+j74w==",
   "success": true,
-  "projectFilePath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
+  "projectFilePath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\24659\\.nuget\\packages\\aliyun.oss.sdk.netcore\\2.14.1\\aliyun.oss.sdk.netcore.2.14.1.nupkg.sha512",
     "C:\\Users\\24659\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",

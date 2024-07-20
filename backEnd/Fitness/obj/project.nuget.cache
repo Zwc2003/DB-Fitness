@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "D1o6TG4y0/SNTpx41qCE2qxWvX7J9zCln7FkqN87ENvg6VSTc/ahMmEDkujArjnrz+oshdAMgCFjlnnrcPqucA==",
+  "dgSpecHash": "G4KK/0Zn8+Md05xoXLerQ90AWycQ0n3ULVa5UZXoBq88m1MXDdf8BHE58LJNESU+WP6Qn9SScgjIlKGOJhmc6g==",
   "success": true,
-  "projectFilePath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj",
+  "projectFilePath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\24659\\.nuget\\packages\\aliyun.oss.sdk.netcore\\2.14.1\\aliyun.oss.sdk.netcore.2.14.1.nupkg.sha512",
     "C:\\Users\\24659\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.13\\microsoft.aspnetcore.openapi.7.0.13.nupkg.sha512",

@@ -8,8 +8,8 @@
     ".NETCoreApp,Version=v7.0": {
       "Fitness/1.0.0": {
         "dependencies": {
+          "Aliyun.OSS.SDK.NetCore": "2.14.1",
           "Fitness.BLL": "1.0.0",
-          "Fitness.DAL": "1.0.0",
           "Fitness.Models": "1.0.0",
           "Microsoft.AspNetCore.OpenApi": "7.0.13",
           "ODP.NetCore": "2.0.12",
@@ -18,6 +18,14 @@
         },
         "runtime": {
           "Fitness.dll": {}
+        }
+      },
+      "Aliyun.OSS.SDK.NetCore/2.14.1": {
+        "runtime": {
+          "lib/netstandard2.0/Aliyun.OSS.Core.dll": {
+            "assemblyVersion": "2.14.1.0",
+            "fileVersion": "2.14.1.0"
+          }
         }
       },
       "Microsoft.AspNetCore.OpenApi/7.0.13": {
@@ -248,6 +256,7 @@
       },
       "Fitness.BLL/1.0.0": {
         "dependencies": {
+          "Aliyun.OSS.SDK.NetCore": "2.14.1",
           "Fitness.DAL": "1.0.0",
           "Fitness.Models": "1.0.0",
           "ODP.NetCore": "2.0.12",
@@ -259,6 +268,7 @@
       },
       "Fitness.DAL/1.0.0": {
         "dependencies": {
+          "Aliyun.OSS.SDK.NetCore": "2.14.1",
           "Fitness.Models": "1.0.0",
           "ODP.NetCore": "2.0.12",
           "Oracle.ManagedDataAccess.Core": "23.5.0"
@@ -269,6 +279,7 @@
       },
       "Fitness.Models/1.0.0": {
         "dependencies": {
+          "Aliyun.OSS.SDK.NetCore": "2.14.1",
           "ODP.NetCore": "2.0.12",
           "Oracle.ManagedDataAccess.Core": "23.5.0"
         },
@@ -283,6 +294,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Aliyun.OSS.SDK.NetCore/2.14.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-UOI6I8Uw8A7pFh2GS6CSpJuhmcHH45k6asex8SRnZed2WWBXeGEaBFyv3HsMJNp+B6gPqyN079sQHWenGd3Y7g==",
+      "path": "aliyun.oss.sdk.netcore/2.14.1",
+      "hashPath": "aliyun.oss.sdk.netcore.2.14.1.nupkg.sha512"
     },
     "Microsoft.AspNetCore.OpenApi/7.0.13": {
       "type": "package",
