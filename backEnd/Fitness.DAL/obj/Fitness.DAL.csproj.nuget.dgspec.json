@@ -49,6 +49,14 @@
               "target": "Package",
               "version": "[2.14.1, )"
             },
+            "Microsoft.SemanticKernel.Abstractions": {
+              "target": "Package",
+              "version": "[1.16.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "ODP.NetCore": {
               "target": "Package",
               "version": "[2.0.12, )"
@@ -118,6 +126,14 @@
             "Aliyun.OSS.SDK.NetCore": {
               "target": "Package",
               "version": "[2.14.1, )"
+            },
+            "Microsoft.SemanticKernel.Abstractions": {
+              "target": "Package",
+              "version": "[1.16.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
             },
             "ODP.NetCore": {
               "target": "Package",

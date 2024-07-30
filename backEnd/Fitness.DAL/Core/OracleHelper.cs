@@ -8,7 +8,7 @@ namespace Fitness.DAL.Core
     {
         // 数据库连接字段
         //public static string connectionString = "Data Source=localhost:1521/orcl;User Id=C##gd;Password=123456;";
-
+        private static readonly string connectionString = "Data Source=120.26.138.61:1521/XE;User Id=FITNESSDB;Password=tongjiSSEDBMS2024;";
         public static DataTable ExecuteTable(string cmdText, params OracleParameter[] oracleParameters)
         {
             using OracleConnection conn = new(connectionString);

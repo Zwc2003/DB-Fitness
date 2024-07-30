@@ -15,7 +15,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add BLL Singleton
-builder.Services.AddSingleton<IRecordAndPlanBLL, RecordAndPlanBLL>();
+builder.Services.AddSingleton<IFoodPlanBLL, FoodPlanBLL>();
+builder.Services.AddSingleton<IMealRecordBLL, MealRecordBLL>();
 
 
 var app = builder.Build();
