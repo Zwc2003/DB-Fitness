@@ -10,12 +10,14 @@ using Newtonsoft.Json;
 using Fitness.DAL;
 using Fitness.BLL;
 using Fitness.Models;
+using Fitness.BLL.Interfaces;
 
 namespace Fitness.BLL
 {
     public sealed class UserAchievementBll
     {
         private static readonly UserAchievementBll instance = new UserAchievementBll();
+        private readonly IVigorTokenBLL vigorTokenBLL;
         private UserAchievementBll()
         {
         }

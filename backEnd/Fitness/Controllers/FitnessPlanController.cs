@@ -4,6 +4,8 @@ using Newtonsoft.Json.Linq;
 using Fitness.DAL;
 using Fitness.BLL;
 using Fitness.Models;
+using Fitness.BLL.Core;
+using Fitness.BLL.Interfaces;
 
 namespace Fitness.Controllers
 {
@@ -11,6 +13,9 @@ namespace Fitness.Controllers
     [ApiController]
     public class FitnessPlanController : ControllerBase
     {
+        private readonly JWTHelper _jwtHelper = new();
+        private readonly IVigorTokenBLL _vigorTokenBLL;
+
         [HttpPost]
         public string PostFitness(string token, double height, double weight, double BMI, double bodyFatRate)
         {
