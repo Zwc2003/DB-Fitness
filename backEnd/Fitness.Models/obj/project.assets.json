@@ -1435,11 +1435,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+      "projectUniqueName": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
       "projectName": "Fitness.Models",
-      "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+      "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
       "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-      "outputPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
+      "outputPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",

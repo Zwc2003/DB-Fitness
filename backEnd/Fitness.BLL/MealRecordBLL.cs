@@ -384,7 +384,7 @@ namespace Fitness.BLL
 
         public MessageRes MealSummaryByAI(int userID,DateTime date)
         {
-            vigorTokenBLL.UpdateBanlance(userID, "使用AI总结当日饮食记录功能,耗费30活力币", -30);
+            vigorTokenBLL.UpdateBalance(userID, "使用AI总结当日饮食记录功能,耗费30活力币", -30);
 
             string sys = "- Role: 饮食管理专家\r\n" +
                 "- Background: 用户希望对当天的饮食进行详细的总结和评估，包括营养摄入和热量摄入。\r\n" +

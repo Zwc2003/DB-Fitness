@@ -7,7 +7,6 @@ using System.Data;
 using Fitness.DAL.Core;
 using Oracle.ManagedDataAccess.Client;
 using Fitness.DAL;
-using Fitness.BLL;
 using Fitness.Models;
 
 namespace Fitness.DAL
