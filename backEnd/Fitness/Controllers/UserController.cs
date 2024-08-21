@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Fitness.BLL.Interfaces;
 using Fitness.Models;
 using Fitness.BLL;
+using Fitness.BLL.Core;
 
 namespace Fitness.Controllers
 {
@@ -12,6 +13,7 @@ namespace Fitness.Controllers
     {
         private readonly IUserBLL _userBLL;
         private readonly IVigorTokenBLL _vigorTokenBLL;
+        private readonly JWTHelper _jwtHelper = new();
 
         public UserController(IUserBLL userBLL,IVigorTokenBLL vigorTokenBLL)
         {
@@ -22,6 +24,7 @@ namespace Fitness.Controllers
         [HttpGet]
         public ActionResult<LoginToken> Login(string email,string password,string role)
         {
+            Console.WriteLine("登录");
             return _userBLL.Login(email,password,role);
         }
 
@@ -64,11 +67,25 @@ namespace Fitness.Controllers
             return _userBLL.banPost(token,userID);
         }
 
-        // zwc 待改成token
+        // zwc 
         [HttpGet]
-        public ActionResult<BalanceRes> GetVigorTokenBalance(int userID)
+        public ActionResult<BalanceRes> GetVigorTokenBalance1(string token)
         {
+            
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
+
+            Console.WriteLine("获取活力币余额",userID);
             return _vigorTokenBLL.GetBalance(userID);
+        }
+
+        [HttpGet]
+        public ActionResult<VigorTokenRecordList> GetVigorTokenReacords(string token)
+        {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
+            Console.WriteLine("获取活力币记录");
+            return _vigorTokenBLL.GetAllVigorTokenRecords(userID);
         }
     }
 }
