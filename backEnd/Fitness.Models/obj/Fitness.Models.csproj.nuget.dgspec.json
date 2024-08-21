@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {}
+    "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {}
   },
   "projects": {
-    "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+    "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+        "projectUniqueName": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
         "projectName": "Fitness.Models",
-        "projectPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+        "projectPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
         "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\WPSDrive\\679836520\\WPS云盘\\FitnessDB\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
+        "outputPath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -45,13 +45,37 @@
               "target": "Package",
               "version": "[2.14.1, )"
             },
+            "HiNetCloud.Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[23.10.8.15, )"
+            },
+            "Markdig": {
+              "target": "Package",
+              "version": "[0.37.0, )"
+            },
+            "Microsoft.IdentityModel.Logging": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
+            "Microsoft.SemanticKernel.Abstractions": {
+              "target": "Package",
+              "version": "[1.17.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "ODP.NetCore": {
               "target": "Package",
               "version": "[2.0.12, )"
             },
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
-              "version": "[23.5.0, )"
+              "version": "[23.5.1, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.0.1, )"
             }
           },
           "imports": [
