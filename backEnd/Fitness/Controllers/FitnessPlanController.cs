@@ -4,8 +4,6 @@ using Newtonsoft.Json.Linq;
 using Fitness.DAL;
 using Fitness.BLL;
 using Fitness.Models;
-using Fitness.BLL.Core;
-using Fitness.BLL.Interfaces;
 
 namespace Fitness.Controllers
 {
@@ -13,15 +11,12 @@ namespace Fitness.Controllers
     [ApiController]
     public class FitnessPlanController : ControllerBase
     {
-        private readonly JWTHelper _jwtHelper = new();
-        private readonly IVigorTokenBLL _vigorTokenBLL;
-
         [HttpPost]
         public string PostFitness(string token, double height, double weight, double BMI, double bodyFatRate)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return FitnessBll.Update(userId, height, weight, BMI, bodyFatRate);
+            return FitnessBLL.Update(userId, height, weight, BMI, bodyFatRate);
         }
 
         [HttpPost]
@@ -29,7 +24,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return PhysicalTestBll.Update(userId, pushups, squats, situps, pullups, longDistance);
+            return PhysicalTestBLL.Update(userId, pushups, squats, situps, pullups, longDistance);
         }
 
         [HttpGet]
@@ -37,7 +32,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return FitnessBll.Get(userId);
+            return FitnessBLL.Get(userId);
         }
 
         [HttpGet]
@@ -45,7 +40,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return PhysicalTestBll.Get(userId);
+            return PhysicalTestBLL.Get(userId);
         }
 
         [HttpPost]
@@ -53,7 +48,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return UserFitnessPlanGoalBll.Set(userId, goal, duration);
+            return UserFitnessPlanGoalBLL.Set(userId, goal, duration);
         }
 
         [HttpGet]
@@ -61,7 +56,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return UserFitnessPlanGoalBll.Get(userId);
+            return UserFitnessPlanGoalBLL.Get(userId);
         }
 
         [HttpGet]
@@ -69,7 +64,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return WorkoutBll.GetPlan(userId);
+            return WorkoutBLL.GetPlan(userId);
         }
     }
 }
