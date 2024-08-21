@@ -10,13 +10,13 @@ using Fitness.Models;
 
 namespace Fitness.BLL
 {
-    public sealed class FitnessBll
+    public sealed class FitnessBLL
     {
-        private static readonly FitnessBll instance = new FitnessBll();
-        private FitnessBll()
+        private static readonly FitnessBLL instance = new FitnessBLL();
+        private FitnessBLL()
         {
         }
-        public static FitnessBll Instance
+        public static FitnessBLL Instance
         {
             get
             {
@@ -26,7 +26,7 @@ namespace Fitness.BLL
 
         public static string Update(int userId, double height, double weight, double BMI, double bodyFatRate)
         {
-            string s = FitnessDal.Update(userId, height, weight, BMI, bodyFatRate);
+            string s = FitnessDAL.Update(userId, height, weight, BMI, bodyFatRate);
             return JsonConvert.SerializeObject(new
             {
                 message = s
@@ -35,7 +35,7 @@ namespace Fitness.BLL
 
         public static string Get(int userId)
         {
-            return FitnessDal.Get(userId);
+            return FitnessDAL.Get(userId);
         }
     }
 }

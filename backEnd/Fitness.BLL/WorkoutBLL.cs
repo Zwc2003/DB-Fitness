@@ -13,7 +13,7 @@ using Fitness.Models;
 
 namespace Fitness.BLL
 {
-    public sealed class WorkoutBll
+    public sealed class WorkoutBLL
     {
         static List<string> loseWeight = new List<string> { "HIIT燃脂", "上肢力量初级", "HIIT燃脂", "告别驼背计划", "HIIT燃脂", "告别粗腿", "HIIT燃脂",
                                                      "HIIT燃脂", "燃胸计划", "HIIT燃脂", "上肢力量初级", "HIIT燃脂", "告别驼背计划", "HIIT燃脂",
@@ -29,11 +29,11 @@ namespace Fitness.BLL
                                                      "HIIT燃脂", "告别驼背计划", "燃胸计划", "上肢力量初级", "腹肌撕裂", "臀腿雕刻", "HIIT燃脂",
                                                      "HIIT燃脂", "上肢力量初级", "腹肌撕裂", "告别驼背计划", "燃胸计划", "告别粗腿", "HIIT燃脂",
                                                      "HIIT燃脂", "告别驼背计划", "燃胸计划", "上肢力量初级", "腹肌撕裂", "臀腿雕刻", "HIIT燃脂"};
-        private static readonly WorkoutBll instance = new WorkoutBll();
-        private WorkoutBll()
+        private static readonly WorkoutBLL instance = new WorkoutBLL();
+        private WorkoutBLL()
         {
         }
-        public static WorkoutBll Instance
+        public static WorkoutBLL Instance
         {
             get
             {
@@ -72,7 +72,7 @@ namespace Fitness.BLL
                 foreach (var workoutName in planList.Skip(week * 7).Take(7)) // 每周七天的计划
                 {
                     num++;
-                    DataTable workoutTable = WorkoutDal.Get(workoutName);
+                    DataTable workoutTable = WorkoutDAL.Get(workoutName);
 
                     var workoutData = new Dictionary<string, object>
                     {
@@ -85,7 +85,7 @@ namespace Fitness.BLL
 
                     foreach (DataRow row in workoutTable.Rows)
                     {
-                        Exercise exerciseTable = ExerciseDal.Get(row["exerciseName"].ToString());
+                        Exercise exerciseTable = ExerciseDAL.Get(row["exerciseName"].ToString());
 
                         var exerciseData = new Dictionary<string, object>
                         {
@@ -120,7 +120,7 @@ namespace Fitness.BLL
         public static string GetPlan(int userId)
         {
             Console.WriteLine("收到获取计划请求\n");
-            string goal = UserFitnessPlanGoalDal.Get(userId);
+            string goal = UserFitnessPlanGoalDAL.Get(userId);
             Dictionary<string, object> data = JsonConvert.DeserializeObject<Dictionary<string, object>>(goal);
             if (data["message"] == "fail" || data["message"] == null)
             {
@@ -130,8 +130,8 @@ namespace Fitness.BLL
                     error = "未设置健身目标"
                 });
             }
-            string fitness = FitnessDal.Get(userId);
-            string physicalTest = PhysicalTestDal.Get(userId);
+            string fitness = FitnessDAL.Get(userId);
+            string physicalTest = PhysicalTestDAL.Get(userId);
             Dictionary<string, object> fitnessTable = JsonConvert.DeserializeObject<Dictionary<string, object>>(fitness);
             Dictionary<string, object> physicalTestTable = JsonConvert.DeserializeObject<Dictionary<string, object>>(physicalTest);
             if (fitnessTable["message"] == "empty" || physicalTestTable["message"] == "empty")
