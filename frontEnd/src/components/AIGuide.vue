@@ -274,6 +274,7 @@ export default {
       uploadedBase64: '',
       // space
       userID: 0, // 暂时固定的用户ID
+      vigorTokenBalance:0,
       uploadForm: {
         userID: 0,
         exerciseName: '',
@@ -382,6 +383,11 @@ export default {
     },
     // 上传图片
     async uploadImg() {
+      this.getVigorTokenBalance(this.userID)
+      if (this.vigorTokenBalance < 50) {
+        this.$message.error(`本功能需耗费50活力币，您的余额为${this.vigorTokenBalance},余额不足!`)
+        return
+      }
       this.isAnalyzing = true
       this.analysisStatue = 1
       this.analysisPercentage = 0
@@ -478,6 +484,13 @@ export default {
     },
     markdownToHtml(text) {
       return md.render(text)
+    },
+    // 获取活力币余额
+    getVigorTokenBalance(userID) {
+      axios.get('http://localhost:5273/api/User/GetVigorTokenBalance', { userID: userID })
+        .then(response => {
+          this.vigorTokenBalance = response.data.balance;
+          })
     },
     // 重新检测
     retrain() {
