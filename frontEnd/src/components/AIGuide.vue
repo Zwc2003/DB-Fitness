@@ -245,6 +245,7 @@ import axios from 'axios'
 // import marked from 'marked'
 // eslint-disable-next-line no-unused-vars
 import MarkdownIt from 'markdown-it'
+import { ElNotification } from 'element-plus';
 const md = new MarkdownIt()
 import { Upload,ZoomIn,Delete,Camera,Picture,Clock  } from '@element-plus/icons-vue'
 
@@ -359,9 +360,15 @@ export default {
           console.log('Base64 string:', this.screenshotsCurrent.screenshotUrl) // 这里可以查看 Base64 字符串
         }
       } else {
-        this.$message({
+        // this.$message({
+        //   type: 'warning',
+        //   message: '请上传正确的图像格式'
+        // })
+        ElNotification({
+          title: '注意',
+          message: `请上传正确的图像格式！`,
           type: 'warning',
-          message: '请上传正确的图像格式'
+          duration: 2000
         })
       }
     },
@@ -375,24 +382,41 @@ export default {
         this.screenShotUrl = ''
         this.isUpload = false
         this.active = 1
-        this.$message({
+        ElNotification({
+          title: '提示',
+          message: `删除成功！`,
           type: 'success',
-          message: '删除成功'
+          duration: 2000
         })
+        // this.$message({
+        //   type: 'success',
+        //   message: '删除成功'
+        // })
       })
     },
     // 上传图片
     async uploadImg() {
       this.getVigorTokenBalance(this.userID)
       if (this.vigorTokenBalance < 50) {
-        this.$message.error(`本功能需耗费50活力币，您的余额为${this.vigorTokenBalance},余额不足!`)
+        ElNotification({
+          title: '注意',
+          message: `本功能需要耗费50活力币，您的余额为${this.vigorTokenBalance}，余额不足!`,
+          type: 'warning',
+          duration: 2000
+        })
         return
       }
       this.isAnalyzing = true
       this.analysisStatue = 1
       this.analysisPercentage = 0
       if (this.screenShotUrl === '') {
-        this.$message.error('请先上传图片或检查图片是否上传成功')
+        ElNotification({
+          title: '注意',
+          message: `请先上传图片或检查图片是否上传成功`,
+          type: 'error',
+          duration: 2000
+        })
+        //this.$message.error('请先上传图片或检查图片是否上传成功')
         return
       }
       console.log('开始分析')
@@ -477,6 +501,12 @@ export default {
 
           // 从列表中移除该项
           this.uploadedScreenshots = this.uploadedScreenshots.filter(item => item !== screenshot)
+          ElNotification({
+          title: '提示',
+          message: `删除成功！`,
+          type: 'success',
+          duration: 2000
+        })
         })
         .catch(error => {
           console.error('删除失败', error)
@@ -504,10 +534,16 @@ export default {
         this.successAnalyze = false
         this.screenShotUrl = ''
         this.active = 1
-        this.$message({
+        ElNotification({
+          title: '提示',
+          message: `操作成功`,
           type: 'success',
-          message: '操作成功'
+          duration: 2000
         })
+        // this.$message({
+        //   type: 'success',
+        //   message: '操作成功'
+        // })
       })
     },
     // 再试一次
