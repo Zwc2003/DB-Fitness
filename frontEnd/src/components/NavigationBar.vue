@@ -48,6 +48,21 @@
                     </el-icon>
                     数据统计
                 </label>
+                <!--mlx:测试部分，可以删除-->
+                <!--
+                <label for="healthyDiet" class="mealPlanner" @click="delayedNavigation('/healthyDiet')">
+                    <el-icon>
+                        <House />
+                    </el-icon>
+                    健康饮食
+                </label>
+                <label for="addFood" class="mealPlanner" @click="delayedNavigation('/addFood')">
+                    <el-icon>
+                        <House />
+                    </el-icon>
+                    管理员功能
+                </label>
+                -->
                 <div class="tab"></div>
             </nav>
         </div>

@@ -14,6 +14,12 @@ import AddDiet from "../components/AddDiet.vue"
 import FitnessGuide from "../views/FitnessGuideView.vue"
 import FitnessDetail from "../components/FitnessDetail.vue"
 import AdminEquipmentView from '../views/AdminEquipmentView.vue';
+// mlx: 引入页面
+import MealPlannerView from '../views/MealPlannerView.vue'
+import MealRecordView from '../views/MealRecordView.vue'
+import AddFoodView from '../views/AddFoodView.vue'
+import HealthyDiet from '../views/HealthyDiet.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -93,6 +99,36 @@ const router = createRouter({
       path: '/detail',
       name: 'FitnessDetail',
       component: FitnessDetail
+    },
+
+    //mlx
+    //饮食计划页面
+    {
+      path: "/mealPlanner",
+      name: 'MealPlanner',
+      component: MealPlannerView,
+      meta: { requiresAuth: false }
+    },
+    //饮食记录页面
+    {
+      path: "/mealRecord",
+      name: 'MealRecord',
+      component: MealRecordView,
+      meta: { requiresAuth: false }
+    },
+    //健康饮食页面
+    {
+      path: "/healthyDiet",
+      name: 'healtyhDiet',
+      component: HealthyDiet,
+      meta: { requiresAuth: false }
+    },
+    //增加食物部分————管理员功能
+    {
+      path: "/addFood",
+      name: 'AddFood',
+      component: AddFoodView,
+      meta: { requiresAuth: false }
     },
   ]
 })
