@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "oHvsQkPFhmjbrBBIhevPnaKq85zhYXyjmMbMMMWQVW21jW2ruHvMWBy1w4cKaLdl7v6Nrw6wlvhFKOlXvR9qww==",
+  "dgSpecHash": "fE9+8NcFNFi7bTrs45rIHTI579ovIYTLP3o826P4yCPvuThrB1zaxUoqjFTEQcH2z7ABtKtUdhA0vi8TdWbJkw==",
   "success": true,
-  "projectFilePath": "D:\\DB-back_end\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
+  "projectFilePath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\24659\\.nuget\\packages\\aliyun.oss.sdk.netcore\\2.14.1\\aliyun.oss.sdk.netcore.2.14.1.nupkg.sha512",
     "C:\\Users\\24659\\.nuget\\packages\\hinetcloud.microsoft.identitymodel.tokens\\23.10.8.15\\hinetcloud.microsoft.identitymodel.tokens.23.10.8.15.nupkg.sha512",

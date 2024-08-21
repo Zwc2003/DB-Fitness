@@ -32,7 +32,7 @@ namespace Fitness.DAL
 
         }
 
-        public bool UpdateVigorTokenBalance(int change,int userID)
+        public bool UpdateVigorTokenBalance(int change, int userID)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace Fitness.DAL
 
                     new OracleParameter("change", OracleDbType.Int32) { Value = change },
                     new OracleParameter("userID", OracleDbType.Int32) { Value = userID }
-                    
+
                 };
 
                 OracleHelper.ExecuteNonQuery(sql, null, oracleParameters);
@@ -86,6 +86,25 @@ namespace Fitness.DAL
             {
                 Console.Error.WriteLine($"Error occurred while inserting VigorTokenRecord: {ex.Message}");
                 throw;
+            }
+        }
+
+        // 获取用户的所有的活力币记录
+        public DataTable GetVigorTokenRecordsByUsrID(int userID)
+        {
+            try
+            {
+                string sql = "SELECT * FROM \"VigorTokenRecord\" WHERE \"userID\"=:\"userID\"";
+                DataTable dt = OracleHelper.ExecuteTable(sql,
+                    new OracleParameter("\"userID\"", OracleDbType.Int32) { Value = userID });
+
+                return dt;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
             }
         }
 

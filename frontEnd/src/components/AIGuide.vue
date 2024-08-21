@@ -302,7 +302,7 @@ export default {
     }
   },
   created() {
-    this.getScreenshotFromDB(this.userID)
+    this.getScreenshotFromDB()
   },
   computed: {
     filteredScreenshots() {
@@ -396,7 +396,7 @@ export default {
     },
     // 上传图片
     async uploadImg() {
-      this.getVigorTokenBalance(this.userID)
+      this.getVigorTokenBalance()
       if (this.vigorTokenBalance < 50) {
         ElNotification({
           title: '注意',
@@ -420,15 +420,15 @@ export default {
         return
       }
       console.log('开始分析')
+      const token = localStorage.getItem('token');
       const requestData = {
-        userID: this.userID,
         exerciseName: this.screenshotsCurrent.exerciseName,
         screenshotUrl: this.screenshotsCurrent.screenshotUrl
       }
       // 生成随机的更新间隔，例如1到5秒之间
       let randomTimeout = Math.floor(Math.random() * 250) + 50
       this.refreshProgress(randomTimeout)
-      axios.post('http://localhost:5273/api/AIGuide/Create', requestData)
+      axios.post(`http://localhost:5273/api/AIGuide/Create?token=${token}`, requestData)
         .then(response => {
           this.screenshotsCurrent.screenshotID = response.data.screenshotID
           this.screenshotsCurrent.createTime = new Date(response.data.createTime)
@@ -473,8 +473,9 @@ export default {
           console.error('Error getting AI suggestions:', error)
         })
     },
-    getScreenshotFromDB(userID) {
-      axios.get('http://localhost:5273/api/AIGuide/GetAllDetails', { userID: userID })
+    getScreenshotFromDB() {
+      const token = localStorage.getItem('token');
+      axios.get(`http://localhost:5273/api/AIGuide/GetAllDetails?token=${token}`)
         .then(response => {
           console.log(response.data.suggestions)
           response.data.suggestions.forEach(item => {
@@ -516,8 +517,9 @@ export default {
       return md.render(text)
     },
     // 获取活力币余额
-    getVigorTokenBalance(userID) {
-      axios.get('http://localhost:5273/api/User/GetVigorTokenBalance', { userID: userID })
+    getVigorTokenBalance() {
+      const token = localStorage.getItem('token');
+      axios.get(`http://localhost:5273/api/User/GetVigorTokenBalancetoken=${token}`)
         .then(response => {
           this.vigorTokenBalance = response.data.balance;
           })

@@ -129,3 +129,13 @@ D:\DB-back_end\DB-Fitness\backEnd\Fitness\bin\Debug\net7.0\Microsoft.IdentityMod
 D:\DB-back_end\DB-Fitness\backEnd\Fitness\bin\Debug\net7.0\Microsoft.IdentityModel.Tokens.dll
 D:\DB-back_end\DB-Fitness\backEnd\Fitness\bin\Debug\net7.0\System.IdentityModel.Tokens.Jwt.dll
 D:\DB-back_end\DB-Fitness\backEnd\Fitness\bin\Debug\net7.0\Markdig.dll
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.csproj.AssemblyReference.cache
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.GeneratedMSBuildEditorConfig.editorconfig
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.AssemblyInfoInputs.cache
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.AssemblyInfo.cs
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.csproj.CoreCompileInputs.cache
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.MvcApplicationPartsAssemblyInfo.cs
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.MvcApplicationPartsAssemblyInfo.cache
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.dll
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\refint\Fitness.dll
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.pdb

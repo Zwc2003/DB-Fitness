@@ -28,3 +28,11 @@ D:\DB-back_end\DB-Fitness\backEnd\Fitness.DAL\bin\Debug\net7.0\Fitness.Models.dl
 D:\DB-back_end\DB-Fitness\backEnd\Fitness.DAL\bin\Debug\net7.0\Fitness.Models.pdb
 D:\DB-back_end\DB-Fitness\backEnd\Fitness.DAL\obj\Debug\net7.0\Fitness.DAL.csproj.CopyComplete
 D:\DB-back_end\DB-Fitness\backEnd\Fitness.DAL\obj\Debug\net7.0\ref\Fitness.DAL.dll
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness.DAL\obj\Debug\net7.0\Fitness.DAL.csproj.AssemblyReference.cache
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness.DAL\obj\Debug\net7.0\Fitness.DAL.GeneratedMSBuildEditorConfig.editorconfig
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness.DAL\obj\Debug\net7.0\Fitness.DAL.AssemblyInfoInputs.cache
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness.DAL\obj\Debug\net7.0\Fitness.DAL.AssemblyInfo.cs
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness.DAL\obj\Debug\net7.0\Fitness.DAL.csproj.CoreCompileInputs.cache
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness.DAL\obj\Debug\net7.0\Fitness.DAL.dll
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness.DAL\obj\Debug\net7.0\refint\Fitness.DAL.dll
+D:\DB_Fitness\DB-Fitness\backEnd\Fitness.DAL\obj\Debug\net7.0\Fitness.DAL.pdb

@@ -25,6 +25,23 @@ namespace Fitness.Models
         public int balance { get; set; }
     }
 
-    
+    public class VigorTokenRecordRes
+    {
+        public int recordID { get; set; }
+
+        public string reason { get; set; }
+
+        public int change { get; set; }
+
+        public int balance { get; set; }
+
+        public DateTime createTime { get; set; }
+    }
+
+    public class VigorTokenRecordList
+    {
+        public List<VigorTokenRecordRes> records { get; set; } = new();
+    }
+
 
 }

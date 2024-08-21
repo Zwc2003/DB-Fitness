@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Fitness.BLL.Interfaces
 {
@@ -12,6 +13,8 @@ namespace Fitness.BLL.Interfaces
         public BalanceRes GetBalance(int userID);
 
         public MessageRes UpdateBalance(int userID, string reason, int change);
+
+        public VigorTokenRecordList GetAllVigorTokenRecords(int userID);
 
     }
 }
