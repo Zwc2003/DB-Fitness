@@ -40,7 +40,8 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public ActionResult<User> GetPersonalProfile(string token) { 
+        public ActionResult<User> GetPersonalProfile(string token) {
+            
             return _userBLL.GetProfile(token,"personal");
         }
         [HttpPost]
@@ -69,13 +70,13 @@ namespace Fitness.Controllers
 
         // zwc 
         [HttpGet]
-        public ActionResult<BalanceRes> GetVigorTokenBalance1(string token)
+        public ActionResult<BalanceRes> GetVigorTokenBalance(string token)
         {
-            
+            Console.WriteLine("token:", token);
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userID = tokenRes.userID;
 
-            Console.WriteLine("获取活力币余额",userID);
+            Console.WriteLine($"获取活力币余额{tokenRes.userID}");
             return _vigorTokenBLL.GetBalance(userID);
         }
 
