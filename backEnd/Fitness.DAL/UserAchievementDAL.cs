@@ -8,17 +8,18 @@ using Fitness.DAL.Core;
 using Oracle.ManagedDataAccess.Client;
 using Newtonsoft.Json;
 using Fitness.DAL;
+using Fitness.BLL;
 using Fitness.Models;
 
 namespace Fitness.DAL
 {
-    public sealed class UserAchievementDal
+    public sealed class UserAchievementDAL
     {
-        private static readonly UserAchievementDal instance = new UserAchievementDal();
-        private UserAchievementDal()
+        private static readonly UserAchievementDAL instance = new UserAchievementDAL();
+        private UserAchievementDAL()
         {
         }
-        public static UserAchievementDal Instance
+        public static UserAchievementDAL Instance
         {
             get
             {

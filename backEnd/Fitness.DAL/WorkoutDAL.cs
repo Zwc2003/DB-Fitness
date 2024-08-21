@@ -8,18 +8,18 @@ using Fitness.DAL.Core;
 using Newtonsoft.Json;
 using System.Data;
 using Fitness.DAL;
-
+using Fitness.BLL;
 using Fitness.Models;
 
 namespace Fitness.DAL
 {
-    public sealed class WorkoutDal
+    public sealed class WorkoutDAL
     {
-        private static readonly WorkoutDal instance = new WorkoutDal();
-        private WorkoutDal()
+        private static readonly WorkoutDAL instance = new WorkoutDAL();
+        private WorkoutDAL()
         {
         }
-        public static WorkoutDal Instance
+        public static WorkoutDAL Instance
         {
             get
             {
@@ -40,7 +40,7 @@ namespace Fitness.DAL
             foreach (DataRow row in exerciseNamesTable.Rows)
             {
                 string exerciseName = row["exerciseName"].ToString();
-                Exercise exercise = ExerciseDal.Get(exerciseName);
+                Exercise exercise = ExerciseDAL.Get(exerciseName);
                 if (exercise != null)
                 {
                     exercises.Add(exercise);
