@@ -1,68 +1,102 @@
 <template>
-    <div class="head_con">
+    <div :class="['head_con', navBarFixed ? 'navBarWrap' : '']">
         <div class="logo-container">
             <img src="../assets/logo.png" alt="FitFit" class="logo">
         </div>
         <div class="wrapper">
             <nav>
                 <input type="radio" name="tab" id="home" :checked="$route.path === '/'">
-                <input type="radio" name="tab" id="comment" :checked="$route.path === '/Tweets'">
-                <input type="radio" name="tab" id="message" :checked="$route.path === '/fit'">
-                <input type="radio" name="tab" id="star" :checked="$route.path === '/camera'">
-                <input type="radio" name="tab" id="user" :checked="$route.path === '/data'">
-                <!--这一行是注释-->
-                <label for="home" class="home" @click="delayedNavigation('/')">
+                <input type="radio" name="tab" id="equipment" :checked="$route.path === '/equipment'">
+                <input type="radio" name="tab" id="aifit" :checked="$route.path === '/aifit'">
+                <input type="radio" name="tab" id="forum" :checked="$route.path === '/forum'">
+                <input type="radio" name="tab" id="achievement" :checked="$route.path === '/data'">
+                <!-- <input type="radio" name="tab" id="rank" :checked="$route.path === '/ranking-list'"> -->
+                <input type="radio" name="tab" id="course" :checked="$route.path === '/course'">
+                <input type="radio" name="tab" id="plan" :checked="$route.path === '/fitnessplan'">
+                <input type="radio" name="tab" id="chat" :checked="$route.path === '/chat'">
+                <input type="radio" name="tab" id="food" :checked="$route.path === '/food'">
 
+
+
+
+                <label for="home" class="home" @click="delayedNavigation('/')">
                     <el-icon>
                         <House />
                     </el-icon>
                     首页
                 </label>
-                <label for="comment" class="comment" @click="delayedNavigation('/Tweets')">
-                    <router-link to="/Tweets">
+                <label for="equipment" class="equipment" @click="delayedNavigation('/equipment')">
+                    <router-link to="/equipment">
                         <el-icon>
                             <ChatLineRound />
                         </el-icon>
-                        健身推文
+                        健身器材
                     </router-link>
                 </label>
-                <label for="message" class="message" @click="delayedNavigation('/fit')">
-                    <router-link to="/fit">
+                <label for="aifit" class="aifit" @click="delayedNavigation('/aifit')">
+                    <router-link to="/aifit">
                         <el-icon>
                             <Collection />
+                        </el-icon>
+                        AI健身
+                    </router-link>
+                </label>
+                <label for="forum" class="forum" @click="delayedNavigation('/forum')">
+                    <router-link to="/forum">
+                        <el-icon>
+                            <Star />
+                        </el-icon>
+                        健身论坛
+                    </router-link>
+                </label>
+                <label for="achievement" class="achievement" @click="delayedNavigation('/data')">
+                    <router-link to="/data">
+                        <el-icon>
+                            <Star />
+                        </el-icon>
+                        健身成就
+                    </router-link>
+                </label>
+                <!-- <label for="rank" class="rank" @click="delayedNavigation('/ranking-list')">
+                    <router-link to="/ranking-list">
+                        <el-icon>
+                            <Star />
+                        </el-icon>
+                        排行榜
+                    </router-link>
+                </label> -->
+                <label for="course" class="course" @click="delayedNavigation('/course')">
+                    <router-link to="/course">
+                        <el-icon>
+                            <Star />
                         </el-icon>
                         健身课程
                     </router-link>
                 </label>
-                <label for="star" class="star" @click="delayedNavigation('/admin')">
-                    <router-link to="/">
+                <label for="plan" class="plan" @click="delayedNavigation('/fitnessplan')">
+                    <router-link to="/fitnessplan">
                         <el-icon>
                             <Star />
                         </el-icon>
-                        管理员
+                        健身计划
                     </router-link>
                 </label>
-                <label for="user" class="user" @click="delayedNavigation('/data')">
-                    <el-icon>
-                        <DataAnalysis />
-                    </el-icon>
-                    数据统计
+                <label for="chat" class="chat" @click="delayedNavigation('/chat')">
+                    <router-link to="/chat">
+                        <el-icon>
+                            <Star />
+                        </el-icon>
+                        聊天室
+                    </router-link>
                 </label>
-                <!--mlx:测试部分，可以删除-->
-                <!--
-                <label for="healthyDiet" class="mealPlanner" @click="delayedNavigation('/healthyDiet')">
-                    <el-icon>
-                        <House />
-                    </el-icon>
-                    健康饮食
+                <label for="food" class="food" @click="delayedNavigation('/food')">
+                    <router-link to="/food">
+                        <el-icon>
+                            <Star />
+                        </el-icon>
+                        健康饮食
+                    </router-link>
                 </label>
-                <label for="addFood" class="mealPlanner" @click="delayedNavigation('/addFood')">
-                    <el-icon>
-                        <House />
-                    </el-icon>
-                    管理员功能
-                </label>
-                -->
                 <div class="tab"></div>
             </nav>
         </div>
@@ -89,6 +123,41 @@
         </div>
     </div>
 </template>
+
+<script>
+import router from "../router/index.js";
+
+export default {
+    name: "NavigationBar",
+    data() {
+        return {
+            navBarFixed: false,
+        };
+    },
+    methods: {
+        router() {
+            return router;
+        },
+        delayedNavigation(target) {
+            setTimeout(() => {
+                this.router().push(target);
+            }, 500);
+        },
+        watchScroll() {
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+            console.log(scrollTop);
+            if (scrollTop > 90) {
+                this.navBarFixed = true;
+            } else {
+                this.navBarFixed = false;
+            }
+        }
+    },
+    mounted() {
+        window.addEventListener("scroll", this.watchScroll);
+    },
+};
+</script>
 
 <style>
 * {
@@ -172,7 +241,7 @@ body {
 .wrapper nav .tab {
     position: absolute;
     height: 100%;
-    width: 20%;
+    width: 10%;
     left: 0px;
     bottom: 0px;
     background: linear-gradient(to right, #f09819, #ff5858);
@@ -181,28 +250,53 @@ body {
 }
 
 .wrapper nav #home:checked~label.home a,
-.wrapper nav #comment:checked~label.comment a,
-.wrapper nav #message:checked~label.message a,
-.wrapper nav #star:checked~label.star a,
-.wrapper nav #user:checked~label.user a {
+.wrapper nav #equipment:checked~label.equipment a,
+.wrapper nav #aifit:checked~label.aifit a,
+.wrapper nav #forum:checked~label.forum a,
+.wrapper nav #achievement:checked~label.achievement a,
+/* .wrapper nav #rank:checked~label.rank a, */
+.wrapper nav #course:checked~label.cousrse a,
+.wrapper nav #plan:checked~label.plan a,
+.wrapper nav #chat:checked~label.chat a,
+.wrapper nav #food:checked~label.food a {
     color: #fff;
     transition: 0.6s;
 }
 
-.wrapper nav #comment:checked~.tab {
-    left: 20%;
+.wrapper nav #equipment:checked~.tab {
+    left: 11%;
 }
 
-.wrapper nav #message:checked~.tab {
-    left: 40%;
+.wrapper nav #aifit:checked~.tab {
+    left: 22%;
 }
 
-.wrapper nav #star:checked~.tab {
-    left: 60%;
+.wrapper nav #forum:checked~.tab {
+    left: 33%;
 }
 
-.wrapper nav #user:checked~.tab {
-    left: 80%;
+.wrapper nav #achievement:checked~.tab {
+    left: 44%;
+}
+
+/* .wrapper nav #rank:checked~.tab {
+    left: 50%;
+} */
+
+.wrapper nav #course:checked~.tab {
+    left: 55%;
+}
+
+.wrapper nav #plan:checked~.tab {
+    left: 66%;
+}
+
+.wrapper nav #chat:checked~.tab {
+    left: 77%;
+}
+
+.wrapper nav #food:checked~.tab {
+    left: 88%;
 }
 
 .avatar-container {
@@ -236,285 +330,16 @@ body {
         padding: 0 2rem;
     }
 }
-</style>
 
-<script>
-
-import router from "../router/index.js";
-
-export default {
-    name: "NavigationBar",
-
-    methods: {
-        router() {
-            return router
-        },
-        delayedNavigation(target) {
-            setTimeout(() => {
-                this.router().push(target); // 替换为你的目标路由
-            }, 500); // 1000 毫秒 = 1 秒
-        }
-    },
+.navBarWrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    background-color: white;
+    /* 添加背景色防止滚动时内容透过导航栏 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    /* 添加阴影以区别于内容 */
 }
-// class Circle {
-//     constructor({ origin, speed, color, angle, context }) {
-//         this.origin = origin
-//         this.position = { ...this.origin }
-//         this.color = color
-//         this.speed = speed
-//         this.angle = angle
-//         this.context = context
-//         this.renderCount = 0
-//     }
-//
-//     draw() {
-//         this.context.fillStyle = this.color
-//         this.context.beginPath()
-//         this.context.arc(this.position.x, this.position.y, 2, 0, Math.PI * 2)
-//         this.context.fill()
-//     }
-//
-//     move() {
-//         this.position.x = (Math.sin(this.angle) * this.speed) + this.position.x
-//         this.position.y = (Math.cos(this.angle) * this.speed) + this.position.y + (this.renderCount * 0.3)
-//         this.renderCount++
-//     }
-// }
-//
-// class Boom {
-//     constructor({ origin, context, circleCount = 10, area }) {
-//         this.origin = origin
-//         this.context = context
-//         this.circleCount = circleCount
-//         this.area = area
-//         this.stop = false
-//         this.circles = []
-//     }
-//
-//     randomArray(range) {
-//         const length = range.length
-//         const randomIndex = Math.floor(length * Math.random())
-//         return range[randomIndex]
-//     }
-//
-//     randomColor() {
-//         const range = ['8', '9', 'A', 'B', 'C', 'D', 'E', 'F']
-//         return '#' + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range) + this.randomArray(range)
-//     }
-//
-//     randomRange(start, end) {
-//         return (end - start) * Math.random() + start
-//     }
-//
-//     init() {
-//         for (let i = 0; i < this.circleCount; i++) {
-//             const circle = new Circle({
-//                 context: this.context,
-//                 origin: this.origin,
-//                 color: this.randomColor(),
-//                 angle: this.randomRange(Math.PI - 1, Math.PI + 1),
-//                 speed: this.randomRange(1, 6)
-//             })
-//             this.circles.push(circle)
-//         }
-//     }
-//
-//     move() {
-//         this.circles.forEach((circle, index) => {
-//             if (circle.position.x > this.area.width || circle.position.y > this.area.height) {
-//                 return this.circles.splice(index, 1)
-//             }
-//             circle.move()
-//         })
-//         if (this.circles.length == 0) {
-//             this.stop = true
-//         }
-//     }
-//
-//     draw() {
-//         this.circles.forEach(circle => circle.draw())
-//     }
-// }
-//
-// class CursorSpecialEffects {
-//     constructor() {
-//         this.computerCanvas = document.createElement('canvas')
-//         this.renderCanvas = document.createElement('canvas')
-//
-//         this.computerContext = this.computerCanvas.getContext('2d')
-//         this.renderContext = this.renderCanvas.getContext('2d')
-//
-//         this.globalWidth = window.innerWidth
-//         this.globalHeight = window.innerHeight
-//
-//         this.booms = []
-//         this.running = false
-//     }
-//
-//     handleMouseDown(e) {
-//         console.log(e.clientX,e.clientY)
-//         const boom = new Boom({
-//             origin: { x: e.clientX, y: e.clientY },
-//             context: this.computerContext,
-//             area: {
-//                 width: this.globalWidth,
-//                 height: this.globalHeight
-//             }
-//         })
-//         boom.init()
-//         this.booms.push(boom)
-//         this.running || this.run()
-//     }
-//
-//     handlePageHide() {
-//         this.booms = []
-//         this.running = false
-//     }
-//
-//     init() {
-//         const style = this.renderCanvas.style
-//         style.position = 'fixed'
-//         style.top = style.left = 0
-//         style.zIndex = '999999999999999999999999999999999999999999'
-//         style.pointerEvents = 'none'
-//
-//         style.width = this.renderCanvas.width = this.computerCanvas.width = this.globalWidth
-//         style.height = this.renderCanvas.height = this.computerCanvas.height = this.globalHeight
-//
-//         document.body.append(this.renderCanvas)
-//
-//         window.addEventListener('mousedown', this.handleMouseDown.bind(this))
-//         window.addEventListener('pagehide', this.handlePageHide.bind(this))
-//     }
-//
-//     run() {
-//         this.running = true
-//         if (this.booms.length == 0) {
-//             return this.running = false
-//         }
-//
-//         requestAnimationFrame(this.run.bind(this))
-//
-//         this.computerContext.clearRect(0, 0, this.globalWidth, this.globalHeight)
-//         this.renderContext.clearRect(0, 0, this.globalWidth, this.globalHeight)
-//
-//         this.booms.forEach((boom, index) => {
-//             if (boom.stop) {
-//                 return this.booms.splice(index, 1)
-//             }
-//             boom.move()
-//             boom.draw()
-//         })
-//         this.renderContext.drawImage(this.computerCanvas, 0, 0, this.globalWidth, this.globalHeight)
-//     }
-// }
-//
-// const cursorSpecialEffects = new CursorSpecialEffects()
-// cursorSpecialEffects.init()
-//
-// !(function () {
-//     function n(n, e, t) {
-//         return n.getAttribute(e) || t;
-//     }
-//     function e(n) {
-//         return document.getElementsByTagName(n);
-//     }
-//     function t() {
-//         var t = e("script"),
-//             o = t.length,
-//             i = t[o - 1];
-//         return {
-//             l: o,
-//             z: n(i, "zIndex", -1),
-//             o: n(i, "opacity", 0.6),
-//             c: n(i, "color", "148,0,211"),
-//             n: n(i, "count", 99),
-//         };
-//     }
-//     function o() {
-//         (a = m.width =
-//             window.innerWidth ||
-//             document.documentElement.clientWidth ||
-//             document.body.clientWidth),
-//             (c = m.height =
-//                 window.innerHeight ||
-//                 document.documentElement.clientHeight ||
-//                 document.body.clientHeight);
-//     }
-//     function i() {
-//         r.clearRect(0, 0, a, c);
-//         var n, e, t, o, m, l;
-//         s.forEach(function (i, x) {
-//             for (
-//                 i.x += i.xa,
-//                 i.y += i.ya,
-//                 i.xa *= i.x > a || i.x < 0 ? -1 : 1,
-//                 i.ya *= i.y > c || i.y < 0 ? -1 : 1,
-//                 r.fillRect(i.x - 0.5, i.y - 0.5, 1, 1),
-//                 e = x + 1;
-//                 e < u.length;
-//                 e++
-//             )
-//                 (n = u[e]),
-//                     null !== n.x &&
-//                     null !== n.y &&
-//                     ((o = i.x - n.x),
-//                         (m = i.y - n.y),
-//                         (l = o * o + m * m),
-//                         l < n.max &&
-//                         (n === y &&
-//                             l >= n.max / 2 &&
-//                             ((i.x -= 0.03 * o), (i.y -= 0.03 * m)),
-//                             (t = (n.max - l) / n.max),
-//                             r.beginPath(),
-//                             (r.lineWidth = t / 2),
-//                             (r.strokeStyle = "rgba(" + d.c + "," + (t + 0.2) + ")"),
-//                             r.moveTo(i.x, i.y),
-//                             r.lineTo(n.x, n.y),
-//                             r.stroke()));
-//         }),
-//             x(i);
-//     }
-//     var a,
-//         c,
-//         u,
-//         m = document.createElement("canvas"),
-//         d = t(),
-//         l = "c_n" + d.l,
-//         r = m.getContext("2d"),
-//         x =
-//             window.requestAnimationFrame ||
-//             window.webkitRequestAnimationFrame ||
-//             window.mozRequestAnimationFrame ||
-//             window.oRequestAnimationFrame ||
-//             window.msRequestAnimationFrame ||
-//             function (n) {
-//                 window.setTimeout(n, 1e3 / 45);
-//             },
-//         w = Math.random,
-//         y = { x: null, y: null, max: 2e4 };
-//     (m.id = l),
-//         (m.style.cssText =
-//             "position:fixed;top:0;left:0;z-index:" + d.z + ";opacity:" + d.o),
-//         e("body")[0].appendChild(m),
-//         o(),
-//         (window.onresize = o),
-//         (window.onmousemove = function (n) {
-//             (n = n || window.event), (y.x = n.clientX), (y.y = n.clientY);
-//         }),
-//         (window.onmouseout = function () {
-//             (y.x = null), (y.y = null);
-//         });
-//     for (var s = [], f = 0; d.n > f; f++) {
-//         var h = w() * a,
-//             g = w() * c,
-//             v = 2 * w() - 1,
-//             p = 2 * w() - 1;
-//         s.push({ x: h, y: g, xa: v, ya: p, max: 6e3 });
-//     }
-//     (u = s.concat([y])),
-//         setTimeout(function () {
-//             i();
-//         }, 100);
-// })();
-</script>
+</style>
