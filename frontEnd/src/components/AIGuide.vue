@@ -245,6 +245,7 @@ import axios from 'axios'
 // import marked from 'marked'
 // eslint-disable-next-line no-unused-vars
 import MarkdownIt from 'markdown-it'
+import { ElNotification } from 'element-plus';
 const md = new MarkdownIt()
 import { Upload,ZoomIn,Delete,Camera,Picture,Clock  } from '@element-plus/icons-vue'
 
@@ -274,6 +275,7 @@ export default {
       uploadedBase64: '',
       // space
       userID: 0, // 暂时固定的用户ID
+      vigorTokenBalance:0,
       uploadForm: {
         userID: 0,
         exerciseName: '',
@@ -300,7 +302,8 @@ export default {
     }
   },
   created() {
-    this.getScreenshotFromDB(this.userID)
+    this.getScreenshotFromDB()
+    this.getVigorTokenBalance()
   },
   computed: {
     filteredScreenshots() {
@@ -358,9 +361,15 @@ export default {
           console.log('Base64 string:', this.screenshotsCurrent.screenshotUrl) // 这里可以查看 Base64 字符串
         }
       } else {
-        this.$message({
+        // this.$message({
+        //   type: 'warning',
+        //   message: '请上传正确的图像格式'
+        // })
+        ElNotification({
+          title: '注意',
+          message: `请上传正确的图像格式！`,
           type: 'warning',
-          message: '请上传正确的图像格式'
+          duration: 2000
         })
       }
     },
@@ -374,31 +383,52 @@ export default {
         this.screenShotUrl = ''
         this.isUpload = false
         this.active = 1
-        this.$message({
+        ElNotification({
+          title: '提示',
+          message: `删除成功！`,
           type: 'success',
-          message: '删除成功'
+          duration: 2000
         })
+        // this.$message({
+        //   type: 'success',
+        //   message: '删除成功'
+        // })
       })
     },
     // 上传图片
     async uploadImg() {
+      if (this.vigorTokenBalance < 50) {
+        ElNotification({
+          title: '注意',
+          message: `本功能需要耗费50活力币，您的余额为${this.vigorTokenBalance}，余额不足!`,
+          type: 'warning',
+          duration: 2000
+        })
+        return
+      }
       this.isAnalyzing = true
       this.analysisStatue = 1
       this.analysisPercentage = 0
       if (this.screenShotUrl === '') {
-        this.$message.error('请先上传图片或检查图片是否上传成功')
+        ElNotification({
+          title: '注意',
+          message: `请先上传图片或检查图片是否上传成功`,
+          type: 'error',
+          duration: 2000
+        })
+        //this.$message.error('请先上传图片或检查图片是否上传成功')
         return
       }
       console.log('开始分析')
+      const token = localStorage.getItem('token');
       const requestData = {
-        userID: this.userID,
         exerciseName: this.screenshotsCurrent.exerciseName,
         screenshotUrl: this.screenshotsCurrent.screenshotUrl
       }
       // 生成随机的更新间隔，例如1到5秒之间
       let randomTimeout = Math.floor(Math.random() * 250) + 50
       this.refreshProgress(randomTimeout)
-      axios.post('http://localhost:5273/api/AIGuide/Create', requestData)
+      axios.post(`http://localhost:5273/api/AIGuide/Create?token=${token}`, requestData)
         .then(response => {
           this.screenshotsCurrent.screenshotID = response.data.screenshotID
           this.screenshotsCurrent.createTime = new Date(response.data.createTime)
@@ -443,8 +473,9 @@ export default {
           console.error('Error getting AI suggestions:', error)
         })
     },
-    getScreenshotFromDB(userID) {
-      axios.get('http://localhost:5273/api/AIGuide/GetAllDetails', { userID: userID })
+    getScreenshotFromDB() {
+      const token = localStorage.getItem('token');
+      axios.get(`http://localhost:5273/api/AIGuide/GetAllDetails?token=${token}`)
         .then(response => {
           console.log(response.data.suggestions)
           response.data.suggestions.forEach(item => {
@@ -471,6 +502,12 @@ export default {
 
           // 从列表中移除该项
           this.uploadedScreenshots = this.uploadedScreenshots.filter(item => item !== screenshot)
+          ElNotification({
+          title: '提示',
+          message: `删除成功！`,
+          type: 'success',
+          duration: 2000
+        })
         })
         .catch(error => {
           console.error('删除失败', error)
@@ -478,6 +515,14 @@ export default {
     },
     markdownToHtml(text) {
       return md.render(text)
+    },
+    // 获取活力币余额
+    getVigorTokenBalance() {
+      const token = localStorage.getItem('token');
+      axios.get(`http://localhost:5273/api/User/GetVigorTokenBalancetoken=${token}`)
+        .then(response => {
+          this.vigorTokenBalance = response.data.balance;
+          })
     },
     // 重新检测
     retrain() {
@@ -491,10 +536,16 @@ export default {
         this.successAnalyze = false
         this.screenShotUrl = ''
         this.active = 1
-        this.$message({
+        ElNotification({
+          title: '提示',
+          message: `操作成功`,
           type: 'success',
-          message: '操作成功'
+          duration: 2000
         })
+        // this.$message({
+        //   type: 'success',
+        //   message: '操作成功'
+        // })
       })
     },
     // 再试一次
@@ -630,7 +681,7 @@ export default {
 </script>
 
 <style scoped>
-@import "./src/static/css/AIExercise.css";
+@import "../src/static/css/AIExercise.css";
 
 .title {
   font-size: 3vw;
