@@ -13,14 +13,14 @@ using Fitness.Models;
 
 namespace Fitness.BLL
 {
-    public sealed class UserFitnessPlanGoalBll
+    public sealed class UserFitnessPlanGoalBLL
     {
 
-        private static readonly UserFitnessPlanGoalBll instance = new UserFitnessPlanGoalBll();
-        private UserFitnessPlanGoalBll()
+        private static readonly UserFitnessPlanGoalBLL instance = new UserFitnessPlanGoalBLL();
+        private UserFitnessPlanGoalBLL()
         {
         }
-        public static UserFitnessPlanGoalBll Instance
+        public static UserFitnessPlanGoalBLL Instance
         {
             get
             {
@@ -30,9 +30,9 @@ namespace Fitness.BLL
 
         public static string Set(int userId, string goal, int duration)
         {
-            if (!UserFitnessPlanGoalDal.Exist(userId))
-                UserFitnessPlanGoalDal.Init(userId);
-            UserFitnessPlanGoalDal.Update(userId, goal, duration);
+            if (!UserFitnessPlanGoalDAL.Exist(userId))
+                UserFitnessPlanGoalDAL.Init(userId);
+            UserFitnessPlanGoalDAL.Update(userId, goal, duration);
             return JsonConvert.SerializeObject(new
             {
                 isSuccessful = "true"
@@ -41,7 +41,7 @@ namespace Fitness.BLL
 
         public static string Get(int userId)
         {
-            return UserFitnessPlanGoalDal.Get(userId);
+            return UserFitnessPlanGoalDAL.Get(userId);
         }
 
 

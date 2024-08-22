@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 using Fitness.DAL;
 using Fitness.BLL;
 using Fitness.Models;
-using Fitness.BLL.Core;
 
 namespace Fitness.Controllers
 {
@@ -12,14 +11,13 @@ namespace Fitness.Controllers
     [ApiController]
     public class AchievementController : ControllerBase
     {
-        private readonly JWTHelper _jwtHelper = new();
-
+        UserAchievementBLL userAchievementBll = new UserAchievementBLL();
         [HttpGet]
         public string GetAchievement(string token)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return UserAchievementBll.GetUserAchievement(userId);
+            return userAchievementBll.GetUserAchievement(userId);
         }
 
         [HttpGet]
@@ -27,7 +25,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return UserAchievementBll.GetAchievementRank(userId, achievementId);
+            return userAchievementBll.GetAchievementRank(userId, achievementId);
         }
 
         [HttpPost]
@@ -35,7 +33,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return UserAchievementBll.UpdateFitnessPlanAchievement(userId);
+            return userAchievementBll.UpdateFitnessPlanAchievement(userId);
         }
     }
 }

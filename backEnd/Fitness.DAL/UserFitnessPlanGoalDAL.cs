@@ -8,17 +8,18 @@ using Fitness.DAL.Core;
 using Newtonsoft.Json;
 using System.Data;
 using Fitness.DAL;
+using Fitness.BLL;
 using Fitness.Models;
 
 namespace Fitness.DAL
 {
-    public sealed class UserFitnessPlanGoalDal
+    public sealed class UserFitnessPlanGoalDAL
     {
-        private static readonly UserFitnessPlanGoalDal instance = new UserFitnessPlanGoalDal();
-        private UserFitnessPlanGoalDal()
+        private static readonly UserFitnessPlanGoalDAL instance = new UserFitnessPlanGoalDAL();
+        private UserFitnessPlanGoalDAL()
         {
         }
-        public static UserFitnessPlanGoalDal Instance
+        public static UserFitnessPlanGoalDAL Instance
         {
             get
             {

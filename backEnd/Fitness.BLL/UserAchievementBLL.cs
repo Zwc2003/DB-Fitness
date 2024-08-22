@@ -10,31 +10,17 @@ using Newtonsoft.Json;
 using Fitness.DAL;
 using Fitness.BLL;
 using Fitness.Models;
-using Fitness.BLL.Interfaces;
 
 namespace Fitness.BLL
 {
-    public sealed class UserAchievementBll
+    public class UserAchievementBLL
     {
-        private static readonly UserAchievementBll instance = new UserAchievementBll();
-        private readonly IVigorTokenBLL vigorTokenBLL;
-        private UserAchievementBll()
-        {
-        }
-        public static UserAchievementBll Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
-
-        public static void Init(int userId)
+        public void Init(int userId)
         {
             try
             {
                 // 获取所有成就的ID
-                DataTable achievements = AchievementDal.GetAllAchienementId();
+                DataTable achievements = AchievementDAL.GetAllAchienementId();
 
                 if (achievements == null || achievements.Rows.Count == 0)
                 {
@@ -53,7 +39,7 @@ namespace Fitness.BLL
 
                     int achievementId = Convert.ToInt32(row["achievementID"]);
                     //Console.WriteLine(achievementId);
-                    UserAchievementDal.InitUserAchievementFormUserId_AchievementId(userId, achievementId);
+                    UserAchievementDAL.InitUserAchievementFormUserId_AchievementId(userId, achievementId);
                 }
             }
             catch (Exception ex)
@@ -62,22 +48,22 @@ namespace Fitness.BLL
             }
         }
 
-        public static void UpdateUserAchievement(int userId, int achievementId, int goal = 1)
+        public void UpdateUserAchievement(int userId, int achievementId, int goal = 1)
         {
-            int target = AchievementDal.GetAchievementTarget(achievementId);
-            bool isAchieved = UserAchievementDal.GetIsAchieved(userId, achievementId);
-            int nowprogress = UserAchievementDal.GetProgress(userId, achievementId);
-            if (achievementId == AchievementDal._PersonalInfo)
+            int target = AchievementDAL.GetAchievementTarget(achievementId);
+            bool isAchieved = UserAchievementDAL.GetIsAchieved(userId, achievementId);
+            int nowprogress = UserAchievementDAL.GetProgress(userId, achievementId);
+            if (achievementId == AchievementDAL._PersonalInfo)
             {
                 if (goal >= target && isAchieved == false)
                 {
                     vigorTokenBLL.UpdateBanlance(userId, "完成成就，获得200活力币", 200);
-                    UserAchievementDal.Update(userId, achievementId, goal, true);
+                    UserAchievementDAL.Update(userId, achievementId, goal, true);
                 }
                 else
                 {
                     vigorTokenBLL.UpdateBanlance(userId, "刷新成就进度，获得100活力币", 100);
-                    UserAchievementDal.Update(userId, achievementId, goal, false);
+                    UserAchievementDAL.Update(userId, achievementId, goal, false);
                 }
             }
             else
@@ -85,22 +71,22 @@ namespace Fitness.BLL
                 if (nowprogress + 1 == target && isAchieved == false)
                 {
                     vigorTokenBLL.UpdateBanlance(userId, "完成成就，获得200活力币", 200);
-                    UserAchievementDal.Update(userId, achievementId, nowprogress + goal, true);
+                    UserAchievementDAL.Update(userId, achievementId, nowprogress + goal, true);
                 }
                 else
                 {
                     vigorTokenBLL.UpdateBanlance(userId, "刷新成就进度，获得100活力币", 100);
-                    UserAchievementDal.Update(userId, achievementId, nowprogress + goal, false);
+                    UserAchievementDAL.Update(userId, achievementId, nowprogress + goal, false);
                 }
                     
             }
         }
 
-        public static string GetUserAchievement(int userId)
+        public string GetUserAchievement(int userId)
         {
             try
             {
-                DataTable result = UserAchievementDal.GetUserAchievementTable(userId);
+                DataTable result = UserAchievementDAL.GetUserAchievementTable(userId);
                 if (result == null || result.Rows.Count == 0)
                 {
                     return JsonConvert.SerializeObject(new
@@ -149,11 +135,11 @@ namespace Fitness.BLL
             }
         }
 
-        public static string GetAchievementRank(int userId, int achievementId)
+        public string GetAchievementRank(int userId, int achievementId)
         {
             try
             {
-                DataTable result = UserAchievementDal.GetRankTable(achievementId);
+                DataTable result = UserAchievementDAL.GetRankTable(achievementId);
                 if (result == null || result.Rows.Count == 0)
                 {
                     return JsonConvert.SerializeObject(new
@@ -211,11 +197,11 @@ namespace Fitness.BLL
             }
         }
 
-        public static bool UpdateUserInfoAchievement(int userId)
+        public bool UpdateUserInfoAchievement(int userId)
         {
             try
             {
-                int goal = UserAchievementDal.GetPersonInfoProgress(userId);
+                int goal = UserAchievementDAL.GetPersonInfoProgress(userId);
                 UpdateUserAchievement(userId, 1, goal);
                 return true;
             }
@@ -225,7 +211,7 @@ namespace Fitness.BLL
             }
         }
 
-        public static bool UpdateLoginAchievement(int userId)
+        public bool UpdateLoginAchievement(int userId)
         {
             try
             {
@@ -239,7 +225,7 @@ namespace Fitness.BLL
             
         }
 
-        public static bool UpdateCompleteCourse(int userId)
+        public bool UpdateCompleteCourse(int userId)
         {
             try
             {
@@ -252,7 +238,7 @@ namespace Fitness.BLL
             }
         }
 
-        public static bool UpdateBeLiked(int userId, int goal)
+        public bool UpdateBeLiked(int userId, int goal)
         {
             try
             {
@@ -266,7 +252,7 @@ namespace Fitness.BLL
             
         }
 
-        public static bool UpdateBeComment(int userId, int goal)
+        public bool UpdateBeComment(int userId, int goal)
         {
             try
             {
@@ -280,7 +266,7 @@ namespace Fitness.BLL
             
         }
 
-        public static bool UpdatePostAchievement(int userId, int goal)
+        public bool UpdatePostAchievement(int userId, int goal)
         {
             try
             {
@@ -294,7 +280,7 @@ namespace Fitness.BLL
             
         }
 
-        public static bool UpdateFoodPlanAchievement(int userId)
+        public bool UpdateFoodPlanAchievement(int userId)
         {
             try
             {
@@ -308,7 +294,7 @@ namespace Fitness.BLL
             
         }
 
-        public static string UpdateFitnessPlanAchievement(int userId)
+        public string UpdateFitnessPlanAchievement(int userId)
         {
             UpdateUserAchievement(userId, 8);
             return JsonConvert.SerializeObject(new

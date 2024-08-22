@@ -10,13 +10,13 @@ using Fitness.Models;
 
 namespace Fitness.BLL
 {
-    public sealed class PhysicalTestBll
+    public sealed class PhysicalTestBLL
     {
-        private static readonly PhysicalTestBll instance = new PhysicalTestBll();
-        private PhysicalTestBll()
+        private static readonly PhysicalTestBLL instance = new PhysicalTestBLL();
+        private PhysicalTestBLL()
         {
         }
-        public static PhysicalTestBll Instance
+        public static PhysicalTestBLL Instance
         {
             get
             {
@@ -26,7 +26,7 @@ namespace Fitness.BLL
 
         public static string Update(int userId, int pushups, int squats, int situps, int pullups, int longDistance)
         {
-            string s = PhysicalTestDal.Update(userId, pushups, squats, situps, pullups, longDistance);
+            string s = PhysicalTestDAL.Update(userId, pushups, squats, situps, pullups, longDistance);
             return JsonConvert.SerializeObject(new
             {
                 message = s
@@ -35,7 +35,7 @@ namespace Fitness.BLL
 
         public static string Get(int userId)
         {
-            return PhysicalTestDal.Get(userId);
+            return PhysicalTestDAL.Get(userId);
         }
     }
 }

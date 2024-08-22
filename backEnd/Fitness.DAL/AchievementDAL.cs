@@ -7,11 +7,12 @@ using System.Data;
 using Fitness.DAL.Core;
 using Oracle.ManagedDataAccess.Client;
 using Fitness.DAL;
+using Fitness.BLL;
 using Fitness.Models;
 
 namespace Fitness.DAL
 {
-    public sealed class AchievementDal
+    public sealed class AchievementDAL
     {
         public const int _PersonalInfo = 1;
         public const int _LoginDays = 2;
@@ -22,11 +23,11 @@ namespace Fitness.DAL
         public const int _CompleteDietPlan = 7;
         public const int _CompleteExercisePlan = 8;
 
-        private static readonly AchievementDal instance = new AchievementDal();
-        private AchievementDal()
+        private static readonly AchievementDAL instance = new AchievementDAL();
+        private AchievementDAL()
         {
         }
-        public static AchievementDal Instance
+        public static AchievementDAL Instance
         {
             get
             {
