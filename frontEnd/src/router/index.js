@@ -13,7 +13,10 @@ import adminEquipment from "../components/adminEquipment.vue"
 import AddDiet from "../components/AddDiet.vue"
 import FitnessGuide from "../views/FitnessGuideView.vue"
 import FitnessDetail from "../components/FitnessDetail.vue"
-import AdminEquipmentView from '../views/AdminEquipmentView.vue';
+import AdminEquipmentView from '../views/AdminEquipmentView.vue'
+import MealRecordView from '../views/MealRecordView.vue'
+import MealPlannerView from '../views/MealPlannerView.vue'
+import HealthyDiet from '../views/HealthyDiet.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -99,26 +102,26 @@ const router = createRouter({
     //   component:chatRoom,
     // }
     //饮食计划页面
-    // {
-    //   path: "/mealPlanner",
-    //   name: 'MealPlanner',
-    //   component: MealPlannerView,
-    //   meta: { requiresAuth: false }
-    // },
-    // //饮食记录页面
-    // {
-    //   path: "/mealRecord",
-    //   name: 'MealRecord',
-    //   component: MealRecordView,
-    //   meta: { requiresAuth: false }
-    // },
-    // //健康饮食页面
-    // {
-    //   path: "/healthyDiet",
-    //   name: 'healtyhDiet',
-    //   component: HealthyDiet,
-    //   meta: { requiresAuth: false }
-    // },
+    {
+      path: "/mealPlanner",
+      name: 'MealPlanner',
+      component: MealPlannerView,
+      meta: { requiresAuth: false }
+    },
+    //饮食记录页面
+    {
+      path: "/mealRecord",
+      name: 'MealRecord',
+      component: MealRecordView,
+      meta: { requiresAuth: false }
+    },
+    //健康饮食页面
+    {
+      path: "/healthyDiet",
+      name: 'healtyhDiet',
+      component: HealthyDiet,
+      meta: { requiresAuth: false }
+    },
     // //增加食物部分————管理员功能
     // {
     //   path: "/addFood",

@@ -14,7 +14,7 @@
                 <input type="radio" name="tab" id="course" :checked="$route.path === '/course'">
                 <input type="radio" name="tab" id="plan" :checked="$route.path === '/fitnessplan'">
                 <input type="radio" name="tab" id="chat" :checked="$route.path === '/chat'">
-                <input type="radio" name="tab" id="food" :checked="$route.path === '/food'">
+                <input type="radio" name="tab" id="healthyDiet" :checked="$route.path === '/healthyDiet'">
 
 
 
@@ -36,7 +36,7 @@
                 <label for="aifit" class="aifit" @click="delayedNavigation('/aifit')">
                     <router-link to="/aifit">
                         <el-icon>
-                            <Collection />
+                            <Picture />
                         </el-icon>
                         AI健身
                     </router-link>
@@ -44,7 +44,7 @@
                 <label for="forum" class="forum" @click="delayedNavigation('/forum')">
                     <router-link to="/forum">
                         <el-icon>
-                            <Star />
+                            <Edit />
                         </el-icon>
                         健身论坛
                     </router-link>
@@ -52,7 +52,7 @@
                 <label for="achievement" class="achievement" @click="delayedNavigation('/data')">
                     <router-link to="/data">
                         <el-icon>
-                            <Star />
+                            <Medal />
                         </el-icon>
                         健身成就
                     </router-link>
@@ -68,7 +68,7 @@
                 <label for="course" class="course" @click="delayedNavigation('/course')">
                     <router-link to="/course">
                         <el-icon>
-                            <Star />
+                            <Notebook />
                         </el-icon>
                         健身课程
                     </router-link>
@@ -76,7 +76,7 @@
                 <label for="plan" class="plan" @click="delayedNavigation('/fitnessplan')">
                     <router-link to="/fitnessplan">
                         <el-icon>
-                            <Star />
+                            <Finished />
                         </el-icon>
                         健身计划
                     </router-link>
@@ -84,15 +84,15 @@
                 <label for="chat" class="chat" @click="delayedNavigation('/chat')">
                     <router-link to="/chat">
                         <el-icon>
-                            <Star />
+                            <ChatLineRound />
                         </el-icon>
                         聊天室
                     </router-link>
                 </label>
-                <label for="food" class="food" @click="delayedNavigation('/food')">
-                    <router-link to="/food">
+                <label for="healthyDiet" class="healthyDiet" @click="delayedNavigation('/healthyDiet')">
+                    <router-link to="/healthyDiet">
                         <el-icon>
-                            <Star />
+                            <Food />
                         </el-icon>
                         健康饮食
                     </router-link>
@@ -241,7 +241,7 @@ body {
 .wrapper nav .tab {
     position: absolute;
     height: 100%;
-    width: 10%;
+    width: 12%;
     left: 0px;
     bottom: 0px;
     background: linear-gradient(to right, #f09819, #ff5858);
@@ -258,7 +258,7 @@ body {
 .wrapper nav #course:checked~label.cousrse a,
 .wrapper nav #plan:checked~label.plan a,
 .wrapper nav #chat:checked~label.chat a,
-.wrapper nav #food:checked~label.food a {
+.wrapper nav #healthyDiet:checked~label.healthyDiet a {
     color: #fff;
     transition: 0.6s;
 }
@@ -295,7 +295,7 @@ body {
     left: 77%;
 }
 
-.wrapper nav #food:checked~.tab {
+.wrapper nav #healthyDiet:checked~.tab {
     left: 88%;
 }
 
