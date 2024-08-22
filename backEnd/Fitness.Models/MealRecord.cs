@@ -15,6 +15,16 @@ namespace Fitness.Models
 
         public List<Food> foods { get; set; }
     }
+
+    public class CreateMealRecord
+    {
+        public DateTime mealTime { get; set; }
+
+        public string? mealPhoto { get; set; }
+
+        public List<Food> foods { get; set; }
+    }
+
     public class MealRecordInfo
     {
         public int userID { get; set; }

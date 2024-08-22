@@ -1,4 +1,5 @@
 ﻿using Fitness.BLL;
+using Fitness.BLL.Core;
 using Fitness.BLL.Interfaces;
 using Fitness.Models;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +14,7 @@ namespace Fitness.Controllers
     public class MealPlansController : ControllerBase
     {
         private readonly IFoodPlanBLL _foodPlanBLL;
+        private readonly JWTHelper _jwtHelper = new();
 
         public MealPlansController(IFoodPlanBLL foodPlanBLL)
         {
@@ -21,33 +23,33 @@ namespace Fitness.Controllers
 
         // 创建一条饮食计划
         [HttpPost]
-        public ActionResult<FoodPlanRes> Create(FoodPlanInfo foodPlanInfo)
+        public ActionResult<FoodPlanRes> Create(string token,CreateFoodPlan createFoodPlan)
         {
+
             Console.WriteLine($"创建饮食计划");
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
+            FoodPlanInfo foodPlanInfo = new()
+            {
+                userID = userID,
+                date = createFoodPlan.date,
+                mealType = createFoodPlan.mealType,
+                state = createFoodPlan.state,
+                foods = createFoodPlan.foods,
+            };
+
             return _foodPlanBLL.Create(foodPlanInfo);
         }
 
-        // 根据userID获取所有饮食计划的缩略信息
-        [HttpGet]
-        public ActionResult<GetAllFoodPlanNoDetailsRes> GetAllNoDetails(int userID)
-        {
-            
-            return _foodPlanBLL.GetAllNoDetails(userID);
-        }
 
         // 根据userID获取所有饮食计划的详细信息
         [HttpGet]
-        public ActionResult<GetAllFoodPlanDetailsRes> GetAllDetails(int userID)
+        public ActionResult<GetAllFoodPlanDetailsRes> GetAllDetails(string token)
         {
             Console.WriteLine($"getALLDetail");
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
             return _foodPlanBLL.GetAllDetails(userID);
-        }
-
-        // 根据foodPlanID获取单条饮食计划的详细信息
-        [HttpGet]
-        public ActionResult<GetOneFoodPlanDetailRes> GetOneDetail(int foodPlanID)
-        {
-            return _foodPlanBLL.GetOneDetail(foodPlanID);
         }
 
         // 根据foodPlanID删除单条饮食计划
@@ -73,6 +75,7 @@ namespace Fitness.Controllers
             Console.WriteLine($"upDateState{data.foodPlanID}");
             return _foodPlanBLL.UpdateFoodPlanState(data.foodPlanID,Convert.ToInt32(data.state));
         }
+
         // 预设食物表
         // 插入一种食物
         [HttpPost]

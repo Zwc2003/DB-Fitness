@@ -100,35 +100,6 @@ namespace Fitness.DAL
         }
 
 
-
-        // 不好用，不够灵活，代码可以参考
-        private static FoodPlan FoodPlanToModel(DataRow row)
-        {
-            FoodPlan foodPlan = new()
-            {
-                foodPlanID = Convert.ToInt32(row["foodPlanID"]),
-                userID = Convert.ToInt32(row["userID"]),
-                createTime = Convert.ToDateTime(row["createTime"]),
-                date = Convert.ToDateTime(row["date"]),
-                mealType = Convert.ToInt32(row["mealType"]),
-                state = Convert.ToBoolean(row["state"])
-            };
-
-            return foodPlan;
-        }
-        // 不够灵活，代码可以参考
-        public static List<FoodPlan> FoodPlanToModelList(DataTable dt)
-        {
-            List<FoodPlan> foodPlans = new();
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                DataRow dr = dt.Rows[i];
-                FoodPlan foodPlan = FoodPlanToModel(dr);
-                foodPlans.Add(foodPlan);
-            }
-            return foodPlans;
-        }
-
         public DataTable GetFoodPlanByUsrID(int userID)
         {
             try

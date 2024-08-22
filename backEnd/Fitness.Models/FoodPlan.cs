@@ -59,7 +59,16 @@ namespace Fitness.Models
         public string foodName { get; set; }
         public int quantity { get; set; }
     }
+
     // 定义创建饮食计划功能-前端发送数据格式
+    public class CreateFoodPlan
+    {
+        public DateTime? date { get; set; }
+        public int mealType { get; set; }
+        public bool state { get; set; }
+        public List<Food> foods { get; set; }
+    }
+ 
     public class FoodPlanInfo
     {
         public int userID { get; set; }

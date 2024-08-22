@@ -1,9 +1,11 @@
 ﻿using Fitness.BLL;
+using Fitness.BLL.Core;
 using Fitness.BLL.Interfaces;
 using Fitness.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Drawing;
 
 namespace Fitness.Controllers
 {
@@ -12,6 +14,7 @@ namespace Fitness.Controllers
     public class MealRecordsController : ControllerBase
     {
         private readonly IMealRecordBLL _mealRecordBLL;
+        private readonly JWTHelper _jwtHelper = new();
 
         public MealRecordsController(IMealRecordBLL mealRecordBLL)
         {
@@ -20,10 +23,20 @@ namespace Fitness.Controllers
 
         // 创建一条饮食记录
         [HttpPost]
-        public ActionResult<MealRecordRes> Create(MealRecordInfo mealRecordInfo)
+        public ActionResult<MealRecordRes> Create(string token, CreateMealRecord createMealRecord)
         {
-            Console.WriteLine($"创建一条饮食记录,userID{mealRecordInfo.userID}");
-            mealRecordInfo.mealTime = mealRecordInfo.mealTime.ToLocalTime();
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
+            Console.WriteLine($"创建一条饮食记录,userID{userID}");
+            createMealRecord.mealTime = createMealRecord.mealTime.ToLocalTime();
+
+            MealRecordInfo mealRecordInfo = new()
+            {
+                userID = userID,
+                mealTime = createMealRecord.mealTime,
+                mealPhoto = createMealRecord.mealPhoto,
+                foods = createMealRecord.foods
+            };
 
             return _mealRecordBLL.Create(mealRecordInfo);
         }
@@ -63,17 +76,21 @@ namespace Fitness.Controllers
 
         // 根据日期获取饮食记录
         [HttpGet]
-        public ActionResult<GetAllMealRecordsNoDetailsRes> GetAllNoDetailsByDate(int userID,DateTime date)
+        public ActionResult<GetAllMealRecordsNoDetailsRes> GetAllNoDetailsByDate(string token,DateTime date)
         {
             Console.WriteLine($"创建饮食计划");
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
             return _mealRecordBLL.GetAllNoDetailsByDate(userID, date);
         }
 
         // AI总结当天饮食记录
         [HttpGet]
-        public ActionResult<MessageRes> GetAISummary(int userID, DateTime date)
+        public ActionResult<MessageRes> GetAISummary(string token, DateTime date)
         {
             Console.WriteLine($"AI总结");
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
             return _mealRecordBLL.MealSummaryByAI(userID, date);
         }
     }

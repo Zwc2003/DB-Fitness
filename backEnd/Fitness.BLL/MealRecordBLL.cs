@@ -45,6 +45,7 @@ namespace Fitness.BLL
             "用户的餐饮信息如下：";
 
 
+        // 创建一条饮食记录
         public MealRecordRes Create(MealRecordInfo mealRecordInfo)
         {
             int recordID = -1;
@@ -151,25 +152,8 @@ namespace Fitness.BLL
             return res;
         }
 
-        public GetAllMealRecordsNoDetailsRes GetAllNoDetails(int userID)
-        {
-            DataTable dt = mealRecordDAL.GetMealRecordByUsrID(userID);
-            GetAllMealRecordsNoDetailsRes res = new();
 
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                SingleMealRecordNoDetail single = new ();
-                DataRow dr = dt.Rows[i];
-                single.recordID = Convert.ToInt32(dr["recordID"]);
-                single.mealTime = Convert.ToDateTime(dr["mealTime"]);
-                single.mealPhoto = dr["mealPhoto"].ToString();
-                single.createdTime = Convert.ToDateTime(dr["createTime"]);
-                res.records.Add(single);
-
-            }
-            return res;
-        }
-
+        // 根据日期获取所有的饮食记录
         public GetAllMealRecordsDetailsRes GetAllDetails(int userID,DateTime date)
         {
             DataTable dt = mealRecordDAL.GetMealRecordByIDAndDate(userID,date);
@@ -214,40 +198,8 @@ namespace Fitness.BLL
             return res;
         }
 
-        public GetOneMealRecordDetailsRes GetOneDetail(int recordID)
-        {
-
-            GetOneMealRecordDetailsRes res = new();
-            DataTable dtMealRecord = mealRecordDAL.GetMealRecordByRecordID(recordID);
-            DataTable dtMealRecordFood = mealRecordDAL.GetMealRecordsFoodsByID(recordID);
-
-            DataRow drMealRecord = dtMealRecord.Rows[0];
-
-            res.recordID = Convert.ToInt32(drMealRecord["recordID"]);
-            res.mealTime = Convert.ToDateTime(drMealRecord["mealTime"]);
-            res.mealPhoto = drMealRecord["mealPhoto"].ToString();
-            res.createdTime = Convert.ToDateTime(drMealRecord["createTime"]);
-            res.diningAdvice = drMealRecord["diningAdvice"].ToString();
-
-            int totalCalorie = 0;
-
-            for (int i = 0; i < dtMealRecordFood.Rows.Count; i++)
-            {
-                FoodRecord food = new();
-                DataRow drDetailFoods = dtMealRecordFood.Rows[i];
-                food.foodName = drDetailFoods["foodName"].ToString();
-                food.quantity = Convert.ToInt32(drDetailFoods["foodAmount"]);
-                DataTable dtCalorie = mealRecordDAL.GetOneFoodCalorie(food.foodName);
-                DataRow drCalorie = dtCalorie.Rows[0];
-                food.calorie = Convert.ToInt32(drCalorie["calorie"]) * food.quantity; // 这个食物的所有calorie
-                totalCalorie += food.calorie;
-                res.foods.Add(food);
-            }
-            res.totalCalorie = totalCalorie;
-
-            return res;
-        }
-
+        
+        // 删除饮食记录
         public MessageRes DeleteMealRecord(int recordID)
         {
             MessageRes deleteRes = new();
@@ -263,6 +215,7 @@ namespace Fitness.BLL
 
         }
 
+        // 更新饮食记录
         public MessageRes UpdateMealRecords(UpdateMealRecordInfo updateMealRecordInfo)
         {
             MessageRes res = new MessageRes();
@@ -362,6 +315,7 @@ namespace Fitness.BLL
             }
         }
 
+        // 根据日期获取所有饮食记录的缩略信息
         public GetAllMealRecordsNoDetailsRes GetAllNoDetailsByDate(int userID, DateTime date)
         {
             DataTable dt = mealRecordDAL.GetMealRecordByIDAndDate(userID,date);
@@ -382,6 +336,7 @@ namespace Fitness.BLL
 
         }
 
+        // 获取AI对饮食记录的当日总结
         public MessageRes MealSummaryByAI(int userID,DateTime date)
         {
             vigorTokenBLL.UpdateBalance(userID, "使用AI总结当日饮食记录功能,耗费30活力币", -30);

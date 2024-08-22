@@ -92,28 +92,7 @@ namespace Fitness.BLL
             }
         }
 
-        public GetAllFoodPlanNoDetailsRes GetAllNoDetails(int userID)
-        {
-            DataTable dt = foodPlanDAL.GetFoodPlanByUsrID(userID);
-            GetAllFoodPlanNoDetailsRes res = new();
-
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                SinglePlanNoDetail single = new SinglePlanNoDetail();
-                DataRow dr = dt.Rows[i];
-                single.foodPlanID = Convert.ToInt32(dr["foodPlanID"]);
-                single.date = Convert.ToDateTime(dr["date"]);
-                single.mealType = Convert.ToInt32(dr["mealType"]);
-                single.state = Convert.ToInt32(dr["state"]);
-                single.numOfTypes = Convert.ToInt32(dr["numOfTypes"]);
-                res.plans.Add(single);
-
-            }
-            return res;
-        }
         
-
-        // 没有用
         public GetAllFoodPlanDetailsRes GetAllDetails(int userID)
         {
             DataTable dt = foodPlanDAL.GetFoodPlanByUsrID(userID);
@@ -144,31 +123,6 @@ namespace Fitness.BLL
             return res;
         }
 
-        public GetOneFoodPlanDetailRes GetOneDetail(int foodPlanID)
-        {
-
-            GetOneFoodPlanDetailRes res = new();
-            DataTable dtFoodPlan = foodPlanDAL.GetFoodPlanByPlanID(foodPlanID);
-            DataTable dtFoodPlanFood = foodPlanDAL.GetFoodPlanFoodsByID(foodPlanID);
-
-            DataRow drFoodPlan = dtFoodPlan.Rows[0];
-            res.foodPlanID = Convert.ToInt32(drFoodPlan["foodPlanID"]);
-            res.date = Convert.ToDateTime(drFoodPlan["date"]);
-            res.mealType = Convert.ToInt32(drFoodPlan["mealType"]);
-            res.state = Convert.ToInt32(drFoodPlan["state"]);
-            res.numOfTypes = Convert.ToInt32(drFoodPlan["numOfTypes"]);
-
-            for (int i = 0; i < dtFoodPlanFood.Rows.Count; i++)
-            {
-                Food food = new();
-                DataRow drDetailFoods = dtFoodPlanFood.Rows[i];
-                food.foodName = drDetailFoods["foodName"].ToString();
-                food.quantity = Convert.ToInt32(drDetailFoods["foodAmount"]);
-                res.foods.Add(food);
-            }
-
-            return res;
-        }
 
         public MessageRes DeleteFoodPlan(int foodPlanID)
         {
