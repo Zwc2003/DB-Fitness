@@ -9,8 +9,8 @@ namespace FitnessWebAPI.DAL.Core
     public static class OSSHelper
     {
 
-        static string accessKeyId = "LTAI5tLypWDsSBHhvonFrZ1X";
-        static string accessKeySecret = "VdEvPvgplojl7HaCSbCTi0XmezplRk";
+        static string accessKeyId = "";
+        static string accessKeySecret = "";
         static string endpoint = "oss-cn-shanghai.aliyuncs.com";
         static string bucketName = "image-tongji-sse-db";    //OSS图片存储空间
 
