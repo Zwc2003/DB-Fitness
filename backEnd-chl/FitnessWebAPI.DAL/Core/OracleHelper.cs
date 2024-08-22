@@ -9,7 +9,7 @@ namespace FitnessWebAPI.DAL.Core
     public class OracleHelper
     {
         // 私有静态只读字段，存储数据库连接字符串
-        private static readonly string connectionString = "Data Source=120.26.138.61:1521/XE;User Id=FITNESSDB;Password=tongjiSSEDBMS2024;";
+        private static readonly string connectionString = "secret";
 
 /*        public static OracleConnection GetConnection()
         {
