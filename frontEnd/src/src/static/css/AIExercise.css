@@ -189,3 +189,12 @@
   font-size: 2vh;
   line-height: 3vh;
 }
+
+.dialog {
+  max-width: 80vw; /* 设置对话框最大宽度为视窗宽度的80% */
+}
+
+.dialog-img {
+  max-width: 100%; /* 让图片宽度不超过对话框宽度 */
+  height: auto;    /* 保持图片的纵横比 */
+}

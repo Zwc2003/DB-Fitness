@@ -7,9 +7,21 @@
     <div class="content">
       <div v-if="!isAnalyzing">
         <el-steps :active="active" align-center class="steps">
-          <el-step title="上传健身截图"></el-step>
-          <el-step title="输入健身动作类型"></el-step>
-          <el-step title="AI分析"></el-step>
+          <el-step>
+            <template #title>
+              <span style="font-size: 20px; font-weight: bold;">上传健身截图</span>
+            </template>
+          </el-step>
+          <el-step>
+            <template #title>
+              <span style="font-size: 20px; font-weight: bold;">输入健身动作类型</span>
+            </template>
+          </el-step>
+          <el-step>
+            <template #title>
+              <span style="font-size: 20px; font-weight: bold;">AI分析</span>
+            </template>
+          </el-step>
         </el-steps>
         <div class="before-tracking">
           <div class="content-left">
@@ -61,7 +73,7 @@
                 <span class="upload-title">输入健身动作类型</span>
               </div>
               <el-form class="type-form">
-                <el-form-item  label-width="190px" >
+                <el-form-item  label-width="130px" >
                   <el-input v-model="screenshotsCurrent.exerciseName"
                     style="width: 300px; font-size: 20px; color: #000 !important; font-weight: bold; margin-top: 5px">
                   </el-input>
@@ -149,6 +161,8 @@
     <el-dialog v-model="beforeImgDialogVisible" :modal-append-to-body="false" top="5vh" :show-close="false" class="dialog">
       <img :src="screenShotUrl" alt="" class="dialog-img"/>
     </el-dialog>
+
+
 
     <!--    拍照对话框-->
     <div v-show="imgCapDialogVisible" class="img-cap-dialog">
@@ -440,8 +454,6 @@ export default {
         }).catch(error => {
           console.error('Error creating record:', error)
         })
-
-      // 这里写API请求
     },
     getAISuggestions(screenshotID) {
       console.log('获取AI建议 for screenshotID:', screenshotID)
@@ -728,7 +740,7 @@ export default {
 .img-cap-dialog-content {
   margin: 5vh auto;
   width: 80%;
-  height: 74vh;
+  height: 94vh;
   background-color: rgba(255, 255, 255, .8);
   border-radius: 25px;
   padding: 8vh 3%;
