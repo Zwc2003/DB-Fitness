@@ -184,7 +184,53 @@ namespace Fitness.DAL
             }
         }
 
-       
+        public DataTable GetFoodPlanAchieGain(int foodPlanID)
+        {
+            try
+            {
+                string sql = "SELECT \"achievementGain\",\"userID\" FROM \"FoodPlan\" WHERE \"foodPlanID\"=:\"foodPlanID\"";
+                DataTable dt = OracleHelper.ExecuteTable(sql,
+                    new OracleParameter("\"foodPlanID\"", OracleDbType.Int32) { Value = foodPlanID });
+
+                return dt;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+
+        }
+
+        public bool UpdateAchievementGain(int foodPlanID,int achievementGain)
+        {
+
+            try
+            {
+                string sql = "UPDATE \"FoodPlan\" SET \"achievementGain\"=:achievementGain " +
+                                "WHERE \"foodPlanID\"=:foodPlanID";
+
+                OracleParameter[] oracleParameters = new OracleParameter[]
+                {
+
+                    new OracleParameter("achievementGain", OracleDbType.Int32) { Value = achievementGain },
+                    new OracleParameter("foodPlanID", OracleDbType.Int32) { Value = foodPlanID },
+                };
+
+                OracleHelper.ExecuteNonQuery(sql, null, oracleParameters);
+
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
         public bool UpdateFoodPlanByPlanID(int foodPlanID,int mealType,int numOfTypes,OracleTransaction transaction=null)
         {
 

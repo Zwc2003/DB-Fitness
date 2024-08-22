@@ -14,7 +14,7 @@ namespace Fitness.BLL
 {
     public class FoodPlanBLL : IFoodPlanBLL
     {
-        FoodPlanDAL recordAndPlanDAL = new();
+        FoodPlanDAL foodPlanDAL = new();
 
         // 创建一条饮食记录
         public FoodPlanRes Create(FoodPlanInfo foodPlanInfo)
@@ -48,7 +48,7 @@ namespace Fitness.BLL
                     transaction = connection.BeginTransaction();
                     
                     // 插入一级缩略表
-                    foodPlanID = recordAndPlanDAL.InsertFoodPlan(foodPlan,transaction);
+                    foodPlanID = foodPlanDAL.InsertFoodPlan(foodPlan,transaction);
                     
 
                     if (foodPlanID==-1)
@@ -68,7 +68,7 @@ namespace Fitness.BLL
                             foodName = foodPlanInfo.foods[i].foodName,
                             foodAmount = foodPlanInfo.foods[i].quantity
                         };
-                        if(!recordAndPlanDAL.InsertFoodPlanFood(foodPlanFood,transaction))
+                        if(!foodPlanDAL.InsertFoodPlanFood(foodPlanFood,transaction))
                         {
                             foodPlanRes.message = "饮食计划插入失败:详细食物列表插入错误！";
                             transaction.Rollback();
@@ -94,7 +94,7 @@ namespace Fitness.BLL
 
         public GetAllFoodPlanNoDetailsRes GetAllNoDetails(int userID)
         {
-            DataTable dt = recordAndPlanDAL.GetFoodPlanByUsrID(userID);
+            DataTable dt = foodPlanDAL.GetFoodPlanByUsrID(userID);
             GetAllFoodPlanNoDetailsRes res = new();
 
             for (int i = 0; i < dt.Rows.Count; i++)
@@ -116,7 +116,7 @@ namespace Fitness.BLL
         // 没有用
         public GetAllFoodPlanDetailsRes GetAllDetails(int userID)
         {
-            DataTable dt = recordAndPlanDAL.GetFoodPlanByUsrID(userID);
+            DataTable dt = foodPlanDAL.GetFoodPlanByUsrID(userID);
             GetAllFoodPlanDetailsRes res = new();
 
             for (int i = 0; i < dt.Rows.Count; i++)
@@ -129,7 +129,7 @@ namespace Fitness.BLL
                 single.state = Convert.ToInt32(dr["state"]);
                 single.numOfTypes = Convert.ToInt32(dr["numOfTypes"]);
 
-                DataTable dtDetailFoods = recordAndPlanDAL.GetFoodPlanFoodsByID(single.foodPlanID);
+                DataTable dtDetailFoods = foodPlanDAL.GetFoodPlanFoodsByID(single.foodPlanID);
                 for(int j= 0;j<dtDetailFoods.Rows.Count;j++)
                 {
                     Food food = new();
@@ -148,8 +148,8 @@ namespace Fitness.BLL
         {
 
             GetOneFoodPlanDetailRes res = new();
-            DataTable dtFoodPlan = recordAndPlanDAL.GetFoodPlanByPlanID(foodPlanID);
-            DataTable dtFoodPlanFood = recordAndPlanDAL.GetFoodPlanFoodsByID(foodPlanID);
+            DataTable dtFoodPlan = foodPlanDAL.GetFoodPlanByPlanID(foodPlanID);
+            DataTable dtFoodPlanFood = foodPlanDAL.GetFoodPlanFoodsByID(foodPlanID);
 
             DataRow drFoodPlan = dtFoodPlan.Rows[0];
             res.foodPlanID = Convert.ToInt32(drFoodPlan["foodPlanID"]);
@@ -174,7 +174,7 @@ namespace Fitness.BLL
         {
             MessageRes deleteFoodPlanRes = new();
             
-            bool res = recordAndPlanDAL.DeleteFoodPlanByPlanID(foodPlanID);
+            bool res = foodPlanDAL.DeleteFoodPlanByPlanID(foodPlanID);
 
             if (res)
                 deleteFoodPlanRes.message = "饮食计划删除成功";
@@ -202,13 +202,13 @@ namespace Fitness.BLL
                     connection.Open();
                     transaction = connection.BeginTransaction();
 
-                    if (!recordAndPlanDAL.UpdateFoodPlanByPlanID(foodPlanID, mealType, numOfTypes))
+                    if (!foodPlanDAL.UpdateFoodPlanByPlanID(foodPlanID, mealType, numOfTypes))
                     {
                         res.message = "饮食计划更新失败:缩略表信息更新错误！";
                         return res;
                     }
                     // Console.WriteLine($"foodPlanID2{foodPlanID}");
-                    if (!recordAndPlanDAL.DeletFoodPlanFoodByPlanID(foodPlanID,transaction))
+                    if (!foodPlanDAL.DeletFoodPlanFoodByPlanID(foodPlanID,transaction))
                     {
                         res.message = "饮食计划更新失败:旧食物详情表删除失败！";
                         transaction.Rollback();
@@ -226,7 +226,7 @@ namespace Fitness.BLL
                             foodAmount = updateFoodPlanInfo.foods[i].quantity
                         };
                         
-                        if (!recordAndPlanDAL.InsertFoodPlanFood(foodPlanFood))
+                        if (!foodPlanDAL.InsertFoodPlanFood(foodPlanFood))
                         {
                             res.message = "饮食计划更新失败:新食物详情信息插入失败！";
                             transaction.Rollback();
@@ -256,7 +256,7 @@ namespace Fitness.BLL
 
 
             Console.WriteLine($"更新状态{foodPlanID}");
-            if (!recordAndPlanDAL.UpdateFoodPlanState(foodPlanID, state))
+            if (!foodPlanDAL.UpdateFoodPlanState(foodPlanID, state))
             {
                 res.message = "饮食计划状态更新失败！(12)";
                 return res;
@@ -264,6 +264,22 @@ namespace Fitness.BLL
 
 
             res.message = "饮食计划状态更新成功！";
+            
+            // 确保每条饮食计划只能更新一次成就进度
+            DataTable dt = foodPlanDAL.GetFoodPlanAchieGain(foodPlanID);
+            DataRow dr = dt.Rows[0];
+            int haveGainAchievement = Convert.ToInt32(dr["achievementGian"]);
+            int userID = Convert.ToInt32(dr["userID"]);
+
+
+            // 完成饮食计划更新成就进度
+            if (state==1 && haveGainAchievement==0)
+            {
+                UserAchievementBLL userAchievementBLL = new();
+                foodPlanDAL.UpdateAchievementGain(foodPlanID, 1);
+                userAchievementBLL.UpdateFoodPlanAchievement(userID);
+            }
+
             return res;
         }
 
@@ -276,7 +292,7 @@ namespace Fitness.BLL
                 message = "食物插入失败！",
             };
 
-            if (recordAndPlanDAL.InsertFoods(foodName, calorie))
+            if (foodPlanDAL.InsertFoods(foodName, calorie))
                 res.message = "食物插入成功！";
 
             return res;
@@ -292,7 +308,7 @@ namespace Fitness.BLL
             };
 
            
-            if (recordAndPlanDAL.DeleteFoodByName(foodName))
+            if (foodPlanDAL.DeleteFoodByName(foodName))
                 res.message = "食物删除成功！";
 
 
@@ -308,7 +324,7 @@ namespace Fitness.BLL
             };
 
 
-            if (recordAndPlanDAL.UpdateFoods(foodName, calorie))
+            if (foodPlanDAL.UpdateFoods(foodName, calorie))
             {
                 res.message = "食物表更新成功！";
                 
@@ -321,7 +337,7 @@ namespace Fitness.BLL
         // 查
         public FoodsRes GetALLFoodsInfo()
         {
-            DataTable dt = recordAndPlanDAL.GetALLFoodInfoData();
+            DataTable dt = foodPlanDAL.GetALLFoodInfoData();
             FoodsRes foodsRes = new();
             
 
@@ -357,7 +373,7 @@ namespace Fitness.BLL
             recipesInfo.imgUrl = OSSHelper.GetPublicObjectUrl(objectName);
 
             DateTime releaseTime = DateTime.Now; 
-            int recipeID = recordAndPlanDAL.InsertRecipes(recipesInfo, ref releaseTime);
+            int recipeID = foodPlanDAL.InsertRecipes(recipesInfo, ref releaseTime);
 
             if (recipeID == -1)
                 return recipesRes;
@@ -380,7 +396,7 @@ namespace Fitness.BLL
                 message = "食谱删除失败！"
             };
 
-            bool res = recordAndPlanDAL.DeleteRecipeByID(recipeID);
+            bool res = foodPlanDAL.DeleteRecipeByID(recipeID);
 
             if (res)
                 deleteRecipeRes.message = "食谱删除成功！";
@@ -396,7 +412,7 @@ namespace Fitness.BLL
             MessageRes res = new MessageRes();
 
 
-            if (!recordAndPlanDAL.UpdateRecipes(updateRecipesInfo))
+            if (!foodPlanDAL.UpdateRecipes(updateRecipesInfo))
             {
                 res.message = "食谱更新失败！";
                 return res;
@@ -410,7 +426,7 @@ namespace Fitness.BLL
         // 查
         public Recipes GetAllRecipes()
         {
-            DataTable dt = recordAndPlanDAL.GetAllRecipes();
+            DataTable dt = foodPlanDAL.GetAllRecipes();
             Recipes recipes = new();
 
 

@@ -15,6 +15,7 @@ namespace Fitness.BLL
 {
     public class UserAchievementBLL
     {
+        VigorTokenBLL vigorTokenBLL = new();
         public void Init(int userId)
         {
             try
@@ -57,12 +58,12 @@ namespace Fitness.BLL
             {
                 if (goal >= target && isAchieved == false)
                 {
-                    vigorTokenBLL.UpdateBanlance(userId, "完成成就，获得200活力币", 200);
+                    vigorTokenBLL.UpdateBalance(userId, "完成成就，获得200活力币", 200);
                     UserAchievementDAL.Update(userId, achievementId, goal, true);
                 }
                 else
                 {
-                    vigorTokenBLL.UpdateBanlance(userId, "刷新成就进度，获得100活力币", 100);
+                    vigorTokenBLL.UpdateBalance(userId, "刷新成就进度，获得100活力币", 100);
                     UserAchievementDAL.Update(userId, achievementId, goal, false);
                 }
             }
@@ -70,12 +71,12 @@ namespace Fitness.BLL
             {
                 if (nowprogress + 1 == target && isAchieved == false)
                 {
-                    vigorTokenBLL.UpdateBanlance(userId, "完成成就，获得200活力币", 200);
+                    vigorTokenBLL.UpdateBalance(userId, "完成成就，获得200活力币", 200);
                     UserAchievementDAL.Update(userId, achievementId, nowprogress + goal, true);
                 }
                 else
                 {
-                    vigorTokenBLL.UpdateBanlance(userId, "刷新成就进度，获得100活力币", 100);
+                    vigorTokenBLL.UpdateBalance(userId, "刷新成就进度，获得100活力币", 100);
                     UserAchievementDAL.Update(userId, achievementId, nowprogress + goal, false);
                 }
                     

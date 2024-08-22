@@ -1,4 +1,5 @@
 ﻿using Fitness.BLL;
+using Fitness.BLL.Core;
 using Fitness.BLL.Interfaces;
 using Fitness.Models;
 using Markdig;
@@ -13,28 +14,38 @@ namespace Fitness.Controllers
     public class AIGuideController : ControllerBase
     {
         private readonly IFitnessALGuideBLL _fitnessALGuideBLL;
-        private readonly IVigorTokenBLL _vigorTokenBLL;
+        private readonly JWTHelper _jwtHelper = new();
 
-        public AIGuideController(IFitnessALGuideBLL fitnessALGuideBLL, IVigorTokenBLL vigorTokenBLL)
+        public AIGuideController(IFitnessALGuideBLL fitnessALGuideBLL)
         {
             _fitnessALGuideBLL = fitnessALGuideBLL;
-            _vigorTokenBLL = vigorTokenBLL;
+
         }
 
         // 上传健身截图创建记录
         [HttpPost]
-        public ActionResult<ScreenshotRes> Create(ScreenshotInfo screenshotInfo)
+        public ActionResult<ScreenshotRes> Create(string token,CreateScreenshot screenshot)
         {
             Console.WriteLine($"健身截图创建");
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
+            ScreenshotInfo screenshotInfo = new()
+            {
+                userID = userID,
+                screenshotUrl = screenshot.screenshotUrl,
+                exerciseName = screenshot.exerciseName
+            };
             return _fitnessALGuideBLL.Create(screenshotInfo);
         }
 
 
         // 获取所有健身截图记录
         [HttpGet]
-        public ActionResult<SuggestionDetailRes> GetAllDetails(int userID)
+        public ActionResult<SuggestionDetailRes> GetAllDetails(string token)
         {
             Console.WriteLine($"获取所有健身截图记录");
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
             return _fitnessALGuideBLL.GetAllDetails(userID);
         }
 

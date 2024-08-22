@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using System.Data;
 using Aliyun.OSS;
 using Fitness.DAL;
-using Fitness.BLL;
 using Fitness.Models;
 
 namespace Fitness.DAL

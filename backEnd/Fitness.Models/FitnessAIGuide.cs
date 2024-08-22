@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +34,13 @@ namespace Fitness.Models
 
         public float? userRatings { get; set; }
     }
+    public class CreateScreenshot
+    {
+        public string exerciseName { get; set; }
 
+        public string screenshotUrl { get; set; }
+
+    }
     public class ScreenshotInfo
     {
         public int userID { get; set; }
