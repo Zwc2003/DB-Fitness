@@ -116,7 +116,7 @@
             </div>
         </el-dialog>
     </div>
-    <el-carousel :interval="4000" type="card" height="200px" indicator-position="outside">
+    <el-carousel :interval="4000" type="card" height="151px" indicator-position="outside">
         <el-carousel-item v-for="item in recipes" :key="item.id">
             <el-card>
                 <div class="card-content" @click="showDiet(item)">

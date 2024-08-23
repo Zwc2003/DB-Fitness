@@ -16,7 +16,8 @@ import FitnessDetail from "../components/FitnessDetail.vue"
 import AdminEquipmentView from '../views/AdminEquipmentView.vue'
 import MealRecordView from '../views/MealRecordView.vue'
 import MealPlannerView from '../views/MealPlannerView.vue'
-import HealthyDiet from '../views/HealthyDiet.vue';
+import HealthyDiet from '../views/HealthyDiet.vue'
+import AddFoodView from '../views/AddFoodView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -122,13 +123,13 @@ const router = createRouter({
       component: HealthyDiet,
       meta: { requiresAuth: false }
     },
-    // //增加食物部分————管理员功能
-    // {
-    //   path: "/addFood",
-    //   name: 'AddFood',
-    //   component: AddFoodView,
-    //   meta: { requiresAuth: false }
-    // },
+     //增加食物部分————管理员功能
+     {
+      path: "/addFood",
+       name: 'AddFood',
+      component: AddFoodView,
+      meta: { requiresAuth: false }
+   },
   ]
 })
 

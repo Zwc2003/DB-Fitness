@@ -28,7 +28,6 @@
   <style scoped>
   .common-layout {
     height: 100vh;
-    width:150vh;
     margin-top: 50px;
   }
   
@@ -37,7 +36,7 @@
   }
   
   .main-content {
-    width: 100%;
+    width:1620px;
   }
   
   </style>

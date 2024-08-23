@@ -44,16 +44,18 @@
                 layout="prev, pager, next" :total="allRecipe.length" @current-change="handlePageChange" />
         </div>
         <!--发布饮食贴-->
-        <el-card :style="{ fontSize: '20px' }" style="height: 100px; padding: 0;width: 550px;">
-            <el-row style="margin: 0;padding: 0;">
-                <el-col :span="20">
-                    <el-image :src="foodBG2" style="width: 400px; padding: 0;" />
-                </el-col>
-                <el-col :span="4">
-                    发布<br>饮食贴
-                </el-col>
-            </el-row>
-        </el-card>
+        <div style="display: flex; justify-content: center;">
+    <el-card :style="{ fontSize: '20px' }" style="height: 100px; padding: 0; width: auto;">
+      <el-row style="margin: 12px; padding: 0;">
+        <el-col :span="20">
+          <el-image :src="foodBG2" style="width: auto; padding: 0px;" />
+        </el-col>
+        <el-col :span="4">
+          发布<br>饮食贴
+        </el-col>
+      </el-row>
+    </el-card>
+  </div>
         <!--新建部分-->
         <el-dialog v-model="dialogVisible">
             <el-form ref="form">

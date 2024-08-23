@@ -97,6 +97,14 @@
                         健康饮食
                     </router-link>
                 </label>
+                <!--
+                <label for="addFood" class="mealPlanner" @click="delayedNavigation('/addFood')">
+                    <el-icon>
+                        <House />
+                    </el-icon>
+                    管理员功能
+                </label>
+                -->
                 <div class="tab"></div>
             </nav>
         </div>

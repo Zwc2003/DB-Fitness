@@ -1,9 +1,9 @@
 <template>
-    <div class="container">
+    <div >
         <el-header class="header">
             <NavigationBar />
         </el-header>
-        <el-row class="row-bg" justify="space-between">
+        <el-row class="container" justify="space-between">
             <el-col :span="10">
                 <AddFood />
             </el-col>
