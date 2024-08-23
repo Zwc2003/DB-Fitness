@@ -183,11 +183,11 @@ body {
     left: 0;
     width: 100%;
     padding-left: 5%;
-    padding-right: 3%;
+    padding-right: 5%;
 }
 
 .logo-container {
-    margin-right: 20px;
+    margin-right: 0px;
 }
 
 .logo {
@@ -324,11 +324,12 @@ body {
 }
 
 @media (min-width: 1024px) {
-    #app {
-        display: grid;
-        grid-template-columns: 1fr;
-        padding: 0 2rem;
-    }
+        #app {
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    height: 100vh; /* 父容器的高度占满整个视口 */
+  }
 }
 
 .navBarWrap {

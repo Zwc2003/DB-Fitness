@@ -9,7 +9,7 @@ import FitnessChart from './components/dataVis.vue'
 export default {
   name: 'App',
   components: {
-    FitnessChart
+
   }
 }
 </script>

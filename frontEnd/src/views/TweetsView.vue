@@ -207,20 +207,21 @@ function openInNewTab(url) {
 <template>
     <Navigator />
     <el-backtop :right="50" :bottom="110" style="z-index: 2"/>
+    <!-- 悬浮的刷新按钮（样式与置顶键一致） -->
+    <div class="floating-refresh-button" style="z-index: 2;">
+        <el-button type="primary" @click="fetchAllEquipmentGuide" class="refresh-button">
+            <el-icon><Refresh /></el-icon>
+        </el-button>
+    </div>
 
-    <div class="carousel-container-top">
+    <div class="carousel-container-top" >
         <el-carousel indicator-position="outside">
             <el-carousel-item v-for="(item, index) in items" :key="index">
                 <img :src="item.src" :alt="item.alt" class="carousel-image" />
             </el-carousel-item>
         </el-carousel>
     </div>
-  <!-- 悬浮的刷新按钮（样式与置顶键一致） -->
-    <div class="floating-refresh-button" style="z-index: 2;">
-        <el-button type="primary" @click="fetchAllEquipmentGuide" class="refresh-button">
-            <el-icon><Refresh /></el-icon>
-        </el-button>
-    </div>
+
     <div v-if="showMask" class="mask"></div>
     <div class="card_1">
         <el-card class="custom-card" style="max-width: 1000px; flex: 65;" shadow="hover"
@@ -331,15 +332,14 @@ function openInNewTab(url) {
 </template>
 
 <style>
+
 .carousel-container-top {
-    margin-top: 105px;
     width: 80vw;
-    height: 600px;
-    margin-left: -10%;
-    margin-right: auto;
-    position: relative;
+    height: 80vh;
+    position: absolute;
+    justify-content: center;
     z-index: 1;
-    /* 确保内容处于最底层 */
+    white-space: nowrap; /* 防止子元素换行 */
 }
 
 .carousel-image {
@@ -369,7 +369,7 @@ function openInNewTab(url) {
     gap: 20px;
     height: 500px;
     z-index: 1;
-    margin-left: -8%;
+
     /* 确保内容处于最底层 */
 }
 

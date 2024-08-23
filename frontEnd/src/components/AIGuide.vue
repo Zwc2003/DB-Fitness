@@ -704,15 +704,21 @@ export default {
   letter-spacing: 1vw;
 }
 
-.container  {
+/*.container  {*/
+/*  background: url("./src/assets/bg5.jpg") no-repeat center;*/
+/*  background-size: 100% 100%;*/
+/*  margin-top: 5%;*/
+/*  width: 100%;*/
+/*}*/
+.container {
   background: url("./src/assets/bg5.jpg") no-repeat center;
-  background-size: 100% 100%;
-  margin-top: 5%;
-  margin-left: -13%;
-  width: 100%;
-
+  background-size: cover;
+  width: 2000px;
+  margin-top: 5%; /* 上下5%的间距，水平居中 */
+  height: 85vh;
 
 }
+
 
 .img-cap {
   border: none;
