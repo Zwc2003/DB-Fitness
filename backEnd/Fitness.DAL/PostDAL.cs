@@ -89,7 +89,7 @@ namespace Fitness.DAL
 
         public static DataTable GetByUserID(int userId)
         {
-            string selectCommand = "SELECT * FROM \"Posts\" WHERE \"userID\" = :userID ";
+            string selectCommand = "SELECT * FROM \"Posts\" WHERE \"userID\" = :userID ORDER BY postTime DESC";
             OracleParameter[] parameters = new OracleParameter[]
             {
                 new OracleParameter("userID", OracleDbType.Int32) { Value = userId }

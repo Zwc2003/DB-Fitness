@@ -11,16 +11,6 @@ using System.Xml.Linq;
 
 namespace Fitness.DAL
 {
-    //类型转换
-    //ToModel  ToModelList        
-    //查
-    //GetCommentByPostID  GetCommentByCommentID
-    //增
-    //Insert
-    //删
-    //DeleteComment
-    //LikeCountsAddOne
-
     public class CommentDAL
     {
         public static Comment ToModel(DataRow row)
@@ -66,7 +56,7 @@ namespace Fitness.DAL
 
         public static List<Comment> GetCommentByPostID(int postID)
         {
-            string query = "SELECT * FROM \"Comment\" WHERE \"postID\" = :postID AND \"parentCommentID\" = -1";
+            string query = "SELECT * FROM \"Comment\" WHERE \"postID\" = :postID AND \"parentCommentID\" = -1 ORDER BY commentTime DESC";
             OracleParameter[] parameters = {
             new OracleParameter("postID",OracleDbType.Int32){ Value = postID }
     };
@@ -76,7 +66,7 @@ namespace Fitness.DAL
 
         public static List<Comment> GetCommentByCommentID(int commentID)
         {
-            string query = "SELECT * FROM \"Comment\" WHERE \"commentID\" = :commentID";
+            string query = "SELECT * FROM \"Comment\" WHERE \"commentID\" = :commentID ORDER BY commentTime DESC";
             OracleParameter[] parameters = {
             new OracleParameter("commentID" , OracleDbType.Int32 ) {Value = commentID }
         };
