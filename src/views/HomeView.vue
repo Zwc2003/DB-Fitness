@@ -87,7 +87,6 @@
   <div id="app">
     <div class="hero-section-wrapper">
       <div class="hero-section">
-        <!-- <h1 class="hero-title">大标题文字</h1> -->
         <div class="bottom-bar">
           <img
             class="left-image"
@@ -95,10 +94,26 @@
             alt="左侧图片"
           />
           <div class="filter-options">
-            <span @click="filterCourses('all')">全部课程</span>
-            <span @click="filterCourses('fitness')">健身课程</span>
-            <span @click="filterCourses('hiit')">高强度间歇课程</span>
-            <span @click="filterCourses('youth')">青少年趣味课程</span>
+            <span
+              v-for="option in filterOptions"
+              :key="option.key"
+              @mouseover="hoveredOption = option.key"
+              @mouseleave="hoveredOption = null"
+              @click="selectOption(option.key)"
+              :class="{ active: selectedOption === option.key }"
+            >
+              <b>{{ option.label }}</b>
+              <div
+                v-if="
+                  hoveredOption === option.key || selectedOption === option.key
+                "
+                class="underline"
+              ></div>
+            </span>
+          </div>
+          <div v-if="showInput" class="input-box">
+            <input v-model="inputValue" placeholder="请输入内容" />
+            <button @click="submitInput">提交</button>
           </div>
           <div class="red-box" @click="showRecommendation">
             想知道什么课程适合我
@@ -233,29 +248,39 @@ export default {
             "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
         },
       ],
-      filteredCourses: [],
+      // filteredCourses: [],
       isDialogVisible: false,
       dialogMessage: "",
+      hoveredOption: null,
+      selectedOption: null,
+      showInput: false,
+      inputValue: "",
+      filterOptions: [
+        { key: "all", label: "全部课程" },
+        { key: "fitness", label: "课程关键词" },
+        { key: "price", label: "课程价格" },
+        { key: "category", label: "课程类别" },
+      ],
     };
   },
   methods: {
-    filterCourses(type) {
-      // 根据类型筛选课程
-      if (type === "all") {
-        this.filteredCourses = this.courses;
-      } else if (type === "fitness") {
-        this.filteredCourses = this.courses.filter(
-          (course) => course.category === "fitness"
-        );
-      } else if (type === "hiit") {
-        this.filteredCourses = this.courses.filter(
-          (course) => course.category === "hiit"
-        );
-      } else if (type === "youth") {
-        this.filteredCourses = this.courses.filter(
-          (course) => course.category === "youth"
-        );
-      }
+    selectOption(option) {
+      this.selectedOption = option;
+      this.showInput = ["fitness", "price", "category"].includes(option);
+      this.inputValue = ""; // 清空输入框内容
+    },
+    showRecommendation() {
+      // 弹出推荐课程的模态框逻辑
+      console.log("显示推荐课程模态框");
+    },
+    submitInput() {
+      // 将输入框的内容发送给后端
+      console.log(`提交的内容: ${this.inputValue}`);
+      // 发送请求到后端
+      // axios.post('/api/filter', { [this.selectedOption]: this.inputValue })
+      //   .then(response => {
+      //     // 处理后端返回的筛选结果
+      //   });
     },
     showRecommendation() {
       // 判断用户是否有上过课程
@@ -436,16 +461,51 @@ export default {
   height: auto;
 }
 
+.filter-options {
+  display: flex;
+  gap: 50px;
+  font-size: 1rem;
+}
+
 .filter-options span {
-  margin: 0 15px;
+  position: relative;
   cursor: pointer;
+}
+
+.filter-options .underline {
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: red;
+}
+
+.filter-options .active {
   font-weight: bold;
+  color: red;
 }
 
 .red-box {
   background-color: red;
   color: white;
   padding: 10px 20px;
+  cursor: pointer;
+}
+
+.input-box {
+  margin-left: 20px;
+}
+
+.input-box input {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.input-box button {
+  padding: 5px 10px;
+  background-color: blue;
+  color: white;
   cursor: pointer;
 }
 
