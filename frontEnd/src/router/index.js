@@ -18,6 +18,7 @@ import MealPlannerView from '../views/MealPlannerView.vue'
 import HealthyDiet from '../views/HealthyDiet.vue'
 import AddFoodView from '../views/AddFoodView.vue'
 import Achievements from '../views/AchievementsView.vue'
+import chatRoom from  '../views/chatRoom.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -55,6 +56,12 @@ const router = createRouter({
       component: FitnessGuide,
       meta: { requiresAuth: false },
     },
+    //聊天室页面
+    {
+      path:'/chat',
+      name:'chatRoom',
+      component:chatRoom,
+    }，
     // // 论坛界面
     // {
     //   path: '/forum',
