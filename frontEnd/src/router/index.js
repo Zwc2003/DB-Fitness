@@ -61,7 +61,7 @@ const router = createRouter({
       path:'/chat',
       name:'chatRoom',
       component:chatRoom,
-    }，
+    },
     // // 论坛界面
     // {
     //   path: '/forum',
