@@ -1,7 +1,14 @@
 <template>
     <div class="container">
-        <div class="navigation-bar">
+        <el-header>
             <NavigationBar />
+        </el-header>
+        <div class="back-button-container">
+          <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
+            <el-icon>
+              <arrow-left />
+            </el-icon>
+          </el-button>
         </div>
         <div class="meal-planner">
             <MealPlanner />
@@ -26,15 +33,33 @@
     padding: 10px;
     border-radius: 15px;
     background-color: #f7fbff;
-    width: 1620px;
+    width: 80vw;
+    height: 80vh;
+    justify-content: center;
 }
+.back-button-container {
+    position: absolute;
+    top: 11vh; /* 调整为你需要的上边距 */
+    left: 5vw; /* 调整为你需要的左边距 */
+    z-index: 1000; /* 确保按钮在日历表之上 */
+
+}
+
+
+
 </style>
 
 <script>
 import NavigationBar from "../components/NavigationBar.vue";
 import MealPlanner from "../components/MealPlanner.vue";
+import { ArrowLeft } from '@element-plus/icons-vue'  // 引入ArrowLeft图标
 
 export default {
-    components: { NavigationBar, MealPlanner },
+    components: { NavigationBar, MealPlanner,ArrowLeft },
+    methods: {
+        goBack() {
+            this.$router.back(); // 使用Vue Router的back方法返回上一页
+        }
+    }
 }
 </script>
