@@ -1,165 +1,235 @@
 <template>
-    <div>
-        <el-space :size="100" direction="vertical">
-            <el-row :gutter="50">
-                <el-space direction="horizontal" size="large">
-                    <el-col>
-                        <el-card style="width: 550px">
-                            <div ref="monthChart" style="width: 500px; height: 300px;"></div>
-                        </el-card>
-                    </el-col>
-                    <el-col>
-                        <el-card style="width: 550px">
-                            <div ref="weekChart" style="width: 500px; height: 300px;"></div>
-                        </el-card>
-                    </el-col>
-                </el-space>
-            </el-row>
-
-
-            <el-row :gutter="50">
-                <el-space direction="horizontal" size="large">
-                    <el-col :span="8">
-                        <el-card style="width: 550px">
-                            <div ref="typeChart" style="width: 500px; height: 300px;"></div>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-card style="width: 550px">
-                            <div class="stats" style="padding: 20px">
-                                <p>累计锻炼时间：{{ totalDuration }} 小时</p>
-                                <p>累计上课次数：{{ totalClasses }}</p>
-                                <p>累计运动次数：{{ totalActivities }}</p>
-                            </div>
-                        </el-card>
-                    </el-col>
-                </el-space>
-
-            </el-row>
-        </el-space>
+  <div>
+    <!-- 勋章展示 -->
+    <div class="video-container">
+      <video class="responsive-video" autoplay loop muted>
+        <source src="/src/assets/medal.mp4" type="video/mp4" />
+        您的浏览器不支持视频标签。
+      </video>
     </div>
+
+    <!-- 已获得的勋章展示 -->
+    <div class="achieved-badges">
+      <h2>我的勋章墙</h2>
+      <div class="badge-container">
+        <!-- 循环展示已获得的勋章 -->
+        <div
+        v-for="badge in achievedBadges"
+        :key="badge.achievementId"
+        @click="navigateToRankingList(badge.achievementId)"
+        >
+          <img :src="badge" alt="Achieved Badge" class="badge-icon achieved" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 未获得的勋章展示 -->
+    <div class="unachieved-badges">
+      <h2>未获得的勋章</h2>
+      <div class="badge-container">
+        <!-- 循环展示未获得的勋章 -->
+        <div
+          class="badge"
+          v-for="(badge, index) in unachievedBadges"
+          :key="index"
+          @click="navigateToRankingList"
+        >
+          <img
+            :src="badge"
+            alt="Unachieved Badge"
+            class="badge-icon unachieved"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
-
 <script>
-import * as echarts from 'echarts';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+import thumb from '@/assets/badges/被点赞.png'; // 点赞 
+import comment from '@/assets/badges/被评论.png'; // 评论 
+import post from '@/assets/badges/发帖数.png'; // 发帖数 
+import information from '@/assets/badges/个人信息完成.png'; // 个人信息完成 
+import login from '@/assets/badges/累计登录天数.png'; // 累计登录天数 
+import course from '@/assets/badges/完成课程数量.png'; // 完成课程数量 
+import train from '@/assets/badges/训练计划完成天数.png'; // 训练计划完成天数 
+import food from '@/assets/badges/饮食计划完成天数.png'; // 饮食计划完成天数 
 
 export default {
-    name: 'FitnessChart',
-    data() {
-        return {
-            monthChart: null,
-            weekChart: null,
-            typeChart: null,
-            fitnessData: [5, 10, 8, 15, 12, 18, 10, 16, 14, 19, 20, 22],
-            weekFitnessData: [3, 4, 5, 0, 2, 6, 1],
-            typeData: [
-                { value: 335, name: '跑步' },
-                { value: 310, name: '瑜伽' },
-                { value: 234, name: '举重' },
-                { value: 135, name: '有氧' },
-                { value: 1548, name: '自行车' }
-            ],
-            totalDuration: 120,
-            totalClasses: 50,
-            totalActivities: 180
-        };
-    },
-    mounted() {
-        this.monthChart = echarts.init(this.$refs.monthChart);
-        this.weekChart = echarts.init(this.$refs.weekChart);
-        this.typeChart = echarts.init(this.$refs.typeChart);
-        this.initMonthChart();
-        this.initWeekChart();
-        this.initTypeChart();
-    },
-    methods: {
-        initMonthChart() {
-            const option = {
-                title: {
-                    text: '月度健身次数'
-                },
-                tooltip: {
-                    trigger: 'axis'
-                },
-                xAxis: {
-                    type: 'category',
-                    data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [{
-                    data: this.fitnessData,
-                    type: 'line',
-                    smooth: true
-                }]
-            };
-            this.monthChart.setOption(option);
-        },
-        initWeekChart() {
-            const option = {
-                title: {
-                    text: '本周健身次数'
-                },
-                tooltip: {
-                    trigger: 'axis'
-                },
-                xAxis: {
-                    type: 'category',
-                    data: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [{
-                    data: this.weekFitnessData,
-                    type: 'line',
-                    smooth: true
-                }]
-            };
-            this.weekChart.setOption(option);
-        },
-        initTypeChart() {
-            const option = {
-                title: {
-                    text: '健身类型分布'
-                },
-                tooltip: {
-                    trigger: 'item',
-                    formatter: '{a} <br/>{b} : {c} ({d}%)'
-                },
-                series: [
-                    {
-                        name: '健身类型',
-                        type: 'pie',
-                        radius: '55%',
-                        data: this.typeData,
-                        emphasis: {
-                            itemStyle: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }
-                ]
-            };
-            this.typeChart.setOption(option);
+  name: 'BadgeWall',
+  data() {
+    return {
+      userId: null, // 用户ID
+      achievedBadges: [], // 已获得的勋章
+      unachievedBadges: [], // 未获得的勋章
+      badgeImages: {
+        '累计登录天数': login,
+        '完成课程数量': course,
+        '训练计划完成天数': train,
+        '饮食计划完成天数': food,
+        '被点赞': thumb,
+        '被评论': comment,
+        '发帖数': post,
+        '个人信息完成': information,
+      }
+    };
+  },
+  mounted() {
+    this.getUserId();
+  },
+  methods: {
+    async getUserId() {
+      try {
+        const response = await axios.get('/api/User/GetUserId');
+        if (response.data.isSuccessful === 'true') {
+          this.userId = response.data.userId; // 从响应中获取用户ID
+          this.fetchAchievements(); // 获取用户成就
+        } else {
+          console.error('获取用户ID失败');
         }
+      } catch (error) {
+        console.error('获取用户ID失败:', error);
+      }
+    },
+
+    async fetchAchievements() {
+      if (!this.userId) {
+        console.error('用户ID未获取');
+        return;
+      }
+
+      try {
+        const response = await axios.get('/api/Achievement/GetAchievement', {
+          params: { userId: this.userId }
+        });
+        const achievements = response.data.achievements;
+
+        this.achievedBadges = achievements
+          .filter(achievement => achievement.isAchieved === 'true')
+          .map(achievement => ({
+            ...achievement,
+            imgSrc: this.badgeImages[achievement.name]
+          }));
+
+        this.unachievedBadges = achievements
+          .filter(achievement => achievement.isAchieved === 'false')
+          .map(achievement => ({
+            ...achievement,
+            imgSrc: this.badgeImages[achievement.name]
+          }));
+      } catch (error) {
+        console.error('获取成就数据失败:', error);
+      }
+    },
+
+    navigateToRankingList() {
+      this.$router.push({ name: 'RankingList' , query: { achievementId } });
     }
+  }
 }
 </script>
 
-<style>
-.stats {
-    margin: 0;
-    padding: 4px;
-    font-size: 14px;
-    border-color: red;
+<style scoped>
+.video-container {
+  position: absolute; /* 绝对定位 */
+  top: 0; /* 视频紧贴网页顶部 */
+  left: 0; /* 视频紧贴网页左侧 */
+  width: 100vw; /* 视频宽度覆盖整个视口宽度 */
+  height: 100vh; /* 视频高度覆盖整个视口高度 */
+  margin: 0; /* 去掉默认的外边距 */
+  padding: 0; /* 去掉默认的内边距 */
+  z-index: -1; /* 确保视频在其他内容的下方 */
+  overflow: hidden; /* 防止视频内容超出容器 */
+}
+.badge-header {
+  text-align: center;
+  margin-top: 60px; /* 距离导航栏下方的距离，根据实际情况调整 */
+  color: #333; /* 深灰色字体 */
+  font-size: 3vw; /* 根据视口宽度自适应 */
+  font-weight: bold; /* 设置字体加粗 */
+}
+.badge-header h2 {
+  font-size: 3vw; /* 增大字体 */
+  font-weight: bold; /* 字体加粗 */
+  text-align: center; /* 居中对齐 */
+  margin-top: 60px; /* 距离导航栏的距离 */
+  color: #333; /* 深灰色字体 */
 }
 
-.test {
-    border-color: red;
+
+.responsive-video {
+  width: 100vw; /* 视频宽度覆盖整个视口宽度 */
+  height: 100vh; /* 视频高度覆盖整个视口高度 */
+  object-fit: cover; /* 保持视频的宽高比，确保其覆盖整个容器 */
+  border: none; /* 去掉边框 */
+}
+
+.achieved-badges,
+.unachieved-badges {
+  margin: 80px;
+  text-align: center; /* 将内部内容居中 */
+}
+
+.badge-container {
+  display: flex;
+  overflow: hidden; /* 隐藏超出容器的内容 */
+  position: relative;
+  width: 100%; /* 容器宽度全屏 */
+  justify-content: center; /* 居中对齐内容 */
+}
+
+.badge-scroll {
+  display: flex;
+  flex-wrap: nowrap; /* 确保滚动项在一行展示 */
+  width: fit-content; /* 宽度根据内容动态调整 */
+  animation: scroll 15s linear infinite; /* 动画持续时间15秒，线性动画，无限循环 */
+}
+
+.badge {
+  margin: 0 10px; /* 间距 */
+  flex-shrink: 0; /* 防止缩小 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-icon {
+  width: 10vw; /* 根据视口宽度自适应 */
+  height: 10vw; /* 根据视口宽度自适应 */
+  max-width: 100px; /* 设置最大宽度 */
+  max-height: 100px; /* 设置最大高度 */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ccc;
+  color: #333; /* 深灰色字体 */
+}
+
+.badge-icon.achieved {
+  background-color: gold; /* 已获得的勋章颜色 */
+}
+
+.badge-icon.unachieved {
+  background-color: gray; /* 未获得的勋章颜色 */
+}
+
+h2 {
+  text-align: center;
+  color: #333; /* 深灰色字体 */
+  font-size: 2vw; /* 根据视口宽度自适应 */
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
 </style>
+
+  
