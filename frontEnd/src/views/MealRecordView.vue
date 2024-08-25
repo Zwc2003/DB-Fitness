@@ -4,6 +4,13 @@
         <el-header class="header">
           <NavigationBar />
         </el-header>
+        <div class="back-button-container">
+          <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
+            <el-icon>
+              <arrow-left />
+            </el-icon>
+          </el-button>
+        </div>
         <el-container class="main-container">
           <el-main class="main-content">
             <MealRecord />
@@ -21,6 +28,11 @@
     components: {
       NavigationBar, 
       MealRecord,
+    },
+    methods: {
+        goBack() {
+            this.$router.back(); // 使用Vue Router的back方法返回上一页
+        }
     }
   }
   </script>
@@ -38,6 +50,14 @@
   .main-content {
     width:1620px;
   }
+
+  .back-button-container {
+    position: absolute;
+    top: 10.5vh; /* 调整为你需要的上边距 */
+    left: 2vw; /* 调整为你需要的左边距 */
+    z-index: 1000; /* 确保按钮在日历表之上 */
+
+}
   
   </style>
   

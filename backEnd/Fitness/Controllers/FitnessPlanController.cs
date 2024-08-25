@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using Fitness.DAL;
 using Fitness.BLL;
 using Fitness.Models;
+using Fitness.BLL.Core;
 
 namespace Fitness.Controllers
 {
@@ -11,7 +12,8 @@ namespace Fitness.Controllers
     [ApiController]
     public class FitnessPlanController : ControllerBase
     {
-        [HttpPost]
+        private JWTHelper _jwtHelper = new();
+        [HttpGet]
         public string PostFitness(string token, double height, double weight, double BMI, double bodyFatRate)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
@@ -19,12 +21,12 @@ namespace Fitness.Controllers
             return FitnessBLL.Update(userId, height, weight, BMI, bodyFatRate);
         }
 
-        [HttpPost]
-        public string PostPhysicalTest(string token, int pushups, int squats, int situps, int pullups, int longDistance)
+        [HttpGet]
+        public string PostPhysicalTest(string token, int pushups, int squats, int situps, int pullup, int longDistance)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return PhysicalTestBLL.Update(userId, pushups, squats, situps, pullups, longDistance);
+            return PhysicalTestBLL.Update(userId, pushup, squats, situps, pullups, longDistance);
         }
 
         [HttpGet]
@@ -43,7 +45,7 @@ namespace Fitness.Controllers
             return PhysicalTestBLL.Get(userId);
         }
 
-        [HttpPost]
+        [HttpGet]
         public string SetGoal(string token, string goal, int duration)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);

@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fitness", "Fitness\Fitness.csproj", "{DF8962D7-6DE2-49D6-ACA9-9F475081D1E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fitness", "Fitness\Fitness.csproj", "{DF8962D7-6DE2-49D6-ACA9-9F475081D1E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fitness.BLL", "Fitness.BLL\Fitness.BLL.csproj", "{D3F0F191-E741-459F-8545-F32670B26727}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fitness.BLL", "Fitness.BLL\Fitness.BLL.csproj", "{D3F0F191-E741-459F-8545-F32670B26727}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fitness.DAL", "Fitness.DAL\Fitness.DAL.csproj", "{F32E797B-23A2-408A-B0EC-D712D7F8410A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fitness.DAL", "Fitness.DAL\Fitness.DAL.csproj", "{F32E797B-23A2-408A-B0EC-D712D7F8410A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fitness.Models", "Fitness.Models\Fitness.Models.csproj", "{F51E764B-8803-463E-BB89-CC6F1644E7EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fitness.Models", "Fitness.Models\Fitness.Models.csproj", "{F51E764B-8803-463E-BB89-CC6F1644E7EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

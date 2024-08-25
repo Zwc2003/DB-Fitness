@@ -1,16 +1,22 @@
 ﻿using Aliyun.OSS;
 using Aliyun.OSS.Common;
+using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Fitness.DAL.Core
 {
     public static class OSSHelper
     {
-        
+        static string filePath = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "keys.xml");
+        static XDocument xDoc = XDocument.Load(filePath);
 
-
+        static string accessKeyId = xDoc.Root.Element("accessKeyId").Value;
+        static string accessKeySecret = xDoc.Root.Element("accessKeySecret").Value;
+        static string endpoint = xDoc.Root.Element("endpoint").Value;
+        static string bucketName = xDoc.Root.Element("bucketName").Value;    //OSS图片存储空间
 
         // 该方法用于将Base64编码的图片数据保存为本地文件，并上传到阿里云
         public static bool UploadBase64ImageToOss(string base64Image, string objectName)

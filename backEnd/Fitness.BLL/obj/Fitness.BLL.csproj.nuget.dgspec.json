@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {}
+    "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {}
   },
   "projects": {
-    "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {
+    "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
+        "projectUniqueName": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
         "projectName": "Fitness.BLL",
-        "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
-        "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\obj\\",
+        "projectPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
+        "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.BLL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,18 +22,17 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "D:\\vcpkg-master\\scripts\\buildsystems": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
-                "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj"
+              "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
+                "projectPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj"
               },
-              "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
-                "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
+              "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+                "projectPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
               }
             }
           }
@@ -48,6 +47,14 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Aliyun.Acs.Core": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "Aliyun.Acs.Sts": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
             "Aliyun.OSS.SDK.NetCore": {
               "target": "Package",
               "version": "[2.14.1, )"
@@ -56,9 +63,21 @@
               "target": "Package",
               "version": "[23.10.8.15, )"
             },
+            "JsonConverter.Abstractions": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
+            "JsonConverter.Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
             "Markdig": {
               "target": "Package",
               "version": "[0.37.0, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Common": {
+              "target": "Package",
+              "version": "[8.0.8, )"
             },
             "Microsoft.IdentityModel.Logging": {
               "target": "Package",
@@ -79,6 +98,10 @@
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
               "version": "[23.5.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.7.2, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
@@ -101,21 +124,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
+    "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
+        "projectUniqueName": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
         "projectName": "Fitness.DAL",
-        "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
-        "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\obj\\",
+        "projectPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
+        "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.DAL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -123,15 +146,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "D:\\vcpkg-master\\scripts\\buildsystems": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
-                "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
+              "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+                "projectPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
               }
             }
           }
@@ -146,6 +168,14 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Aliyun.Acs.Core": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "Aliyun.Acs.Sts": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
             "Aliyun.OSS.SDK.NetCore": {
               "target": "Package",
               "version": "[2.14.1, )"
@@ -154,9 +184,21 @@
               "target": "Package",
               "version": "[23.10.8.15, )"
             },
+            "JsonConverter.Abstractions": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
+            "JsonConverter.Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
             "Markdig": {
               "target": "Package",
               "version": "[0.37.0, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Common": {
+              "target": "Package",
+              "version": "[8.0.8, )"
             },
             "Microsoft.IdentityModel.Logging": {
               "target": "Package",
@@ -177,6 +219,10 @@
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
               "version": "[23.5.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.7.2, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
@@ -199,21 +245,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+    "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+        "projectUniqueName": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
         "projectName": "Fitness.Models",
-        "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
-        "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
+        "projectPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+        "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -221,7 +267,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "D:\\vcpkg-master\\scripts\\buildsystems": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -240,6 +285,14 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Aliyun.Acs.Core": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "Aliyun.Acs.Sts": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
             "Aliyun.OSS.SDK.NetCore": {
               "target": "Package",
               "version": "[2.14.1, )"
@@ -248,9 +301,21 @@
               "target": "Package",
               "version": "[23.10.8.15, )"
             },
+            "JsonConverter.Abstractions": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
+            "JsonConverter.Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
             "Markdig": {
               "target": "Package",
               "version": "[0.37.0, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Common": {
+              "target": "Package",
+              "version": "[8.0.8, )"
             },
             "Microsoft.IdentityModel.Logging": {
               "target": "Package",
@@ -271,6 +336,10 @@
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
               "version": "[23.5.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.7.2, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
@@ -293,7 +362,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
         }
       }
     }

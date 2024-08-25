@@ -11,27 +11,30 @@ namespace Fitness.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserBLL _userBLL;
         private readonly IVigorTokenBLL _vigorTokenBLL;
+        private readonly IUserBLL _userBLL;
         private readonly JWTHelper _jwtHelper = new();
 
-        public UserController(IUserBLL userBLL,IVigorTokenBLL vigorTokenBLL)
+        public UserController(IUserBLL userBLL)
         {
             _userBLL = userBLL;
-            _vigorTokenBLL = vigorTokenBLL;
         }
 
         [HttpGet]
-        public ActionResult<LoginToken> Login(string email,string password,string role)
+        public ActionResult<LoginToken> Login(string email, string password, string role)
         {
-            Console.WriteLine("登录");
-            return _userBLL.Login(email,password,role);
+            return _userBLL.Login(email, password, role);
         }
 
         [HttpPost]
-        public ActionResult<string> Register(string role,string userName, string email, string password,string coachName)
+        public ActionResult<string> SendVerificationCode(string email)
         {
-            return _userBLL.Register(role,userName,email,password,coachName);
+            return _userBLL.SendVerificationCode(email);
+        }
+        [HttpPost]
+        public ActionResult<string> Register(RegisterInfo registerInfo)
+        {
+            return _userBLL.Register(registerInfo);
         }
         [HttpGet]
         public ActionResult<string> RefreshToken(string oldToken)
@@ -40,32 +43,73 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public ActionResult<User> GetPersonalProfile(string token) {
-            
-            return _userBLL.GetProfile(token,"personal");
-        }
-        [HttpPost]
-        public ActionResult<string> UpdateProfile(string token, expandUserInfo userinfo)
+        public ActionResult<User> GetPersonalProfile(string token)
         {
-            return _userBLL.UpdateProfile(token,userinfo);//前端不要修改userID字段，保持不变传回即可
+            return _userBLL.GetProfile(token, "personal");
         }
-        [HttpGet]  
-        public ActionResult<List<expandUserInfo>>  SearchUserByName(string token, string username)
+
+        [HttpGet]
+        public ActionResult<User> GetProfile(string token, int userID)
+        {
+            return _userBLL.GetProfile(token, "others", userID);
+        }
+
+        [HttpPost]
+        public ActionResult<string> UpdateProfile(string token, [FromBody] expandUserInfo userinfo)
+        {
+            return _userBLL.UpdateProfile(token, userinfo);//前端不要修改userID字段，保持不变传回即可
+        }
+        [HttpGet]
+        public ActionResult<List<expandUserInfo>> SearchUserByName(string token, string username)
         {
             return _userBLL.GetProfileByName(token, username);
         }
 
-        //权限管理
-        [HttpPost]
-        public ActionResult<string> RemoveUser(string token,int userID)
+        [HttpGet]
+        public ActionResult<List<expandUserInfo>> GetAllUser(string token)
         {
-            return _userBLL.removeUser(token,userID);
+            return _userBLL.GetAllUser(token);
+        }
+
+        [HttpGet]
+        public ActionResult<expandUserInfo> GetProfileByUserID(string token, int userID)
+        {
+            return _userBLL.GetProfileByUserID(token, userID);
+        }
+
+        private FriendshipBLL _friendshipBll = new FriendshipBLL();
+
+        [HttpGet]
+        public ActionResult<List<int>> GetFriendList(string token)
+        {
+            List<int> friendList = _friendshipBll.GetFriendList(token);
+            return Ok(friendList);
         }
 
         [HttpPost]
-        public ActionResult<string> BanPost(string token,int userID)
+        public ActionResult AddFriend(string token, int friendID)
         {
-            return _userBLL.banPost(token,userID);
+            bool success = _friendshipBll.AddFriend(token, friendID);
+            if (success)
+            {
+                return Ok("添加好友成功");
+            }
+            else
+            {
+                return BadRequest("添加好友失败");
+            }
+        }
+
+        //权限管理
+        [HttpGet]
+        public ActionResult<string> RemoveUser(string token, int userID)
+        {
+            return _userBLL.removeUser(token, userID);
+        }
+        [HttpGet]
+        public ActionResult<string> BanUser(string token, int userID)
+        {
+            return _userBLL.banPost(token, userID);
         }
 
         // zwc 

@@ -3,7 +3,7 @@
         <div class="logo-container">
             <img src="../assets/logo.png" alt="FitFit" class="logo">
         </div>
-        <div class="wrapper">
+        <div class="wrapper" >
             <nav>
                 <input type="radio" name="tab" id="home" :checked="$route.path === '/'">
                 <input type="radio" name="tab" id="equipment" :checked="$route.path === '/equipment'">
@@ -15,6 +15,9 @@
                 <input type="radio" name="tab" id="plan" :checked="$route.path === '/fitnessplan'">
                 <input type="radio" name="tab" id="chat" :checked="$route.path === '/chat'">
                 <input type="radio" name="tab" id="healthyDiet" :checked="$route.path === '/healthyDiet'">
+                <input type="radio" name="tab" id="mealPlanner" :checked="$route.path === '/MealPlanner'">
+                <input type="radio" name="tab" id="mealRecord" :checked="$route.path === '/MealRecord'">
+
 
 
 
@@ -142,6 +145,12 @@ export default {
             navBarFixed: false,
         };
     },
+    props: {
+        showMenu: {
+            type: Boolean,
+            default: true,
+        }
+    },
     methods: {
         router() {
             return router;
@@ -266,9 +275,10 @@ body {
 .wrapper nav #course:checked~label.cousrse a,
 .wrapper nav #plan:checked~label.plan a,
 .wrapper nav #chat:checked~label.chat a,
-.wrapper nav #healthyDiet:checked~label.healthyDiet a {
+.wrapper nav #healthyDiet:checked~label.healthyDiet a
+{
     color: #fff;
-    transition: 0.6s;
+    transition:0.6s;
 }
 
 .wrapper nav #equipment:checked~.tab {
@@ -304,6 +314,12 @@ body {
 }
 
 .wrapper nav #healthyDiet:checked~.tab {
+    left: 88%;
+}
+.wrapper nav #mealPlanner:checked~.tab {
+    left: 88%;
+}
+.wrapper nav #mealRecord:checked~.tab {
     left: 88%;
 }
 

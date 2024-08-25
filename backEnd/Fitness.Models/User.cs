@@ -2,12 +2,12 @@
 
 namespace Fitness.Models
 {
-    public class LoginToken 
-    { 
+    public class LoginToken
+    {
         public string token { get; set; }
-        public string message { get; set;}
+        public string message { get; set; }
 
-        public LoginToken(string _token,string _message) 
+        public LoginToken(string _token, string _message)
         {
             token = _token;
             message = _message;
@@ -20,14 +20,24 @@ namespace Fitness.Models
         public string hashedPassword { get; set; }
         public string Salt { get; set; }
 
-        public LoginInfo(int userid,string hashedpwd,string salt){
-            userID=userid;
+        public LoginInfo(int userid, string hashedpwd, string salt)
+        {
+            userID = userid;
             hashedPassword = hashedpwd;
             Salt = salt;
         }
 
     }
 
+    public class RegisterInfo
+    {
+        public string email { get; set; }
+        public string password { get; set; }
+        public string accountName { get; set; }
+        public string role { get; set; }
+        public string coachName { get; set; }
+        public string verificationCode { get; set; }
+    }
 
     public class User
     {
@@ -42,7 +52,7 @@ namespace Fitness.Models
 
         public string Email { get; set; }
 
-        public DateTime registrationTime { get; set; }= DateTime.Now;
+        public DateTime registrationTime { get; set; } = DateTime.Now;
 
         //拓展信息：个人信息补充，允许为空
         public string iconURL { get; set; } = "null"; //这里可以设置一个默认头像的URL
@@ -61,37 +71,16 @@ namespace Fitness.Models
 
         //用户账户状态信息
         public int isPost { get; set; } = 1;
-        public int isDelete { get; set; }= 0;
+        public int isDelete { get; set; } = 0;
 
         //仅供测试：基础构造函数
-        public User(string name,string email,string password,string salt) { 
+        public User(string name, string email, string password, string salt)
+        {
             userName = name;
             Email = email;
             Password = password;
             Salt = salt;
         }
-
-        /*// 使用 basicUserInfo 和 expandUserInfo 初始化 User 实例的构造函数
-        public User(basicUserInfo basicInfo, expandUserInfo expandInfo)
-        {
-            // 基本信息
-            userID = basicInfo.userID;
-            Password = basicInfo.Password;
-            Email = basicInfo.Email;
-            registrationTime = basicInfo.registrationTime;
-            isPost = basicInfo.isPost ;
-            isDelete = basicInfo.isDelete;
-            Salt = basicInfo.Salt; 
-
-            // 拓展信息
-            userName = expandInfo.userName;
-            iconURL = expandInfo.iconURL;
-            Age = expandInfo.Age;
-            Gender = expandInfo.Gender;
-            Tags = expandInfo.Tags;
-            Introduction = expandInfo.Introduction;
-            isMember = expandInfo.isMember;
-        }*/
     }
 
     public class Trainee
@@ -192,7 +181,7 @@ namespace Fitness.Models
         public string goalType { get; set; } = "null";
         // 目标体重
         public float goalWeight { get; set; } = -1;
-        public expandUserInfo(int userId, string userName, string? iconURL, int? age, string? gender, string? tags, string? introduction, int isMember,string goaltype,float goalweight)
+        public expandUserInfo(int userId, string userName, string? iconURL, int? age, string? gender, string? tags, string? introduction, int isMember, string goaltype, float goalweight)
         {
             userID = userId;
             this.userName = userName;
@@ -203,7 +192,7 @@ namespace Fitness.Models
             Introduction = introduction;
             this.isMember = isMember;
             goalType = goaltype;
-            goalWeight = goalweight;   
+            goalWeight = goalweight;
         }
     }
 
