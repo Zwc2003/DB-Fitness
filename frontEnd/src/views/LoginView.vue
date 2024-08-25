@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import store from "@/store/index.js";
+import store from "../store/index.js";
 import { ElNotification } from "element-plus";
 import axios from "axios";
 
@@ -120,7 +120,7 @@ export default
                         }
                     });
                     console.log("收到响应的数据: ", response.data.message);
-                    
+
                     const response1 = await axios.get(`http://localhost:8080/api/User/GetPersonalProfile?token=${response.data.token}`);
 
                     const message = response.data.message;
@@ -134,7 +134,7 @@ export default
                         store.commit('setToken', response.data.token);
                         // 存储用户信息
                         store.commit('setUserID', response1.data.userID);
-                        store.commit('setName',  response1.data.userName);
+                        store.commit('setName', response1.data.userName);
 
                         if (requestData.role === 'admin') {
                             this.$router.push({ path: '/admin' });
@@ -218,6 +218,7 @@ export default
 }
 
 .login-card {
+    padding: 10px;
     border: none;
     /* 去除边框 */
     box-shadow: none;

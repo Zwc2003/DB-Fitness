@@ -136,10 +136,10 @@
 <script>
 import axios from 'axios';
 import { mapState } from 'vuex';
-import NavigationBar from '@/components/NavigationBar.vue';
-import EditArticle from '@/components/EditArticle.vue';
+import NavigationBar from '../components/NavigationBar.vue';
+import EditArticle from '../components/EditArticle.vue';
 import { IconThumbUp, IconMessage, IconCalendar, IconTrophy, IconArrowRight, IconFire, IconHome, IconShareAlt } from '@arco-design/web-vue/es/icon';
-import { postMixin } from '@/mixins/postMixin.js';
+import { postMixin } from '../mixins/postMixin.js';
 
 export default {
     mixins: [postMixin],

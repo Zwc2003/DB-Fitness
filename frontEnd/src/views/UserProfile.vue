@@ -144,7 +144,7 @@
 </template>
 
 <script>
-import defaultAvatar from '@/assets/images/default-avatar.png';
+import defaultAvatar from '../assets/images/default-avatar.png';
 import EditableField from './EditableField.vue';
 import axios from 'axios';
 import { mapState } from 'vuex';
@@ -159,7 +159,7 @@ export default {
                 userID: null,
                 userName: '',
                 password: '',
-                salt:'',
+                salt: '',
                 email: '',
                 registrationTime: '',
                 iconURL: '', // 这里可以为空或者实际路径

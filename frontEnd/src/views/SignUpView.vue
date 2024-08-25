@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import store from "@/store";
+import store from "../store";
 import axios from "axios";
 import { ElNotification } from "element-plus";
 
