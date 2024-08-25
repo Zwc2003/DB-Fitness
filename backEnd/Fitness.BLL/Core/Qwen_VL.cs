@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Fitness.BLL.Core
 {
@@ -13,9 +14,11 @@ namespace Fitness.BLL.Core
     {
         private static readonly HttpClient client = new();
 
+        static string filePath = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "keys.xml");
+        static XDocument xDoc = XDocument.Load(filePath);
 
         private static readonly string apiUrl = "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation";
-        private static readonly string apiKey = "sk-035058a8dc1c44cab7e94bd582c1c0c6";
+        static readonly string apiKey = xDoc.Root.Element("qwenApiKey").Value;
 
         public static async Task<string> CallQWenVL(string prompt, string imgUrl = null)
         {

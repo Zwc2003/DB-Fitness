@@ -358,10 +358,10 @@ namespace Fitness.DAL
             {
                 OracleParameter[] oracleParameters = new OracleParameter[]
                 {
-                    new OracleParameter("LastLoginDateTime", OracleDbType.TimeStamp) { Value = dateTime },
+                    new OracleParameter("lastLoginDateTime", OracleDbType.TimeStamp) { Value = dateTime },
                     new OracleParameter("userID", OracleDbType.Int32) { Value = userID }
                 };
-                string sql = "UPDATE \"User\" SET \"LastLoginDateTime\" = :LastLoginDateTime WHERE \"userID\"=:userID";
+                string sql = "UPDATE \"User\" SET \"lastLoginDateTime\" = :LastLoginDateTime WHERE \"userID\"=:userID";
                 OracleHelper.ExecuteNonQuery(sql, null, oracleParameters);
                 return true;
             }
@@ -380,10 +380,10 @@ namespace Fitness.DAL
                     new OracleParameter("userID", OracleDbType.Int32) { Value = userID},
                     new OracleParameter("isDelete", OracleDbType.Int32) { Value = 0 }
                 };
-            DataTable dt = OracleHelper.ExecuteTable("SELECT \"LastLoginTime\" FROM \"User\" WHERE \"userID\"=:userID AND \"isDelete\" = :isDelete"
+            DataTable dt = OracleHelper.ExecuteTable("SELECT \"lastLoginTime\" FROM \"User\" WHERE \"userID\"=:userID AND \"isDelete\" = :isDelete"
                 , oracleParameters);
             DataRow dr = dt.Rows[0];
-            return Convert.ToDateTime(dr["LastLoginTime"]);
+            return Convert.ToDateTime(dr["lastLoginTime"]);
         }
     }
 }

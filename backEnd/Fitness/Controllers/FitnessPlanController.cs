@@ -26,7 +26,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return PhysicalTestBLL.Update(userId, pushup, squats, situps, pullups, longDistance);
+            return PhysicalTestBLL.Update(userId, pushups, squats, situps, pullup, longDistance);
         }
 
         [HttpGet]

@@ -6,7 +6,6 @@ import CourseView from '../views/CourseView.vue';
 import TweetsView from "../views/TweetsView.vue";
 import CameraView from "../views/CameraView.vue";
 // import FitnessChart from './components/dataVis.vue'
-import DataView from "../views/DataView.vue";
 import EquipmentGuide from "../views/EquipmentGuideView.vue";
 import EquipmentDetails from '../components/EquipmentDetails.vue';
 import adminEquipment from "../components/adminEquipment.vue"
@@ -18,6 +17,7 @@ import MealRecordView from '../views/MealRecordView.vue'
 import MealPlannerView from '../views/MealPlannerView.vue'
 import HealthyDiet from '../views/HealthyDiet.vue'
 import AddFoodView from '../views/AddFoodView.vue'
+import Achievements from '../views/AchievementsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,12 +71,12 @@ const router = createRouter({
     //   props: true
     // },
     //成就页面
-    // {
-    //   path: '/data',
-    //   name: 'dataVis',
-    //   component: DataView,
-    //   meta: { requiresAuth: false }
-    // },
+    {
+      path: '/achievements',
+      name: 'achievements',
+      component: Achievements,
+      meta: { requiresAuth: false }
+    },
     // //排行榜页面
     // {
     //   path: '/ranking-list',

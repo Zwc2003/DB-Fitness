@@ -9,7 +9,7 @@
                 <input type="radio" name="tab" id="equipment" :checked="$route.path === '/equipment'">
                 <input type="radio" name="tab" id="aifit" :checked="$route.path === '/aifit'">
                 <input type="radio" name="tab" id="forum" :checked="$route.path === '/forum'">
-                <input type="radio" name="tab" id="achievement" :checked="$route.path === '/data'">
+                <input type="radio" name="tab" id="achievement" :checked="$route.path === '/achievements'">
                 <!-- <input type="radio" name="tab" id="rank" :checked="$route.path === '/ranking-list'"> -->
                 <input type="radio" name="tab" id="course" :checked="$route.path === '/course'">
                 <input type="radio" name="tab" id="plan" :checked="$route.path === '/fitnessplan'">
@@ -52,8 +52,8 @@
                         健身论坛
                     </router-link>
                 </label>
-                <label for="achievement" class="achievement" @click="delayedNavigation('/data')">
-                    <router-link to="/data">
+                <label for="achievement" class="achievement" @click="delayedNavigation('/achievements')">
+                    <router-link to="/achievements">
                         <el-icon>
                             <Medal />
                         </el-icon>
@@ -272,7 +272,7 @@ body {
 .wrapper nav #forum:checked~label.forum a,
 .wrapper nav #achievement:checked~label.achievement a,
 /* .wrapper nav #rank:checked~label.rank a, */
-.wrapper nav #course:checked~label.cousrse a,
+.wrapper nav #course:checked~label.course a,
 .wrapper nav #plan:checked~label.plan a,
 .wrapper nav #chat:checked~label.chat a,
 .wrapper nav #healthyDiet:checked~label.healthyDiet a
