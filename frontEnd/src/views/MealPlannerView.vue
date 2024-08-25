@@ -33,13 +33,13 @@
     padding: 10px;
     border-radius: 15px;
     background-color: #f7fbff;
-    width: 80vw;
-    height: 80vh;
+    width: 90vw;
+    height: 85vh;
     justify-content: center;
 }
 .back-button-container {
     position: absolute;
-    top: 11vh; /* 调整为你需要的上边距 */
+    top: 10vh; /* 调整为你需要的上边距 */
     left: 5vw; /* 调整为你需要的左边距 */
     z-index: 1000; /* 确保按钮在日历表之上 */
 
