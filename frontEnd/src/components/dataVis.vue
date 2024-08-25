@@ -48,7 +48,7 @@
 <script>
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import thumb from '@/assets/badges/被点赞.png'; // 点赞 
+import thumb from '@/assets/badges/被点赞.png'; // 点赞
 import comment from '@/assets/badges/被评论.png'; // 评论 
 import post from '@/assets/badges/发帖数.png'; // 发帖数 
 import information from '@/assets/badges/个人信息完成.png'; // 个人信息完成 

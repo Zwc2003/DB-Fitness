@@ -48,6 +48,14 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Aliyun.Acs.Core": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "Aliyun.Acs.Sts": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
             "Aliyun.OSS.SDK.NetCore": {
               "target": "Package",
               "version": "[2.14.1, )"
@@ -56,9 +64,21 @@
               "target": "Package",
               "version": "[23.10.8.15, )"
             },
+            "JsonConverter.Abstractions": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
+            "JsonConverter.Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
             "Markdig": {
               "target": "Package",
               "version": "[0.37.0, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Common": {
+              "target": "Package",
+              "version": "[8.0.8, )"
             },
             "Microsoft.IdentityModel.Logging": {
               "target": "Package",
@@ -79,6 +99,10 @@
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
               "version": "[23.5.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.7.2, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
@@ -146,6 +170,14 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Aliyun.Acs.Core": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "Aliyun.Acs.Sts": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
             "Aliyun.OSS.SDK.NetCore": {
               "target": "Package",
               "version": "[2.14.1, )"
@@ -154,9 +186,21 @@
               "target": "Package",
               "version": "[23.10.8.15, )"
             },
+            "JsonConverter.Abstractions": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
+            "JsonConverter.Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
             "Markdig": {
               "target": "Package",
               "version": "[0.37.0, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Common": {
+              "target": "Package",
+              "version": "[8.0.8, )"
             },
             "Microsoft.IdentityModel.Logging": {
               "target": "Package",
@@ -177,6 +221,10 @@
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
               "version": "[23.5.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.7.2, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
@@ -240,6 +288,14 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Aliyun.Acs.Core": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
+            "Aliyun.Acs.Sts": {
+              "target": "Package",
+              "version": "[1.0.1, )"
+            },
             "Aliyun.OSS.SDK.NetCore": {
               "target": "Package",
               "version": "[2.14.1, )"
@@ -248,9 +304,21 @@
               "target": "Package",
               "version": "[23.10.8.15, )"
             },
+            "JsonConverter.Abstractions": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
+            "JsonConverter.Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[0.6.0, )"
+            },
             "Markdig": {
               "target": "Package",
               "version": "[0.37.0, )"
+            },
+            "Microsoft.AspNetCore.SignalR.Common": {
+              "target": "Package",
+              "version": "[8.0.8, )"
             },
             "Microsoft.IdentityModel.Logging": {
               "target": "Package",
@@ -271,6 +339,10 @@
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
               "version": "[23.5.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.7.2, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",

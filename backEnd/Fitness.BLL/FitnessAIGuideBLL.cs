@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Fitness.Models;
 using Fitness.BLL.Core;
+using Fitness.DAL.Core;
 using Microsoft.IdentityModel.Tokens;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Text.Encodings.Web;

@@ -1,33 +1,48 @@
 ﻿using Oracle.ManagedDataAccess.Client;
-using System.Collections.Specialized;
 using System.Data;
+using System;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace Fitness.DAL.Core
 {
+    // 定义一个名为OracleHelper的公共类，用于Oracle数据库操作
     public class OracleHelper
     {
-        // 数据库连接字段
-        //public static string connectionString = "Data Source=localhost:1521/orcl;User Id=C##gd;Password=123456;";
-        private static readonly string connectionString = "Data Source=120.26.138.61:1521/XE;User Id=FITNESSDB;Password=tongjiSSEDBMS2024;";
+        static string filePath = Path.Combine(Directory.GetCurrentDirectory(), "App_Data", "keys.xml");
+        static XDocument xDoc = XDocument.Load(filePath);
+        // 私有静态只读字段，存储数据库连接字符串
+        static readonly string connectionString = xDoc.Root.Element("connectionString").Value;
+
+        // 执行查询命令并返回DataTable
         public static DataTable ExecuteTable(string cmdText, params OracleParameter[] oracleParameters)
         {
+            // 使用连接字符串创建OracleConnection对象并在块结束时自动关闭连接
             using OracleConnection conn = new(connectionString);
+            // 打开数据库连接
             conn.Open();
+            // 使用查询命令和连接创建OracleCommand对象
             using OracleCommand cmd = new(cmdText, conn);
+            // 添加查询参数
             cmd.Parameters.AddRange(oracleParameters);
+            // 创建OracleDataAdapter对象，用于填充数据
             OracleDataAdapter adapter = new(cmd);
+            // 创建DataSet对象
             DataSet ds = new();
+            // 使用适配器填充DataSet
             adapter.Fill(ds);
+            // 返回DataSet的第一个DataTable
             return ds.Tables[0];
         }
 
-
+        // 执行非查询命令（如INSERT、UPDATE、DELETE），返回受影响的行数
         public static int ExecuteNonQuery(string cmdText, OracleTransaction transaction = null, params OracleParameter[] oracleParameters)
         {
             OracleConnection conn = null;
             OracleTransaction localTransaction = null;
             try
             {
+                // 如果传入的事务为空，则创建新的连接和事务
                 if (transaction == null)
                 {
                     conn = new OracleConnection(connectionString);
@@ -36,17 +51,21 @@ namespace Fitness.DAL.Core
                 }
                 else
                 {
+                    // 使用传入的事务和连接
                     conn = transaction.Connection;
                     localTransaction = transaction;
                 }
 
+                // 创建OracleCommand对象并设置其属性
                 using (OracleCommand cmd = new OracleCommand(cmdText, conn))
                 {
                     cmd.Transaction = localTransaction;
                     cmd.Parameters.AddRange(oracleParameters);
+                    // 执行非查询命令并获取受影响的行数
                     int rowsAffected = cmd.ExecuteNonQuery();
 
-                    if (localTransaction != null && localTransaction.Connection == conn && transaction == null)
+                    // 提交事务
+                    if (localTransaction != null && localTransaction.Connection == conn)
                     {
                         localTransaction.Commit();
                     }
@@ -56,7 +75,8 @@ namespace Fitness.DAL.Core
             }
             catch (Exception ex)
             {
-                if (localTransaction != null && localTransaction.Connection == conn && transaction ==null)
+                // 发生异常时回滚事务
+                if (localTransaction != null && localTransaction.Connection == conn)
                 {
                     localTransaction.Rollback();
                 }
@@ -65,19 +85,26 @@ namespace Fitness.DAL.Core
             }
             finally
             {
-                if (conn != null && conn.State != ConnectionState.Closed && transaction==null)
+                // 关闭数据库连接
+                if (conn != null && conn.State != ConnectionState.Closed)
                 {
                     conn.Close();
                 }
             }
         }
 
+        // 执行查询命令并返回单个值
         public static object ExecuteScalar(string cmdText, params OracleParameter[] oracleParameters)
         {
+            // 使用连接字符串创建OracleConnection对象并在块结束时自动关闭连接
             using OracleConnection conn = new(connectionString);
+            // 打开数据库连接
             conn.Open();
+            // 使用查询命令和连接创建OracleCommand对象
             using OracleCommand cmd = new(cmdText, conn);
+            // 添加查询参数
             cmd.Parameters.AddRange(oracleParameters);
+            // 执行查询并返回结果
             return cmd.ExecuteScalar();
         }
 
@@ -86,5 +113,7 @@ namespace Fitness.DAL.Core
             // 创建并返回新的 OracleConnection对象
             return new OracleConnection(connectionString);
         }
+
     }
 }
+

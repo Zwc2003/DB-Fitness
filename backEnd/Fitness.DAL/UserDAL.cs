@@ -1,5 +1,7 @@
 ﻿using Fitness.DAL.Core;
 using Fitness.Models;
+using Fitness.DAL.Core;
+using Fitness.Models;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 using System.Data;
@@ -12,24 +14,6 @@ namespace Fitness.DAL
 {
     public class UserDAL
     {
-        //只针对一个表来进行增删改/查操作;try catch 结构
-
-        //类型转换
-        //ToModel  ToModelList  
-        //查
-        //GetUserByUserName
-        //GetUserByEmail
-        //GetUserByEmailAndPwd
-        //GetUserByUserNameAndPwd
-        //增
-        //Insert
-        //删
-        //DeleteByUserID；硬删除
-        //SetDeleteIsTrue:软删除
-        //改
-        //先硬删除，再插入
-
-
         private static User ToModel(DataRow row)
         {
             User user = new(row["userName"].ToString(), row["Email"].ToString(), row["Password"].ToString(), row["Salt"].ToString());
@@ -73,7 +57,7 @@ namespace Fitness.DAL
         }
         private static expandUserInfo expandUserInfoToModel(DataRow row)
         {
-            expandUserInfo expandinfo = new(Convert.ToInt32(row["userID"]), row["userName"].ToString(), row["iconURL"].ToString(), Convert.ToInt32( row["Age"]), row["Gender"].ToString(), row["Tags"].ToString(), row["Introduction"].ToString(),Convert.ToInt32( row["isMember"]), Convert.ToString(row["goalType"]),Convert.ToSingle(row["goalWeight"]));
+            expandUserInfo expandinfo = new(Convert.ToInt32(row["userID"]), row["userName"].ToString(), row["iconURL"].ToString(), Convert.ToInt32(row["Age"]), row["Gender"].ToString(), row["Tags"].ToString(), row["Introduction"].ToString(), Convert.ToInt32(row["isMember"]), Convert.ToString(row["goalType"]), Convert.ToSingle(row["goalWeight"]));
             return expandinfo;
         }
 
@@ -89,11 +73,12 @@ namespace Fitness.DAL
             return ex_userInfoList;
         }
 
-        public static bool IsEmailRegistered(string email) {
+        public static bool IsEmailRegistered(string email)
+        {
             try
             {
                 DataTable dt = OracleHelper.ExecuteTable("SELECT * FROM \"User\" WHERE \"Email\"=:Email",
-                    new OracleParameter("Email", OracleDbType.Varchar2) {Value = email}
+                    new OracleParameter("Email", OracleDbType.Varchar2) { Value = email }
                 );
 
                 if (dt.Rows.Count != 0)
@@ -110,19 +95,17 @@ namespace Fitness.DAL
 
         }
 
-        // 根据 UserName 获取 User
-        public static List<expandUserInfo> GetUserByUserName(string userName, out int status)
+        //获取所有用户
+        public static List<expandUserInfo> GetAllUser(out int status)
         {
             try
             {
                 OracleParameter[] oracleParameters = new OracleParameter[]
                {
-                    new OracleParameter("\"userName\"", OracleDbType.NVarchar2) {Value = userName},
                     new OracleParameter("isDelete", OracleDbType.Int32) {Value = 0 }
-  
                };
-                DataTable dt = OracleHelper.ExecuteTable("SELECT \"userID\",\"userName\", \"iconURL\", \"Age\", \"Gender\",\"Tags\", \"Introduction\",\"isMember\",\"goalType\",\"goalWeight\" FROM \"User\" WHERE \"userName\"=:userName AND \"isDelete\" = :isDelete"
-                    ,oracleParameters);
+                DataTable dt = OracleHelper.ExecuteTable("SELECT \"userID\",\"userName\", \"iconURL\", \"Age\", \"Gender\",\"Tags\", \"Introduction\",\"isMember\",\"goalType\",\"goalWeight\" FROM \"User\" WHERE \"isDelete\" = :isDelete"
+                    , oracleParameters);
                 if (dt.Rows.Count == 0)
                 {
                     status = 2; //数据不存在
@@ -139,7 +122,36 @@ namespace Fitness.DAL
             }
         }
 
-        public static LoginInfo GetLoginInfoByEmail(string email, out int status) 
+        // 根据 UserName 获取 User
+        public static List<expandUserInfo> GetUserByUserName(string userName, out int status)
+        {
+            try
+            {
+                OracleParameter[] oracleParameters = new OracleParameter[]
+               {
+                    new OracleParameter("\"userName\"", OracleDbType.NVarchar2) {Value = userName},
+                    new OracleParameter("isDelete", OracleDbType.Int32) {Value = 0 }
+
+               };
+                DataTable dt = OracleHelper.ExecuteTable("SELECT \"userID\",\"userName\", \"iconURL\", \"Age\", \"Gender\",\"Tags\", \"Introduction\",\"isMember\",\"goalType\",\"goalWeight\" FROM \"User\" WHERE \"userName\"=:userName AND \"isDelete\" = :isDelete"
+                    , oracleParameters);
+                if (dt.Rows.Count == 0)
+                {
+                    status = 2; //数据不存在
+                    return null;
+                }
+                status = 0;//操作成功
+                return expandUserInfoToModelList(dt);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                status = 1;//操作失败
+                return null;
+            }
+        }
+
+        public static LoginInfo GetLoginInfoByEmail(string email, out int status)
         {
             try
             {
@@ -171,10 +183,10 @@ namespace Fitness.DAL
                {
                     new OracleParameter("userID", OracleDbType.Int32) {Value = userID},
                     new OracleParameter("isDelete", OracleDbType.Int32) {Value = 0 }
-  
+
                };
                 DataTable dt = OracleHelper.ExecuteTable("SELECT * FROM \"User\" WHERE \"userID\"=:userID AND \"isDelete\" = :isDelete"
-                    ,oracleParameters);
+                    , oracleParameters);
                 if (dt.Rows.Count != 1)
                 {
                     status = 2;
@@ -192,17 +204,13 @@ namespace Fitness.DAL
             }
         }
 
-        //userID,Password,Salt,Email,registrationTime,isPost,isDelete;
-        //userID,userName,iconURL,Age, Gender,Introduction,isMember 
-
         // 根据 UserID 更新 expandUserInfo
-        public static bool UpdateExpandUserInfo(int userID, expandUserInfo expanduserInfo , out int status)
+        public static bool UpdateExpandUserInfo(int userID, expandUserInfo expanduserInfo, out int status)
         {
             try
             {
                 string iconUrl = expanduserInfo.iconURL;
-                //if (expanduserInfo.iconURL != "null" ||!UrlHelper.IsUrl( expanduserInfo.iconURL)) 
-                if (expanduserInfo.iconURL != "null")
+                if (expanduserInfo.iconURL != "null" && !UrlHelper.IsUrl(expanduserInfo.iconURL))
                 {
                     string object_name = "user" + userID + "_icon" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png";
                     OSSHelper.UploadBase64ImageToOss(expanduserInfo.iconURL, object_name);
@@ -221,8 +229,8 @@ namespace Fitness.DAL
                     new OracleParameter("userID", OracleDbType.Int32) {Value = userID}
                 };
                 string sql = "UPDATE \"User\" SET \"userName\"=:userName,\"iconURL\"=:iconURL,\"Age\"=:Age,\"Gender\"=:Gender,\"Introduction\"=:Introduction,\"isMember\"=:isMember,\"goalType\"=:goalType,\"goalWeight\"=:goalWeight WHERE \"userID\"=:userID";
-                int dt = OracleHelper.ExecuteNonQuery(sql,null,oracleParameters);
-                if (dt!= 1)
+                int dt = OracleHelper.ExecuteNonQuery(sql, null, oracleParameters);
+                if (dt != 1)
                 {
                     status = 2;
                     return false;
@@ -243,10 +251,9 @@ namespace Fitness.DAL
         {
             try
             {
-               //插入时：跳过ID字段；每一个属性字段（包括表名）都要用\"包围；ExcuteNonQuery函数第二个参数填NULL；参数按顺序传递；数据库中日期数据类型为TimeStamp，C#中数据类型为DateTime
                 string sql = $"INSERT INTO \"User\"(\"userName\", \"Password\", \"Salt\",\"Email\", \"registrationTime\", \"Age\", \"Gender\", \"isMember\", \"isPost\", \"isDelete\", \"iconURL\", \"Tags\", \"Introduction\",\"goalType\",\"goalWeight\") " +
-                             $"VALUES(:\"userName\",:\"Password\", :\"Salt\",:\"Email\", :\"registrationTime\", :\"Age\", :\"Gender\", :\"isMember\", :\"isPost\", :\"isDelete\", :\"iconURL\", :\"Tags\", :\"Introduction\",:\"goalType\",:\"goalWeight\") "+
-                             $"RETURNING \"userID\" INTO :userID";                
+                             $"VALUES(:\"userName\",:\"Password\", :\"Salt\",:\"Email\", :\"registrationTime\", :\"Age\", :\"Gender\", :\"isMember\", :\"isPost\", :\"isDelete\", :\"iconURL\", :\"Tags\", :\"Introduction\",:\"goalType\",:\"goalWeight\") " +
+                             $"RETURNING \"userID\" INTO :userID";
 
                 OracleParameter[] oracleParameters = new OracleParameter[]
                 {
@@ -267,7 +274,7 @@ namespace Fitness.DAL
                     new OracleParameter("\"goalWeight\"", OracleDbType.Single) {Value = user.goalWeight},
                     new OracleParameter("userID", OracleDbType.Int32, ParameterDirection.Output)
                 };
-                OracleHelper.ExecuteNonQuery(sql, null,oracleParameters);
+                OracleHelper.ExecuteNonQuery(sql, null, oracleParameters);
                 // 读取 classID 参数的值
                 var userIDParam = oracleParameters[15];
                 int userID = userIDParam.Value is OracleDecimal oracleDecimal
@@ -293,7 +300,7 @@ namespace Fitness.DAL
                     new OracleParameter("userID", OracleDbType.Int32) { Value = userID }
                 };
                 OracleHelper.ExecuteNonQuery("DELETE FROM \"User\" WHERE \"userID\"=:userID", null, oracleParameters);
-                
+
                 return true;
             }
             catch (Exception ex)
@@ -304,7 +311,7 @@ namespace Fitness.DAL
         }
 
         //软删除
-        public static bool SetIsDelete(int userID,int isDelete)
+        public static bool SetIsDelete(int userID, int isDelete)
         {
             try
             {
@@ -345,6 +352,38 @@ namespace Fitness.DAL
             }
         }
 
+        public static bool UpdateLoginTime(int userID, DateTime dateTime)
+        {
+            try
+            {
+                OracleParameter[] oracleParameters = new OracleParameter[]
+                {
+                    new OracleParameter("LastLoginDateTime", OracleDbType.TimeStamp) { Value = dateTime },
+                    new OracleParameter("userID", OracleDbType.Int32) { Value = userID }
+                };
+                string sql = "UPDATE \"User\" SET \"LastLoginDateTime\" = :LastLoginDateTime WHERE \"userID\"=:userID";
+                OracleHelper.ExecuteNonQuery(sql, null, oracleParameters);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
 
+        public static DateTime GetLastLoginTime(int userID)
+        {
+            OracleParameter[]
+            oracleParameters = new OracleParameter[]
+               {
+                    new OracleParameter("userID", OracleDbType.Int32) { Value = userID},
+                    new OracleParameter("isDelete", OracleDbType.Int32) { Value = 0 }
+                };
+            DataTable dt = OracleHelper.ExecuteTable("SELECT \"LastLoginTime\" FROM \"User\" WHERE \"userID\"=:userID AND \"isDelete\" = :isDelete"
+                , oracleParameters);
+            DataRow dr = dt.Rows[0];
+            return Convert.ToDateTime(dr["LastLoginTime"]);
+        }
     }
 }
