@@ -1,0 +1,36 @@
+{
+  "name": "fitfit-demo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@fortawesome/fontawesome-free": "^6.6.0",
+    "@kangc/v-md-editor": "^2.3.18",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
+    "axios": "^1.7.3",
+    "calendar-vue3": "^0.1.5",
+    "chart.js": "^4.4.4",
+    "echarts": "^5.5.1",
+    "element-plus": "^2.8.0",
+    "prettier": "^3.3.3",
+    "vue": "^3.4.29",
+    "vue-chartjs": "^5.3.1",
+    "vue-router": "^4.3.3",
+    "vuex": "^4.1.0",
+    "wangeditor": "^4.7.15"
+  },
+  "devDependencies": {
+    "@arco-design/web-vue": "^2.56.0",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "sass": "^1.77.8",
+    "sass-embedded": "^1.77.8",
+    "vite": "^5.3.1"
+  }
+}
