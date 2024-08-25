@@ -15,7 +15,7 @@ namespace Fitness.BLL.Core
 
 
         private static readonly string apiUrl = "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation";
-        
+        private static readonly string apiKey = "sk-035058a8dc1c44cab7e94bd582c1c0c6";
 
         public static async Task<string> CallQWenVL(string prompt, string imgUrl = null)
         {
