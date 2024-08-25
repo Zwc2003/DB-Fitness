@@ -497,6 +497,14 @@ export default {
         this.selectedFoods = [];
         this.dialogVisible = false;
       }
+      else {
+        ElNotification({
+          title: '警告',
+          message: '记录图片不可为空',
+          type: 'warning',
+          duration: 2000
+        });
+      }
     },
     // 删除当前记录
     deleteRecord(record) {
@@ -1154,5 +1162,6 @@ export default {
 
 .tag-block {
   font-size: 16px;
+  margin-top: 5px;
 }
 </style>

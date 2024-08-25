@@ -117,6 +117,7 @@
 <script>
 import foodBG2 from '../assets/foodBG2.jpg';
 import axios from 'axios';
+import { ElNotification } from 'element-plus';
 
 export default {
     name: 'addDiet',
@@ -198,6 +199,15 @@ export default {
                 this.sendRecipeToDB();
                 this.dialogVisible = false;
             }
+            else{
+                console.log(12);
+                ElNotification({
+                    title: '警告',
+                    message: '标题、内容或图片之一为空',
+                    type: 'warning',
+                    duration: 2000
+                });
+            }
             this.recipe = {
                 recipeID: 0,
                 title: "",
@@ -235,10 +245,20 @@ export default {
         saveModi() {
             const index = this.allRecipe.findIndex(recipe => recipe.recipeID === this.currentRecipe.recipeID);
             if (index !== -1) {
-                this.allRecipe[index] = { ...this.currentRecipe };
-                this.UpdateRecipeToDB();
-                this.showRec = false;
-                this.imageUrl = '';
+                if (this.currentRecipe.title && this.currentRecipe.imgUrl && this.currentRecipe.content) {
+                    this.allRecipe[index] = { ...this.currentRecipe };
+                    this.UpdateRecipeToDB();
+                    this.showRec = false;
+                    this.imageUrl = '';
+                }
+                else {
+                    ElNotification({
+                        title: '警告',
+                        message: '标题、内容或图片之一为空',
+                        type: 'warning',
+                        duration: 2000
+                    });
+                }
             }
         },
         // 增加换行符
