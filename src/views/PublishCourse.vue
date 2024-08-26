@@ -17,7 +17,7 @@
           <el-avatar
             class="mr-3"
             :size="32"
-            src="https://ts3.cn.mm.bing.net/th?id=OIP-C.9khWcYup3srhgw3V1fi7-QHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
+            src="https://tse2-mm.cn.bing.net/th/id/OIP-C.xWtwoLeZd-P4SoSZOMGyogHaHZ?w=206&h=205&c=7&r=0&o=5&pid=1.7"
           />
           <span class="text-large font-600 mr-3">王教练</span>
           <span
@@ -120,7 +120,7 @@
         </el-button>
 
         <!-- 弹出的表单 -->
-        <el-dialog v-model="showModal" title="编辑课程" width="50%">
+        <el-dialog v-model="showModal" title="发布新课程" width="50%">
           <el-form :model="form">
             <el-form-item label="课程名称">
               <el-input
