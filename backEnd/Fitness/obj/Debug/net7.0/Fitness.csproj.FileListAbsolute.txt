@@ -167,3 +167,4 @@ D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\refint\Fitness.dll
 D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.pdb
 D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.genruntimeconfig.cache
 D:\DB_Fitness\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\ref\Fitness.dll
+C:\Users\lenovo\Desktop\DB-Fitness\backEnd\Fitness\obj\Debug\net7.0\Fitness.MvcApplicationPartsAssemblyInfo.cs

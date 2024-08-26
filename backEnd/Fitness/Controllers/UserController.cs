@@ -112,6 +112,13 @@ namespace Fitness.Controllers
             return _userBLL.banPost(token, userID);
         }
 
+/*        [HttpGet]
+        public ActionResult<string> CancleBanUser(string token, int userID)
+        {
+            return _userBLL.CanclebanPost(token, userID);
+        }*/
+
+
         // zwc 
         [HttpGet]
         public ActionResult<BalanceRes> GetVigorTokenBalance(string token)
