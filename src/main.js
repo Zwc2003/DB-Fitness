@@ -11,7 +11,6 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 //import store from "./store";
 import ArcoVue from "@arco-design/web-vue";
 import "@arco-design/web-vue/dist/arco.css";
-import { calendarVue } from "calendar-vue3";
 import "calendar-vue3/dist/style.css";
 
 const app = createApp(App);
@@ -21,7 +20,6 @@ app.use(router);
 app.use(ElementPlus);
 //app.use(store);
 app.use(ArcoVue);
-
 app.mount("#app");
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
