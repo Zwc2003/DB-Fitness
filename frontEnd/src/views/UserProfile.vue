@@ -4,11 +4,11 @@
             <div class="profile-container">
                 <aside class="profile-sidebar">
                     <div class="back-button-container">
-                      <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
-                        <el-icon>
-                          <arrow-left />
-                        </el-icon>
-                      </el-button>
+                        <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
+                            <el-icon>
+                                <arrow-left />
+                            </el-icon>
+                        </el-button>
                     </div>
                     <div class="avatar-wrapper" @click="showLargeImage">
                         <img :src="imagePreview || profile.iconURL || defaultAvatar" alt="avatar" class="avatar">
@@ -137,8 +137,6 @@
                             </tbody>
                         </table>
                     </section>
-
-
                 </main>
             </div>
 
@@ -154,6 +152,7 @@
 import defaultAvatar from '../assets/images/default-avatar.png';
 import EditableField from './EditableField.vue';
 import axios from 'axios';
+import { ElNotification } from 'element-plus';
 import { mapState } from 'vuex';
 
 export default {
@@ -169,53 +168,25 @@ export default {
                 salt: '',
                 email: '',
                 registrationTime: '',
-                iconURL: '', // 这里可以为空或者实际路径
+                iconURL: '',
                 age: null,
                 gender: '',
-                tags: '',
+                tags: [],
                 introduction: '',
                 goalType: '',
                 goalWeight: null,
                 isMember: null,
-                isPost: null,
-                isDelete: null
-                // userID: 2,
-                // userName: 'hhh',
-                // password: 'dfgdgdfg',
-                // salt: 'dsgg',
-                // email: 'dfg@qq.com',
-                // registrationTime: '2023-01-01 00:00:00',
-                // iconURL: '', // 这里可以为空或者实际路径
-                // age: 15,
-                // gender: '男',
-                // tags: '帅气',
-                // introduction: '阿凡达啊方法呃',
-                // goalType: 'aaaa',
-                // goalWeight: null,
-                // isMember: null,
-                // isPost: null,
-                // isDelete: null
             },
-            posts: [{
-                postID: null,
-                userID: null,
-                postTitle: '',
-                postContent: '',
-                postTime: '',
-                likesCount: null,
-                forwardCount: null,
-                commentsCount: null,
-                refrencePostID: null
-            }], // 用户的帖子列表
+            posts: [],
             colors: ['#e57373', '#81c784', '#64b5f6', '#ffb74d', '#ba68c8', '#4db6ac'],
             addingTag: false,
             newTag: '',
-            originalProfile: null, // 保存原始数据以便取消时恢复
+            originalProfile: null,
             defaultAvatar,
-            imagePreview: null, // 用于存储图片预览的路径
-            isLargeImageVisible: false, // 控制大图显示
-            vigorTokenBalance: 0,  // 活力币余额
-            vigorTokenRecords: []       // 活力币余额变化记录
+            imagePreview: null,
+            isLargeImageVisible: false,
+            vigorTokenBalance: 0,
+            vigorTokenRecords: []
         };
     },
     computed: {
@@ -223,38 +194,49 @@ export default {
     },
     created() {
         this.fetchUserProfile();
-        this.fetchUserPosts(); // 获取用户帖子
-        this.getVigorTokenRecordsFromDB(0)
-        this.getVigorTokenBalance(0)
+        this.fetchUserPosts();
+        this.getVigorTokenRecordsFromDB();
+        this.getVigorTokenBalance();
     },
     methods: {
         goBack() {
-            this.$router.back(); // 使用Vue Router的back方法返回上一页
+            this.$router.back();
         },
         async fetchUserProfile() {
-            //const userID = this.$route.params.userID;
             const token = localStorage.getItem('token');
-            console.log("1", token)
-            //console.log(token)
             try {
                 const response = await axios.get(`http://localhost:5273/api/User/GetPersonalProfile?token=${token}`);
                 this.profile = response.data;
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
-                console.log('this.profile:', this.profile)
-                console.log('接收到的用户资料响应数据:', response.data);
+                ElNotification({
+                    title: '成功',
+                    message: '用户资料获取成功',
+                    type: 'success',
+                });
             } catch (error) {
-                console.error('Error fetching user profile:', error);
+                ElNotification({
+                    title: '错误',
+                    message: '获取用户资料失败',
+                    type: 'error',
+                });
             }
         },
         async fetchUserPosts() {
-            //const userID = this.$route.params.userID;
             const token = localStorage.getItem('token');
             try {
                 const response = await axios.get(`http://localhost:5273/api/Post/GetPersonalPost?token=${token}`);
                 this.posts = response.data;
-                console.log('User posts fetched:', this.posts);
+                ElNotification({
+                    title: '成功',
+                    message: '用户帖子获取成功',
+                    type: 'success',
+                });
             } catch (error) {
-                console.error('Error fetching user posts:', error);
+                ElNotification({
+                    title: '错误',
+                    message: '获取用户帖子失败',
+                    type: 'error',
+                });
             }
         },
         handleFileUpload(event) {
@@ -263,7 +245,7 @@ export default {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     this.imagePreview = e.target.result;
-                    this.profile.iconURL = file.name; // 实际应用中需要将文件上传至服务器并获取URL
+                    this.profile.iconURL = file.name;
                 };
                 reader.readAsDataURL(file);
             }
@@ -290,6 +272,11 @@ export default {
         },
         cancelEdit() {
             this.profile = JSON.parse(JSON.stringify(this.originalProfile));
+            ElNotification({
+                title: '提示',
+                message: '编辑已取消',
+                type: 'info',
+            });
         },
         async saveProfile() {
             try {
@@ -315,28 +302,42 @@ export default {
                     }
                 });
 
-                console.log('Profile updated successfully:', response.data);
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
-                alert('保存成功！');
+                ElNotification({
+                    title: '成功',
+                    message: '保存成功！',
+                    type: 'success',
+                });
             } catch (error) {
-                console.error('Error updating profile:', error);
+                ElNotification({
+                    title: '错误',
+                    message: '保存资料失败',
+                    type: 'error',
+                });
             }
         },
-        // 获取活力币余额
-        getVigorTokenBalance(userID) {
+        getVigorTokenBalance() {
             const token = localStorage.getItem('token');
             try {
-                const response = axios.get(`http://localhost:5273/api/User/GetVigorTokenBalance?token=${token}`)
+                const response = axios.get(`http://localhost:5273/api/User/GetVigorTokenBalance?token=${token}`);
                 this.vigorTokenBalance = response.data.balance;
+                ElNotification({
+                    title: '成功',
+                    message: '活力币余额获取成功',
+                    type: 'success',
+                });
             } catch (error) {
-                console.error('Error fetching vigorTokenBalance', error)
+                ElNotification({
+                    title: '错误',
+                    message: '获取活力币余额失败',
+                    type: 'error',
+                });
             }
         },
-        getVigorTokenRecordsFromDB(userID) {
+        getVigorTokenRecordsFromDB() {
             const token = localStorage.getItem('token');
-            console.log("2", token)
             try {
-                const response = axios.get(`http://localhost:5273/api/User/GetVigorTokenRecords?token=${token}`)
+                const response = axios.get(`http://localhost:5273/api/User/GetVigorTokenRecords?token=${token}`);
                 response.data.records.forEach(item => {
                     const record = {
                         recordID: item.recordID,
@@ -344,11 +345,20 @@ export default {
                         change: item.change,
                         balance: item.balance,
                         createTime: item.createTime
-                    }
-                    this.vigorTokenRecords.push(record)
-                })
+                    };
+                    this.vigorTokenRecords.push(record);
+                });
+                ElNotification({
+                    title: '成功',
+                    message: '活力币变动记录获取成功',
+                    type: 'success',
+                });
             } catch (error) {
-                console.error('Error fetching vigorTokenBalance', error)
+                ElNotification({
+                    title: '错误',
+                    message: '获取活力币变动记录失败',
+                    type: 'error',
+                });
             }
         }
     }
@@ -362,19 +372,20 @@ export default {
     background-position: center;
     background-attachment: fixed;
     width: 100%;
-    min-height: 120%;
+    /*height: max-content;*/
+    min-height: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    padding-bottom: 30px;
     padding-top: 30px;
+    padding-bottom: 30px;
 }
 
 .user-profile {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: max-content;
     width: 100%;
     background-color: transparent;
 }
@@ -382,15 +393,21 @@ export default {
 .profile-container {
     display: flex;
     width: 100%;
-    max-width: 60vw;
+    max-width: 80vw;
     margin: auto;
-    background-color: rgba(253, 248, 248, 0.5); /* 半透明的背景 */
-    backdrop-filter: blur(10px); /* 添加模糊效果，模拟磨砂感 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), /* 主阴影 */
-                0 6px 20px rgba(0, 0, 0, 0.1); /* 次阴影，增强立体感 */
-    border-radius: 15px; /* 圆角半径，增加平滑感 */
+    background-color: rgba(253, 248, 248, 0.5);
+    /* 半透明的背景 */
+    backdrop-filter: blur(10px);
+    /* 添加模糊效果，模拟磨砂感 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
+        /* 主阴影 */
+        0 6px 20px rgba(0, 0, 0, 0.1);
+    /* 次阴影，增强立体感 */
+    border-radius: 15px;
+    /* 圆角半径，增加平滑感 */
     justify-content: space-between;
-    overflow: hidden; /* 避免子元素溢出边界 */
+    overflow: hidden;
+    /* 避免子元素溢出边界 */
 }
 
 .profile-sidebar {
@@ -708,11 +725,11 @@ select {
 }
 
 .back-button-container {
-  position: absolute;
-  top: 10px;
-  /* 调整为你需要的上边距 */
-  left: 10px;
-  /* 调整为你需要的左边距 */
-  z-index: 1000;
+    position: absolute;
+    top: 10px;
+    /* 调整为你需要的上边距 */
+    left: 10px;
+    /* 调整为你需要的左边距 */
+    z-index: 1000;
 }
 </style>

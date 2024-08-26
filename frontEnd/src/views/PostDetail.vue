@@ -159,6 +159,7 @@
 
 <script>
 import axios from 'axios';
+import { ElNotification } from 'element-plus';
 import { IconArrowLeft, IconFire } from '@arco-design/web-vue/es/icon';
 import { EmojiButton } from '@joeattardi/emoji-button';
 import { colProps } from 'element-plus';
@@ -211,7 +212,6 @@ export default {
     },
     methods: {
         isCurrentUser(userName) {
-            // 管理员具有删除一切评论的权限
             return this.currentUser === userName || this.currentUser === 'admin';
         },
         fetchPostDetail() {
@@ -226,10 +226,18 @@ export default {
                 .then(response => {
                     this.post = response.data;
                     this.fetchComments(postID);
-                    console.log('Post details fetched successfully:', response.data);
+                    ElNotification({
+                        title: '成功',
+                        message: '帖子详情获取成功',
+                        type: 'success',
+                    });
                 })
                 .catch(error => {
-                    console.error('获取帖子详情时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '获取帖子详情时发生错误',
+                        type: 'error',
+                    });
                 });
         },
         fetchComments(postID) {
@@ -249,10 +257,18 @@ export default {
                             replies: []
                         };
                     });
-                    console.log('Comments fetched successfully:', response.data);
+                    ElNotification({
+                        title: '成功',
+                        message: '评论获取成功',
+                        type: 'success',
+                    });
                 })
                 .catch(error => {
-                    console.error('获取评论时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '获取评论时发生错误',
+                        type: 'error',
+                    });
                 });
         },
         fetchReplies(comment) {
@@ -264,17 +280,25 @@ export default {
                 }
             })
                 .then(response => {
-                    console.log('Replies fetched successfully:', response.data);
                     const replies = response.data.filter(reply => reply.parentCommentID === comment.commentID).map(reply => {
                         return {
                             ...reply,
-                            likedByCurrentUser: false  // 新增字段
+                            likedByCurrentUser: false
                         };
                     });
                     comment.replies = replies;
+                    ElNotification({
+                        title: '成功',
+                        message: '回复获取成功',
+                        type: 'success',
+                    });
                 })
                 .catch(error => {
-                    console.error('获取回复时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '获取回复时发生错误',
+                        type: 'error',
+                    });
                 });
         },
 
@@ -302,10 +326,18 @@ export default {
                     .then(() => {
                         this.post.likesCount -= 1;
                         this.postLiked = false;
-                        console.log('Post unliked successfully');
+                        ElNotification({
+                            title: '成功',
+                            message: '已取消点赞',
+                            type: 'success',
+                        });
                     })
                     .catch(error => {
-                        console.error('取消点赞时发生错误:', error);
+                        ElNotification({
+                            title: '错误',
+                            message: '取消点赞时发生错误',
+                            type: 'error',
+                        });
                     });
             } else {
                 axios.get('http://localhost:8080/api/Post/LikePost', {
@@ -317,10 +349,18 @@ export default {
                     .then(() => {
                         this.post.likesCount += 1;
                         this.postLiked = true;
-                        console.log('Post liked successfully');
+                        ElNotification({
+                            title: '成功',
+                            message: '点赞成功',
+                            type: 'success',
+                        });
                     })
                     .catch(error => {
-                        console.error('点赞时发生错误:', error);
+                        ElNotification({
+                            title: '错误',
+                            message: '点赞时发生错误',
+                            type: 'error',
+                        });
                     });
             }
         },
@@ -345,13 +385,25 @@ export default {
                                 this.replyingTo.replies.push(newComment);
                                 this.replyingTo = null;
                                 this.newCommentText = ""; // 清空输入框
-                                console.log("Reply successful:", response.data)
+                                ElNotification({
+                                    title: '成功',
+                                    message: '回复成功',
+                                    type: 'success',
+                                });
                             } else {
-                                this.$message.error('回复失败');
+                                ElNotification({
+                                    title: '错误',
+                                    message: '回复失败',
+                                    type: 'error',
+                                });
                             }
                         })
                         .catch(error => {
-                            console.error('回复时发生错误:', error);
+                            ElNotification({
+                                title: '错误',
+                                message: '回复时发生错误',
+                                type: 'error',
+                            });
                         });
                 } else {
                     axios.post(`http://localhost:8080/api/Comment/PublishComment?token=${token}`, newComment)
@@ -360,13 +412,25 @@ export default {
                                 this.comments.push(newComment);
                                 this.post.commentsCount++;
                                 this.newCommentText = ""; // 清空输入框
-                                console.log('Comment published successfully');
+                                ElNotification({
+                                    title: '成功',
+                                    message: '评论发布成功',
+                                    type: 'success',
+                                });
                             } else {
-                                this.$message.error('发布评论失败');
+                                ElNotification({
+                                    title: '错误',
+                                    message: '发布评论失败',
+                                    type: 'error',
+                                });
                             }
                         })
                         .catch(error => {
-                            console.error('发表评论时发生错误:', error);
+                            ElNotification({
+                                title: '错误',
+                                message: '发表评论时发生错误',
+                                type: 'error',
+                            });
                         });
                 }
             }
@@ -377,7 +441,11 @@ export default {
                 this.comments.flatMap(c => c.replies).find(r => r.commentID === commentID);
 
             if (!comment) {
-                console.error('评论未找到');
+                ElNotification({
+                    title: '错误',
+                    message: '评论未找到',
+                    type: 'error',
+                });
                 return;
             }
 
@@ -393,14 +461,25 @@ export default {
                         if (response.data === '取消点赞成功') {
                             comment.likesCount--;
                             comment.likedByCurrentUser = false;
-                            this.$message.success('取消点赞成功');
+                            ElNotification({
+                                title: '成功',
+                                message: '取消点赞成功',
+                                type: 'success',
+                            });
                         } else {
-                            this.$message.error('取消点赞失败');
+                            ElNotification({
+                                title: '错误',
+                                message: '取消点赞失败',
+                                type: 'error',
+                            });
                         }
                     })
                     .catch(error => {
-                        console.error('取消点赞时发生错误:', error);
-                        this.$message.error('取消点赞时发生错误');
+                        ElNotification({
+                            title: '错误',
+                            message: '取消点赞时发生错误',
+                            type: 'error',
+                        });
                     });
             } else {
                 // 点赞
@@ -414,14 +493,25 @@ export default {
                         if (response.data === '点赞成功') {
                             comment.likesCount++;
                             comment.likedByCurrentUser = true;
-                            this.$message.success('点赞成功');
+                            ElNotification({
+                                title: '成功',
+                                message: '点赞成功',
+                                type: 'success',
+                            });
                         } else {
-                            this.$message.error('点赞失败');
+                            ElNotification({
+                                title: '错误',
+                                message: '点赞失败',
+                                type: 'error',
+                            });
                         }
                     })
                     .catch(error => {
-                        console.error('点赞时发生错误:', error);
-                        this.$message.error('点赞时发生错误');
+                        ElNotification({
+                            title: '错误',
+                            message: '点赞时发生错误',
+                            type: 'error',
+                        });
                     });
             }
         },
@@ -437,14 +527,25 @@ export default {
                     if (response.data.message === '评论删除成功') {
                         this.comments = this.comments.filter(c => c.commentID !== commentID);
                         this.post.commentsCount--;
-                        this.$message.success('评论已删除');
-                        console.log('Comment deleted successfully');
+                        ElNotification({
+                            title: '成功',
+                            message: '评论删除成功',
+                            type: 'success',
+                        });
                     } else {
-                        this.$message.error('删除评论失败');
+                        ElNotification({
+                            title: '错误',
+                            message: '删除评论失败',
+                            type: 'error',
+                        });
                     }
                 })
                 .catch(error => {
-                    console.error('删除评论时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '删除评论时发生错误',
+                        type: 'error',
+                    });
                 });
         },
         setReplyTarget(comment) {
@@ -462,14 +563,22 @@ export default {
         },
         copyLink() {
             navigator.clipboard.writeText(this.shareLink).then(() => {
-                this.$message.success('链接已复制到剪贴板！');
+                ElNotification({
+                    title: '成功',
+                    message: '链接已复制到剪贴板！',
+                    type: 'success',
+                });
             });
         },
         reportPost() {
             this.reportDialogVisible = true;
         },
         confirmReport() {
-            this.$message.success('感谢你的反馈，举报已提交。');
+            ElNotification({
+                title: '成功',
+                message: '感谢你的反馈，举报已提交。',
+                type: 'success',
+            });
             this.reportDialogVisible = false;
         },
         goToAuthorProfile() {
@@ -487,13 +596,25 @@ export default {
                 .then(response => {
                     if (response.data.message === '成功转发') {
                         this.post.forwardCount++;
-                        console.log('Post forwarded successfully');
+                        ElNotification({
+                            title: '成功',
+                            message: '帖子转发成功',
+                            type: 'success',
+                        });
                     } else {
-                        console.error('转发帖子失败:', response.data.message);
+                        ElNotification({
+                            title: '错误',
+                            message: '转发帖子失败',
+                            type: 'error',
+                        });
                     }
                 })
                 .catch(error => {
-                    console.error('转发帖子时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '转发帖子时发生错误',
+                        type: 'error',
+                    });
                 });
         },
         fetchRelatedPosts() {
@@ -502,10 +623,18 @@ export default {
                 .then(response => {
                     const allPosts = response.data;
                     this.relatedPosts = allPosts.sort(() => 0.5 - Math.random()).slice(0, 5);
-                    console.log('Related posts fetched successfully:', this.relatedPosts);
+                    ElNotification({
+                        title: '成功',
+                        message: '相关帖子获取成功',
+                        type: 'success',
+                    });
                 })
                 .catch(error => {
-                    console.error('获取相关帖子时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '获取相关帖子时发生错误',
+                        type: 'error',
+                    });
                 });
         },
         fetchHotPosts() {
@@ -516,10 +645,18 @@ export default {
                     this.hotPosts = allPosts
                         .sort((a, b) => (b.likesCount + b.commentsCount) - (a.likesCount + a.commentsCount))
                         .slice(0, 5);
-                    console.log('Hot posts fetched successfully:', this.hotPosts);
+                    ElNotification({
+                        title: '成功',
+                        message: '热帖获取成功',
+                        type: 'success',
+                    });
                 })
                 .catch(error => {
-                    console.error('获取热帖时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '获取热帖时发生错误',
+                        type: 'error',
+                    });
                 });
         },
         goToPost(postID) {

@@ -138,6 +138,7 @@ import axios from 'axios';
 import { mapState } from 'vuex';
 import NavigationBar from '../components/NavigationBar.vue';
 import EditArticle from '../components/EditArticle.vue';
+import { ElNotification } from 'element-plus';
 import { IconThumbUp, IconMessage, IconCalendar, IconTrophy, IconArrowRight, IconFire, IconHome, IconShareAlt } from '@arco-design/web-vue/es/icon';
 import { postMixin } from '../mixins/postMixin.js';
 
@@ -170,24 +171,10 @@ export default {
                 commentsCount: null,
                 refrencePostID: null,
             },
-            allPosts: [
-                /*{
-                    postID: 1,
-                    userID: 2,
-                    userName: 'hu',
-                    postTitle: 'sddfds',
-                    postContent: 'sfdsfsfsfs',
-                    postCategory: '健身计划',
-                    postTime: '2023-01-01',
-                    likesCount: 6,
-                    forwardCount: 8,
-                    commentsCount: 10,
-                    refrencePostID: null,
-                }*/
-            ],
+            allPosts: [],
             filteredPosts: [],
-            hotPosts: [],  // 热帖数组
-            selectedCategory: "全部帖子", // 初始选中的类别
+            hotPosts: [],
+            selectedCategory: "全部帖子",
             currentIndex: 0,
         };
     },
@@ -196,7 +183,7 @@ export default {
         visibleCategories() {
             const doubledCategories = [...this.categories, ...this.categories];
             const startIndex = this.currentIndex % this.categories.length;
-            return doubledCategories.slice(startIndex, startIndex + 6); // 假设一次显示6个项目
+            return doubledCategories.slice(startIndex, startIndex + 6);
         },
     },
     created() {
@@ -211,11 +198,15 @@ export default {
             const token = localStorage.getItem('token');
             this.getAllPosts(token)
                 .then(response => {
-                    this.filteredPosts = this.allPosts; // 确保初始展示所有帖子
-                    this.updateHotPosts(); // 确保初始展示热帖
+                    this.filteredPosts = this.allPosts;
+                    this.updateHotPosts();
                 })
                 .catch(error => {
-                    console.error('获取帖子时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '获取帖子时发生错误，请稍后再试。',
+                        type: 'error',
+                    });
                 });
         },
 
@@ -228,7 +219,11 @@ export default {
                     return response;
                 })
                 .catch(error => {
-                    console.error('获取所有帖子时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '获取所有帖子时发生错误，请稍后再试。',
+                        type: 'error',
+                    });
                     throw error;
                 });
         },
@@ -247,15 +242,13 @@ export default {
             const name = localStorage.getItem('name');
 
             if (this.newPost.title && this.newPost.content && this.newPost.category) {
-                // 清理 <p></p> 标签
                 const cleanedContent = this.cleanHtml(this.newPost.content);
-                console.log(cleanedContent);
                 const newPost = {
                     postID: -1,
                     userID: -1,
                     userName: name,
                     postTitle: this.newPost.title,
-                    postContent: cleanedContent, // 使用清理后的内容
+                    postContent: cleanedContent,
                     postCategory: this.newPost.category,
                     postTime: new Date().toISOString(),
                     likesCount: 0,
@@ -269,16 +262,30 @@ export default {
                         this.allPosts.push(newPost);
                         this.updateHotPosts();
                         this.resetNewPostForm();
+                        ElNotification({
+                            title: '成功',
+                            message: '帖子发布成功！',
+                            type: 'success',
+                        });
                     })
                     .catch(error => {
-                        console.error('发布帖子时发生错误:', error);
+                        ElNotification({
+                            title: '错误',
+                            message: '发布帖子时发生错误，请稍后再试。',
+                            type: 'error',
+                        });
                     });
             } else {
-                alert('请填写所有字段！');
+                ElNotification({
+                    title: '警告',
+                    message: '请填写所有字段！',
+                    type: 'warning',
+                });
             }
         },
+
         cleanHtml(content) {
-            return content.replace(/<\/?p>/g, ''); // 清理 <p> 标签
+            return content.replace(/<\/?p>/g, '');
         },
 
         resetNewPostForm() {
@@ -302,9 +309,18 @@ export default {
                     this.allPosts = this.allPosts.filter(post => post.postID !== postID);
                     this.filteredPosts = this.filteredPosts.filter(post => post.postID !== postID);
                     this.updateHotPosts();
+                    ElNotification({
+                        title: '成功',
+                        message: '帖子删除成功！',
+                        type: 'success',
+                    });
                 })
                 .catch(error => {
-                    console.error('删除帖子时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '删除帖子时发生错误，请稍后再试。',
+                        type: 'error',
+                    });
                 });
         },
 
@@ -321,6 +337,7 @@ export default {
     },
 };
 </script>
+
 
 <style scoped>
 body {

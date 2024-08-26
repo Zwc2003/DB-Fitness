@@ -71,9 +71,9 @@
                                 <el-table-column prop="userName" label="用户名"></el-table-column>
                                 <el-table-column prop="userID" label="用户ID"></el-table-column>
                                 <el-table-column prop="isMember" label="是否会员">
-                                <template #default="{ row }">
-                                    {{ row.isMember === 1 ? '是' : '否' }}
-                                </template>
+                                    <template #default="{ row }">
+                                        {{ row.isMember === 1 ? '是' : '否' }}
+                                    </template>
                                 </el-table-column>
 
                                 <el-table-column prop="status" label="状态">
@@ -137,6 +137,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from "vue-router";
 import axios from 'axios';
+import { ElNotification } from 'element-plus';
 import { House, UserFilled, Setting, SwitchButton } from '@element-plus/icons-vue';
 import { IconMenu } from '@arco-design/web-vue/es/icon';
 
@@ -174,7 +175,11 @@ async function fetchUsers() {
             user.status = '正常';
         });
     } catch (error) {
-        console.error('获取用户信息失败', error);
+        ElNotification({
+            title: '错误',
+            message: '获取用户信息失败，请稍后再试。',
+            type: 'error',
+        });
     }
 }
 
@@ -188,7 +193,11 @@ async function fetchPosts() {
             post.status = '正常';
         });
     } catch (error) {
-        console.error('获取帖子信息失败', error);
+        ElNotification({
+            title: '错误',
+            message: '获取帖子信息失败，请稍后再试。',
+            type: 'error',
+        });
     }
 }
 
@@ -237,10 +246,18 @@ async function restrictUser(user) {
         });
         if (response.data === '禁言成功') {
             user.status = '已禁言';
+            ElNotification({
+                title: '成功',
+                message: `用户 ${user.userName} 已成功禁言。`,
+                type: 'success',
+            });
         }
-        console.log(`限制用户 ${user.userName} 的言论: ${response.data}`);
     } catch (error) {
-        console.error('限制用户言论失败', error);
+        ElNotification({
+            title: '错误',
+            message: '限制用户言论失败，请稍后再试。',
+            type: 'error',
+        });
     }
 }
 
@@ -254,10 +271,18 @@ async function deactivateUser(user) {
         });
         if (response.data === '删除成功') {
             user.status = '已删除';
+            ElNotification({
+                title: '成功',
+                message: `用户 ${user.userName} 已成功删除。`,
+                type: 'success',
+            });
         }
-        console.log(`删除用户 ${user.userName}: ${response.data}`);
     } catch (error) {
-        console.error('删除用户失败', error);
+        ElNotification({
+            title: '错误',
+            message: '删除用户失败，请稍后再试。',
+            type: 'error',
+        });
     }
 }
 
@@ -274,6 +299,11 @@ async function deleteContent(content) {
             });
             if (response.data.message === '删除帖子成功') {
                 content.status = '已删除';
+                ElNotification({
+                    title: '成功',
+                    message: `帖子 ${content.postTitle} 已成功删除。`,
+                    type: 'success',
+                });
             }
         } else if (content.commentID) {
             response = await axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
@@ -284,11 +314,19 @@ async function deleteContent(content) {
             })
             if (response.data === '评论删除成功') {
                 content.status = '已删除';
+                ElNotification({
+                    title: '成功',
+                    message: '评论已成功删除。',
+                    type: 'success',
+                });
             }
         }
-        console.log(`删除内容成功: ${response.data.message}`);
     } catch (error) {
-        console.error('删除内容失败', error);
+        ElNotification({
+            title: '错误',
+            message: '删除内容失败，请稍后再试。',
+            type: 'error',
+        });
     }
 }
 
