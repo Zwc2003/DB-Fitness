@@ -210,5 +210,16 @@ namespace Fitness.BLL
                 else
                     return "身份权限不符";
             }
-        }
+            public string CancelbanPost(string token, int userID) //可以设置禁止发帖的天数
+            {
+                TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+                if (tokenRes.Role == "admin")
+                {
+                    UserDAL.SetIsPost(userID, 1);
+                    return "取消禁言成功";
+                }
+                else
+                    return "身份权限不符";
+            }
+    }
     }

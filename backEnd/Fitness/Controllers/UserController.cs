@@ -112,11 +112,11 @@ namespace Fitness.Controllers
             return _userBLL.banPost(token, userID);
         }
 
-/*        [HttpGet]
-        public ActionResult<string> CancleBanUser(string token, int userID)
+        [HttpGet]
+        public ActionResult<string> CancelBanUser(string token, int userID)
         {
-            return _userBLL.CanclebanPost(token, userID);
-        }*/
+            return _userBLL.CancelbanPost(token, userID);
+        }
 
 
         // zwc 
