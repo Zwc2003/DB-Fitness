@@ -44,8 +44,6 @@
                             </div>
                         </div>
                     </section>
-                    <!-- 第二行：密码 -->
-
 
                     <!-- 第三行：昵称、年龄、性别 -->
                     <section class="profile-info">
@@ -63,7 +61,7 @@
                         </div>
                     </section>
 
-                    <!-- 第四行：类型、体重、身高 -->
+                    <!-- 第四行：类型、体重 -->
                     <section class="profile-info">
                         <div class="info-row uniform-row">
                             <EditableField label="类型" :value="profile.goalType" type="input"
@@ -242,13 +240,30 @@ export default {
         handleFileUpload(event) {
             const file = event.target.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    this.imagePreview = e.target.result;
-                    this.profile.iconURL = file.name;
-                };
-                reader.readAsDataURL(file);
+                this.beforeAvatarUpload(file); // 调用图片上传前的处理方法
             }
+        },
+        beforeAvatarUpload(file) {
+            this.imagePreview = '';
+            const isJPGorPNG = file.type === 'image/jpeg' || file.type === 'image/png';
+            const isLt2M = file.size / 1024 / 1024 < 2;
+
+            if (!isJPGorPNG) {
+                this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+                return false;
+            }
+            if (!isLt2M) {
+                this.$message.error('上传头像图片大小不能超过 2MB!');
+                return false;
+            }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                this.imagePreview = reader.result; // 将Base64格式图片赋值给 imagePreview
+                this.profile.iconURL = this.imagePreview; // 将Base64格式图片赋值给 profile.iconURL
+            };
+            return false; // 阻止默认的上传行为
         },
         emitSave(field) {
             console.log(`${field} updated:`, this.profile[field]);
