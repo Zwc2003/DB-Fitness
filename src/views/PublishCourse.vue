@@ -3,11 +3,11 @@
     <el-page-header @back="onBack">
       <template #breadcrumb>
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item :to="{ path: './page-header.html' }">
+          <el-breadcrumb-item :to="{ name: 'HomeView' }">
             FitFit
           </el-breadcrumb-item>
-          <el-breadcrumb-item>
-            <a href="./page-header.html">健身课程</a>
+          <el-breadcrumb-item :to="{ name: 'HomeView' }">
+            健身课程
           </el-breadcrumb-item>
           <el-breadcrumb-item>我的教学</el-breadcrumb-item>
         </el-breadcrumb>

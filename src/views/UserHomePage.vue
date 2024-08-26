@@ -6,8 +6,8 @@
           <el-breadcrumb-item :to="{ path: './page-header.html' }">
             FitFit
           </el-breadcrumb-item>
-          <el-breadcrumb-item>
-            <a href="./page-header.html">健身课程</a>
+          <el-breadcrumb-item :to="{ name: 'HomeView' }">
+            健身课程
           </el-breadcrumb-item>
           <el-breadcrumb-item>我的课程</el-breadcrumb-item>
         </el-breadcrumb>
@@ -168,7 +168,6 @@ export default {
   },
   setup() {
     const isCartVisible = ref(false);
-
     const cartCourses = ref([
       // 示例课程数据
       {
