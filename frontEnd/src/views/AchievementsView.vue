@@ -1,11 +1,10 @@
 <template>
     <div class="container">
-        <el-header>
-            <NavigationBar />
-        </el-header>
+        <NavigationBar />
         <div class="achievements">
             <Achievements />
         </div>
+        <CommonLayout />
     </div>
 </template>
 
@@ -26,7 +25,7 @@
     background-color: #f7fbff;
     width: 50vw;
     height: 80vh;
-    margin-top: 120vh;
+    margin-top: 150vh;
     margin-bottom: 10vh;
     justify-content: center;
 }
@@ -35,9 +34,9 @@
 <script>
 import NavigationBar from "../components/NavigationBar.vue";
 import Achievements from "../components/Achievements.vue";
-
+import CommonLayout from "../components/CommonLayout.vue";
 
 export default {
-    components: { NavigationBar, Achievements },
+    components: { NavigationBar, Achievements,CommonLayout },
 }
 </script>

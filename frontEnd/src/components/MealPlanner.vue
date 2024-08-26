@@ -223,6 +223,7 @@ export default defineComponent({
         // 标签输入确定：添加时
         handleInputConfirm() {
             if (this.inputValue && this.currentFormData.numOfTypes < 5) {
+                this.inputVisible=true;
                 this.currentFormData.numOfTypes++;
                 this.dynamicTags.push(this.inputValue);             //动态添加标签
                 this.tagQuantities[this.inputValue] = 0;              //为每个标签设置初始数据：食物数量
@@ -236,10 +237,7 @@ export default defineComponent({
         },
         // 打开计划安排
         handleCellClick(date) {
-            //console.log(date);
             const formattedDate = new Date(date);
-            //console.log(date, formattedDate);
-            //console.log(date.toISOString().split('T')[0]);
             this.dialogVisible = true;
             this.currentFormData = {
                 userID: 0,
@@ -253,11 +251,14 @@ export default defineComponent({
             this.dynamicTags = [];
             this.tagQuantities = {};
             this.selectedFoods = [];
+            if(this.currentFormData.numOfTypes < 5){
+            this.inputVisible=true;
+            }
         },
         // 保存计划
         saveEvent() {
             if ((this.currentFormData.mealType == 0 || this.currentFormData.mealType == 1 || this.currentFormData.mealType == 2)
-                && (this.currentFormData.total != 0)) {
+                && (this.currentFormData.numOfTypes != 0)) {
                 const year = this.currentFormData.date.getFullYear();
                 const month = String(this.currentFormData.date.getMonth() + 1).padStart(2, '0');
                 const day = String(this.currentFormData.date.getDate()).padStart(2, '0');
@@ -288,12 +289,20 @@ export default defineComponent({
                 console.log(this.formDataStore);
                 this.dialogVisible = false;
             }
+            else{
+                ElNotification({
+            title: '警告',
+            message: '必须选择餐次，计划内食物不可为空',
+            type: 'warning',
+            duration: 2000
+        });
+            }
         },
         // 得到前两个食物标签
         getTopFoodItems(item) {
             let result = item.foods.map(food => food.foodName).join(' ');
-            if (result.length > 12) {
-                result = result.slice(0, 11) + '...';
+            if (result.length > 5) {
+                result = result.slice(0, 4) + '...';
             }
             //console.log(result);
             return result;
@@ -373,6 +382,14 @@ export default defineComponent({
                 this.formDataStore[dateString][i] = this.currentFormData;
                 //console.log(this.currentFormData.foods);
                 this.showCurrentPlan = false;
+            }
+            else{
+                ElNotification({
+            title: '警告',
+            message: '计划内食物不可为空',
+            type: 'warning',
+            duration: 2000
+        });
             }
         },
         deletePlan() {
@@ -651,7 +668,6 @@ export default defineComponent({
 .tag-block {
     width: auto;
     min-width: 120px;
-    max-width: 300px;
     margin-bottom: 5px;
 }
 

@@ -18,14 +18,21 @@ import MealPlannerView from '../views/MealPlannerView.vue'
 import HealthyDiet from '../views/HealthyDiet.vue'
 import AddFoodView from '../views/AddFoodView.vue'
 import Achievements from '../views/AchievementsView.vue'
-import chatRoom from  '../views/chatRoom.vue'
+import FitnessPlan from '../views/FitnessPlanView.vue'
+
+import chatRoom from '../views/chatRoom.vue'
+import ForumView from '../views/ForumView.vue'
+import PostDetail from '../views/PostDetail.vue'
+import UserProfile from '../views/UserProfile.vue'
+import AdminView from '../views/AdminView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     //首页
     {
-      path: "/",
+      path: "/home",
       name: 'home',
       component: HomeView,
       meta: { requiresAuth: false }
@@ -43,12 +50,6 @@ const router = createRouter({
       name: 'tweets',
       component: TweetsView,
     },
-    {
-      path: '/admin',
-      name: 'AdminView',
-      component: AdminEquipmentView,
-      meta: { requiresAuth: false }
-    },
     //ai健身
     {
       path: '/aifit',
@@ -58,16 +59,11 @@ const router = createRouter({
     },
     //聊天室页面
     {
-      path:'/chat',
-      name:'chatRoom',
-      component:chatRoom,
-    }，
-    // // 论坛界面
-    // {
-    //   path: '/forum',
-    //   name: 'ForumView',
-    //   component: ForumView
-    // },
+      path: '/chat',
+      name: 'chatRoom',
+      component: chatRoom,
+    },
+
 
     // // 用户信息界面
     // {
@@ -84,31 +80,13 @@ const router = createRouter({
       component: Achievements,
       meta: { requiresAuth: false }
     },
-    // //排行榜页面
-    // {
-    //   path: '/ranking-list',
-    //   name: 'RankingList',
-    //   component: RankingList,
-    //   meta: { requiresAuth: false }
-    // }
-    // 论坛界面
-    // {
-    //   path: '/fitnessplan',
-    //   name: 'FitnessPlanView',
-    //   component: FitnessPlanView
-    // },
-    // 健身课程
-    // {
-    //   path: '/course',
-    //   name: 'MainCourse',
-    //   component: MainCourse
-    // },
-    //聊天室页面
-    // {
-    //   path:'/chat',
-    //   name:'chatRoom',
-    //   component:chatRoom,
-    // }
+    // 健身计划
+    {
+      path: '/fitnessPlan',
+      name: 'fitnessPlan',
+      component: FitnessPlan,
+      meta: { requiresAuth: false }
+    },
     //饮食计划页面
     {
       path: "/mealPlanner",
@@ -130,13 +108,56 @@ const router = createRouter({
       component: HealthyDiet,
       meta: { requiresAuth: false }
     },
-     //增加食物部分————管理员功能
-     {
+    //增加食物部分————管理员功能
+    {
       path: "/addFood",
-       name: 'AddFood',
+      name: 'AddFood',
       component: AddFoodView,
       meta: { requiresAuth: false }
-   },
+    },
+    // 登录界面
+    {
+      //path: '/login',
+      path: '/login',
+      name: 'LoginView',
+      component: LoginView
+    },
+    // 注册界面
+    {
+      path: '/signup',
+      name: 'SignUpView',
+      component: SignUpView
+    },
+    // 论坛界面
+    {
+      path: '/forum',
+      name: 'ForumView',
+      component: ForumView
+    },
+    // 帖子细节界面
+    {
+      path: '/post/:postID',
+      //path: '/',
+      name: 'PostDetail',
+      component: PostDetail,
+      props: true
+    },
+    // 用户信息界面
+    {
+      path: '/user/:userID',
+      //path: '/',
+      name: 'UserProfile',
+      component: UserProfile,
+      props: true
+    },
+    // 管理员界面
+    {
+      path: '/admin',
+      //path: '/',
+      name: 'AdminView',
+      component: AdminView,
+      props: true
+    }
   ]
 })
 

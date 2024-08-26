@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+      <CommonLayout />
       <div class="navigation-bar">
         <NavigationBar />
       </div>
@@ -37,11 +38,12 @@
   
   <script>
   import NavigationBar from '../components/NavigationBar.vue'
-  
+  import CommonLayout from "../components/CommonLayout.vue";
   export default {
     name: 'Tracking',
     components: {
-      NavigationBar
+      NavigationBar,
+      CommonLayout
     },
     methods: {
       // 跳转到 MealPlannerView

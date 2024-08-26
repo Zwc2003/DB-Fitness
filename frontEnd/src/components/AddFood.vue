@@ -119,7 +119,7 @@ export default defineComponent({
         },
         cancelEdit(index) {
             const row = this.foods[index];
-            if (row.calorie > 1 && row.calorie < 10000 && row.foodName) {
+            if (row.calorie > 1 && row.calorie < 10000 && row.foodName) {             
                 row.isEditing = false;
             } else {
                 this.foods.splice(index, 1); // 删除该行
@@ -139,17 +139,35 @@ export default defineComponent({
             return true;
         },
         validateFoodName(row) {
-            if (!row.foodName.trim()) {
-                ElNotification({
-                    title: '警告',
-                    message: '食物名称不能为空',
-                    type: 'warning',
-                    duration: 2000
-                })
-                return false;
-            }
-            return true;
-        },
+    // 检查食物名称是否为空
+    if (!row.foodName.trim()) {
+        ElNotification({
+            title: '警告',
+            message: '食物名称不能为空',
+            type: 'warning',
+            duration: 2000
+        });
+        return false;
+    }
+
+    // 检查食物名称是否重复
+    const duplicate = this.foods.some(
+        food => food.foodName.trim() === row.foodName.trim() && food !== row
+    );
+
+    if (duplicate) {
+        ElNotification({
+            title: '警告',
+            message: '食物名称不可重复，请重新输入',
+            type: 'warning',
+            duration: 2000
+        });
+        row.foodName="";
+        return false;
+    }
+
+    return true;
+},
         getFoodFromDB() {
             axios.get('http://localhost:5273/api/MealPlans/GetFoodsInfo')
                 .then(response => {

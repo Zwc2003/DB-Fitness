@@ -1,33 +1,23 @@
 <template>
-    <div class="container">
-        <el-header>
-            <NavigationBar />
-        </el-header>
+    <div>
+        <NavigationBar />
         <div class="back-button-container">
-          <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
-            <el-icon>
-              <arrow-left />
-            </el-icon>
-          </el-button>
+            <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
+                <el-icon>
+                    <arrow-left />
+                </el-icon>
+            </el-button>
         </div>
         <div class="meal-planner">
             <MealPlanner />
         </div>
+      <CommonLayout />
     </div>
 </template>
 
 <style scoped>
-.container {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 100px;
-}
-
-.navigation-bar {
-    grid-column: 1;
-}
-
 .meal-planner {
+    margin-top: 20vh;;
     grid-column: 1;
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     padding: 10px;
@@ -53,9 +43,10 @@
 import NavigationBar from "../components/NavigationBar.vue";
 import MealPlanner from "../components/MealPlanner.vue";
 import { ArrowLeft } from '@element-plus/icons-vue'  // 引入ArrowLeft图标
+import CommonLayout from "../components/CommonLayout.vue";
 
 export default {
-    components: { NavigationBar, MealPlanner,ArrowLeft },
+    components: { NavigationBar, MealPlanner,ArrowLeft, CommonLayout },
     methods: {
         goBack() {
             this.$router.back(); // 使用Vue Router的back方法返回上一页

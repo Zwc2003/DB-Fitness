@@ -1,6 +1,6 @@
 <template>
   <NavigationBar />
-  <CommonLayout style="margin-top: 80px;" />
+  <CommonLayout style="margin-top: 0vh;" />
 </template>
 
 <script>
