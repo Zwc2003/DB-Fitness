@@ -84,8 +84,10 @@
                                 </el-table-column>
                                 <el-table-column fixed="right" label="操作" width="250">
                                     <template #default="{ row }">
-                                        <el-button size="small" type="danger" @click="restrictUser(row)"
-                                            :disabled="row.status !== '正常'">限制言论</el-button>
+                                        <el-button size="small" :type="row.status === '已禁言' ? 'primary' : 'danger'"
+                                            @click="row.status === '正常' ? restrictUser(row) : cancelBanUser(row)">
+                                            {{ row.status === '已禁言' ? '取消禁言' : '限制言论' }}
+                                        </el-button>
                                         <el-button size="small" type="warning" @click="deactivateUser(row)"
                                             :disabled="row.status === '已删除'">删除用户</el-button>
                                     </template>
@@ -256,6 +258,31 @@ async function restrictUser(user) {
         ElNotification({
             title: '错误',
             message: '限制用户言论失败，请稍后再试。',
+            type: 'error',
+        });
+    }
+}
+
+async function cancelBanUser(user) {
+    try {
+        const response = await axios.get('http://localhost:8080/api/User/CancelBanUser', {
+            params: {
+                token: localStorage.getItem('token'),
+                userID: user.userID,
+            }
+        });
+        if (response.data === '取消禁言成功') {
+            user.status = '正常';
+            ElNotification({
+                title: '成功',
+                message: `用户 ${user.userName} 已成功取消禁言。`,
+                type: 'success',
+            });
+        }
+    } catch (error) {
+        ElNotification({
+            title: '错误',
+            message: '取消禁言失败，请稍后再试。',
             type: 'error',
         });
     }

@@ -365,6 +365,16 @@ export default {
             }
         },
         addComment() {
+            // 检查用户是否被禁言
+            if (this.$store.state.isPost === 'false') {
+                ElNotification({
+                    title: '警告',
+                    message: '您已被禁言，无法发表评论或回复。',
+                    type: 'warning',
+                });
+                return; // 阻止发表评论或回复
+            }
+
             const token = localStorage.getItem('token');
             if (this.newCommentText.trim()) {
                 const newComment = {

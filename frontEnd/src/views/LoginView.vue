@@ -136,6 +136,11 @@ export default
                         store.commit('setUserID', response1.data.userID);
                         store.commit('setName', response1.data.userName);
 
+                        // 存储当前用户发帖权限
+                        store.commit('setIsPost', response1.data.isPost);
+
+                        store.dispatch('pollIsPost');  // 开启轮询，更新发帖权限
+
                         if (requestData.role === 'admin') {
                             this.$router.push({ path: '/admin' });
                         } else {
