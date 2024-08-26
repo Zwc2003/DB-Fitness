@@ -1,17 +1,17 @@
 <template>
     <div class="common-layout">
-      <el-container>
-        <el-header class="custom-header">
-          {{target.name}}
-        </el-header>
         <el-container>
-          <el-aside width="200px"><MyAside/></el-aside>
-          <el-container>
-            <el-main><MyMain/></el-main>
-            <el-footer><MyFooter/></el-footer>
-          </el-container>
+            <el-header class="custom-header">
+              {{target.name}}
+            </el-header>
+            <el-container>
+                <el-aside width="200px"><MyAside/></el-aside>
+                <el-container>
+                    <el-main><MyMain/></el-main>
+                    <el-footer><MyFooter/></el-footer>
+                </el-container>
+            </el-container>
         </el-container>
-      </el-container>
     </div>
   </template>
   
@@ -250,8 +250,10 @@
   
   <style>
     .common-layout {
-      height: 550px;
-      width: 958.4px;
+      height: 60vh;
+      width: 70vw;
+      margin-top: 60vh;
+      margin-bottom: 20vh;
     }
   
     .el-container {
@@ -294,9 +296,11 @@
     border-left: 1px solid #ccc;  /* 左边框 */
   }
   .custom-header {
+
     text-align: center; /* 水平居中 */
     line-height: 60px;  /* 使文本垂直居中，对应你的header高度 */
     font-size: 24px;    /* 可选：调整字体大小 */
   }
+
   </style>
     

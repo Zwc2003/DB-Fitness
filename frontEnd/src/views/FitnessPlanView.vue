@@ -3,8 +3,8 @@
 import { reactive, ref } from 'vue'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 import type { Action } from 'element-plus'
-import NavigationBar from "@/components/NavigationBar.vue";
-import TimeThread from "@/components/TimeThread.vue";
+import NavigationBar from "../components/NavigationBar.vue";
+import TimeThread from "../components/TimeThread.vue";
 import axios from "axios";
 const dialogFormVisible = ref(false)
 const formLabelWidth = '110px'
@@ -163,7 +163,7 @@ const activeName = ref(1);
         <el-input-number v-model.number="form.longDistance" autocomplete="off"  :controls="false"></el-input-number>
       </el-form-item>
       <el-form-item label="健身目标" :label-width="formLabelWidth" prop="goal">
-        <el-select v-model="form.goal" placeholder="Please select a target">
+        <el-select v-model="form.goal" placeholder="请选择一种健身目标类型">
           <el-option label="减脂" value="loseWeight" />
           <el-option label="增肌" value="buildMuscle" />
           <el-option label="塑型" value="bodySculpting" />
@@ -176,9 +176,9 @@ const activeName = ref(1);
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Cancel</el-button>
+        <el-button @click="dialogFormVisible = false">取消</el-button>
         <el-button  type="primary" @click="submitForm(ruleFormRef)">
-          Create
+          确认
         </el-button>
       </div>
     </template>

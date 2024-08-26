@@ -5,7 +5,7 @@
         </div>
         <div class="wrapper" >
             <nav>
-                <input type="radio" name="tab" id="home" :checked="$route.path === '/'">
+                <input type="radio" name="tab" id="home" :checked="$route.path === '/home'">
                 <input type="radio" name="tab" id="equipment" :checked="$route.path === '/equipment'">
                 <input type="radio" name="tab" id="aifit" :checked="$route.path === '/aifit'">
                 <input type="radio" name="tab" id="forum" :checked="$route.path === '/forum'">
@@ -22,7 +22,7 @@
 
 
 
-                <label for="home" class="home" @click="delayedNavigation('/')">
+                <label for="home" class="home" @click="delayedNavigation('/home')">
                     <el-icon>
                         <House />
                     </el-icon>
