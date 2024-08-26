@@ -19,6 +19,7 @@ import HealthyDiet from '../views/HealthyDiet.vue'
 import AddFoodView from '../views/AddFoodView.vue'
 import Achievements from '../views/AchievementsView.vue'
 import chatRoom from  '../views/chatRoom.vue'
+import FitnessPlan from '../views/FitnessPlanView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -84,13 +85,13 @@ const router = createRouter({
       component: Achievements,
       meta: { requiresAuth: false }
     },
-    // //排行榜页面
-    // {
-    //   path: '/ranking-list',
-    //   name: 'RankingList',
-    //   component: RankingList,
-    //   meta: { requiresAuth: false }
-    // }
+    // 健身计划
+    {
+      path: '/fitnessPlan',
+      name: 'fitnessPlan',
+      component: FitnessPlan,
+      meta: { requiresAuth: false }
+    },
     // 论坛界面
     // {
     //   path: '/fitnessplan',
