@@ -106,13 +106,30 @@
       methods: {
 
         toggleChatWindow() {
-        const chatWindow = document.querySelector('.common-layout');
-        const overlay = document.querySelector('.overlay');
-        const isVisible = chatWindow.style.display === 'block';
+      const chatButton = document.querySelector('.chat-button');
+      const chatWindow = document.querySelector('.common-layout');
+      const overlay = document.querySelector('.overlay');
+      const isVisible = chatWindow.style.display === 'block';
 
-        chatWindow.style.display = isVisible ? 'none' : 'block';
-        overlay.style.display = isVisible ? 'none' : 'block';
-  },
+      if (isVisible) {
+        chatWindow.classList.remove('open');
+        setTimeout(() => {
+          chatWindow.style.display = 'none';
+          overlay.style.display = 'none';
+        }, 400);
+      } else {
+        // 获取按钮的位置
+        const rect = chatButton.getBoundingClientRect();
+        chatWindow.style.setProperty('--start-top', `${rect.top + rect.height / 2}px`);
+        chatWindow.style.setProperty('--start-left', `${rect.left + rect.width / 2}px`);
+
+        chatWindow.style.display = 'block';
+        overlay.style.display = 'block';
+        setTimeout(() => {
+          chatWindow.classList.add('open');
+        }, 10);
+      }
+    },
   
         // async fetchUserProfile() {
         //   try {
@@ -297,21 +314,27 @@
 
 .common-layout {
     position: fixed;
-    top: 55%; /* 屏幕垂直居中 */
-    left: 50%; /* 屏幕水平居中 */
-    transform: translate(-50%, -50%); /* 通过transform偏移来精确居中 */
+    top: var(--start-top, 50%); /* 动态设置起始点 */
+    left: var(--start-left, 50%); /* 动态设置起始点 */
+    transform: translate(-50%, -50%) scale(0); /* 初始状态缩小到按钮大小 */
     height: 90vh;
     width: 60vw;
-    border-radius: 15px; /* 内部组件也保持圆角 */
     background-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px); /* 添加模糊效果，模拟磨砂感 */
-    border-radius: 20px; /* 圆角半径 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), /* 添加阴影效果 */
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1),
                 0 6px 20px rgba(0, 0, 0, 0.1);
-    z-index: 100001; /* 确保在最前面 */
-    display: none; /* 默认隐藏 */
-    padding: 10px; /* 内边距 */
+    z-index: 10000001;
+    padding: 10px;
+    transition: transform 0.4s ease, top 0.4s ease, left 0.4s ease; /* 过渡效果 */
+    display: none;
+    transform-origin: center center; /* 使动画从中心展开 */
+}
 
+.common-layout.open {
+    top: 50%; /* 最终位置为屏幕中央 */
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1); /* 展开至全屏中央 */
 }
 
   
