@@ -12,6 +12,7 @@ import NotificationContent4 from '../components/NotificationContent4.vue'
 import NotificationContent5 from '../components/NotificationContent5.vue'
 import NotificationContent6 from '../components/NotificationContent6.vue'
 import NotificationContent7 from '../components/NotificationContent7.vue'
+import CommonLayout from "../components/CommonLayout.vue";
 
 const items = ref([
     { src: new URL('../assets/top1.png', import.meta.url).href, alt: 'Image 1' },
@@ -206,11 +207,12 @@ function openInNewTab(url) {
 
 <template>
     <Navigator />
-    <el-backtop :right="50" :bottom="110" style="z-index: 2"/>
-    <!-- 悬浮的刷新按钮（样式与置顶键一致） -->
+    <CommonLayout />
+    <!-- 悬浮的置顶和刷新按钮 -->
+    <el-backtop class="backtop-button"/>
     <div class="floating-refresh-button" style="z-index: 2;">
         <el-button type="primary" @click="fetchAllEquipmentGuide" class="refresh-button">
-            <el-icon><Refresh /></el-icon>
+            <el-icon><refresh /></el-icon>
         </el-button>
     </div>
 
@@ -583,27 +585,53 @@ function openInNewTab(url) {
     /* 悬停时背景变为蓝色 */
 }
 
+.backtop-button
+{
+    position: fixed;
+    bottom: 200px !important;
+    right: 25px !important;
+    z-index: 2;
+    width: 60px !important; /* 增加按钮的宽度 */
+    height: 60px !important; /* 增加按钮的高度 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease; /* 添加缩放的过渡效果 */
+}
 .floating-refresh-button {
     position: fixed;
-    bottom: 50px; /* 与置顶按钮的bottom保持一致 */
-    right: 50px;  /* 与置顶按钮的right保持一致 */
-    z-index: 9999; /* 确保按钮在最上层 */
+    bottom: 120px;
+    right: 23px;
+    z-index: 2;
+    width: 60px; /* 增加按钮的宽度 */
+    height: 60px; /* 增加按钮的高度 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease; /* 添加缩放的过渡效果 */
+    border-radius: 50% !important; /* 将按钮变成圆形 */
+}
+
+.floating-refresh-button:hover {
+    transform: scale(1.2); /* 悬停时按钮变大 */
 }
 
 .refresh-button {
-    width: 40px;
-    height: 40px;
-    background-color: #409EFF; /* 按钮背景色与置顶按钮一致 */
-    border-radius: 50%; /* 圆形按钮 */
+    width: 60px;
+    height: 60px;
+    background-color: #409EFF;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 50% !important; /* 将按钮变成圆形 */
+
 }
 
 .refresh-button .el-icon {
-    font-size: 18px;
+    font-size: 30px;
     color: white;
+
 }
 </style>

@@ -11,6 +11,7 @@
         <div class="meal-planner">
             <MealPlanner />
         </div>
+      <CommonLayout />
     </div>
 </template>
 
@@ -42,9 +43,10 @@
 import NavigationBar from "../components/NavigationBar.vue";
 import MealPlanner from "../components/MealPlanner.vue";
 import { ArrowLeft } from '@element-plus/icons-vue'  // 引入ArrowLeft图标
+import CommonLayout from "../components/CommonLayout.vue";
 
 export default {
-    components: { NavigationBar, MealPlanner,ArrowLeft },
+    components: { NavigationBar, MealPlanner,ArrowLeft, CommonLayout },
     methods: {
         goBack() {
             this.$router.back(); // 使用Vue Router的back方法返回上一页

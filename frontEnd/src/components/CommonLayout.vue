@@ -1,19 +1,28 @@
 <template>
-    <div class="common-layout">
+  <div>
+    <div class="chat-button" @click="toggleChatWindow">
+      💬
+    </div>
+    <div class="overlay" @click="toggleChatWindow"></div> <!-- 遮罩层 -->
+      <div class="common-layout">
         <el-container>
-            <el-header class="custom-header">
-              {{target.name}}
-            </el-header>
+          <el-header class="custom-header">
+            {{ target.name }}
+          </el-header>
+          <el-container>
+            <el-aside width="200px"><MyAside/></el-aside>
             <el-container>
-                <el-aside width="200px"><MyAside/></el-aside>
-                <el-container>
-                    <el-main><MyMain/></el-main>
-                    <el-footer><MyFooter/></el-footer>
-                </el-container>
+              <el-main><MyMain/></el-main>
+              <el-footer><MyFooter/></el-footer>
             </el-container>
+          </el-container>
         </el-container>
     </div>
-  </template>
+  </div>
+</template>
+
+
+
   
   <script>
   import MyAside from './myAside.vue';
@@ -95,6 +104,15 @@
     // },
   
       methods: {
+
+        toggleChatWindow() {
+        const chatWindow = document.querySelector('.common-layout');
+        const overlay = document.querySelector('.overlay');
+        const isVisible = chatWindow.style.display === 'block';
+
+        chatWindow.style.display = isVisible ? 'none' : 'block';
+        overlay.style.display = isVisible ? 'none' : 'block';
+  },
   
         // async fetchUserProfile() {
         //   try {
@@ -246,18 +264,59 @@
         }
       }   
     }
-  </script>
+</script>
   
-  <style>
-    .common-layout {
-      height: 60vh;
-      width: 70vw;
-      margin-top: 60vh;
-      margin-bottom: 20vh;
-    }
+<style>
+
+/*.custom_container {*/
+/*    position: fixed; !* 固定在页面上 *!*/
+/*    top: 50%; !* 屏幕垂直居中 *!*/
+/*    left: 50%; !* 屏幕水平居中 *!*/
+/*    transform: translate(-50%, -50%); !* 通过transform偏移来精确居中 *!*/
+/*    width: 80vw;*/
+/*    height: 100vh;*/
+/*    background-color: rgba(0, 0, 0, 0.8); !* 半透明的背景 *!*/
+/*    backdrop-filter: blur(10px); !* 添加模糊效果，模拟磨砂感 *!*/
+/*    border-radius: 20px; !* 圆角半径 *!*/
+/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), !* 添加阴影效果 *!*/
+/*                0 6px 20px rgba(0, 0, 0, 0.1);*/
+/*    z-index: 1000; !* 确保在最前面 *!*/
+/*    display: none; !* 默认隐藏 *!*/
+/*    padding: 10px; !* 内边距 *!*/
+/*}*/
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+    z-index: 100000; /* 确保遮罩层在聊天窗口下方但在其他元素上方 */
+    display: none; /* 默认隐藏 */
+}
+
+.common-layout {
+    position: fixed;
+    top: 55%; /* 屏幕垂直居中 */
+    left: 50%; /* 屏幕水平居中 */
+    transform: translate(-50%, -50%); /* 通过transform偏移来精确居中 */
+    height: 90vh;
+    width: 60vw;
+    border-radius: 15px; /* 内部组件也保持圆角 */
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px); /* 添加模糊效果，模拟磨砂感 */
+    border-radius: 20px; /* 圆角半径 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), /* 添加阴影效果 */
+                0 6px 20px rgba(0, 0, 0, 0.1);
+    z-index: 100001; /* 确保在最前面 */
+    display: none; /* 默认隐藏 */
+    padding: 10px; /* 内边距 */
+
+}
+
   
     .el-container {
-      height: 550px;
+      max-height: 80vh;
     }
   
     .el-header{
@@ -279,7 +338,7 @@
     /* background-color: white; */
     color: #333;
     text-align: center;
-    height: 550px;
+    height: 80vh;
     border-top: 1px solid #ccc;    /* 上边框 */
     border-right: 1px solid #ccc;  /* 右边框 */
     border-bottom: 1px solid #ccc; /* 下边框 */
@@ -301,6 +360,52 @@
     line-height: 60px;  /* 使文本垂直居中，对应你的header高度 */
     font-size: 24px;    /* 可选：调整字体大小 */
   }
+
+.chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: #1E90FF; /* 基本蓝色背景 */
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+    line-height: 60px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    background: linear-gradient(135deg, #1E90FF, #00BFFF); /* 蓝色系渐变背景 */
+    animation: bounce 2s infinite;
+}
+
+/* 悬停效果 */
+.chat-button:hover {
+    transform: scale(1.1); /* 放大效果 */
+    background: linear-gradient(135deg, #00BFFF, #87CEFA); /* 浅蓝色系渐变背景 */
+}
+
+/* 点击时的效果 */
+.chat-button:active {
+    transform: scale(0.9); /* 轻微缩小效果 */
+}
+
+/* 轻微弹跳动画 */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+
 
   </style>
     

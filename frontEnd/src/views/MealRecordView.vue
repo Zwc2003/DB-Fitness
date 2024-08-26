@@ -1,6 +1,7 @@
 <template>
   <div>
     <NavigationBar />
+    <CommonLayout />
     <div class="back-button-container">
       <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
         <el-icon>
@@ -17,11 +18,12 @@
 <script>
 import NavigationBar from "../components/NavigationBar.vue";
 import MealRecord from "../components/MealRecord.vue";
-
+import CommonLayout from "../components/CommonLayout.vue";
 export default {
   components: {
     NavigationBar,
     MealRecord,
+    CommonLayout
   },
   methods: {
     goBack() {

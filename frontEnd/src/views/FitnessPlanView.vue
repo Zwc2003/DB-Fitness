@@ -5,6 +5,7 @@ import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 import type { Action } from 'element-plus'
 import NavigationBar from "../components/NavigationBar.vue";
 import TimeThread from "../components/TimeThread.vue";
+import CommonLayout from "../components/CommonLayout.vue";
 import axios from "axios";
 const dialogFormVisible = ref(false)
 const formLabelWidth = '110px'
@@ -128,6 +129,7 @@ const activeName = ref(1);
 
 <template>
   <NavigationBar/>
+  <CommonLayout />
   <div>
     <el-button plain @click="dialogFormVisible = true" class="bot">
       填写你的体测表

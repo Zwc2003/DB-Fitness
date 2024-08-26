@@ -137,7 +137,6 @@ export default {
   position: absolute; /* 绝对定位 */
   top: 0; /* 视频紧贴网页顶部 */
   left: 0; /* 视频紧贴网页左侧 */
-
   width: 100vw; /* 视频宽度覆盖整个视口宽度 */
   height: 100vh; /* 视频高度覆盖整个视口高度 */
   z-index: -1; /* 确保视频在其他内容的下方 */
