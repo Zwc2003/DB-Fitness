@@ -94,7 +94,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 function submit() {
   loading.value = true;
   console.log(form.pullup)
-  axios.get('http://localhost:5000/api/FitnessPlan/PostFitness',  {
+  axios.get('http://localhost:8080/api/FitnessPlan/PostFitness',  {
     params: {
       token: localStorage.getItem('token'),
       height: form.height,
@@ -104,7 +104,7 @@ function submit() {
     }}).then(response => {
     console.log(response.data.message);
   });
-  axios.get('http://localhost:5000/api/FitnessPlan/PostPhysicalTest',  {
+  axios.get('http://localhost:8080/api/FitnessPlan/PostPhysicalTest',  {
     params: {
       token: localStorage.getItem('token'),
       pushups: form.pushups,
@@ -115,7 +115,7 @@ function submit() {
     }}).then(response => {
     console.log(response.data.message);
   });
-  axios.get('http://localhost:5000/api/FitnessPlan/SetGoal',  {
+  axios.get('http://localhost:8080/api/FitnessPlan/SetGoal',  {
     params: {
       token: localStorage.getItem('token'),
       goal: form.goal,
