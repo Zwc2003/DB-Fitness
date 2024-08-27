@@ -145,9 +145,9 @@ function loadWeeksData() {
   loading.value = true;
   axios.get('http://localhost:8080/api/FitnessPlan/GetPlan',
       {
-          params: {
-            token: localStorage.getItem('token')
-          }
+        params: {
+          token: localStorage.getItem('token')
+        }
       }
   ).then(response => {
     weeks.value = response.data; // 假设数据结构中 weeks 在顶层
@@ -173,7 +173,7 @@ const open = (row) => {
           height: '100%'
         },
         callback: (action: Action) => {
-          
+
         },
       }
   )
