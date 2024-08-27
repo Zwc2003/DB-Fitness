@@ -440,7 +440,7 @@ function openInNewTab(url) {
     padding: 20px !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
     width: 1200px !important;
-    max-height: calc(100vh - 40px) !important;
+    max-height: calc(100vh - 200px) !important;
     /* 设置最大高度 */
     overflow-y: auto !important;
     /* 添加垂直滚动条 */
@@ -451,8 +451,8 @@ function openInNewTab(url) {
     justify-content: center;
     text-align: center;
     font-family: Arial, sans-serif;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: 5%;
+    margin-bottom: 5%;
     /* 设置字体 */
 }
 

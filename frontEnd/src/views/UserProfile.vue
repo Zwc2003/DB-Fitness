@@ -354,16 +354,16 @@ export default {
             const token = localStorage.getItem('token');
             try {
                 const response =await axios.get(`http://localhost:8080/api/User/GetVigorTokenReacords?token=${token}`);
-                response.data.records.forEach(item => {
-                    const record = {
-                        recordID: item.recordID,
-                        reason: item.reason,
-                        change: item.change,
-                        balance: item.balance,
-                        createTime: item.createTime
-                    };
-                    this.vigorTokenRecords.push(record);
-                });
+                this.vigorTokenRecords = response.data.records.map(item => ({
+                    recordID: item.recordID,
+                    reason: item.reason,
+                    change: item.change,
+                    balance: item.balance,
+                    createTime: item.createTime
+                }));
+
+                // 按 recordID 从大到小排序
+                this.vigorTokenRecords.sort((a, b) => b.recordID - a.recordID);
                 ElNotification({
                     title: '成功',
                     message: '活力币变动记录获取成功',

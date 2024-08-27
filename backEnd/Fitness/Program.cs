@@ -6,6 +6,7 @@ using Fitness.BLL;
 using Fitness.BLL.Interfaces;
 using Fitness.BLL.Core;
 using Fitness.Models;
+using Fitness.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+// зЂВс DatabasePingService
+builder.Services.AddHostedService<DatabasePingService>();
 
 var app = builder.Build();
 
