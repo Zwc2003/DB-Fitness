@@ -2279,19 +2279,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\lenovo\\.nuget\\packages\\": {}
+    "C:\\Users\\24659\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+      "projectUniqueName": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
       "projectName": "Fitness.Models",
-      "projectPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
-      "packagesPath": "C:\\Users\\lenovo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\lenovo\\Desktop\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
+      "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+      "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
+      "outputPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -2299,6 +2299,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "D:\\vcpkg-master\\scripts\\buildsystems": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2394,7 +2395,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   },
