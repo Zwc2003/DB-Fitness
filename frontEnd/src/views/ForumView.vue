@@ -1,5 +1,5 @@
 <template>
-    <NavigationBar />
+  <NavigationBar style="z-index: 1000000000" />
     <div class="forum-bg">
         <div class="forum-container">
             <!-- 帖子卡片 -->
@@ -77,7 +77,7 @@
                     </button>
                 </nav>
                 <EditArticle v-model:title="newPost.title" v-model:content="newPost.content"
-                    v-model:category="newPost.category" @add-post="addPost" />
+                    v-model:category="newPost.category" v-model:imgUrl="newPost.imgUrl" @add-post="addPost" />
 
                 <!-- 帖子列表部分 -->
                 <div v-for="post in filteredPosts" :key="post.postID" class="post-item">
@@ -86,6 +86,10 @@
                             {{ post.postTitle }}
                             <span class="category-tag">{{ post.postCategory }}</span>
                         </h3>
+                        <!-- 图片展示 -->
+                        <div v-if="post.imgUrl" class="post-image">
+                            <img :src="post.imgUrl" alt="Post Image" class="image"/>
+                        </div>
                         <p class="post-snippet">{{ truncatedContent(post.postContent) }}</p>
                     </div>
                     <div class="post-footer">
@@ -138,6 +142,7 @@ import axios from 'axios';
 import { mapState } from 'vuex';
 import NavigationBar from '../components/NavigationBar.vue';
 import EditArticle from '../components/EditArticle.vue';
+import { ElNotification } from 'element-plus';
 import { IconThumbUp, IconMessage, IconCalendar, IconTrophy, IconArrowRight, IconFire, IconHome, IconShareAlt } from '@arco-design/web-vue/es/icon';
 import { postMixin } from '../mixins/postMixin.js';
 
@@ -169,25 +174,12 @@ export default {
                 forwardCount: null,
                 commentsCount: null,
                 refrencePostID: null,
+                imgUrl:''
             },
-            allPosts: [
-                /*{
-                    postID: 1,
-                    userID: 2,
-                    userName: 'hu',
-                    postTitle: 'sddfds',
-                    postContent: 'sfdsfsfsfs',
-                    postCategory: '健身计划',
-                    postTime: '2023-01-01',
-                    likesCount: 6,
-                    forwardCount: 8,
-                    commentsCount: 10,
-                    refrencePostID: null,
-                }*/
-            ],
+            allPosts: [],
             filteredPosts: [],
-            hotPosts: [],  // 热帖数组
-            selectedCategory: "全部帖子", // 初始选中的类别
+            hotPosts: [],
+            selectedCategory: "全部帖子",
             currentIndex: 0,
         };
     },
@@ -196,7 +188,7 @@ export default {
         visibleCategories() {
             const doubledCategories = [...this.categories, ...this.categories];
             const startIndex = this.currentIndex % this.categories.length;
-            return doubledCategories.slice(startIndex, startIndex + 6); // 假设一次显示6个项目
+            return doubledCategories.slice(startIndex, startIndex + 6);
         },
     },
     created() {
@@ -211,11 +203,15 @@ export default {
             const token = localStorage.getItem('token');
             this.getAllPosts(token)
                 .then(response => {
-                    this.filteredPosts = this.allPosts; // 确保初始展示所有帖子
-                    this.updateHotPosts(); // 确保初始展示热帖
+                    this.filteredPosts = this.allPosts;
+                    this.updateHotPosts();
                 })
                 .catch(error => {
-                    console.error('获取帖子时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '获取帖子时发生错误，请稍后再试。',
+                        type: 'error',
+                    });
                 });
         },
 
@@ -228,7 +224,11 @@ export default {
                     return response;
                 })
                 .catch(error => {
-                    console.error('获取所有帖子时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '获取所有帖子时发生错误，请稍后再试。',
+                        type: 'error',
+                    });
                     throw error;
                 });
         },
@@ -243,42 +243,66 @@ export default {
         },
 
         addPost() {
+
+            // 检查用户是否被禁言
+            if (this.$store.state.isPost === 'false') {
+                ElNotification({
+                    title: '警告',
+                    message: '您已被禁言，无法发帖。',
+                    type: 'warning',
+                });
+                return; // 阻止发帖
+            }
+
             const token = this.$store.state.token;
             const name = localStorage.getItem('name');
 
             if (this.newPost.title && this.newPost.content && this.newPost.category) {
-                // 清理 <p></p> 标签
                 const cleanedContent = this.cleanHtml(this.newPost.content);
-                console.log(cleanedContent);
                 const newPost = {
                     postID: -1,
                     userID: -1,
                     userName: name,
                     postTitle: this.newPost.title,
-                    postContent: cleanedContent, // 使用清理后的内容
+                    postContent: cleanedContent,
                     postCategory: this.newPost.category,
                     postTime: new Date().toISOString(),
                     likesCount: 0,
                     forwardCount: 0,
                     commentsCount: 0,
                     refrencepostID: -1,
+                    imgUrl: this.newPost.imgUrl
                 };
-
+                console.log("url", this.newPost.imgUrl)
                 axios.post(`http://localhost:8080/api/Post/PublishPost?token=${token}`, newPost)
                     .then(response => {
                         this.allPosts.push(newPost);
                         this.updateHotPosts();
                         this.resetNewPostForm();
+                        ElNotification({
+                            title: '成功',
+                            message: '帖子发布成功！',
+                            type: 'success',
+                        });
                     })
                     .catch(error => {
-                        console.error('发布帖子时发生错误:', error);
+                        ElNotification({
+                            title: '错误',
+                            message: '发布帖子时发生错误，请稍后再试。',
+                            type: 'error',
+                        });
                     });
             } else {
-                alert('请填写所有字段！');
+                ElNotification({
+                    title: '警告',
+                    message: '请填写所有字段！',
+                    type: 'warning',
+                });
             }
         },
+
         cleanHtml(content) {
-            return content.replace(/<\/?p>/g, ''); // 清理 <p> 标签
+            return content.replace(/<\/?p>/g, '');
         },
 
         resetNewPostForm() {
@@ -291,7 +315,8 @@ export default {
         },
 
         deletePost(postID) {
-            const token = this.$store.state.token;
+            //const token = this.$store.state.token;
+            const token = localStorage.getItem('token');
             axios.delete('http://localhost:8080/api/Post/DeletePostByPostID', {
                 params: {
                     token: token,
@@ -302,9 +327,18 @@ export default {
                     this.allPosts = this.allPosts.filter(post => post.postID !== postID);
                     this.filteredPosts = this.filteredPosts.filter(post => post.postID !== postID);
                     this.updateHotPosts();
+                    ElNotification({
+                        title: '成功',
+                        message: '帖子删除成功！',
+                        type: 'success',
+                    });
                 })
                 .catch(error => {
-                    console.error('删除帖子时发生错误:', error);
+                    ElNotification({
+                        title: '错误',
+                        message: '删除帖子时发生错误，请稍后再试。',
+                        type: 'error',
+                    });
                 });
         },
 
@@ -321,6 +355,7 @@ export default {
     },
 };
 </script>
+
 
 <style scoped>
 body {
@@ -339,12 +374,15 @@ body {
     position: absolute;
     top: 0;
     left: 0;
+
+
 }
 
 /* 导航栏样式 */
 .navbar {
-    margin-top: 60px;
+    margin-top: 4.5%;
     background: transparent;
+    background-color: rgba(255, 255, 255, 0.6);
     padding: 10px 0;
     position: absolute;
     width: 830px;
@@ -430,21 +468,23 @@ body {
 }
 
 .forum-container {
+
     display: flex;
     justify-content: space-between;
     padding-top: 60px;
     padding-right: 50px;
     max-width: 100%;
-    margin: 80px auto 0;
+    margin-top:  5%;
     /* 在顶部留出导航栏的空间 */
     overflow: auto;
 }
 
 
 .card {
-    margin-left: 5px;
+    margin-left: 1%;
     width: 400px;
-    background-color: transparent;
+    height: fit-content;
+    background-color: rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     margin-bottom: 10px;
 }
@@ -486,7 +526,7 @@ body {
 }
 
 .post-item {
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.6);
     color: #000;
     padding: 20px;
     margin-bottom: 20px;
@@ -566,16 +606,17 @@ body {
 }
 
 .icon-fire-small {
-    font-size: 16px;
+    font-size: 10px !important;
     /* 小火焰图标的尺寸 */
     margin-right: 8px;
 }
 
 .right-sidebar {
-    margin-right: 5px;
+    margin-right: 1%;
     margin-left: 20px;
     width: 400px;
-    background-color: transparent;
+    height: fit-content;
+    background-color: rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     margin-bottom: 10px;
     width: 25%;
@@ -607,4 +648,17 @@ body {
 .hot-post-title:hover {
     text-decoration: underline;
 }
+
+.post-image {
+    text-align: left;
+    margin: 10px 0;
+}
+
+.post-image .image {
+    width: 200px; /* 固定宽度 */
+    height: auto; /* 高度自动调整以保持比例 */
+    border-radius: 5px;
+    display: inline-block;
+}
+
 </style>

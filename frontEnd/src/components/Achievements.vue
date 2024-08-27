@@ -82,7 +82,7 @@ export default {
   methods: {
     async getUserId() {
       try {
-        const response = await axios.get('http://localhost:5273/api/User/GetUserId');
+        const response = await axios.get('http://localhost:8080/api/User/GetUserId');
         if (response.data.isSuccessful === 'true') {
           this.userId = response.data.userId; // 从响应中获取用户ID
           this.fetchAchievements(); // 获取用户成就
@@ -101,7 +101,7 @@ export default {
       }
 
       try {
-        const response = await axios.get('http://localhost:5273/api/Achievement/GetAchievement', {
+        const response = await axios.get('http://localhost:8080/api/Achievement/GetAchievement', {
           params: { userId: this.userId }
         });
         const achievements = response.data.achievements;

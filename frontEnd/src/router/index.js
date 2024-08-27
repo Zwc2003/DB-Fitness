@@ -32,6 +32,7 @@ const router = createRouter({
   routes: [
     //首页
     {
+      //path: '/',
       path: "/home",
       name: 'home',
       component: HomeView,
@@ -118,7 +119,7 @@ const router = createRouter({
     // 登录界面
     {
       //path: '/login',
-      path: '/login',
+      path: '/',
       name: 'LoginView',
       component: LoginView
     },
