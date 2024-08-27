@@ -258,7 +258,7 @@ export default {
             this.currentPage = val;
         },
         getEquipmentGuide() {
-            axios.get('http://localhost:5273/api/AIGuide/GetALLEquipmentGuide')
+            axios.get('http://localhost:8080/api/AIGuide/GetALLEquipmentGuide')
                 .then(response => {
                     this.allEquipment = [];
                     response.data.guides.forEach(item => {
@@ -281,7 +281,7 @@ export default {
                 operationGuide: this.newEquipment.operationGuide
             }
 
-            axios.post('http://localhost:5273/api/AIGuide/InsertEquipmentGuide', requestData)
+            axios.post('http://localhost:8080/api/AIGuide/InsertEquipmentGuide', requestData)
                 .then(response => {
                     this.newEquipment.lastUpdateTime = new Date(response.data.lastUpdateTime);
                     ElNotification({
@@ -298,7 +298,7 @@ export default {
                 briefIntr: this.currentEquipment.briefIntr,
                 operationGuide: this.currentEquipment.operationGuide,
             }
-            axios.put('http://localhost:5273/api/AIGuide/UpdateEquipmentGuide', requestData)
+            axios.put('http://localhost:8080/api/AIGuide/UpdateEquipmentGuide', requestData)
                 .then(response => {
                     ElNotification({
                         message: response.data.message,
@@ -308,7 +308,7 @@ export default {
                 })
         },
         deleteEquipmentFromDB(equipmentName) {
-            axios.delete('http://localhost:5273/api/AIGuide/DeleteEquipmentGuide', {
+            axios.delete('http://localhost:8080/api/AIGuide/DeleteEquipmentGuide', {
                 params: {
                     equipmentName: equipmentName
                 }

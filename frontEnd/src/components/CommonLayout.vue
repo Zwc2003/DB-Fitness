@@ -4,7 +4,7 @@
       💬
     </div>
     <div class="overlay" @click="toggleChatWindow"></div> <!-- 遮罩层 -->
-      <div class="common-layout">
+      <div class="custom-common-layout">
         <el-container>
           <el-header class="custom-header">
             {{ target.name }}
@@ -107,7 +107,7 @@
 
         toggleChatWindow() {
       const chatButton = document.querySelector('.chat-button');
-      const chatWindow = document.querySelector('.common-layout');
+      const chatWindow = document.querySelector('.custom-common-layout');
       const overlay = document.querySelector('.overlay');
       const isVisible = chatWindow.style.display === 'block';
 
@@ -312,7 +312,7 @@
     display: none; /* 默认隐藏 */
 }
 
-.common-layout {
+.custom-common-layout {
     position: fixed;
     top: var(--start-top, 50%); /* 动态设置起始点 */
     left: var(--start-left, 50%); /* 动态设置起始点 */
@@ -331,7 +331,7 @@
     transform-origin: center center; /* 使动画从中心展开 */
 }
 
-.common-layout.open {
+.custom-common-layout.open {
     top: 50%; /* 最终位置为屏幕中央 */
     left: 50%;
     transform: translate(-50%, -50%) scale(1); /* 展开至全屏中央 */

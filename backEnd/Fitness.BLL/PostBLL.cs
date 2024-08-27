@@ -1,6 +1,7 @@
 ﻿using Fitness.BLL.Core;
 using Fitness.BLL.Interfaces;
 using Fitness.DAL;
+using Fitness.DAL.Core;
 using Fitness.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,6 +31,14 @@ namespace Fitness.BLL
             //post.refrencePostID = -1;
             int st;
             post.userName = UserDAL.GetUserByUserID(tokenRes.userID,out st).userName;
+            // 使用时间戳创建唯一的 objectName
+            long timestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1)).Ticks / TimeSpan.TicksPerMillisecond;
+            string objectName = $"{post.userID}_{timestamp}.png";
+            int base64Index = post.imgUrl.IndexOf("base64,") + 7;
+            post.imgUrl = post.imgUrl.Substring(base64Index);
+            OSSHelper.UploadBase64ImageToOss(post.imgUrl, objectName);
+            post.imgUrl = OSSHelper.GetPublicObjectUrl(objectName);
+
             int postId = PostDAL.Post(post);
             if (postId == 0)
             {
@@ -44,6 +53,9 @@ namespace Fitness.BLL
             publish.postID = postId;
             publish.userID = post.userID;
             publish.publishTime = post.postTime;
+
+            
+
             //Console.WriteLine(publish.postID);
             PublishDAL.Post(publish);
             return JsonConvert.SerializeObject(new
@@ -96,7 +108,8 @@ namespace Fitness.BLL
                         likesCount = Convert.ToInt32(row["likesCount"]),
                         forwardCount = Convert.ToInt32(row["forwardCount"]),
                         commentsCount = Convert.ToInt32(row["commentsCount"]),
-                        userName = row["userName"].ToString()
+                        userName = row["userName"].ToString(),
+                        imgUrl = row["imgUrl"].ToString()
                     });
                 }
 
@@ -133,7 +146,8 @@ namespace Fitness.BLL
                         likesCount = Convert.ToInt32(row["likesCount"]),
                         forwardCount = Convert.ToInt32(row["forwardCount"]),
                         commentsCount = Convert.ToInt32(row["commentsCount"]),
-                        userName = row["userName"].ToString()
+                        userName = row["userName"].ToString(),
+                        imgUrl = row["imgUrl"].ToString()
                     });
                 }
 

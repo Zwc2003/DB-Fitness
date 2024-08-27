@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Reflection.PortableExecutable;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Hosting;
 
 namespace Fitness.DAL
 {
@@ -213,6 +214,8 @@ namespace Fitness.DAL
                 if (expanduserInfo.iconURL != "null" && !UrlHelper.IsUrl(expanduserInfo.iconURL))
                 {
                     string object_name = "user" + userID + "_icon" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png";
+                    int base64Index = expanduserInfo.iconURL.IndexOf("base64,") + 7;
+                    expanduserInfo.iconURL = expanduserInfo.iconURL.Substring(base64Index);
                     OSSHelper.UploadBase64ImageToOss(expanduserInfo.iconURL, object_name);
                     iconUrl = OSSHelper.GetPublicObjectUrl(object_name);
                 }

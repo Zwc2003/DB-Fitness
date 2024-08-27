@@ -143,7 +143,7 @@ const titles=["第一周","第二周", "第三周", "第四周"];
 const loading = ref(true);
 function loadWeeksData() {
   loading.value = true;
-  axios.get('http://localhost:5000/api/FitnessPlan/GetPlan',
+  axios.get('http://localhost:8080/api/FitnessPlan/GetPlan',
       {
           params: {
             token: localStorage.getItem('token')

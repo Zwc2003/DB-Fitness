@@ -210,6 +210,7 @@ namespace Fitness.BLL
                 else
                     return "身份权限不符";
             }
+
             public string CancelbanPost(string token, int userID) //可以设置禁止发帖的天数
             {
                 TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);

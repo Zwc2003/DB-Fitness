@@ -3,7 +3,7 @@
         <div class="logo-container">
             <img src="../assets/logo.png" alt="FitFit" class="logo">
         </div>
-        <div class="wrapper" >
+        <div class="wrapper">
             <nav>
                 <input type="radio" name="tab" id="home" :checked="$route.path === '/home'">
                 <input type="radio" name="tab" id="equipment" :checked="$route.path === '/equipment'">
@@ -116,7 +116,7 @@
                 <img src="../assets/user.jpeg" alt="User" class="dropdownlink">
                 <template #dropdown>
                     <el-dropdown-menu>
-                        <el-dropdown-item>
+                        <el-dropdown-item @click="navigateToUserProfile">
                             <el-icon>
                                 <Setting />
                             </el-icon>
@@ -159,6 +159,10 @@ export default {
             setTimeout(() => {
                 this.router().push(target);
             }, 500);
+        },
+        navigateToUserProfile() {
+            const userID = this.$store.state.userID; // 假设userID保存在Vuex的state中
+            this.router().push(`/user/${userID}`);
         },
         watchScroll() {
             var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
@@ -275,10 +279,9 @@ body {
 .wrapper nav #course:checked~label.course a,
 .wrapper nav #plan:checked~label.plan a,
 .wrapper nav #chat:checked~label.chat a,
-.wrapper nav #healthyDiet:checked~label.healthyDiet a
-{
+.wrapper nav #healthyDiet:checked~label.healthyDiet a {
     color: #fff;
-    transition:0.6s;
+    transition: 0.6s;
 }
 
 .wrapper nav #equipment:checked~.tab {
@@ -316,9 +319,11 @@ body {
 .wrapper nav #healthyDiet:checked~.tab {
     left: 88%;
 }
+
 .wrapper nav #mealPlanner:checked~.tab {
     left: 88%;
 }
+
 .wrapper nav #mealRecord:checked~.tab {
     left: 88%;
 }
@@ -348,12 +353,15 @@ body {
 }
 
 @media (min-width: 1024px) {
-        #app {
-    display: flex;
-    justify-content: center; /* 水平居中 */
-    align-items: center; /* 垂直居中 */
-    height: 100vh; /* 父容器的高度占满整个视口 */
-  }
+    #app {
+        display: flex;
+        justify-content: center;
+        /* 水平居中 */
+        align-items: center;
+        /* 垂直居中 */
+        height: 100vh;
+        /* 父容器的高度占满整个视口 */
+    }
 }
 
 .navBarWrap {

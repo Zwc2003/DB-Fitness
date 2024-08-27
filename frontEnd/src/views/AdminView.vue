@@ -46,7 +46,7 @@
                     </div>
                 </el-header>
                 <el-container>
-                    <el-aside width="200px">
+                    <el-aside width="200px" :style="{ height: 'calc(100vh - 50px)'}">
                         <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen"
                             @close="handleClose">
                             <el-menu-item index="1" @click="active = 1">
@@ -63,7 +63,7 @@
                             </el-menu-item>
                         </el-menu>
                     </el-aside>
-                    <el-main>
+                    <el-main :style="{ height: 'calc(100vh - 50px)' }">
                         <!-- 用户管理界面 -->
                         <div v-if="active == 1">
                             <el-input v-model="searchQuery" placeholder="搜索用户ID或用户名" clearable class="search-box" />
@@ -71,9 +71,9 @@
                                 <el-table-column prop="userName" label="用户名"></el-table-column>
                                 <el-table-column prop="userID" label="用户ID"></el-table-column>
                                 <el-table-column prop="isMember" label="是否会员">
-                                <template #default="{ row }">
-                                    {{ row.isMember === 1 ? '是' : '否' }}
-                                </template>
+                                    <template #default="{ row }">
+                                        {{ row.isMember === 1 ? '是' : '否' }}
+                                    </template>
                                 </el-table-column>
 
                                 <el-table-column prop="status" label="状态">
@@ -84,8 +84,10 @@
                                 </el-table-column>
                                 <el-table-column fixed="right" label="操作" width="250">
                                     <template #default="{ row }">
-                                        <el-button size="small" type="danger" @click="restrictUser(row)"
-                                            :disabled="row.status !== '正常'">限制言论</el-button>
+                                        <el-button size="small" :type="row.status === '已禁言' ? 'primary' : 'danger'"
+                                            @click="row.status === '正常' ? restrictUser(row) : cancelBanUser(row)">
+                                            {{ row.status === '已禁言' ? '取消禁言' : '限制言论' }}
+                                        </el-button>
                                         <el-button size="small" type="warning" @click="deactivateUser(row)"
                                             :disabled="row.status === '已删除'">删除用户</el-button>
                                     </template>
@@ -137,6 +139,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from "vue-router";
 import axios from 'axios';
+import { ElNotification } from 'element-plus';
 import { House, UserFilled, Setting, SwitchButton } from '@element-plus/icons-vue';
 import { IconMenu } from '@arco-design/web-vue/es/icon';
 
@@ -174,7 +177,11 @@ async function fetchUsers() {
             user.status = '正常';
         });
     } catch (error) {
-        console.error('获取用户信息失败', error);
+        ElNotification({
+            title: '错误',
+            message: '获取用户信息失败，请稍后再试。',
+            type: 'error',
+        });
     }
 }
 
@@ -188,7 +195,11 @@ async function fetchPosts() {
             post.status = '正常';
         });
     } catch (error) {
-        console.error('获取帖子信息失败', error);
+        ElNotification({
+            title: '错误',
+            message: '获取帖子信息失败，请稍后再试。',
+            type: 'error',
+        });
     }
 }
 
@@ -237,10 +248,43 @@ async function restrictUser(user) {
         });
         if (response.data === '禁言成功') {
             user.status = '已禁言';
+            ElNotification({
+                title: '成功',
+                message: `用户 ${user.userName} 已成功禁言。`,
+                type: 'success',
+            });
         }
-        console.log(`限制用户 ${user.userName} 的言论: ${response.data}`);
     } catch (error) {
-        console.error('限制用户言论失败', error);
+        ElNotification({
+            title: '错误',
+            message: '限制用户言论失败，请稍后再试。',
+            type: 'error',
+        });
+    }
+}
+
+async function cancelBanUser(user) {
+    try {
+        const response = await axios.get('http://localhost:8080/api/User/CancelBanUser', {
+            params: {
+                token: localStorage.getItem('token'),
+                userID: user.userID,
+            }
+        });
+        if (response.data === '取消禁言成功') {
+            user.status = '正常';
+            ElNotification({
+                title: '成功',
+                message: `用户 ${user.userName} 已成功取消禁言。`,
+                type: 'success',
+            });
+        }
+    } catch (error) {
+        ElNotification({
+            title: '错误',
+            message: '取消禁言失败，请稍后再试。',
+            type: 'error',
+        });
     }
 }
 
@@ -254,10 +298,18 @@ async function deactivateUser(user) {
         });
         if (response.data === '删除成功') {
             user.status = '已删除';
+            ElNotification({
+                title: '成功',
+                message: `用户 ${user.userName} 已成功删除。`,
+                type: 'success',
+            });
         }
-        console.log(`删除用户 ${user.userName}: ${response.data}`);
     } catch (error) {
-        console.error('删除用户失败', error);
+        ElNotification({
+            title: '错误',
+            message: '删除用户失败，请稍后再试。',
+            type: 'error',
+        });
     }
 }
 
@@ -274,6 +326,11 @@ async function deleteContent(content) {
             });
             if (response.data.message === '删除帖子成功') {
                 content.status = '已删除';
+                ElNotification({
+                    title: '成功',
+                    message: `帖子 ${content.postTitle} 已成功删除。`,
+                    type: 'success',
+                });
             }
         } else if (content.commentID) {
             response = await axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
@@ -284,11 +341,19 @@ async function deleteContent(content) {
             })
             if (response.data === '评论删除成功') {
                 content.status = '已删除';
+                ElNotification({
+                    title: '成功',
+                    message: '评论已成功删除。',
+                    type: 'success',
+                });
             }
         }
-        console.log(`删除内容成功: ${response.data.message}`);
     } catch (error) {
-        console.error('删除内容失败', error);
+        ElNotification({
+            title: '错误',
+            message: '删除内容失败，请稍后再试。',
+            type: 'error',
+        });
     }
 }
 
@@ -335,7 +400,7 @@ const goPage = (path) => {
     background-size: cover;
     background-position: center;
     width: 100%;
-    height: 100vh;
+    min-height: 101%;
     position: absolute;
     top: 0;
     left: 0;
@@ -369,9 +434,9 @@ const goPage = (path) => {
 }
 
 .dropdownlink {
-    width: 40px;
+    width: 50px;
     /* 调整用户头像尺寸 */
-    height: 40px;
+    height: 50px;
     border-radius: 50%;
 }
 

@@ -26,6 +26,7 @@ builder.Services.AddSingleton<ICourseBLL, CourseBLL>();
 builder.Services.AddSingleton<IPostBLL, PostBLL>();
 builder.Services.AddSingleton<ICommentBLL, CommentBLL>();
 builder.Services.AddSingleton<IMessageBLL, MessageBLL>();
+builder.Services.AddSingleton<IVigorTokenBLL, VigorTokenBLL>();
 
 //Ìí¼Ó IMemoryCache ·þÎñ
 builder.Services.AddMemoryCache();

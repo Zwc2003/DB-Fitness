@@ -169,7 +169,7 @@ export default defineComponent({
     return true;
 },
         getFoodFromDB() {
-            axios.get('http://localhost:5273/api/MealPlans/GetFoodsInfo')
+            axios.get('http://localhost:8080/api/MealPlans/GetFoodsInfo')
                 .then(response => {
                     console.log(response.data.foodsInfo);
                     response.data.foodsInfo.forEach(item => {
@@ -185,7 +185,7 @@ export default defineComponent({
                 calorie: food.calorie,
             };
             console.log('send', requestData);
-            axios.post('http://localhost:5273/api/MealPlans/InsertFoodInfo', requestData)
+            axios.post('http://localhost:8080/api/MealPlans/InsertFoodInfo', requestData)
                 .then(response => {
                     console.log(response.data.message);
                     // 显示通知
@@ -202,7 +202,7 @@ export default defineComponent({
                 calorie: food.calorie,
             };
             console.log(requestData);
-            axios.put('http://localhost:5273/api/MealPlans/UpdateFoodInfo', requestData)
+            axios.put('http://localhost:8080/api/MealPlans/UpdateFoodInfo', requestData)
                 .then(response => {
                     console.log(response.data.message);
                     // 显示通知
@@ -214,7 +214,7 @@ export default defineComponent({
                 });
         },
         deleteFood(foodName) {
-            axios.delete('http://localhost:5273/api/MealPlans/DeleteFoodInfo', {
+            axios.delete('http://localhost:8080/api/MealPlans/DeleteFoodInfo', {
                 params: {
                     foodName: foodName,
                 },

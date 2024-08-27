@@ -43,9 +43,9 @@ namespace Fitness.DAL
         public static int Post(Post post)
         {
             string query = "INSERT INTO \"Posts\" " +
-                             "(\"userID\", \"postTitle\", \"postContent\", \"postCategory\", \"postTime\", \"likesCount\", \"forwardCount\", \"commentsCount\",\"refrencePostID\",\"userName\") " +
+                             "(\"userID\", \"postTitle\", \"postContent\", \"postCategory\", \"postTime\", \"likesCount\", \"forwardCount\", \"commentsCount\",\"refrencePostID\",\"userName\",\"imgUrl\") " +
                              "VALUES "+
-                             "(:userID, :postTitle, :postContent, :postCategory, :postTime, :likesCount, :forwardCount, :commentsCount,:refrencePostID, :userName) "+
+                             "(:userID, :postTitle, :postContent, :postCategory, :postTime, :likesCount, :forwardCount, :commentsCount,:refrencePostID, :userName, :imgUrl) "+
                              "RETURNING \"postID\" INTO :postID";
 
             OracleParameter[] parameters = new OracleParameter[]
@@ -60,6 +60,7 @@ namespace Fitness.DAL
                 new OracleParameter("commentsCount", OracleDbType.Int32) { Value = post.commentsCount },
                 new OracleParameter("refrencePostID", OracleDbType.Int32) { Value = post.refrencePostID },
                 new OracleParameter("userName",OracleDbType.NVarchar2){Value =post.userName},
+                new OracleParameter("imgUrl",OracleDbType.Clob){Value =post.imgUrl},
                 new OracleParameter("postID", OracleDbType.Int32, ParameterDirection.Output)
             };
 
@@ -67,7 +68,7 @@ namespace Fitness.DAL
             {
                 OracleHelper.ExecuteNonQuery(query, null, parameters);
                 //var oracleInt = Convert.ToInt32(parameters[9].Value);
-                OracleDecimal  oracleInt = (OracleDecimal)parameters[10].Value;
+                OracleDecimal  oracleInt = (OracleDecimal)parameters[11].Value;
                 return oracleInt.ToInt32();
             }
             catch (Exception ex)
@@ -89,7 +90,7 @@ namespace Fitness.DAL
 
         public static DataTable GetByUserID(int userId)
         {
-            string selectCommand = "SELECT * FROM \"Posts\" WHERE \"userID\" = :userID ORDER BY postTime DESC";
+            string selectCommand = "SELECT * FROM \"Posts\" WHERE \"userID\" = :userID ORDER BY \"postTime\" DESC";
             OracleParameter[] parameters = new OracleParameter[]
             {
                 new OracleParameter("userID", OracleDbType.Int32) { Value = userId }
@@ -257,7 +258,8 @@ namespace Fitness.DAL
                 likesCount = Convert.ToInt32(row["likesCount"]),
                 forwardCount = Convert.ToInt32(row["forwardCount"]),
                 commentsCount = Convert.ToInt32(row["commentsCount"]),
-                userName = row["userName"].ToString()
+                userName = row["userName"].ToString(),
+                imgUrl = row["imgUrl"].ToString()
             };
             return post;
         }
