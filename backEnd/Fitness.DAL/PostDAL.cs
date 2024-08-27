@@ -31,7 +31,8 @@ namespace Fitness.DAL
                     forwardCount = Convert.ToInt32(row["forwardCount"]),
                     commentsCount = Convert.ToInt32(row["commentsCount"]),
                     refrencePostID = Convert.ToInt32(row["refrencePostID"]),
-                    userName = row["userName"].ToString()
+                    userName = row["userName"].ToString(),
+                    imgUrl = row["imgUrl"].ToString()
                 };
                 posts.Add(post);
             }
