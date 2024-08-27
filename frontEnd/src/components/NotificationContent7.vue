@@ -87,7 +87,7 @@ const md = new MarkdownIt({
 
 const fetchGuide = async () => {
   try {
-    const response = await axios.get('http://localhost:5273/api/AIGuide/GetEquipmentGuide', {
+    const response = await axios.get('http://localhost:8080/api/AIGuide/GetEquipmentGuide', {
       params: { equipmentName: props.equipmentName } // 使用从 props 接收的 equipmentName
     })
     guide.value = response.data.operationGuide
@@ -142,7 +142,7 @@ const handleSearch = () => {
 
     // 使用EventSource处理流式输出
     const encodedMessages = encodeURIComponent(JSON.stringify(messageArray));
-    const eventSource = new EventSource(`http://localhost:5273/api/AIGuide/LLM?equipmentName=${props.equipmentName}&messages=${encodedMessages}`);
+    const eventSource = new EventSource(`http://localhost:8080/api/AIGuide/LLM?equipmentName=${props.equipmentName}&messages=${encodedMessages}`);
 
     let assistantMessage = {
         content: '',

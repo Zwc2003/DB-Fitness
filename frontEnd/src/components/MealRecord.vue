@@ -596,7 +596,7 @@ export default {
     // 获取活力币余额
     getVigorTokenBalance() {
       const token = localStorage.getItem('token');
-      axios.get(`http://localhost:5273/api/User/GetVigorTokenBalance?token=${token}`)
+      axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`)
         .then(response => {
           this.vigorTokenBalance = response.data.balance;
           }).catch(error => {
@@ -616,7 +616,7 @@ export default {
       };
       const token = localStorage.getItem('token');
       console.log("创建 ", requestData);
-      axios.post(`http://localhost:5273/api/MealRecords/Create?token=${token}`, requestData)
+      axios.post(`http://localhost:8080/api/MealRecords/Create?token=${token}`, requestData)
         .then(response => {
           console.log(response.data.message);
           ElNotification({
@@ -645,7 +645,7 @@ export default {
     getAISuggestions(recordID) {
       console.log("获取AI建议 for recordID:", recordID);
       //const token = localStorage.getItem('token');
-      axios.get(`http://localhost:5273/api/MealRecords/AISuggestions`, {
+      axios.get(`http://localhost:8080/api/MealRecords/AISuggestions`, {
         params: {
           recordID: recordID,
         }
@@ -669,7 +669,7 @@ export default {
       const date = this.formatDate(this.selectedDate);
       console.log(/*userID,*/ date);
       const token = localStorage.getItem('token');
-      axios.get(`http://localhost:5273/api/MealRecords/GetAISummary?token=${token}`, {
+      axios.get(`http://localhost:8080/api/MealRecords/GetAISummary?token=${token}`, {
         params: {
           //userID: userID,
           date: date
@@ -687,7 +687,7 @@ export default {
     // 得到食物函数
     getFoodFromDB() {
       //const token = localStorage.getItem('token');
-      axios.get(`http://localhost:5273/api/MealPlans/GetFoodsInfo`)
+      axios.get(`http://localhost:8080/api/MealPlans/GetFoodsInfo`)
         .then(response => {
           console.log(response.data.foodsInfo);
           this.food = response.data.foodsInfo.map(item => ({
@@ -701,7 +701,7 @@ export default {
       date = this.formatDate(date);
       console.log(date);
       const token = localStorage.getItem('token');
-      axios.get(`http://localhost:5273/api/MealRecords/GetAllDetails?token=${token}`,
+      axios.get(`http://localhost:8080/api/MealRecords/GetAllDetails?token=${token}`,
         {
           params: {
             //userID: userID,
@@ -743,7 +743,7 @@ export default {
         recordID: planContent.recordID
       };
       console.log("更新", requestData);
-      axios.put(`http://localhost:5273/api/MealRecords/Update`, requestData)
+      axios.put(`http://localhost:8080/api/MealRecords/Update`, requestData)
         .then(response => {
           console.log(response.data.message);
           ElNotification({
@@ -766,7 +766,7 @@ export default {
     },
     // 删除计划函数
     deleteRecordInDB(/*userID,*/ recordID) {
-      axios.delete(`http://localhost:5273/api/Mealrecords/Delete`, {
+      axios.delete(`http://localhost:8080/api/Mealrecords/Delete`, {
         params: {
           recordID: recordID
         }

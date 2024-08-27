@@ -46,7 +46,7 @@
                     </div>
                 </el-header>
                 <el-container>
-                    <el-aside width="200px">
+                    <el-aside width="200px" :style="{ height: 'calc(100vh - 50px)'}">
                         <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen"
                             @close="handleClose">
                             <el-menu-item index="1" @click="active = 1">
@@ -63,7 +63,7 @@
                             </el-menu-item>
                         </el-menu>
                     </el-aside>
-                    <el-main>
+                    <el-main :style="{ height: 'calc(100vh - 50px)' }">
                         <!-- 用户管理界面 -->
                         <div v-if="active == 1">
                             <el-input v-model="searchQuery" placeholder="搜索用户ID或用户名" clearable class="search-box" />
@@ -400,7 +400,7 @@ const goPage = (path) => {
     background-size: cover;
     background-position: center;
     width: 100%;
-    height: 100vh;
+    min-height: 101%;
     position: absolute;
     top: 0;
     left: 0;
@@ -434,9 +434,9 @@ const goPage = (path) => {
 }
 
 .dropdownlink {
-    width: 40px;
+    width: 50px;
     /* 调整用户头像尺寸 */
-    height: 40px;
+    height: 50px;
     border-radius: 50%;
 }
 

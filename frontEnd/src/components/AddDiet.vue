@@ -271,7 +271,7 @@ export default {
 
         // 得到食谱函数
         getRecipeFromDB() {
-            axios.get('http://localhost:5273/api/MealPlans/GetAllRecipes')
+            axios.get('http://localhost:8080/api/MealPlans/GetAllRecipes')
                 .then(response => {
                     this.allRecipe = [];
                     response.data.recipes.forEach(item => {
@@ -294,7 +294,7 @@ export default {
                 content: this.recipe.content
             }
             console.log(requestData);
-            axios.post('http://localhost:5273/api/MealPlans/InsertRecipe', requestData)
+            axios.post('http://localhost:8080/api/MealPlans/InsertRecipe', requestData)
                 .then(response => {
                     this.recipe.recipeID = response.data.recipeID;
                     this.recipe.releaseTime = new Date(response.data.releaseTime);
@@ -316,7 +316,7 @@ export default {
                 content: this.currentRecipe.content,
             }
             console.log(requestData);
-            axios.put('http://localhost:5273/api/MealPlans/UpdateRecipe', requestData)
+            axios.put('http://localhost:8080/api/MealPlans/UpdateRecipe', requestData)
                 .then(response => {
                     console.log(response.data.message);
                     // 显示通知
@@ -329,7 +329,7 @@ export default {
         },
         // 删除食物
         deleteRecipe(recipeID) {
-            axios.delete('http://localhost:5273/api/MealPlans/DeleteRecipe', {
+            axios.delete('http://localhost:8080/api/MealPlans/DeleteRecipe', {
                 params: {
                     recipeID: recipeID
                 }

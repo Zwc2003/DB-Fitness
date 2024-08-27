@@ -1,5 +1,6 @@
 //import { l } from 'vite/dist/node/types.d-aGj9QkWt';
 import { createStore } from 'vuex'
+import axios from 'axios';
 
 // 在 store.js 中
 export default createStore({
@@ -188,7 +189,7 @@ export default createStore({
         try {
           const response = await axios.get(`http://localhost:8080/api/User/GetPersonalProfile?token=${state.token}`);
           const newIsPost = response.data.isPost;
-
+          console.log("isPost",newIsPost)
           if (newIsPost !== state.isPost) {
             commit('setIsPost', newIsPost);
           }
@@ -199,6 +200,6 @@ export default createStore({
     },
   },
   modules: {
-    // 在这里可以添加模块
+    // 在这里可以添加模块pollIsPost
   },
 });

@@ -442,7 +442,7 @@ export default {
       // 生成随机的更新间隔，例如1到5秒之间
       let randomTimeout = Math.floor(Math.random() * 250) + 50
       this.refreshProgress(randomTimeout)
-      axios.post(`http://localhost:5273/api/AIGuide/Create?token=${token}`, requestData)
+      axios.post(`http://localhost:8080/api/AIGuide/Create?token=${token}`, requestData)
         .then(response => {
           this.screenshotsCurrent.screenshotID = response.data.screenshotID
           this.screenshotsCurrent.createTime = new Date(response.data.createTime)
@@ -457,7 +457,7 @@ export default {
     },
     getAISuggestions(screenshotID) {
       console.log('获取AI建议 for screenshotID:', screenshotID)
-      axios.get(`http://localhost:5273/api/AIGuide/GetAISuggestion/`, {
+      axios.get(`http://localhost:8080/api/AIGuide/GetAISuggestion/`, {
         params: {
           screenshotID: screenshotID
         }
@@ -487,7 +487,7 @@ export default {
     },
     getScreenshotFromDB() {
       const token = localStorage.getItem('token');
-      axios.get(`http://localhost:5273/api/AIGuide/GetAllDetails?token=${token}`)
+      axios.get(`http://localhost:8080/api/AIGuide/GetAllDetails?token=${token}`)
         .then(response => {
           console.log(response.data.suggestions)
           response.data.suggestions.forEach(item => {
@@ -504,7 +504,7 @@ export default {
     },
     deleteScreenshot(screenshot) {
       // 查找并删除匹配项
-      axios.delete(`http://localhost:5273/api/AIGuide/Delete`, {
+      axios.delete(`http://localhost:8080/api/AIGuide/Delete`, {
         params: {
           screenshotID: screenshot.screenshotID
         }
@@ -531,7 +531,7 @@ export default {
     // 获取活力币余额
     getVigorTokenBalance() {
       const token = localStorage.getItem('token');
-      axios.get(`http://localhost:5273/api/User/GetVigorTokenBalancetoken=${token}`)
+      axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance=${token}`)
         .then(response => {
           this.vigorTokenBalance = response.data.balance;
           })
@@ -713,8 +713,8 @@ export default {
 .container {
   background: url("./src/assets/bg5.jpg") no-repeat center;
   background-size: cover;
-  width: 2000px;
-  margin-top: 5%; /* 上下5%的间距，水平居中 */
+  width: 100vw;
+  margin-top: 2%; /* 上下5%的间距，水平居中 */
   height: 85vh;
 
 }

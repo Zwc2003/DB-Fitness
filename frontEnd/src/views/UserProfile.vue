@@ -193,8 +193,9 @@ export default {
     created() {
         this.fetchUserProfile();
         this.fetchUserPosts();
-        this.getVigorTokenRecordsFromDB();
         this.getVigorTokenBalance();
+        this.getVigorTokenRecordsFromDB();
+
     },
     methods: {
         goBack() {
@@ -203,7 +204,7 @@ export default {
         async fetchUserProfile() {
             const token = localStorage.getItem('token');
             try {
-                const response = await axios.get(`http://localhost:5273/api/User/GetPersonalProfile?token=${token}`);
+                const response = await axios.get(`http://localhost:8080/api/User/GetPersonalProfile?token=${token}`);
                 this.profile = response.data;
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
                 ElNotification({
@@ -222,7 +223,7 @@ export default {
         async fetchUserPosts() {
             const token = localStorage.getItem('token');
             try {
-                const response = await axios.get(`http://localhost:5273/api/Post/GetPersonalPost?token=${token}`);
+                const response = await axios.get(`http://localhost:8080/api/Post/GetPersonalPost?token=${token}`);
                 this.posts = response.data;
                 ElNotification({
                     title: '成功',
@@ -295,7 +296,7 @@ export default {
         },
         async saveProfile() {
             try {
-                const response = await axios.put('http://localhost:5273/api/User/UpdateProfile', {
+                const response = await axios.put('http://localhost:8080/api/User/UpdateProfile', {
                     userID: this.profile.userID,
                     userName: this.profile.nickname,
                     password: this.profile.password,
@@ -331,10 +332,10 @@ export default {
                 });
             }
         },
-        getVigorTokenBalance() {
+        async getVigorTokenBalance() {
             const token = localStorage.getItem('token');
             try {
-                const response = axios.get(`http://localhost:5273/api/User/GetVigorTokenBalance?token=${token}`);
+                const response = await axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`);
                 this.vigorTokenBalance = response.data.balance;
                 ElNotification({
                     title: '成功',
@@ -344,15 +345,15 @@ export default {
             } catch (error) {
                 ElNotification({
                     title: '错误',
-                    message: '获取活力币余额失败',
+                    message: '获取活力币余额失败:',
                     type: 'error',
                 });
             }
         },
-        getVigorTokenRecordsFromDB() {
+        async getVigorTokenRecordsFromDB() {
             const token = localStorage.getItem('token');
             try {
-                const response = axios.get(`http://localhost:5273/api/User/GetVigorTokenRecords?token=${token}`);
+                const response =await axios.get(`http://localhost:8080/api/User/GetVigorTokenReacords?token=${token}`);
                 response.data.records.forEach(item => {
                     const record = {
                         recordID: item.recordID,
@@ -533,15 +534,17 @@ export default {
 
 
 p {
-    height: 40px;
+    height: 50px;
     margin: 5px 0;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: transparent;
     font-size: 20px;
+    text-align: left;
     color: #333;
     line-height: 24px;
+    overflow: auto;
 }
 
 .profile-editor,
@@ -635,6 +638,8 @@ select {
 /* 新增的帖子列表样式 */
 .post-list {
     margin-top: 20px;
+    max-height: 30vh;
+    overflow: auto;
 }
 
 .post-item {
@@ -645,6 +650,7 @@ select {
 .post-item h4 {
     margin: 0;
     font-size: 18px;
+    text-align: left;
 }
 
 .post-item p {

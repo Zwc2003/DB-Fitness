@@ -1,12 +1,12 @@
 <template>
     <div class="forum-bg">
-        <el-backtop class="backtop-button"/>
+        <el-backtop class="backtop-button" />
         <div class="back-button-container">
-          <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
-            <el-icon>
-              <arrow-left />
-            </el-icon>
-          </el-button>
+            <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
+                <el-icon>
+                    <arrow-left />
+                </el-icon>
+            </el-button>
         </div>
 
         <!-- 相关帖子推荐 -->
@@ -38,7 +38,7 @@
 
             <!-- 显示图片（如果存在） -->
             <div v-if="post.imgUrl" class="post-image">
-                <img :src="post.imgUrl" alt="Post Image" class="image"/>
+                <img :src="post.imgUrl" alt="Post Image" class="image" />
             </div>
 
             <div class="post-content">
@@ -115,28 +115,27 @@
             </div>
         </div>
 
-        <!-- 热帖推荐 -->
-        <el-card class="right-sidebar">
-            <div class="hot-posts-section">
-                <el-row class="row">
-                    <el-col :span="4">
-                        <icon-fire />
-                    </el-col>
-                    <el-col :span="20">
-                        <el-text class="title">热帖推荐</el-text>
-                    </el-col>
-                </el-row>
-                <div class="hot-posts-content">
-                    <el-divider />
-                    <el-text v-for="hotPost in hotPosts" :key="hotPost.postID" @click="goToPost(hotPost.postID)"
-                        class="hot-post-title">
-                        <icon-fire class="icon-fire-small" /> {{ hotPost.postTitle }}
-                        <el-divider />
-                    </el-text>
 
-                </div>
-            </div>
-        </el-card>
+<!-- 热帖推荐 -->
+        <div class="right-sidebar">
+                <div class="hot-posts-section">
+                    <el-row class="row">
+                        <el-col :span="4">
+                            <icon-fire />
+                        </el-col>
+                        <el-col :span="20">
+                            <el-text class="title">热帖推荐</el-text>
+                        </el-col>
+                    </el-row>
+                    <div class="hot-posts-content">
+                        <el-divider />
+                        <el-text v-for="hotPost in hotPosts" :key="hotPost.postID" @click="goToPost(hotPost.postID)" class="hot-post-title">
+                            <icon-fire class="icon-fire-small" /> {{ hotPost.postTitle }}
+                        </el-text>
+                        <el-divider />
+                    </div>
+                </div>
+            </div>
 
         <!-- 分享弹窗 -->
         <el-dialog title="分享帖子" :visible="shareDialogVisible" width="30%" v-model="shareDialogVisible">
@@ -172,7 +171,6 @@ import axios from 'axios';
 import { ElNotification } from 'element-plus';
 import { IconArrowLeft, IconFire } from '@arco-design/web-vue/es/icon';
 import { EmojiButton } from '@joeattardi/emoji-button';
-import { colProps } from 'element-plus';
 
 export default {
     components: {
@@ -213,6 +211,15 @@ export default {
         });
         this.emojiPicker.on('emoji', selection => {
             this.newCommentText += selection.emoji;
+        });
+
+        // 强制重新应用图标样式
+        this.$nextTick(() => {
+            document.querySelectorAll('.icon-fire-small').forEach(icon => {
+                icon.style.fontSize = '10px';
+                icon.style.width = '10px';
+                icon.style.height = '10px';
+            });
         });
     },
     created() {
@@ -916,6 +923,7 @@ textarea {
     font-weight: bolder;
     color: #000;
     padding-left: 0;
+    text-align: left;
 }
 
 .related-post-title,
@@ -924,6 +932,7 @@ textarea {
     color: #007bff;
     cursor: pointer;
     padding-left: 16px;
+    text-align: left;
 }
 
 .related-post-title:hover,
@@ -949,17 +958,17 @@ textarea {
 
 .right-sidebar {
     margin-top: 65px;
-    margin-right:1%;
+    margin-right: 1%;
     width: 300px;
     height: max-content;
     background-color: transparent;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.5) ;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.5);
     background-color: rgba(255, 255, 255, 0.5);
     margin-bottom: 10px;
     padding-left: 0;
     display: flex;
     flex-direction: column;
-    align-text: left;
+    text-align: left;
 }
 
 .hot-posts-content {
@@ -969,7 +978,12 @@ textarea {
 
 .icon-fire-small {
     font-size: 10px !important;
+    width: 10px !important;
+    height: 10px !important;
     margin-right: 8px;
+    display: inline-block;
+    line-height: 1;
+    /* 确保图标的高度不会因为行高影响 */
 }
 
 /* 新增样式 */
@@ -988,46 +1002,53 @@ textarea {
 }
 
 .post-image {
-    text-align: center; /* 图片居中显示 */
-    margin-bottom: 20px; /* 图片和内容之间的间距 */
+    text-align: center;
+    /* 图片居中显示 */
+    margin-bottom: 20px;
+    /* 图片和内容之间的间距 */
 }
 
 .post-image .image {
     width: 40%;
-    max-width: 100%; /* 图片自适应容器宽度 */
+    max-width: 100%;
+    /* 图片自适应容器宽度 */
     height: auto;
     border-radius: 5px;
 }
 
 .post-content {
-    text-align: left; /* 内容靠左显示 */
-    margin-top: 0; /* 去除顶部间距 */
-    padding: 10px 0; /* 为内容部分添加上下间距 */
+    text-align: left;
+    /* 内容靠左显示 */
+    margin-top: 0;
+    /* 去除顶部间距 */
+    padding: 10px 0;
+    /* 为内容部分添加上下间距 */
 }
 
 .back-button-container {
-  position: absolute;
-  top: 1vh;
-  /* 调整为你需要的上边距 */
-  left: 1vw;
-  /* 调整为你需要的左边距 */
-  z-index: 1000;
-  /* 确保按钮在日历表之上 */
+    position: absolute;
+    top: 1vh;
+    /* 调整为你需要的上边距 */
+    left: 1vw;
+    /* 调整为你需要的左边距 */
+    z-index: 1000;
+    /* 确保按钮在日历表之上 */
 
 }
 
-.backtop-button
-{
+.backtop-button {
     position: fixed;
     bottom: 600px !important;
     left: 25px !important;
     z-index: 2;
-    width: 60px !important; /* 增加按钮的宽度 */
-    height: 60px !important; /* 增加按钮的高度 */
+    width: 60px !important;
+    /* 增加按钮的宽度 */
+    height: 60px !important;
+    /* 增加按钮的高度 */
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: transform 0.3s ease; /* 添加缩放的过渡效果 */
+    transition: transform 0.3s ease;
+    /* 添加缩放的过渡效果 */
 }
-
 </style>

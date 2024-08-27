@@ -444,7 +444,7 @@ export default defineComponent({
             };
             //console.log("发送", requestData);
             const token = localStorage.getItem('token');
-            axios.post(`http://localhost:5273/api/MealPlans/Create?token=${token}`, requestData)
+            axios.post(`http://localhost:8080/api/MealPlans/Create?token=${token}`, requestData)
                 .then(response => {
                     console.log(response.data.message);
                     // 显示通知
@@ -472,7 +472,7 @@ export default defineComponent({
         // 得到食物函数
         getFoodFromDB() {
             //const token = localStorage.getItem('token');
-            axios.get(`http://localhost:5273/api/MealPlans/GetFoodsInfo`)
+            axios.get(`http://localhost:8080/api/MealPlans/GetFoodsInfo`)
                 .then(response => {
                     console.log(response.data.foodsInfo);
                     this.food = response.data.foodsInfo.map(item => ({
@@ -484,7 +484,7 @@ export default defineComponent({
         // 得到计划函数
         getPlanFromDB() {
             const token = localStorage.getItem('token');
-            axios.get(`http://localhost:5273/api/MealPlans/GetAllDetails?token=${token}`)
+            axios.get(`http://localhost:8080/api/MealPlans/GetAllDetails?token=${token}`)
                 .then(response => {
                     this.formDataStore = {};
                     response.data.plans.forEach(item => {
@@ -525,7 +525,7 @@ export default defineComponent({
                 }))
             };
             console.log("更新", requestData);
-            axios.put(`http://localhost:5273/api/MealPlans/Update`, requestData)
+            axios.put(`http://localhost:8080/api/MealPlans/Update`, requestData)
                 .then(response => {
                     console.log(response.data.message);
                     ElNotification({
@@ -537,7 +537,7 @@ export default defineComponent({
         },
         // 删除计划函数
         deletePlanInDB(foodPlanID) {
-            axios.delete(`http://localhost:5273/api/MealPlans/Delete`, {
+            axios.delete(`http://localhost:8080/api/MealPlans/Delete`, {
                 params: {
                     foodPlanID: foodPlanID
                 }
@@ -563,14 +563,14 @@ export default defineComponent({
                 state: state
             };
             console.log("更新", requestData);
-            axios.put(`http://localhost:5273/api/MealPlans/UpdateState`, requestData)
+            axios.put(`http://localhost:8080/api/MealPlans/UpdateState`, requestData)
                 .then(response => {
                     console.log(response.data.message);
                 })
         },
         // 获取食谱函数
         getRecipeFromDB() {
-            axios.get(`http://localhost:5273/api/MealPlans/GetAllRecipes`)
+            axios.get(`http://localhost:8080/api/MealPlans/GetAllRecipes`)
                 .then(response => {
                     this.recipes = [];
                     response.data.recipes.forEach(item => {

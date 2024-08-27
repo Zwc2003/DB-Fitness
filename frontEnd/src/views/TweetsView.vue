@@ -44,7 +44,7 @@ equipmentList.value = ref(fakeData)
 
 
 function fetchAllEquipmentGuide() {
-    axios.get('http://localhost:5273/api/AIGuide/GetRandomEquipmentGuide')
+    axios.get('http://localhost:8080/api/AIGuide/GetRandomEquipmentGuide')
         .then(function (response) {
             const guides = response.data.guides;
             const tmp = guides.map(item => ({
