@@ -1,5 +1,7 @@
 //import { l } from 'vite/dist/node/types.d-aGj9QkWt';
 import { createStore } from 'vuex'
+import axios from 'axios'
+
 
 // 在 store.js 中
 export default createStore({
