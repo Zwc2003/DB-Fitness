@@ -162,7 +162,7 @@ export default {
         },
         watchScroll() {
             var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-            console.log(scrollTop);
+            //console.log(scrollTop);
             if (scrollTop > 90) {
                 this.navBarFixed = true;
             } else {

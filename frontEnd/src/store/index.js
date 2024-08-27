@@ -186,7 +186,7 @@ export default createStore({
     pollIsPost({ commit, state }) {
       setInterval(async () => {
         try {
-          const response = await axios.get(`http://localhost:8080/api/User/GetPersonalProfile?token=${state.token}`);
+          const response = await axios.get(`http://localhost:8080/api/User/GetPersonalProfile?token=${localStorage.getItem('token')}`);
           const newIsPost = response.data.isPost;
 
           if (newIsPost !== state.isPost) {
