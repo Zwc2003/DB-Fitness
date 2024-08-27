@@ -243,8 +243,18 @@ export default {
         },
 
         addPost() {
-            //const token = this.$store.state.token;
-            const token = localStorage.getItem('token');
+
+            // 检查用户是否被禁言
+            if (this.$store.state.isPost === 'false') {
+                ElNotification({
+                    title: '警告',
+                    message: '您已被禁言，无法发帖。',
+                    type: 'warning',
+                });
+                return; // 阻止发帖
+            }
+
+            const token = this.$store.state.token;
             const name = localStorage.getItem('name');
 
             if (this.newPost.title && this.newPost.content && this.newPost.category) {
