@@ -322,17 +322,6 @@ export default {
   },
   methods: {
     getAna() {
-      this.getVigorTokenBalance()
-      if (this.vigorTokenBalance < 30) {
-        ElNotification({
-          title: '注意',
-          message: `本功能需要耗费30活力币，您的余额为${this.vigorTokenBalance}，余额不足!`,
-          type: 'warning',
-          duration: 2000
-        })
-        return
-      }
-
       const needToAna = this.formatDate(this.selectedDate);
       if (!this.oneDayRecord[needToAna]) {
         ElNotification({
@@ -343,6 +332,23 @@ export default {
         })
       }
       else {
+        if (this.vigorTokenBalance < 30) {
+        ElNotification({
+          title: '注意',
+          message: `本功能需要耗费30活力币，您的余额为${this.vigorTokenBalance}，余额不足!`,
+          type: 'warning',
+          duration: 2000
+        })
+        return
+      }
+      else{
+        ElNotification({
+          title: '注意',
+          message: `本次消费30活力币，您的余额为${this.vigorTokenBalance-30}`,
+          type: 'success',
+          duration: 2000
+        })
+      }
         this.anaLoading = true;
         this.getAIAnalysis(/*this.oneDayRecord[needToAna][0].userID*/);
       }
@@ -600,6 +606,7 @@ export default {
         .then(response => {
           this.vigorTokenBalance = response.data.balance;
           }).catch(error => {
+          this.vigorTokenBalance = 0;
           console.error("Error fetching vigorTokenBalance:", error);
         });
     },
@@ -643,7 +650,7 @@ export default {
         });
     },
     getAISuggestions(recordID) {
-      console.log("获取AI建议 for recordID:", recordID);
+      console.log("获取AI建议", recordID);
       //const token = localStorage.getItem('token');
       axios.get(`http://localhost:8080/api/MealRecords/AISuggestions`, {
         params: {
@@ -659,6 +666,7 @@ export default {
               this.oneDayRecord[check][i].loading = false;
             }
           }
+          this.getVigorTokenBalance();
         })
         .catch(error => {
           console.error("Error getting AI suggestions:", error);
@@ -796,6 +804,7 @@ export default {
     this.getFoodFromDB();
     this.selectedDate = new Date();
     this.getRecordFromDB(/*0,*/ this.selectedDate);
+    this.getVigorTokenBalance();
   },
   watch: {
     selectedDate(newDate) {

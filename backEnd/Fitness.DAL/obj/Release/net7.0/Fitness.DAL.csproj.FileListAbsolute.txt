@@ -1,5 +1,0 @@
-C:\Users\lenovo\Desktop\DB-Fitness\backEnd\Fitness.DAL\obj\Release\net7.0\Fitness.DAL.csproj.AssemblyReference.cache
-C:\Users\lenovo\Desktop\DB-Fitness\backEnd\Fitness.DAL\obj\Release\net7.0\Fitness.DAL.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\lenovo\Desktop\DB-Fitness\backEnd\Fitness.DAL\obj\Release\net7.0\Fitness.DAL.AssemblyInfoInputs.cache
-C:\Users\lenovo\Desktop\DB-Fitness\backEnd\Fitness.DAL\obj\Release\net7.0\Fitness.DAL.AssemblyInfo.cs
-C:\Users\lenovo\Desktop\DB-Fitness\backEnd\Fitness.DAL\obj\Release\net7.0\Fitness.DAL.csproj.CoreCompileInputs.cache

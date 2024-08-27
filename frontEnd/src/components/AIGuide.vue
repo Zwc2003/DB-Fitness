@@ -420,6 +420,14 @@ export default {
         })
         return
       }
+      else {
+        ElNotification({
+          title: '注意',
+          message: `本次消费50活力币，您的余额为${this.vigorTokenBalance-50}`,
+          type: 'warning',
+          duration: 2000
+        })
+      }
       this.isAnalyzing = true
       this.analysisStatue = 1
       this.analysisPercentage = 0
@@ -452,11 +460,11 @@ export default {
             this.getAISuggestions(response.data.screenshotID)
           }, 15000)
         }).catch(error => {
-          console.error('Error creating record:', error)
+          console.error('创建失败：', error)
         })
     },
     getAISuggestions(screenshotID) {
-      console.log('获取AI建议 for screenshotID:', screenshotID)
+      console.log('获取AI建议:', screenshotID)
       axios.get(`http://localhost:8080/api/AIGuide/GetAISuggestion/`, {
         params: {
           screenshotID: screenshotID
@@ -469,7 +477,6 @@ export default {
           this.analysisStatue = 0
           console.log('AI建议:', response.data)
           this.screenshotsCurrent.AIsuggestion = response.data.message
-          // eslint-disable-next-line no-undef,no-unused-vars
           const screenshot = {
             exerciseName: this.screenshotsCurrent.exerciseName,
             screenshotID: this.screenshotsCurrent.screenshotID,
@@ -478,8 +485,8 @@ export default {
             createTime: this.screenshotsCurrent.createTime
           }
           console.log('imgUrl:', this.screenshotsCurrent.screenshotUrl)
-          // eslint-disable-next-line no-undef
           this.uploadedScreenshots.push(screenshot)
+          getVigorTokenBalance()
         })
         .catch(error => {
           console.error('Error getting AI suggestions:', error)
@@ -531,7 +538,7 @@ export default {
     // 获取活力币余额
     getVigorTokenBalance() {
       const token = localStorage.getItem('token');
-      axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance=${token}`)
+      axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`)
         .then(response => {
           this.vigorTokenBalance = response.data.balance;
           })
@@ -554,10 +561,6 @@ export default {
           type: 'success',
           duration: 2000
         })
-        // this.$message({
-        //   type: 'success',
-        //   message: '操作成功'
-        // })
       })
     },
     // 再试一次
@@ -579,8 +582,6 @@ export default {
             deviceId: this.deviceId ? this.deviceId : undefined,
             width: { min: 640, ideal: 1280, max: 1920 },
             height: { min: 480, ideal: 720, max: 1080 }
-            // width: 256,
-            // height: 144
           }
         }
         navigator.mediaDevices.getUserMedia(constraints).then(stream => {
@@ -704,12 +705,7 @@ export default {
   letter-spacing: 1vw;
 }
 
-/*.container  {*/
-/*  background: url("./src/assets/bg5.jpg") no-repeat center;*/
-/*  background-size: 100% 100%;*/
-/*  margin-top: 5%;*/
-/*  width: 100%;*/
-/*}*/
+
 .container {
   background: url("./src/assets/bg5.jpg") no-repeat center;
   background-size: cover;
