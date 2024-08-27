@@ -22,6 +22,7 @@ namespace Fitness.BLL.Interfaces
         public string removeUser(string token, int userID);
 
         public string banPost(string token, int userID);
+        public string CancelbanPost(string token, int userID);
 
     }
 }

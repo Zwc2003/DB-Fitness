@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj": {}
+    "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj": {}
   },
   "projects": {
-    "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {
+    "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
+        "projectUniqueName": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
         "projectName": "Fitness.BLL",
-        "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
+        "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj",
         "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\obj\\",
+        "outputPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.BLL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -29,11 +29,11 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
-                "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj"
+              "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
+                "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj"
               },
-              "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
-                "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
+              "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+                "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
               }
             }
           }
@@ -129,14 +129,14 @@
         }
       }
     },
-    "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
+    "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
+        "projectUniqueName": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
         "projectName": "Fitness.DAL",
-        "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
+        "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj",
         "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\obj\\",
+        "outputPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.DAL\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -154,8 +154,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
-                "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
+              "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+                "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
               }
             }
           }
@@ -251,14 +251,14 @@
         }
       }
     },
-    "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+    "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+        "projectUniqueName": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
         "projectName": "Fitness.Models",
-        "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+        "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
         "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
+        "outputPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -369,14 +369,14 @@
         }
       }
     },
-    "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj": {
+    "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj",
+        "projectUniqueName": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj",
         "projectName": "Fitness",
-        "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj",
+        "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness\\Fitness.csproj",
         "packagesPath": "C:\\Users\\24659\\.nuget\\packages\\",
-        "outputPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness\\obj\\",
+        "outputPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\24659\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -394,14 +394,14 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {
-                "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj"
+              "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj": {
+                "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.BLL\\Fitness.BLL.csproj"
               },
-              "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
-                "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj"
+              "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj": {
+                "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.DAL\\Fitness.DAL.csproj"
               },
-              "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
-                "projectPath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
+              "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj": {
+                "projectPath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj"
               }
             }
           }

@@ -193,10 +193,10 @@ namespace Fitness.BLL
                 if (tokenRes.Role == "admin")
                 {
                     UserDAL.SetIsDelete(userID, 1);
-                    return "Remove current user sucessfully.";
+                    return "删除成功";
                 }
                 else
-                    return "You don't have that permission!";
+                    return "身份权限不符";
             }
 
             public string banPost(string token, int userID) //可以设置禁止发帖的天数
@@ -205,10 +205,22 @@ namespace Fitness.BLL
                 if (tokenRes.Role == "admin")
                 {
                     UserDAL.SetIsPost(userID, 0);
-                    return "Successfully disabled the posting rights of the current user.";
+                    return "禁言成功";
                 }
                 else
-                    return "You don't have that permission!";
+                    return "身份权限不符";
             }
-        }
+
+            public string CancelbanPost(string token, int userID) //可以设置禁止发帖的天数
+            {
+                TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+                if (tokenRes.Role == "admin")
+                {
+                    UserDAL.SetIsPost(userID, 1);
+                    return "取消禁言成功";
+                }
+                else
+                    return "身份权限不符";
+            }
+    }
     }

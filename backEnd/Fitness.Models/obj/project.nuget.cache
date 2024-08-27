@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "MBXs2komMcqg2GuKMex3aU8KOpzOcSzcl/tzj5F46D0XG5uI7uJXGbiI1ceLftdF0HtRHQhgWPmEuQTOtjn3Mw==",
+  "dgSpecHash": "UfsKYCgHe2q8aBTmbKUQkAFIrJtngiNYEn1Ce0tz96ut4nvR6mEXPEuVRxEcme5gosFj7o8OAtoFF54+8L+4nA==",
   "success": true,
-  "projectFilePath": "D:\\DB_Fitness\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
+  "projectFilePath": "D:\\DB_Fitness\\new\\DB-Fitness\\backEnd\\Fitness.Models\\Fitness.Models.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\24659\\.nuget\\packages\\aliyun.acs.core\\1.0.1\\aliyun.acs.core.1.0.1.nupkg.sha512",
     "C:\\Users\\24659\\.nuget\\packages\\aliyun.acs.sts\\1.0.1\\aliyun.acs.sts.1.0.1.nupkg.sha512",
