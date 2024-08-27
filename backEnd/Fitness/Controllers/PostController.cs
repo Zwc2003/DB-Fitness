@@ -46,6 +46,7 @@ namespace Fitness.Controllers
         [HttpGet]
         public ActionResult<List<Post>> GetAllPost(string token)
         {
+            Console.WriteLine("获取所有的帖子");
             List<Post> posts = _postBLL.GetAllPost(token);
             return posts;
         }

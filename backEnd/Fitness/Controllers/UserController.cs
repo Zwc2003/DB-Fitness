@@ -15,9 +15,10 @@ namespace Fitness.Controllers
         private readonly IUserBLL _userBLL;
         private readonly JWTHelper _jwtHelper = new();
 
-        public UserController(IUserBLL userBLL)
+        public UserController(IUserBLL userBLL, IVigorTokenBLL vigorTokenBLL)
         {
             _userBLL = userBLL;
+            _vigorTokenBLL = vigorTokenBLL;
         }
 
         [HttpGet]
@@ -111,13 +112,6 @@ namespace Fitness.Controllers
         {
             return _userBLL.banPost(token, userID);
         }
-
-        [HttpGet]
-        public ActionResult<string> CancelBanUser(string token, int userID)
-        {
-            return _userBLL.CancelbanPost(token, userID);
-        }
-
 
         // zwc 
         [HttpGet]

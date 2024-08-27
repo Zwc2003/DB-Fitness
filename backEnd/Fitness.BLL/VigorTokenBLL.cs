@@ -25,13 +25,16 @@ namespace Fitness.BLL
 
 
             DataTable dt = vigorTokenDAL.GetVigorTokenBalance(userID);
-
+            
             DataRow dr = dt.Rows[0];
-
-            BalanceRes res = new();
+            
+            BalanceRes res = new()
+            {
+                balance=0 
+            };
 
             res.balance = Convert.ToInt32(dr["vigorTokenBalance"]);
-
+            Console.WriteLine($"balance{res.balance}");
             return res;
         }
 

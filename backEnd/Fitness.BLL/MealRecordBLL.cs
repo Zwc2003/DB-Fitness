@@ -55,11 +55,9 @@ namespace Fitness.BLL
                 recordID = -1
             };
 
-            long timestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1)).Ticks / TimeSpan.TicksPerMillisecond;
-
             // 使用时间戳创建唯一的 objectName
+            long timestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1)).Ticks / TimeSpan.TicksPerMillisecond;
             string objectName = $"{mealRecordInfo.userID}_{timestamp}.png";
-            // Console.WriteLine($"base64:{mealRecordInfo.mealPhoto}");
             int base64Index = mealRecordInfo.mealPhoto.IndexOf("base64,") + 7;
             mealRecordInfo.mealPhoto = mealRecordInfo.mealPhoto.Substring(base64Index);
             OSSHelper.UploadBase64ImageToOss(mealRecordInfo.mealPhoto, objectName);

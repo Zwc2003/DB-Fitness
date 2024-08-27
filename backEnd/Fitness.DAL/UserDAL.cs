@@ -358,7 +358,7 @@ namespace Fitness.DAL
             {
                 OracleParameter[] oracleParameters = new OracleParameter[]
                 {
-                    new OracleParameter("lastLoginTime", OracleDbType.TimeStamp) { Value = dateTime },
+                    new OracleParameter("lastLoginDateTime", OracleDbType.TimeStamp) { Value = dateTime },
                     new OracleParameter("userID", OracleDbType.Int32) { Value = userID }
                 };
                 string sql = "UPDATE \"User\" SET \"lastLoginTime\" = :LastLoginTime WHERE \"userID\"=:userID";

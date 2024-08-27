@@ -19,5 +19,6 @@ namespace Fitness.Models
         public int forwardCount {  get; set; }
         public int commentsCount {  get; set; }
         public int refrencePostID { get; set; }
+        public string imgUrl { get; set; }
     }
 }
