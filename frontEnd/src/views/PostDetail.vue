@@ -1,8 +1,13 @@
 <template>
     <div class="forum-bg">
-        <button class="back-button" @click="goBack">
-            <icon-arrow-left />
-        </button>
+        <el-backtop class="backtop-button"/>
+        <div class="back-button-container">
+          <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
+            <el-icon>
+              <arrow-left />
+            </el-icon>
+          </el-button>
+        </div>
 
         <!-- 相关帖子推荐 -->
         <el-card class="card">
@@ -29,6 +34,11 @@
             <div class="post-info">
                 <span class="post-author" @click="goToAuthorProfile">{{ post.userName }}</span>
                 <span class="post-time">{{ post.postTime }}</span>
+            </div>
+
+            <!-- 显示图片（如果存在） -->
+            <div v-if="post.imgUrl" class="post-image">
+                <img :src="post.imgUrl" alt="Post Image" class="image"/>
             </div>
 
             <div class="post-content">
@@ -714,6 +724,7 @@ export default {
     margin: 0 auto;
     background-color: transparent;
     border: none;
+
 }
 
 .post-title {
@@ -791,6 +802,7 @@ export default {
     max-height: 400px;
     overflow-y: auto;
     margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 
@@ -891,9 +903,10 @@ textarea {
 .card {
     margin-top: 65px;
     width: 300px;
+    margin-left: 1%;
     height: max-content;
-    background-color: transparent;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 10px rgba(243, 243, 243, 0.5);
     margin-bottom: 20px;
 }
 
@@ -936,15 +949,17 @@ textarea {
 
 .right-sidebar {
     margin-top: 65px;
+    margin-right:1%;
     width: 300px;
     height: max-content;
     background-color: transparent;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.5) ;
+    background-color: rgba(255, 255, 255, 0.5);
     margin-bottom: 10px;
     padding-left: 0;
     display: flex;
     flex-direction: column;
-    align-items: left;
+    align-text: left;
 }
 
 .hot-posts-content {
@@ -953,7 +968,7 @@ textarea {
 }
 
 .icon-fire-small {
-    font-size: 16px;
+    font-size: 10px !important;
     margin-right: 8px;
 }
 
@@ -971,4 +986,48 @@ textarea {
     background-color: transparent;
     padding: 0;
 }
+
+.post-image {
+    text-align: center; /* 图片居中显示 */
+    margin-bottom: 20px; /* 图片和内容之间的间距 */
+}
+
+.post-image .image {
+    width: 40%;
+    max-width: 100%; /* 图片自适应容器宽度 */
+    height: auto;
+    border-radius: 5px;
+}
+
+.post-content {
+    text-align: left; /* 内容靠左显示 */
+    margin-top: 0; /* 去除顶部间距 */
+    padding: 10px 0; /* 为内容部分添加上下间距 */
+}
+
+.back-button-container {
+  position: absolute;
+  top: 1vh;
+  /* 调整为你需要的上边距 */
+  left: 1vw;
+  /* 调整为你需要的左边距 */
+  z-index: 1000;
+  /* 确保按钮在日历表之上 */
+
+}
+
+.backtop-button
+{
+    position: fixed;
+    bottom: 600px !important;
+    left: 25px !important;
+    z-index: 2;
+    width: 60px !important; /* 增加按钮的宽度 */
+    height: 60px !important; /* 增加按钮的高度 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease; /* 添加缩放的过渡效果 */
+}
+
 </style>

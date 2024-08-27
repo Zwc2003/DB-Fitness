@@ -1,5 +1,5 @@
 <template>
-    <NavigationBar />
+  <NavigationBar style="z-index: 1000000000" />
     <div class="forum-bg">
         <div class="forum-container">
             <!-- 帖子卡片 -->
@@ -77,7 +77,7 @@
                     </button>
                 </nav>
                 <EditArticle v-model:title="newPost.title" v-model:content="newPost.content"
-                    v-model:category="newPost.category" @add-post="addPost" />
+                    v-model:category="newPost.category" v-model:imgUrl="newPost.imgUrl" @add-post="addPost" />
 
                 <!-- 帖子列表部分 -->
                 <div v-for="post in filteredPosts" :key="post.postID" class="post-item">
@@ -86,6 +86,10 @@
                             {{ post.postTitle }}
                             <span class="category-tag">{{ post.postCategory }}</span>
                         </h3>
+                        <!-- 图片展示 -->
+                        <div v-if="post.imgUrl" class="post-image">
+                            <img :src="post.imgUrl" alt="Post Image" class="image"/>
+                        </div>
                         <p class="post-snippet">{{ truncatedContent(post.postContent) }}</p>
                     </div>
                     <div class="post-footer">
@@ -170,6 +174,7 @@ export default {
                 forwardCount: null,
                 commentsCount: null,
                 refrencePostID: null,
+                imgUrl:''
             },
             allPosts: [],
             filteredPosts: [],
@@ -238,6 +243,7 @@ export default {
         },
 
         addPost() {
+
             // 检查用户是否被禁言
             if (this.$store.state.isPost === 'false') {
                 ElNotification({
@@ -265,8 +271,9 @@ export default {
                     forwardCount: 0,
                     commentsCount: 0,
                     refrencepostID: -1,
+                    imgUrl: this.newPost.imgUrl
                 };
-
+                console.log("url", this.newPost.imgUrl)
                 axios.post(`http://localhost:8080/api/Post/PublishPost?token=${token}`, newPost)
                     .then(response => {
                         this.allPosts.push(newPost);
@@ -308,7 +315,8 @@ export default {
         },
 
         deletePost(postID) {
-            const token = this.$store.state.token;
+            //const token = this.$store.state.token;
+            const token = localStorage.getItem('token');
             axios.delete('http://localhost:8080/api/Post/DeletePostByPostID', {
                 params: {
                     token: token,
@@ -366,12 +374,15 @@ body {
     position: absolute;
     top: 0;
     left: 0;
+
+
 }
 
 /* 导航栏样式 */
 .navbar {
-    margin-top: 60px;
+    margin-top: 4.5%;
     background: transparent;
+    background-color: rgba(255, 255, 255, 0.6);
     padding: 10px 0;
     position: absolute;
     width: 830px;
@@ -457,21 +468,23 @@ body {
 }
 
 .forum-container {
+
     display: flex;
     justify-content: space-between;
     padding-top: 60px;
     padding-right: 50px;
     max-width: 100%;
-    margin: 80px auto 0;
+    margin-top:  5%;
     /* 在顶部留出导航栏的空间 */
     overflow: auto;
 }
 
 
 .card {
-    margin-left: 5px;
+    margin-left: 1%;
     width: 400px;
-    background-color: transparent;
+    height: fit-content;
+    background-color: rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     margin-bottom: 10px;
 }
@@ -513,7 +526,7 @@ body {
 }
 
 .post-item {
-    background-color: transparent;
+    background-color: rgba(255, 255, 255, 0.6);
     color: #000;
     padding: 20px;
     margin-bottom: 20px;
@@ -593,16 +606,17 @@ body {
 }
 
 .icon-fire-small {
-    font-size: 16px;
+    font-size: 10px !important;
     /* 小火焰图标的尺寸 */
     margin-right: 8px;
 }
 
 .right-sidebar {
-    margin-right: 5px;
+    margin-right: 1%;
     margin-left: 20px;
     width: 400px;
-    background-color: transparent;
+    height: fit-content;
+    background-color: rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     margin-bottom: 10px;
     width: 25%;
@@ -634,4 +648,17 @@ body {
 .hot-post-title:hover {
     text-decoration: underline;
 }
+
+.post-image {
+    text-align: left;
+    margin: 10px 0;
+}
+
+.post-image .image {
+    width: 200px; /* 固定宽度 */
+    height: auto; /* 高度自动调整以保持比例 */
+    border-radius: 5px;
+    display: inline-block;
+}
+
 </style>
