@@ -1,7 +1,8 @@
 <template>
     <NavigationBar />
-    <div class="spacer"></div> <!-- 添加一个间隔元素 -->
+    <div class="spacer"> <!-- 添加一个间隔元素 -->
     <EquipmentGuide />
+</div>
     <CommonLayout />
 </template>
 
@@ -20,7 +21,7 @@ export default defineComponent({
 
 <style scoped>
 .spacer {
-    margin-top: 20px;
+    margin-top: 5vh;
     /* 根据需要调整间距 */
 }
 </style>
