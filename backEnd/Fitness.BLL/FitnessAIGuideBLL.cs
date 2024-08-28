@@ -39,32 +39,25 @@ namespace Fitness.BLL
         {
 
             vigorTokenBLL.UpdateBalance(screenshotInfo.userID, "使用AI健身教练功能，耗费50活力币", -50);
-
-
             ScreenshotRes putScreenshotRes = new()
             {
                 message = "截图上传失败！",
                 screenshotID = -1,
                 createTime = DateTime.Now,
             };
-
             long timestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1)).Ticks / TimeSpan.TicksPerMillisecond;
-            // 使用时间戳创建唯一的 objectName
+            // 使用时间戳创建唯一的 objectName,转化图片为url
             string objectName = $"{screenshotInfo.userID}_{timestamp}.png";
             int base64Index = screenshotInfo.screenshotUrl.IndexOf("base64,") + 7;
             screenshotInfo.screenshotUrl = screenshotInfo.screenshotUrl.Substring(base64Index);
             OSSHelper.UploadBase64ImageToOss(screenshotInfo.screenshotUrl, objectName);
             screenshotInfo.screenshotUrl = OSSHelper.GetPublicObjectUrl(objectName);
-
             int screenshotID = fitnessAIGuideDAL.InsertFitnessSuggestion(screenshotInfo);
-
             if (screenshotID != -1)
             {
                 putScreenshotRes.message = "截图上传成功！";
                 putScreenshotRes.screenshotID = screenshotID;
                 putScreenshotRes.screenshotUrl = screenshotInfo.screenshotUrl;
-
-
 
                 // 异步任务在后台执行
                 _ = Task.Run(async () =>
@@ -84,9 +77,7 @@ namespace Fitness.BLL
                     }
                 });
             }
-
             return putScreenshotRes;
-
         }
 
         // 获取AI的分析
