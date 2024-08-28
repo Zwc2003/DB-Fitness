@@ -18,6 +18,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
+            Console.WriteLine($"PostFitness:  userId:{userId} height:{height} weight:{weight} BMI:{BMI} bodyFatRate:{bodyFatRate}");
             return FitnessBLL.Update(userId, height, weight, BMI, bodyFatRate);
         }
 
@@ -26,6 +27,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
+            Console.WriteLine($"PostPhysicalTest:  userId:{userId} pushups:{pushups} squats:{squats} situps:{situps} pullup:{pullup} longDistance:{longDistance}");
             return PhysicalTestBLL.Update(userId, pushups, squats, situps, pullup, longDistance);
         }
 
@@ -50,6 +52,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
+            Console.WriteLine($"SetGoal: userId:{userId} goal:{goal} duration:{duration}");
             return UserFitnessPlanGoalBLL.Set(userId, goal, duration);
         }
 
@@ -66,7 +69,10 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return WorkoutBLL.GetPlan(userId);
+            Console.WriteLine($"GetPlan: userId:{userId}");
+            string myPlan = WorkoutBLL.GetPlan(userId);
+            Console.WriteLine(myPlan);
+            return myPlan;
         }
     }
 }
