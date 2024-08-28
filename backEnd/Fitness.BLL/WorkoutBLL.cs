@@ -55,11 +55,11 @@ namespace Fitness.BLL
         private static string GenerateWorkout(string goal)
         {
             List<string> planList = new List<string>();
-            if (goal == "减脂")
+            if (goal == "loseWeight")
                 planList = loseWeight;
-            else if (goal == "增肌")
+            else if (goal == "buildMuscle")
                 planList = buildMuscle;
-            else if (goal == "塑型")
+            else if (goal == "bodySculpting")
                 planList = bodySculpt;
             List<object> plan = new List<object>();
 

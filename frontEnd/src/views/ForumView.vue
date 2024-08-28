@@ -244,18 +244,19 @@ export default {
         },
 
         addPost() {
-
+            const isPost = localStorage.getItem('isPost');
+            console.log("isPost", isPost)
             // 检查用户是否被禁言
-            if (this.$store.state.isPost === 'false') {
+            if (isPost === '0' ) {
                 ElNotification({
                     title: '警告',
                     message: '您已被禁言，无法发帖。',
                     type: 'warning',
                 });
-                return; // 阻止发帖
+                //return; // 阻止发帖
             }
-
-            const token = this.$store.state.token;
+            else {
+                const token = this.$store.state.token;
             const name = localStorage.getItem('name');
 
             if (this.newPost.title && this.newPost.content && this.newPost.category) {
@@ -300,6 +301,7 @@ export default {
                     type: 'warning',
                 });
             }
+            }    
         },
 
         cleanHtml(content) {

@@ -61,7 +61,6 @@ export default {
   name: 'BadgeWall',
   data() {
     return {
-      userId: null, // 用户ID
       achievedBadges: [], // 已获得的勋章
       unachievedBadges: [], // 未获得的勋章
       badgeImages: {
@@ -77,32 +76,14 @@ export default {
     };
   },
   mounted() {
-    this.getUserId();
+    this.fetchAchievements();
   },
   methods: {
-    async getUserId() {
-      try {
-        const response = await axios.get('http://localhost:8080/api/User/GetUserId');
-        if (response.data.isSuccessful === 'true') {
-          this.userId = response.data.userId; // 从响应中获取用户ID
-          this.fetchAchievements(); // 获取用户成就
-        } else {
-          console.error('获取用户ID失败');
-        }
-      } catch (error) {
-        console.error('获取用户ID失败:', error);
-      }
-    },
 
     async fetchAchievements() {
-      if (!this.userId) {
-        console.error('用户ID未获取');
-        return;
-      }
-
       try {
         const response = await axios.get('http://localhost:8080/api/Achievement/GetAchievement', {
-          params: { userId: this.userId }
+          params: { token: localStorage.getItem('token') }
         });
         const achievements = response.data.achievements;
 

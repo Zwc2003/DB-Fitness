@@ -87,7 +87,7 @@ namespace Fitness.Controllers
             return Ok(friendList);
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult AddFriend(string token, int friendID)
         {
             bool success = _friendshipBll.AddFriend(token, friendID);

@@ -56,8 +56,9 @@ namespace Fitness.BLL
             int st;
             var vigorTokenBLL = new VigorTokenBLL();
             vigorTokenBLL.UpdateBalance(UserDAL.GetLoginInfoByEmail(registerInfo.email,out st).userID, "注册FitFit成功，获得2000活力币", 2000);
+            //成就系统、计划系统初始化
             UserAchievementBLL userAchievementBLL = new UserAchievementBLL();
-            userAchievementBLL.Init(res);
+            userAchievementBLL.Init(res); FitnessDAL.Init(res); PhysicalTestDAL.Init(res); UserFitnessPlanGoalDAL.Init(res);
                 return JsonConvert.SerializeObject(new
                 {
                     message = "成功注册"
