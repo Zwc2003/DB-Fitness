@@ -3,7 +3,7 @@
 import { reactive, ref } from 'vue'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 import type { Action } from 'element-plus'
-import FitnessPlanNavigationBar from "../components/FitnessPlanNavigationBar.vue";
+import NavigationBar from "../components/NavigationBar.vue";
 import TimeThread from "../components/TimeThread.vue";
 import axios from "axios";
 const dialogFormVisible = ref(false)
@@ -127,7 +127,7 @@ const activeName = ref(1);
 </script>
 
 <template>
-  <FitnessPlanNavigationBar/>
+  <NavigationBar/>
   <div>
     <el-button plain @click="dialogFormVisible = true" class="bot">
       填写你的体测表
@@ -176,9 +176,9 @@ const activeName = ref(1);
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Cancel</el-button>
+        <el-button @click="dialogFormVisible = false">取消</el-button>
         <el-button  type="primary" @click="submitForm(ruleFormRef)">
-          Create
+          创建
         </el-button>
       </div>
     </template>
