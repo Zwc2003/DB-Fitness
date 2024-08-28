@@ -31,7 +31,7 @@
                         </el-card>
                     </el-col>
                     <el-col :span="2" style="align-items: flex-end;">
-                        <div style="margin: 95px 0" />
+                        <div style="margin: 50% 0" />
                         <el-button @click="showModiEquipment(item)" size="large" :style="{ fontSize: '18px' }"
                             type="primary" icon="Edit" circle />
                         <div style="margin: 10px 0" />
@@ -329,7 +329,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .avatar-uploader .avatar {
     width: 178px;
     height: 178px;
@@ -390,15 +390,15 @@ export default {
 }
 
 .posts-container {
-    height: 780px;
+    height: 760px;
 }
 
 .equipment-container {
-    height: 200px;
+    height: 190px;
 }
 
 .pagination-container {
-    margin-top: 2px;
+    margin-top: 1px;
     display: flex;
     justify-content: center;
     width: 100%;
