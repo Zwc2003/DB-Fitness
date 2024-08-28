@@ -566,7 +566,28 @@ export default defineComponent({
             axios.put(`http://localhost:8080/api/MealPlans/UpdateState`, requestData)
                 .then(response => {
                     console.log(response.data.message);
+                    if (state) {
+                        ElNotification({
+                            message: `您已完成本计划`,
+                            type: 'success',
+                            duration: 2000
+                        });
+                    }
+                    else {
+                        ElNotification({
+                            message: `取消完成本计划`,
+                            type: 'success',
+                            duration: 2000
+                        });
+                    }
                 })
+                .catch(error => {
+                    ElNotification({
+                        message: '计划状态更新失败',
+                        type: 'error',
+                        duration: 2000
+                    });
+                });
         },
         // 获取食谱函数
         getRecipeFromDB() {

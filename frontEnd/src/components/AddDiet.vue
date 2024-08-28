@@ -5,7 +5,8 @@
                 <div :style="{ fontSize: '20px' }">当前共有帖子 {{ allRecipe.length }} 条</div>
             </el-col>
             <el-col :span="9">
-                <el-button style="width: auto" :style="{ fontSize: '18px' }" size="large" @click="addRecipe" type="danger" text bg>
+                <el-button style="width: auto" :style="{ fontSize: '18px' }" size="large" @click="addRecipe"
+                    type="danger" text bg>
                     <el-icon>
                         <CirclePlusFilled />
                     </el-icon>
@@ -31,9 +32,11 @@
                     </el-col>
                     <el-col :span="2" style="align-items: flex-end;">
                         <div style="margin: 95px 0" />
-                        <el-button @click="showModi(item)" size="large" :style="{ fontSize: '18px' }" type="primary" icon="Edit" circle />
+                        <el-button @click="showModi(item)" size="large" :style="{ fontSize: '18px' }" type="primary"
+                            icon="Edit" circle />
                         <div style="margin: 10px 0" />
-                        <el-button @click="deleteItem(item)" size="large" :style="{ fontSize: '18px' }" type="danger" icon="Delete" circle />
+                        <el-button @click="deleteItem(item)" size="large" :style="{ fontSize: '18px' }" type="danger"
+                            icon="Delete" circle />
                     </el-col>
                 </el-row>
             </div>
@@ -44,23 +47,24 @@
                 layout="prev, pager, next" :total="allRecipe.length" @current-change="handlePageChange" />
         </div>
         <!--发布饮食贴-->
-        <div style="display: flex; justify-content: center;">
-    <el-card :style="{ fontSize: '20px' }" style="height: 100px; padding: 0; width: auto;">
-      <el-row style="margin: 12px; padding: 0;">
-        <el-col :span="20">
-          <el-image :src="foodBG2" style="width: auto; padding: 0px;" />
-        </el-col>
-        <el-col :span="4">
-          发布<br>饮食贴
-        </el-col>
-      </el-row>
-    </el-card>
-  </div>
+        <div style="display: flex; justify-content: center;margin-top: 5px">
+            <el-card :style="{ fontSize: '20px' }" style="height: 100px; padding: 0; width: auto;">
+                <el-row style="margin: 12px; padding: 0;">
+                    <el-col :span="20">
+                        <el-image :src="foodBG2" style="width: auto; padding: 0px;" />
+                    </el-col>
+                    <el-col :span="4">
+                        发布<br>饮食贴
+                    </el-col>
+                </el-row>
+            </el-card>
+        </div>
         <!--新建部分-->
         <el-dialog v-model="dialogVisible">
             <el-form ref="form">
                 <h2>发布新帖</h2>
-                <el-input v-model="recipe.title" size="large" style="width: 200px" autosize type="textarea" placeholder="请输入标题" />
+                <el-input v-model="recipe.title" size="large" style="width: 200px" autosize type="textarea"
+                    placeholder="请输入标题" />
                 <div style="margin: 15px 0" />
                 <el-upload class="avatar-uploader" :show-file-list="false" :before-upload="beforeAvatarUpload">
                     <img v-if="imageUrl" :src="imageUrl" class="avatar" />
@@ -69,8 +73,8 @@
                     </el-icon>
                 </el-upload>
                 <div style="margin: 15px 0" />
-                <el-input v-model="recipe.content" size="large" style="width: 100%" :autosize="{ minRows: 2, maxRows: 12 }"
-                    type="textarea" placeholder="请输入内容" />
+                <el-input v-model="recipe.content" size="large" style="width: 100%"
+                    :autosize="{ minRows: 2, maxRows: 12 }" type="textarea" placeholder="请输入内容" />
                 <div style="margin: 15px 0" />
                 <el-button type="primary" :style="{ fontSize: '18px' }" @click="saveEvent">
                     <el-icon>
@@ -94,8 +98,8 @@
                     </el-icon>
                 </el-upload>
                 <div style="margin: 15px 0" />
-                <el-input v-model="currentRecipe.content" size="large" style="width: 100%" :autosize="{ minRows: 2, maxRows: 12 }"
-                    type="textarea" placeholder="请输入内容" />
+                <el-input v-model="currentRecipe.content" size="large" style="width: 100%"
+                    :autosize="{ minRows: 2, maxRows: 12 }" type="textarea" placeholder="请输入内容" />
                 <div style="margin: 15px 0" />
                 <el-button type="primary" :style="{ fontSize: '18px' }" @click="saveModi">
                     <el-icon>
@@ -107,7 +111,7 @@
         <!--展示部分-->
         <el-dialog v-model="showDietContext">
             <h2 :style="{ fontSize: '30px' }">{{ this.currentRecipe.title }}</h2>
-            <p>发布时间：{{  this.formatDate(this.currentRecipe.releaseTime) }}</p>
+            <p>发布时间：{{ this.formatDate(this.currentRecipe.releaseTime) }}</p>
             <img :src="this.currentRecipe.imgUrl" class="dialog-image" />
             <p :style="{ fontSize: '18px' }" v-html="formattedDescription()" class="left-align"></p>
         </el-dialog>
@@ -188,7 +192,7 @@ export default {
             return false;
         },
         addRecipe() {
-        console.log(1);
+            console.log(1);
             this.dialogVisible = true;
         },
 
@@ -199,7 +203,7 @@ export default {
                 this.sendRecipeToDB();
                 this.dialogVisible = false;
             }
-            else{
+            else {
                 console.log(12);
                 ElNotification({
                     title: '警告',
@@ -356,30 +360,30 @@ export default {
     width: 178px;
     height: 178px;
     display: block;
-  }
-  
-  .avatar-uploader .el-upload {
+}
+
+.avatar-uploader .el-upload {
     border: 1px dashed var(--el-border-color);
     border-radius: 6px;
     cursor: pointer;
     position: relative;
     overflow: hidden;
     transition: var(--el-transition-duration-fast);
-  }
-  
-  .avatar-uploader .el-upload:hover {
+}
+
+.avatar-uploader .el-upload:hover {
     border-color: var(--el-color-primary);
-  }
-  
-  .el-icon.avatar-uploader-icon {
+}
+
+.el-icon.avatar-uploader-icon {
     font-size: 28px;
     color: #8c939d;
     width: 178px;
     height: 178px;
     text-align: center;
-  }
+}
 
-  .dialog-image {
+.dialog-image {
     width: 60%;
     height: auto;
     object-fit: cover;

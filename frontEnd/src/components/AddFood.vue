@@ -24,7 +24,7 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="calorie" label="食物热量(Cal/100g)" width="200">
+            <el-table-column prop="calorie" label="食物热量(Cal/100g)" width="auto">
                 <template #default="scope">
                     <div v-if="scope.row.isEditing">
                         <el-input v-model.number="scope.row.calorie" @blur="validateCalorie(scope.row)"

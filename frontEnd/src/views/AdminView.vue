@@ -61,6 +61,18 @@
                                 </el-icon>
                                 <span>内容管理</span>
                             </el-menu-item>
+                            <el-menu-item index="3" @click="active = 3">
+                                <el-icon>
+                                    <Dish />
+                                </el-icon>
+                                <span>饮食管理</span>
+                            </el-menu-item>
+                            <el-menu-item index="4" @click="active = 4">
+                                <el-icon>
+                                    <Basketball />
+                                </el-icon>
+                                <span>器械管理</span>
+                            </el-menu-item>
                         </el-menu>
                     </el-aside>
                     <el-main :style="{ height: 'calc(100vh - 50px)' }">
@@ -104,7 +116,7 @@
                                     <template #default="{ row }">
                                         <el-tag :type="row.postID ? 'info' : 'warning'">{{
                                             row.postID
-                                                ? '帖子' : '评论' }}</el-tag>
+                                            ? '帖子' : '评论' }}</el-tag>
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="postTime" label="发布时间">
@@ -128,6 +140,21 @@
                                 </el-table-column>
                             </el-table>
                         </div>
+
+                        <!--饮食管理界面-->
+                        <div v-if="active === 3">
+                            <el-row class="container" justify="space-between">
+                                <el-col :span="10">
+                                    <AddFood />
+                                </el-col>
+                                <el-col :span="12">
+                                    <AddDiet />
+                                </el-col>
+                            </el-row>
+                        </div>
+                        <div v-if="active === 4">
+                            <adminEquipment />
+                        </div>
                     </el-main>
                 </el-container>
             </el-container>
@@ -142,6 +169,9 @@ import axios from 'axios';
 import { ElNotification } from 'element-plus';
 import { House, UserFilled, Setting, SwitchButton } from '@element-plus/icons-vue';
 import { IconMenu } from '@arco-design/web-vue/es/icon';
+import AddFood from '../components/AddFood.vue';
+import AddDiet from '../components/AddDiet.vue';
+import adminEquipment from "../components/adminEquipment.vue"
 
 const router = useRouter();
 let active = ref(1);

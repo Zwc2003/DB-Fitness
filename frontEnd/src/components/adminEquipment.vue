@@ -46,7 +46,7 @@
             <el-pagination :current-page="currentPage" :page-size="pageSize" :pager-count="11"
                 layout="prev, pager, next" :total="allEquipment.length" @current-change="handlePageChange" />
         </div>
-        <!--发布器材-->
+        <!--发布器材
         <el-card :style="{ fontSize: '20px' }" style="height: 100px; padding: 0;width: 550px;">
             <el-row style="margin: 0;padding: 0;">
                 <el-col :span="20">
@@ -57,6 +57,7 @@
                 </el-col>
             </el-row>
         </el-card>
+    -->
         <!--新建部分-->
         <el-dialog v-model="dialogVisible">
             <el-form ref="form">
@@ -150,7 +151,7 @@ export default {
             imageUrl: "",
             showEquipmentContext: false,
             currentPage: 1,
-            pageSize: 3,
+            pageSize: 4,
             equipmentBG2 // Placeholder for image
         }
     },
@@ -389,7 +390,7 @@ export default {
 }
 
 .posts-container {
-    height: 580px;
+    height: 780px;
 }
 
 .equipment-container {
@@ -397,7 +398,7 @@ export default {
 }
 
 .pagination-container {
-    margin-top: 20px;
+    margin-top: 2px;
     display: flex;
     justify-content: center;
     width: 100%;
