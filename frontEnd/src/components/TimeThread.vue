@@ -27,7 +27,7 @@
                   <img :src="item.coverUrl" alt="Event Image"  class="event-image"/>
                   <template #footer>{{ item.workoutName }}</template>
                 </el-card>
-              </template>
+              </template> 
               <div style="padding-left: 20px">
                 <el-table :data="item.exercises" :row-style="{height:50+'px'}" stripe  class="table">
                   <el-table-column type="selection" width="55" />
