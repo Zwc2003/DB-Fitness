@@ -13,20 +13,25 @@
         <el-card class="card">
             <div class="related-posts-section">
                 <el-row class="row">
+                    <el-col :span="4">
+                        <icon-link />
+                    </el-col>
                     <el-col :span="20">
                         <el-text class="title">相关帖子推荐</el-text>
                     </el-col>
                 </el-row>
                 <div class="related-posts-content">
-                    <el-divider />
-                    <div v-for="post in relatedPosts" :key="post.postID">
-                        <el-text @click="goToPost(post.postID)" class="related-post-title">{{ post.postTitle
-                            }}</el-text>
-                        <el-divider />
+                    <el-divider class="related-post-divider" />
+                    <div v-for="post in relatedPosts" :key="post.postID" class="related-post-item">
+                        <icon-link class="icon-link-small" />
+                        <el-text @click="goToPost(post.postID)" class="related-post-title">
+                            {{ post.postTitle }}
+                        </el-text>
                     </div>
                 </div>
             </div>
         </el-card>
+
 
         <div class="post-container">
             <h1 class="post-title">{{ post.postTitle }}</h1>
@@ -53,7 +58,8 @@
                 <button @click="openShareDialog" class="btn-action">🔗 分享</button>
                 <button @click="forwardPost" class="btn-action">🔄 转发</button>
             </div>
-            <el-divider style="border-width: 8px; border-color:#E1FFFF; background-color: 	#E1FFFF;"></el-divider>
+            <el-divider class="post-divider"
+                style="border-width: 8px; border-color:#E1FFFF; background-color: 	#E1FFFF;"></el-divider>
             <div class="comments-section">
                 <h3>评论</h3>
                 <div class="comments-container">
@@ -116,26 +122,29 @@
         </div>
 
 
-<!-- 热帖推荐 -->
-        <div class="right-sidebar">
-                <div class="hot-posts-section">
-                    <el-row class="row">
-                        <el-col :span="4">
-                            <icon-fire />
-                        </el-col>
-                        <el-col :span="20">
-                            <el-text class="title">热帖推荐</el-text>
-                        </el-col>
-                    </el-row>
-                    <div class="hot-posts-content">
-                        <el-divider />
-                        <el-text v-for="hotPost in hotPosts" :key="hotPost.postID" @click="goToPost(hotPost.postID)" class="hot-post-title">
-                            <icon-fire class="icon-fire-small" /> {{ hotPost.postTitle }}
-                        </el-text>
-                        <el-divider />
-                    </div>
-                </div>
-            </div>
+        <!-- 热帖推荐 -->
+        <div class="right-sidebar">
+            <div class="hot-posts-section">
+                <el-row class="row">
+                    <el-col :span="4">
+                        <icon-fire />
+                    </el-col>
+                    <el-col :span="20">
+                        <el-text class="title">热帖推荐</el-text>
+                    </el-col>
+                </el-row>
+                <div class="hot-posts-content">
+                    <el-divider class="hot-post-divider" />
+                    <div v-for="hotPost in hotPosts" :key="hotPost.postID" class="hot-post-item">
+                        <icon-fire class="icon-fire-small" />
+                        <el-text @click="goToPost(hotPost.postID)" class="hot-post-title">
+                            {{ hotPost.postTitle }}
+                        </el-text>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <!-- 分享弹窗 -->
         <el-dialog title="分享帖子" :visible="shareDialogVisible" width="30%" v-model="shareDialogVisible">
@@ -169,13 +178,15 @@
 <script>
 import axios from 'axios';
 import { ElNotification } from 'element-plus';
-import { IconArrowLeft, IconFire } from '@arco-design/web-vue/es/icon';
+import { IconArrowLeft, IconFire, IconLink, } from '@arco-design/web-vue/es/icon';
 import { EmojiButton } from '@joeattardi/emoji-button';
 
 export default {
     components: {
         IconArrowLeft,
         IconFire,
+        IconLink,
+        EmojiButton,
     },
     data() {
         return {
@@ -297,27 +308,48 @@ export default {
                 }
             })
                 .then(response => {
+                    // 假设返回的数据为空或数组长度为0表示无回复
                     const replies = response.data.filter(reply => reply.parentCommentID === comment.commentID).map(reply => {
                         return {
                             ...reply,
                             likedByCurrentUser: false
                         };
                     });
-                    comment.replies = replies;
-                    ElNotification({
-                        title: '成功',
-                        message: '回复获取成功',
-                        type: 'success',
-                    });
+
+                    if (replies.length === 0) {
+                        ElNotification({
+                            title: '提示',
+                            message: '该评论无回复',
+                            type: 'info',
+                        });
+                    } else {
+                        comment.replies = replies;
+                        ElNotification({
+                            title: '成功',
+                            message: '回复获取成功',
+                            type: 'success',
+                        });
+                    }
                 })
                 .catch(error => {
-                    ElNotification({
-                        title: '错误',
-                        message: '获取回复时发生错误',
-                        type: 'error',
-                    });
+                    if (error.response && error.response.status === 404) {
+                        // 处理404错误，假设表示没有回复
+                        ElNotification({
+                            title: '提示',
+                            message: '该评论无回复',
+                            type: 'info',
+                        });
+                    } else {
+                        // 处理其他错误
+                        ElNotification({
+                            title: '错误',
+                            message: '获取回复时发生错误',
+                            type: 'error',
+                        });
+                    }
                 });
         },
+
 
         toggleReplies(comment) {
             if (!comment.showReplies) {
@@ -383,7 +415,7 @@ export default {
         },
         addComment() {
             // 检查用户是否被禁言
-            if (this.$store.state.isPost === 'false') {
+            if (this.$store.state.isPost === 0) {
                 ElNotification({
                     title: '警告',
                     message: '您已被禁言，无法发表评论或回复。',
@@ -806,7 +838,7 @@ export default {
 
 .comments-section {
     width: 100%;
-    max-height: 400px;
+    max-height: 350px;
     overflow-y: auto;
     margin-top: 20px;
     background-color: rgba(255, 255, 255, 0.5);
@@ -820,6 +852,7 @@ export default {
     background-color: #f9f9f9;
     border-radius: 5px;
     border: none;
+    text-align: left;
 
 }
 
@@ -908,6 +941,7 @@ textarea {
 }
 
 .card {
+    border-radius: 10px;
     margin-top: 65px;
     width: 300px;
     margin-left: 1%;
@@ -917,7 +951,42 @@ textarea {
     margin-bottom: 20px;
 }
 
-.related-posts-section .title,
+.related-posts-section .title {
+    font-size: 16px;
+    font-weight: bolder;
+    color: #000;
+    padding-left: 0;
+    text-align: left;
+}
+
+.related-post-item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.related-post-title {
+    font-size: 14px;
+    color: #007bff;
+    margin-left: 8px;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.related-post-title:hover {
+    text-decoration: underline;
+}
+
+.related-post-divider {
+    margin: 0;
+    border-top: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
 .hot-posts-section .title {
     font-size: 16px;
     font-weight: bolder;
@@ -926,7 +995,7 @@ textarea {
     text-align: left;
 }
 
-.related-post-title,
+
 .hot-post-title {
     font-size: 14px;
     color: #007bff;
@@ -935,12 +1004,12 @@ textarea {
     text-align: left;
 }
 
-.related-post-title:hover,
+
 .hot-post-title:hover {
     text-decoration: underline;
 }
 
-.el-divider {
+.post-divider {
     margin: 0;
     border-top: 1px solid #ddd;
     margin-bottom: 20px;
@@ -951,8 +1020,9 @@ textarea {
 
 .row {
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
     margin-left: 20px;
 }
 
@@ -960,39 +1030,67 @@ textarea {
     margin-top: 65px;
     margin-right: 1%;
     width: 300px;
-    height: max-content;
-    background-color: transparent;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.5);
     background-color: rgba(255, 255, 255, 0.5);
-    margin-bottom: 10px;
-    padding-left: 0;
-    display: flex;
-    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    height: max-content;
+}
+
+.hot-posts-section .title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    padding-left: 10px;
     text-align: left;
 }
 
-.hot-posts-content {
-    padding-left: 5px;
-    padding-right: 5px;
+.hot-post-item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    cursor: pointer;
 }
 
+.hot-post-title {
+    font-size: 14px;
+    color: #007bff;
+    margin-left: 8px;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hot-post-title:hover {
+    text-decoration: underline;
+}
+
+.icon-link-small,
 .icon-fire-small {
-    font-size: 10px !important;
-    width: 10px !important;
-    height: 10px !important;
+    font-size: 15px !important;
+    width: 15px !important;
+    height: 15px !important;
     margin-right: 8px;
     display: inline-block;
     line-height: 1;
     /* 确保图标的高度不会因为行高影响 */
 }
 
+.hot-post-divider {
+    margin: 0;
+    border-top: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+
 /* 新增样式 */
 .fixed-input {
     position: fixed;
-    bottom: 80px;
+    bottom: 50px;
     /* 根据实际情况调整 */
-    left: 50%;
-    transform: translateX(-50%);
+    left: 360px;
+    /*transform: translateX(-50%);*/
     width: 800px;
     /* 与 post-container 的宽度一致 */
     z-index: 101;
