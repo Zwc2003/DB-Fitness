@@ -122,7 +122,7 @@
                             </el-icon>
                             账号设置
                         </el-dropdown-item>
-                        <el-dropdown-item>
+                        <el-dropdown-item @click="navigateToLogin">
                             <el-icon>
                                 <Switch />
                             </el-icon>
@@ -161,8 +161,12 @@ export default {
             }, 500);
         },
         navigateToUserProfile() {
-            const userID = this.$store.state.userID; // 假设userID保存在Vuex的state中
+            const userID = this.$store.state.userID; 
             this.router().push(`/user/${userID}`);
+        },
+        navigateToLogin() {
+            const userID = this.$store.state.userID; 
+            this.router().push(`/`);
         },
         watchScroll() {
             var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
