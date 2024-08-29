@@ -122,7 +122,7 @@
                             </el-icon>
                             账号设置
                         </el-dropdown-item>
-                        <el-dropdown-item @click="navigateToLogin">
+                        <el-dropdown-item @click="navigateToLoginOut">
                             <el-icon>
                                 <Switch />
                             </el-icon>
@@ -164,9 +164,9 @@ export default {
             const userID = this.$store.state.userID; 
             this.router().push(`/user/${userID}`);
         },
-        navigateToLogin() {
-            const userID = this.$store.state.userID; 
-            this.router().push(`/`);
+        navigateToLoginOut(){
+          this.router().push(`/`);
+          localStorage.removeItem('token')
         },
         watchScroll() {
             var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;

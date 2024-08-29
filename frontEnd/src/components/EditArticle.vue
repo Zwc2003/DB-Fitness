@@ -1,35 +1,35 @@
 <template>
-<div class="post-container">
-    <!-- 标题输入框 -->
-    <input type="text" v-model="localTitle" :placeholder="titlePlaceholder" @focus="clearTitlePlaceholder"
-        @blur="restoreTitlePlaceholder" class="title-input aligned-placeholder" />
-    <!-- 发帖类别选择 -->
-    <select v-model="localCategory" class="select-category aligned-placeholder">
-        <option value=" " disabled>请选择发帖类别</option>
-        <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
-    </select>
-    <!-- 工具栏 -->
-    <Toolbar class="toolbar" :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
+    <div class="post-container">
+        <!-- 标题输入框 -->
+        <input type="text" v-model="localTitle" :placeholder="titlePlaceholder" @focus="clearTitlePlaceholder"
+            @blur="restoreTitlePlaceholder" class="title-input aligned-placeholder" />
+        <!-- 发帖类别选择 -->
+        <select v-model="localCategory" class="select-category aligned-placeholder">
+            <option value=" " disabled>请选择发帖类别</option>
+            <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+        </select>
+        <!-- 工具栏 -->
+        <Toolbar class="toolbar" :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
 
-    <!-- 上传图片与正文编辑器的容器 -->
-    <div class="editor-upload-container">
-        <!-- 上传图片组件 -->
-        <el-upload class="avatar-uploader" :show-file-list="false" :before-upload="beforeAvatarUpload">
-            <img v-if="localImgUrl" :src="localImgUrl" class="avatar" />
-            <el-icon v-else class="avatar-uploader-icon">
-                <Plus />
-            </el-icon>
-        </el-upload>
+        <!-- 上传图片与正文编辑器的容器 -->
+        <div class="editor-upload-container">
+            <!-- 上传图片组件 -->
+            <el-upload class="avatar-uploader" :show-file-list="false" :before-upload="beforeAvatarUpload">
+                <img v-if="localImgUrl" :src="localImgUrl" class="avatar" />
+                <el-icon v-else class="avatar-uploader-icon">
+                    <Plus />
+                </el-icon>
+            </el-upload>
 
-        <!-- 正文编辑器 -->
-        <div class="editor-container">
-            <Editor class="editor" v-model="localContent" :defaultConfig="editorConfig" :mode="mode"
-                @onCreated="handleCreated" />
-            <!-- 发布按钮 -->
-            <button @click="emitAddPost" class="btn-primary">发布帖子</button>
+            <!-- 正文编辑器 -->
+            <div class="editor-container">
+                <Editor class="editor" v-model="localContent" :defaultConfig="editorConfig" :mode="mode"
+                    @onCreated="handleCreated" />
+                <!-- 发布按钮 -->
+                <button @click="emitAddPost" class="btn-primary">发布帖子</button>
+            </div>
         </div>
     </div>
-</div>
 
 </template>
 
@@ -69,7 +69,7 @@ export default {
             });
         },
         beforeAvatarUpload(file) {
-            this.localImgUrl = '';
+            this.localImgUrl = null;
             const isJPGorPNG = file.type === 'image/jpeg' || file.type === 'image/png';
             const isLt2M = file.size / 1024 / 1024 < 2;
 
@@ -97,7 +97,7 @@ export default {
         const localContent = ref(props.content)
         const localCategory = ref(props.category || ' ') // 如果未选择类别，默认为空格
         const titlePlaceholder = ref('请输入标题')
-        const localImgUrl = ref(props.imgUrl || ' ')
+        const localImgUrl = ref(props.imgUrl || null)
 
         onMounted(() => {
             setTimeout(() => {
@@ -240,6 +240,7 @@ export default {
     padding: 0;
     color: #999;
     /* 编辑器默认文本颜色为灰色 */
+    text-align: left;
 }
 
 .toolbar {
@@ -274,21 +275,26 @@ export default {
 
 .editor-upload-container {
     display: flex;
-    align-items: flex-start; /* 顶部对齐 */
-    margin-top: 0px; /* 调整与工具栏的间距 */
+    align-items: flex-start;
+    /* 顶部对齐 */
+    margin-top: 0px;
+    /* 调整与工具栏的间距 */
 }
 
-.avatar-uploader  {
-    margin-right: 0px; /* 与编辑器的间距 */
-    width: 200px; /* 设置上传组件的宽度 */
-    height: 180px; /* 设置上传组件的高度 */
+.avatar-uploader {
+    margin-right: 0px;
+    /* 与编辑器的间距 */
+    width: 200px;
+    /* 设置上传组件的宽度 */
+    height: 180px;
+    /* 设置上传组件的高度 */
     background-color: white;
     border-left: 1px solid blue;
     border-bottom: 1px solid blue;
 }
 
 .editor-container {
-    flex-grow: 1; /* 占满剩余空间 */
+    flex-grow: 1;
+    /* 占满剩余空间 */
 }
-
 </style>
