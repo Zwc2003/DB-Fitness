@@ -145,7 +145,7 @@ export default
                             this.$router.push({ path: '/admin' });
                         } else {
                             //this.$router.push({ name: 'UserProfile' });
-                            this.$router.push({ name: 'ForumView' });
+                            this.$router.push({ name: 'home' });
                         }
                     } else if (message === '邮箱不存在或错误' || message === '密码错误') {
                         notificationType = 'error';

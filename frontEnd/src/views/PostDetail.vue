@@ -756,7 +756,7 @@ export default {
     top: 0;
     left: 0;
     padding-bottom: 60px;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .post-container {
@@ -841,7 +841,7 @@ export default {
 
 .comments-section {
     width: 100%;
-    max-height: 350px;
+    max-height: 300px;
     overflow-y: auto;
     margin-top: 20px;
     background-color: rgba(255, 255, 255, 0.5);
@@ -897,8 +897,6 @@ textarea {
 .input-container {
     position: relative;
     width: 100%;
-
-
 }
 
 .actions {
@@ -1090,11 +1088,16 @@ textarea {
 
 
 .fixed-input {
+    width: 50%;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 20px;
+    background-color: rgba(255, 255, 255, 0.5);
     position: fixed;
     bottom: 50px;
     left: 50%;
     transform: translateX(-50%);
-    width: 800px;
+    /*width: 800px;
     /* 与 post-container 的宽度一致 */
     z-index: 101;
     /* 确保在其他元素之上 */
@@ -1154,12 +1157,17 @@ textarea {
 }
 
 .post-content-container {
-    background: rgba(255, 255, 255, 0.5); /* 白色透明度0.5 */
-    border-radius: 12px; /* 圆角 */
-    backdrop-filter: blur(10px); /* 磨砂感 */
-    max-height: 500px; /* 最大高度，根据需要调整 */
-    overflow: auto; /* 超出内容显示滚动条 */
-    padding: 15px; /* 内边距 */
+    background: rgba(255, 255, 255, 0.5);
+    /* 白色透明度0.5 */
+    border-radius: 12px;
+    /* 圆角 */
+    backdrop-filter: blur(10px);
+    /* 磨砂感 */
+    max-height: 500px;
+    /* 最大高度，根据需要调整 */
+    overflow: auto;
+    /* 超出内容显示滚动条 */
+    padding: 15px;
+    /* 内边距 */
 }
-
 </style>
