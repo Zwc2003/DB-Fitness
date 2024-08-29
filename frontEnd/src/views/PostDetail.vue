@@ -295,11 +295,20 @@ export default {
                     });
                 })
                 .catch(error => {
-                    ElNotification({
-                        title: '错误',
-                        message: '获取评论时发生错误',
-                        type: 'error',
-                    });
+                    if (error.response && error.response.status === 404) {
+                        // 处理404错误，假设表示没有回复
+                        ElNotification({
+                            title: '提示',
+                            message: '该帖子暂无评论',
+                            type: 'info',
+                        });
+                    } else {
+                        ElNotification({
+                            title: '错误',
+                            message: '获取评论时发生错误',
+                            type: 'error',
+                        });
+                    }
                 });
         },
         fetchReplies(comment) {
