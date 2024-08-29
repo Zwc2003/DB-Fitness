@@ -46,9 +46,12 @@
                 <img :src="post.imgUrl" alt="Post Image" class="image" />
             </div>
 
-            <div class="post-content">
-                <p>{{ post.postContent }}</p>
+            <div class="post-content-container">
+                <div class="post-content">
+                    <p>{{ post.postContent }}</p>
+                </div>
             </div>
+
 
             <div class="post-actions">
                 <button @click="toggleLike(post.postID)" class="btn-action">
@@ -894,6 +897,8 @@ textarea {
 .input-container {
     position: relative;
     width: 100%;
+
+
 }
 
 .actions {
@@ -1084,13 +1089,11 @@ textarea {
 }
 
 
-/* 新增样式 */
 .fixed-input {
     position: fixed;
     bottom: 50px;
-    /* 根据实际情况调整 */
-    left: 360px;
-    /*transform: translateX(-50%);*/
+    left: 50%;
+    transform: translateX(-50%);
     width: 800px;
     /* 与 post-container 的宽度一致 */
     z-index: 101;
@@ -1149,4 +1152,14 @@ textarea {
     transition: transform 0.3s ease;
     /* 添加缩放的过渡效果 */
 }
+
+.post-content-container {
+    background: rgba(255, 255, 255, 0.5); /* 白色透明度0.5 */
+    border-radius: 12px; /* 圆角 */
+    backdrop-filter: blur(10px); /* 磨砂感 */
+    max-height: 500px; /* 最大高度，根据需要调整 */
+    overflow: auto; /* 超出内容显示滚动条 */
+    padding: 15px; /* 内边距 */
+}
+
 </style>

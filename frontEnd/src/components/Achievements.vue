@@ -48,14 +48,14 @@
 <script>
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-import thumb from '../assets/badges/被点赞.png'; // 点赞
-import comment from '../assets/badges/被评论.png'; // 评论
-import post from '../assets/badges/发帖数.png'; // 发帖数
-import information from '../assets/badges/个人信息完成.png'; // 个人信息完成
-import login from '../assets/badges/累计登录天数.png'; // 累计登录天数
-import course from '../assets/badges/完成课程数量.png'; // 完成课程数量
-import train from '../assets/badges/训练计划完成天数.png'; // 训练计划完成天数
-import food from '../assets/badges/饮食计划完成天数.png'; // 饮食计划完成天数
+import thumb from '../assets/badges/Achievement_2.png'; // 点赞
+import comment from '../assets/badges/Achievement_5.png'; // 评论
+import post from '../assets/badges/Achievement_6.png'; // 发帖数
+import information from '../assets/badges/Achievement_1.png'; // 个人信息完成
+import login from '../assets/badges/Achievement_2.png'; // 累计登录天数
+import course from '../assets/badges/Achievement_3.png'; // 完成课程数量
+import train from '../assets/badges/Achievement_8.png'; // 训练计划完成天数
+import food from '../assets/badges/Achievement_7.png'; // 饮食计划完成天数
 
 export default {
   name: 'BadgeWall',

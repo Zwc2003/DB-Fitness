@@ -270,7 +270,7 @@
                       forwardCount: 0,
                       commentsCount: 0,
                       refrencepostID: -1,
-                      imgUrl: this.newPost.imgUrl===null?"":this.newPost.imgUrl
+                      imgUrl: this.newPost.imgUrl===null?" ":this.newPost.imgUrl
                   };
                   console.log("url", this.newPost.imgUrl)
                   axios.post(`http://localhost:8080/api/Post/PublishPost?token=${token}`, newPost)

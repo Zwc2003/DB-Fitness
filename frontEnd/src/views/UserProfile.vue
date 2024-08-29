@@ -2,14 +2,14 @@
     <div class="bg">
         <div class="user-profile">
             <div class="profile-container">
-                <aside class="profile-sidebar">
-                    <div class="back-button-container">
+              <div class="back-button-container">
                         <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
                             <el-icon>
                                 <arrow-left />
                             </el-icon>
                         </el-button>
                     </div>
+                <aside class="profile-sidebar">
                     <div class="avatar-wrapper" @click="showLargeImage">
                         <img :src="imagePreview || profile.iconURL || defaultAvatar" alt="avatar" class="avatar">
                         <span class="edit-icon" @click.stop="triggerFileInput">&#9998;</span>
@@ -92,48 +92,97 @@
                         <button @click="saveProfile" class="save-button">保存</button>
                     </div>
 
+
                     <!-- 帖子列表部分 -->
+                    <div class="button-container">
+                        <button @click="togglePostList" class="toggle-button">
+                            {{ postListVisible ? '收起已发布帖子' : '查看已发布帖子' }}
+                        </button>
+                    </div>
                     <section class="post-list">
-                        <h3>用户的帖子</h3>
-                        <div v-if="posts.length === 0">该用户尚未发布任何帖子。</div>
-                        <ul v-else>
-                            <li v-for="post in posts" :key="post.postID" class="post-item">
-                                <h4>{{ post.postTitle }}</h4>
-                                <p>{{ post.postContent }}</p>
-                                <small>{{ new Date(post.postTime).toLocaleString() }}</small>
-                            </li>
-                        </ul>
+                        <div v-if="postListVisible">
+                            <h3>用户的帖子</h3>
+                            <div v-if="posts.length === 0">该用户尚未发布任何帖子。</div>
+                            <ul v-else>
+                                <li v-for="post in posts" :key="post.postID" class="post-item">
+                                    <h4>{{ post.postTitle }}</h4>
+                                    <p>{{ post.postContent }}</p>
+                                    <small>{{ new Date(post.postTime).toLocaleString() }}</small>
+                                </li>
+                            </ul>
+                        </div>
                     </section>
 
                     <!-- 活力币余额模块 -->
                     <section class="vitality-balance">
-                        <h3>活力币余额</h3>
-                        <div class="balance-display">
-                            <p class="balance-amount">¥ {{ vigorTokenBalance }}</p>
+                        <div class="button-container">
+                            <button @click="toggleBalanceModule" class="toggle-button">
+                                {{ balanceModuleVisible ? '收起活力币余额' : '查看活力币余额' }}
+                            </button>
                         </div>
-                        <h3>余额变动记录</h3>
-                        <table class="balance-records">
-                            <thead>
-                                <tr>
-                                    <th>记录ID</th>
-                                    <th>变动原因</th>
-                                    <th>变动量</th>
-                                    <th>余额</th>
-                                    <th>创建时间</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="record in vigorTokenRecords" :key="record.recordID">
-                                    <td>{{ record.recordID }}</td>
-                                    <td>{{ record.reason }}</td>
-                                    <td :class="{ positive: record.change > 0, negative: record.change < 0 }">
-                                        {{ record.change > 0 ? '+￥' : '￥' }}{{ record.change }}
-                                    </td>
-                                    <td>{{ '￥' }}{{ record.balance }}</td>
-                                    <td>{{ new Date(record.createTime).toLocaleString() }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div v-if="balanceModuleVisible">
+                            <h3>活力币余额</h3>
+                            <div class="balance-display">
+                                <p class="balance-amount">¥ {{ vigorTokenBalance }}</p>
+                            </div>
+                            <h3>余额变动记录</h3>
+                            <div class="balance-records-container">
+                                <table class="balance-records">
+                                    <thead>
+                                        <tr>
+                                            <th>记录ID</th>
+                                            <th>变动原因</th>
+                                            <th>变动量</th>
+                                            <th>余额</th>
+                                            <th>创建时间</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="record in vigorTokenRecords" :key="record.recordID">
+                                            <td>{{ record.recordID }}</td>
+                                            <td>{{ record.reason }}</td>
+                                            <td :class="{ positive: record.change > 0, negative: record.change < 0 }">
+                                                {{ record.change > 0 ? '+￥' : '￥' }}{{ record.change }}
+                                            </td>
+                                            <td>{{ '￥' }}{{ record.balance }}</td>
+                                            <td>{{ new Date(record.createTime).toLocaleString() }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- 成就模块 -->
+                    <section class="achievement-section">
+                        <div class="button-container">
+                            <button @click="toggleAchievements" class="toggle-button">
+                                {{ achievementsVisible ? '收起成就进度表' : '查看成就进度表' }}
+                            </button>
+                        </div>
+                        <div v-if="achievementsVisible">
+                          <div class="achievement-container">
+                              <!-- 使用 v-for 循环生成成就图片 -->
+                              <div v-for="(achievement, index) in achievements" :key="index" class="achievement-item-wrapper">
+                                  <div class="achievement-item" :style="{ '--progress': getProgress(achievement) }"
+                                       @mouseover="showTooltip(index)"
+                                       @mouseleave="hideTooltip">
+                                      <img :src="getImagePath(achievement.achievementId)" alt="Achievement Badge" />
+                                  </div>
+                                  <div v-if="tooltipVisibleIndex === index" class="tooltip">
+                                      <h4>{{ achievement.name }}</h4>
+                                      <div class="achievement-content">
+                                          <span :style="{ fontSize: '15px', color: '#ffffff' }">目标: {{ achievement.target }}</span>
+                                      </div>
+                                      <div class="achievement-content">
+                                          <span :style="{ fontSize: '15px', color: '#ffffff' }">完成情况: {{ (achievement.progress * 100 / achievement.target).toFixed(2) }}%</span>
+                                      </div>
+                                      <div class="achievement-content">
+                                          <span :style="{ fontSize: '15px', color: '#ffffff' }">状态: {{ achievement.isAchieved ? '已完成' : '未完成' }}</span>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                        </div>
                     </section>
                 </main>
             </div>
@@ -148,10 +197,19 @@
 
 <script>
 import defaultAvatar from '../assets/images/default-avatar.png';
-import EditableField from './EditableField.vue';
+import EditableField from '../views/EditableField.vue';
 import axios from 'axios';
 import { ElNotification } from 'element-plus';
 import { mapState } from 'vuex';
+import Achievement_1 from '../assets/badges/Achievement_1.png';
+import Achievement_2 from '../assets/badges/Achievement_2.png';
+import Achievement_3 from '../assets/badges/Achievement_3.png';
+import Achievement_4 from '../assets/badges/Achievement_4.png';
+import Achievement_5 from '../assets/badges/Achievement_5.png';
+import Achievement_6 from '../assets/badges/Achievement_6.png';
+import Achievement_7 from '../assets/badges/Achievement_7.png';
+import Achievement_8 from '../assets/badges/Achievement_8.png';
+
 
 export default {
     components: {
@@ -184,7 +242,23 @@ export default {
             imagePreview: null,
             isLargeImageVisible: false,
             vigorTokenBalance: 0,
-            vigorTokenRecords: []
+            vigorTokenRecords: [],
+            postListVisible: false, // 控制帖子列表的显示与隐藏
+            balanceModuleVisible: false, // 控制余额模块的显示与隐藏
+            achievementsVisible: false, // 控制成就模块的显示与隐藏
+            achievements: [], // 成就列表
+            tooltipVisibleIndex: null,  // 鼠标悬停显示的提示信息
+            achievementImages: {
+              1: Achievement_1,
+              2: Achievement_2,
+              3: Achievement_3,
+              4: Achievement_4,
+              5: Achievement_5,
+              6: Achievement_6,
+              7: Achievement_7,
+              8: Achievement_8,
+            },
+
         };
     },
     computed: {
@@ -196,10 +270,40 @@ export default {
         this.getVigorTokenBalance();
         this.getVigorTokenRecordsFromDB();
 
+
     },
+    mounted() {
+      this.fetchAchievements();
+    },
+
+
     methods: {
         goBack() {
             this.$router.back();
+        },
+        togglePostList() {
+            this.postListVisible = !this.postListVisible;
+        },
+        toggleBalanceModule() {
+            this.balanceModuleVisible = !this.balanceModuleVisible;
+        },
+        toggleAchievements() {
+            this.achievementsVisible = !this.achievementsVisible;
+        },
+        showTooltip(index) {
+        console.log("Tooltip show for index:", index);
+        this.tooltipVisibleIndex = index;
+        },
+        hideTooltip() {
+            console.log("Tooltip hide");
+            this.tooltipVisibleIndex = null;
+        },
+        getProgress(achievement) {
+            let progress = achievement.progress / achievement.target;
+            return Math.min(1, Math.max(0, progress)); // 确保在0到1之间
+        },
+        getImagePath(achievementId) {
+          return this.achievementImages[achievementId] || ''; // 返回对应的图片路径，如果不存在则返回空字符串
         },
         async fetchUserProfile() {
             const token = localStorage.getItem('token');
@@ -265,6 +369,33 @@ export default {
                 this.profile.iconURL = this.imagePreview; // 将Base64格式图片赋值给 profile.iconURL
             };
             return false; // 阻止默认的上传行为
+        },
+        async fetchAchievements() {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await axios.get(`http://localhost:8080/api/Achievement/GetAchievement?token=${token}`);
+                // 将获取到的成就数据存储到组件的 data 属性中
+                const data = response.data;
+                this.achievements = data.achievements.map(achievement => ({
+                  achievementId: achievement.achievementId,
+                  name: achievement.name,
+                  target: parseInt(achievement.target, 10),
+                  progress: parseInt(achievement.progress, 10),
+                  isAchieved: achievement.isAchieved === "true"
+                }));
+
+                ElNotification({
+                    title: '成功',
+                    message: '成就表获取成功',
+                    type: 'success',
+                });
+            } catch (error) {
+                ElNotification({
+                    title: '错误',
+                    message: '成就表获取失败:',
+                    type: 'error',
+                });
+            }
         },
         emitSave(field) {
             console.log(`${field} updated:`, this.profile[field]);
@@ -388,7 +519,6 @@ export default {
     background-position: center;
     background-attachment: fixed;
     width: 100%;
-    /*height: max-content;*/
     min-height: 100%;
     position: absolute;
     top: 0;
@@ -401,7 +531,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: max-content;
+    height: fit-content;
     width: 100%;
     background-color: transparent;
 }
@@ -411,7 +541,7 @@ export default {
     width: 100%;
     max-width: 80vw;
     margin: auto;
-    background-color: rgba(253, 248, 248, 0.5);
+    background-color: rgba(253, 248, 248, 0.6);
     /* 半透明的背景 */
     backdrop-filter: blur(10px);
     /* 添加模糊效果，模拟磨砂感 */
@@ -422,8 +552,12 @@ export default {
     border-radius: 15px;
     /* 圆角半径，增加平滑感 */
     justify-content: space-between;
-    overflow: hidden;
     /* 避免子元素溢出边界 */
+    overflow: hidden;
+    /*height: 100vh;*/
+    /*transform: scale(0.5); !* 缩放比例 0.8 即缩小为原尺寸的 80% *!*/
+    /*transform-origin: top left; !* 以左上角为缩放中心，或选择其他位置 *!*/
+
 }
 
 .profile-sidebar {
@@ -432,9 +566,12 @@ export default {
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    position: relative;
+    /*justify-content: center;*/
+    top:150px;
     background-color: transparent;
     border: none;
+
 }
 
 .profile-main {
@@ -540,10 +677,10 @@ p {
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: transparent;
-    font-size: 20px;
+    /*font-size: 20px;*/
     text-align: left;
     color: #333;
-    line-height: 24px;
+    /*line-height: 24px;*/
     overflow: auto;
 }
 
@@ -598,7 +735,7 @@ select {
 }
 
 .signature-textarea textarea {
-    height: 150px;
+    height: 50px;
     font-size: 20px;
     line-height: 1.5;
     width: 100%;
@@ -637,8 +774,7 @@ select {
 
 /* 新增的帖子列表样式 */
 .post-list {
-    margin-top: 20px;
-    max-height: 30vh;
+    max-height: 60vh;
     overflow: auto;
 }
 
@@ -684,10 +820,16 @@ select {
     /* 移除边框 */
 }
 
+.balance-records-container {
+    width: 100%;
+    max-height: 60vh;
+    overflow-y: auto; /* 垂直滚动条 */
+    margin-top: 20px;
+}
+
 .balance-records {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
 }
 
 .balance-records th,
@@ -695,7 +837,7 @@ select {
     border: 1px solid #dbd7d7;
     padding: 8px;
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .balance-records tr:nth-child(even) {
@@ -753,4 +895,117 @@ select {
     /* 调整为你需要的左边距 */
     z-index: 1000;
 }
+.button-container {
+    text-align: left; /* 确保按钮靠左对齐 */
+}
+
+.toggle-button {
+    background-color: #43b984; /* 按钮背景颜色 */
+    color: #ffffff; /* 按钮文字颜色 */
+    border: none;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+
+}
+
+.toggle-button:hover {
+    background-color: #296446; /* 悬停时的背景颜色 */
+}
+
+.toggle-button:active {
+    transform: scale(0.98); /* 点击时的缩小效果 */
+}
+
+.post-list, .vitality-balance, .achievement-section  {
+    margin-bottom: 20px; /* 为两个部分添加一些下边距 */
+}
+
+
+
+
+.achievement-container {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.achievement-item-wrapper {
+    position: relative; /* 确保 tooltip 能正确定位 */
+    width: 20%;  /* 宽度为父容器的20% */
+    aspect-ratio: 1 / 1;  /* 保持宽高比为1:1，确保容器为正方形 */
+}
+
+.achievement-item {
+    position: relative;
+    width: 80%;  /* 宽度为父容器的100% */
+    aspect-ratio: 1 / 1;  /* 保持宽高比为1:1，确保容器为正方形 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 确保遮罩层不会超出图片边界 */
+    border-radius: 50%; /* 保持圆形 */
+    background-color: transparent;
+}
+
+.achievement-item img {
+    width: 100%;  /* 宽度占满容器 */
+    height: 100%; /* 高度占满容器 */
+    object-fit: cover; /* 确保图片填满容器且不失真 */
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+}
+
+.achievement-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* 半透明黑色遮罩 */
+    border-radius: 50%; /* 保持与图片一致的圆形 */
+    z-index: 2;
+    transform-origin: bottom;
+    transform: scaleY(calc(1 - var(--progress))); /* 根据进度动态调整 */
+    transition: transform 0.3s ease; /* 添加动画效果 */
+}
+
+.achievement-item:hover::before {
+    transform: scaleY(0); /* 悬停时显示完整图片 */
+}
+
+.tooltip {
+    position: absolute;
+    bottom: 100%; /* 确保 tooltip 在 achievement-item 的上方 */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 1000;
+    display: block;
+}
+
+.achievement-content {
+    height: 50px;
+    margin: 5px 0;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: transparent;
+    text-align: left;
+    overflow: auto;
+}
+
+
 </style>

@@ -69,7 +69,7 @@ export default {
             });
         },
         beforeAvatarUpload(file) {
-            this.localImgUrl = '';
+            this.localImgUrl = null;
             const isJPGorPNG = file.type === 'image/jpeg' || file.type === 'image/png';
             const isLt2M = file.size / 1024 / 1024 < 2;
 
@@ -97,7 +97,7 @@ export default {
         const localContent = ref(props.content)
         const localCategory = ref(props.category || ' ') // 如果未选择类别，默认为空格
         const titlePlaceholder = ref('请输入标题')
-        const localImgUrl = ref(props.imgUrl || ' ')
+        const localImgUrl = ref(props.imgUrl || null)
 
         onMounted(() => {
             setTimeout(() => {

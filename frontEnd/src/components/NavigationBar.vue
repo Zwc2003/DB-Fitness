@@ -122,7 +122,7 @@
                             </el-icon>
                             账号设置
                         </el-dropdown-item>
-                        <el-dropdown-item>
+                        <el-dropdown-item @click="navigateToLoginOut">
                             <el-icon>
                                 <Switch />
                             </el-icon>
@@ -163,6 +163,10 @@ export default {
         navigateToUserProfile() {
             const userID = this.$store.state.userID; // 假设userID保存在Vuex的state中
             this.router().push(`/user/${userID}`);
+        },
+        navigateToLoginOut(){
+          this.router().push(`/`);
+          localStorage.removeItem('token')
         },
         watchScroll() {
             var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;

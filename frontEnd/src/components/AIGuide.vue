@@ -73,9 +73,9 @@
                 <span class="upload-title">输入健身动作类型</span>
               </div>
               <el-form class="type-form">
-                <el-form-item  label-width="130px" >
+                <el-form-item   >
                   <el-input v-model="screenshotsCurrent.exerciseName"
-                    style="width: 300px; font-size: 20px; color: #000 !important; font-weight: bold; margin-top: 5px">
+                    style="width: 300px; font-size: 20px; color: #000 !important; font-weight: bold; margin-top: 5px;">
                   </el-input>
                 </el-form-item>
               </el-form>
@@ -707,10 +707,10 @@ export default {
 
 
 .container {
-  background: url("./src/assets/bg5.jpg") no-repeat center;
+  background: url("../assets/bg5.jpg") no-repeat center;
   background-size: cover;
   width: 100vw;
-  margin-top: 2%; /* 上下5%的间距，水平居中 */
+  margin-top: 3%; /* 上下5%的间距，水平居中 */
   height: 85vh;
 
 }
@@ -836,7 +836,7 @@ export default {
 
 .uploader-text {
   margin-top: 5px !important;
-  font-size: 45px !important;
+  font-size: 35px !important;
   color: #8c8c8c;
 }
 
@@ -893,7 +893,7 @@ export default {
 }
 
 .markdown-content-container {
-  max-height: 400px;
+  max-height: 40vh;
   /* 设置容器的最大高度 */
   overflow-y: auto;
   /* 启用垂直滚动条 */
@@ -903,6 +903,7 @@ export default {
   /* 添加边框以区分区域 */
   margin-bottom: 5px;
   /* 确保与按钮有一定间距 */
+  margin-top:5px
 }
 
 .markdown-content-container-sub {
@@ -957,5 +958,17 @@ export default {
   border-radius: 20px;
   font-size: 20px;
   background-color: #929191;
+}
+
+.upload-title
+{
+  font-size: 30px!important;
+}
+
+.type-form
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
