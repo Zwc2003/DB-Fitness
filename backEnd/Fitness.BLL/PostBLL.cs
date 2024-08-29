@@ -31,14 +31,15 @@ namespace Fitness.BLL
             //post.refrencePostID = -1;
             int st;
             post.userName = UserDAL.GetUserByUserID(tokenRes.userID,out st).userName;
-            // 使用时间戳创建唯一的 objectName
-            long timestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1)).Ticks / TimeSpan.TicksPerMillisecond;
-            string objectName = $"{post.userID}_{timestamp}.png";
-            int base64Index = post.imgUrl.IndexOf("base64,") + 7;
-            post.imgUrl = post.imgUrl.Substring(base64Index);
-            OSSHelper.UploadBase64ImageToOss(post.imgUrl, objectName);
-            post.imgUrl = OSSHelper.GetPublicObjectUrl(objectName);
-
+            // 首先要判断是否已经为url
+            if (post.imgUrl != "null" && !UrlHelper.IsUrl(post.imgUrl)) {
+                long timestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1)).Ticks / TimeSpan.TicksPerMillisecond;
+                string objectName = $"{post.userID}_{timestamp}.png";
+                int base64Index = post.imgUrl.IndexOf("base64,") + 7;
+                post.imgUrl = post.imgUrl.Substring(base64Index);
+                OSSHelper.UploadBase64ImageToOss(post.imgUrl, objectName);
+                post.imgUrl = OSSHelper.GetPublicObjectUrl(objectName);
+            }
             int postId = PostDAL.Post(post);
             if (postId == 0)
             {
@@ -256,7 +257,8 @@ namespace Fitness.BLL
                 postCategory = post.postCategory,
                 userID =userId, 
                 refrencePostID = post.postID,
-                userName =UserDAL.GetUserByUserID(userId,out st).userName
+                userName =UserDAL.GetUserByUserID(userId,out st).userName,
+                imgUrl = post.imgUrl
             };
             Post(token,post1);
             return JsonConvert.SerializeObject(new
