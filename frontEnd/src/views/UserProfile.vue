@@ -14,10 +14,10 @@
                         <img :src="imagePreview || profile.iconURL || defaultAvatar" alt="avatar" class="avatar">
                         <span class="edit-icon" @click.stop="triggerFileInput">&#9998;</span>
                     </div>
-                    <h2>{{ profile.userName }}</h2>
+                    <h2>{{ profile.userName }}</h2>    
                     <div class="tags">
-                        <span v-for="(tag, index) in profile.tags" :key="index" class="tag"
-                            :style="{ backgroundColor: tag.color }">{{ tag.text }}</span>
+                        <span v-for="(tag, index) in profile.tags" :key="index" class="tag" >{{ tag }}</span>
+                        <!-- :style="{ backgroundColor: tag.color }" -->
                         <span v-if="addingTag" class="tag-input">
                             <input type="text" v-model="newTag" @blur="addTag" @keyup.enter="addTag" />
                         </span>
@@ -160,21 +160,22 @@ export default {
     data() {
         return {
             profile: {
-                userID: null,
+                userID: -1,
                 userName: '',
                 password: '',
                 salt: '',
                 email: '',
                 registrationTime: '',
                 iconURL: '',
-                age: null,
+                age: -1,
                 gender: '',
-                tags: [],
+                tags:'',
                 introduction: '',
                 goalType: '',
                 goalWeight: null,
                 isMember: null,
             },
+            tags:[],
             posts: [],
             colors: ['#e57373', '#81c784', '#64b5f6', '#ffb74d', '#ba68c8', '#4db6ac'],
             addingTag: false,
@@ -207,6 +208,8 @@ export default {
                 const response = await axios.get(`http://localhost:8080/api/User/GetPersonalProfile?token=${token}`);
                 this.profile = response.data;
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
+                this.tags = this.profile.tags.split('#');
+                console.log(this.tags);
                 ElNotification({
                     title: '成功',
                     message: '用户资料获取成功',
@@ -296,35 +299,35 @@ export default {
         },
         async saveProfile() {
             try {
-                const response = await axios.put('http://localhost:8080/api/User/UpdateProfile', {
+                const tags = Array.isArray(this.profile.tags) ? this.profile.tags : [];
+                const formattedTags = tags.join('#')+'#';
+                const token = localStorage.getItem('token');
+                const postData = {
                     userID: this.profile.userID,
-                    userName: this.profile.nickname,
-                    password: this.profile.password,
-                    salt: null,
-                    email: this.profile.email,
+                    userName: this.profile.userName,
                     iconURL: this.profile.iconURL,
                     age: this.profile.age,
                     gender: this.profile.gender,
-                    tags: this.profile.tags.map(tag => `${tag.text}:${tag.color}`).join(','),
+                    tags: formattedTags,
                     introduction: this.profile.introduction,
+                    isMember: this.profile.isMember,
                     goalType: this.profile.goalType,
                     goalWeight: this.profile.goalWeight,
-                    isMember: this.profile.isMember,
-                    isPost: -1,
-                    isDelete: -1
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${this.token}`
-                    }
-                });
+                };
+                console.log("上传资料：",postData);
+
+                const response = await axios.post(`http://localhost:8080/api/User/UpdateProfile?token=${token}`,postData);
+                console.log("上传响应：",response.data);
 
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
-                ElNotification({
-                    title: '成功',
-                    message: '保存成功！',
-                    type: 'success',
-                });
+                if(response.data==='更新成功')
+                    ElNotification({
+                        title: '成功',
+                        message: '保存成功！',
+                        type: 'success',
+                    })
             } catch (error) {
+                console.log(error);
                 ElNotification({
                     title: '错误',
                     message: '保存资料失败',

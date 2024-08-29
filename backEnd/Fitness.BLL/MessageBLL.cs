@@ -13,23 +13,10 @@ namespace Fitness.BLL
 {
     public class MessageBLL:IMessageBLL
     {
-        private readonly IHubContext<ChatHub> _hubContext;
-
-        public MessageBLL(IHubContext<ChatHub> hubContext)
-        {
-            _hubContext = hubContext;
-        }
-
-        public async Task<bool> SendMessageAsync(Message message)
+        public bool InsertMessage(Message message)
         {
             bool result = MessageDAL.Insert(message);
-            if (result)
-            {
-                // 通知接收方有新消息
-                await _hubContext.Clients.User(message.receiverID.ToString()).SendAsync("ReceiveMessage", message);
-                return true;
-            }
-            return false;
+            return result;
         }
 
         public List<Message> GetChatHistory(int userId)

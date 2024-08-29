@@ -16,16 +16,6 @@ namespace Fitness.Controllers
             _messageBLL = messageBLL;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SendMessage([FromBody] Message message)
-        {
-            if (await _messageBLL.SendMessageAsync(message))
-            {
-                return Ok(new { success = true });
-            }
-            return BadRequest(new { success = false, message = "发送消息失败" });
-        }
-
         [HttpGet]
         public ActionResult<List<Message>> GetChatHistory(int userId)
         {

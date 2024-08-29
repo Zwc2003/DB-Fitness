@@ -42,8 +42,8 @@ builder.Services.AddCors(options =>
     {
         builder.WithOrigins("http://localhost:5173")
                .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials(); // 必须允许凭据来支持SignalR
+               .AllowAnyMethod();
+              // .AllowCredentials(); // 必须允许凭据来支持SignalR
     });
 });
 

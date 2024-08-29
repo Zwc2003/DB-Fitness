@@ -228,10 +228,11 @@ namespace Fitness.DAL
                     new OracleParameter("Introduction", OracleDbType.NVarchar2) {Value = expanduserInfo.Introduction},
                     new OracleParameter("isMember", OracleDbType.Varchar2) {Value = expanduserInfo.isMember},
                     new OracleParameter("goalType", OracleDbType.NVarchar2) {Value = expanduserInfo.goalType},
+                    new OracleParameter("Tags", OracleDbType.NVarchar2) {Value = expanduserInfo.Tags},
                     new OracleParameter("goalWeight", OracleDbType.BinaryFloat) {Value = expanduserInfo.goalWeight},
                     new OracleParameter("userID", OracleDbType.Int32) {Value = userID}
                 };
-                string sql = "UPDATE \"User\" SET \"userName\"=:userName,\"iconURL\"=:iconURL,\"Age\"=:Age,\"Gender\"=:Gender,\"Introduction\"=:Introduction,\"isMember\"=:isMember,\"goalType\"=:goalType,\"goalWeight\"=:goalWeight WHERE \"userID\"=:userID";
+                string sql = "UPDATE \"User\" SET \"userName\"=:userName,\"iconURL\"=:iconURL,\"Age\"=:Age,\"Gender\"=:Gender,\"Introduction\"=:Introduction,\"isMember\"=:isMember,\"goalType\"=:goalType,\"Tags\"=:Tags,\"goalWeight\"=:goalWeight WHERE \"userID\"=:userID";
                 int dt = OracleHelper.ExecuteNonQuery(sql, null, oracleParameters);
                 if (dt != 1)
                 {

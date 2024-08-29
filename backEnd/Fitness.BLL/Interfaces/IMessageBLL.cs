@@ -9,7 +9,7 @@ namespace Fitness.BLL.Interfaces
 {
     public interface IMessageBLL
     {
-        public Task<bool> SendMessageAsync(Message message);
+        public bool InsertMessage(Message message);
         public List<Message> GetChatHistory(int userId);
     }
 }
