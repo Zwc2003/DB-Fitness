@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fitness.DAL.Core
 {
-    internal class UrlHelper
+    public class UrlHelper
     {
         public static bool IsUrl(string input)
         {

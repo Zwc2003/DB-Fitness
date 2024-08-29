@@ -161,7 +161,7 @@ export default {
             }, 500);
         },
         navigateToUserProfile() {
-            const userID = this.$store.state.userID; // 假设userID保存在Vuex的state中
+            const userID = this.$store.state.userID; 
             this.router().push(`/user/${userID}`);
         },
         navigateToLoginOut(){
