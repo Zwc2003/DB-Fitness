@@ -10,6 +10,7 @@ using System.Reflection.PortableExecutable;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace Fitness.DAL
 {
@@ -389,5 +390,26 @@ namespace Fitness.DAL
             DataRow dr = dt.Rows[0];
             return Convert.ToDateTime(dr["lastLoginTime"]);
         }
+
+        public static bool SetRole(int userID, string role) {
+            try
+            {
+                OracleParameter[] oracleParameters = new OracleParameter[]
+                {
+                    new OracleParameter("Role", OracleDbType.NVarchar2) { Value = role },
+                    new OracleParameter("userID", OracleDbType.Int32) { Value = userID }
+                };
+                string sql = "UPDATE \"User\" SET \"Role\" = :Role WHERE \"userID\"=:userID";
+                OracleHelper.ExecuteNonQuery(sql, null, oracleParameters);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+
     }
 }
