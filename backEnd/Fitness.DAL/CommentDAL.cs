@@ -38,22 +38,6 @@ namespace Fitness.DAL
             return comments;
         }
 
-        public static bool IsPostOwner(int userID, int commentID)
-        {
-            string sql = @"SELECT COUNT(*) FROM ""Comment"" c
-                   JOIN ""Posts"" p ON c.""postID"" = p.""postID""
-                   WHERE c.""commentID"" = :commentID AND p.""userID"" = :userID";
-
-            OracleParameter[] parameters = {
-                new OracleParameter("commentID", OracleDbType.Int32) { Value = commentID },
-                new OracleParameter("userID", OracleDbType.Int32) { Value = userID }
-        };
-
-            object result = OracleHelper.ExecuteScalar(sql, parameters);
-
-            return Convert.ToInt32(result) > 0;
-        }
-
         public static List<Comment> GetCommentByPostID(int postID)
         {
             string query = "SELECT * FROM \"Comment\" WHERE \"postID\" = :postID AND \"parentCommentID\" = -1 ORDER BY \"commentTime\" DESC";

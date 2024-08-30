@@ -55,7 +55,10 @@ namespace Fitness.BLL
                 _verificationHelper.RemoveVerificationCode(registerInfo.email);
             int st;
             var vigorTokenBLL = new VigorTokenBLL();
-            vigorTokenBLL.UpdateBalance(UserDAL.GetLoginInfoByEmail(registerInfo.email,out st).userID, "注册FitFit成功，获得2000活力币", 2000);
+            vigorTokenBLL.UpdateBalance(res, "注册FitFit成功，获得2000活力币", 2000);
+            //初始化身份与登录时间
+            UserDAL.UpdateLoginTime(res, DateTime.Now);
+            UserDAL.SetRole(res, registerInfo.role);
             //成就系统、计划系统初始化
             UserAchievementBLL userAchievementBLL = new UserAchievementBLL();
             userAchievementBLL.Init(res); FitnessDAL.Init(res); PhysicalTestDAL.Init(res); UserFitnessPlanGoalDAL.Init(res);
@@ -87,6 +90,12 @@ namespace Fitness.BLL
                 if (status == 1) return new LoginToken("Invalid", "Internal server error. Please try again later.");
                 bool isPass = PasswordHelper.VerifyPassword(password, loginInfo.hashedPassword, loginInfo.Salt);
             if (isPass) {
+                //管理员与用户身份校验
+                bool isAdmin = false;
+                isAdmin = UserDAL.IsEmailInManager(email);
+                if (role == "admin" && !isAdmin) { 
+                    return new LoginToken("Invalid", "身份权限不符");
+                }
                 var res = new LoginToken(_jwtHelper.GenerateToken(loginInfo.userID, role), "登录成功");
                 int userID = _jwtHelper.ValidateToken(res.token).userID;
                 DateTime dt_last = UserDAL.GetLastLoginTime(userID);

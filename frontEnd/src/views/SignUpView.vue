@@ -12,12 +12,6 @@
                         <el-form-item label="用户昵称" prop="name">
                             <el-input v-model="SignUpForm.name"></el-input>
                         </el-form-item>
-                        <!-- <el-form-item label="性别" prop="sex">
-                            <el-radio-group v-model="SignUpForm.sex">
-                                <el-radio label="0">男</el-radio>
-                                <el-radio label="1">女</el-radio>
-                            </el-radio-group>
-                        </el-form-item> -->
                         <el-form-item label="用户类型" prop="userType">
                             <el-radio-group v-model="SignUpForm.userType">
                                 <el-radio label="user">普通用户</el-radio>
@@ -134,10 +128,7 @@ export default {
             const TIME_LIMIT = 60;
             const email = this.SignUpForm.email;
             // 使用模拟发送验证码功能
-            axios.post(`http://localhost:8080/api/User/SendVerificationCode?email=${email}`)
-            // .then(res => {
-            //     this.vcode = res.data.message;
-            // })
+            axios.post(`http://localhost:8080/api/User/SendVerificationCode?email=${email}`);
             console.log(res.data.message);
             if (!this.timer) {
                 this.count = TIME_LIMIT;
@@ -163,26 +154,14 @@ export default {
                     role: this.SignUpForm.userType === 'user' ? 'user' : 'coach',
                     coachName: this.SignUpForm.name,
                     verificationCode: this.SignUpForm.verifyCode
-                    //registerTime: new Date().toISOString(), // ISO 8601 格式的注册时间
-                    //coachName:this.SignUpForm.coachName
                 };
 
-                // // 首先检查验证码是否正确
-                // if (this.SignUpForm.verifyCode !== this.vcode) {
-                //     ElNotification({
-                //         message: "验证码错误，请重新输入",
-                //         type: 'error',
-                //         duration: 2000
-                //     });
-                //     // 清空验证码字段
-                //     this.SignUpForm.verifyCode = '';
-                //     return; // 终止注册流程
-                // }
+                console.log(requestData);
+
                 const response = await axios.post(`http://localhost:8080/api/User/Register`, requestData);
 
                 // 判断后端返回的响应内容
                 if (response.data.message === "成功注册") {
-                    store.commit('setName', this.SignUpForm.name)
                     console.log('注册成功');
                     ElNotification({
                         message: "注册成功",
@@ -191,7 +170,7 @@ export default {
                     });
 
                     // 跳转到登录页面
-                    this.$router.push({ name: 'LogInView' });
+                    this.$router.push({ name: 'LoginView' });
                 } else if (response.data.message === "验证码错误或已过期") {
                     console.log('注册失败：验证码错误或已过期');
                     ElNotification({

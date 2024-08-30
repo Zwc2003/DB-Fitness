@@ -63,9 +63,10 @@ namespace Fitness.Controllers
         }
 
         [HttpDelete]
-        public ActionResult<string> DeleteComment(string token, int commentID)
+        public ActionResult<string> DeleteComment(string token, int commentID ,int postID)
         {
-            var result = _commentBLL.DeleteComment(token, commentID);
+            var result = _commentBLL.DeleteComment(token, commentID,postID);
+            Console.WriteLine(result);
             if (result == "评论删除成功")
             {
                 return Ok(result);

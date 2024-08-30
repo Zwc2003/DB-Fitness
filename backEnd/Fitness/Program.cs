@@ -42,8 +42,8 @@ builder.Services.AddCors(options =>
     {
         builder.WithOrigins("http://localhost:5173")
                .AllowAnyHeader()
-               .AllowAnyMethod();
-              // .AllowCredentials(); // 必须允许凭据来支持SignalR
+               .AllowAnyMethod()
+               .AllowCredentials(); // 必须允许凭据来支持SignalR
     });
 });
 
@@ -56,9 +56,10 @@ var app = builder.Build();
 app.UseCors();
 // 使用 SignalR 中间件
 app.UseRouting();
+
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapHub<ChatHub>("/chatHub");//这一行代码将 ChatHub 类映射到 /chathub 路径。
+    endpoints.MapHub<ChatHub>("/chathub");//这一行代码将 ChatHub 类映射到 /chathub 路径。
     //当客户端连接到 http://yourdomain/chatHub 时，它会与 SignalR Hub 建立连接。
 });
 

@@ -65,18 +65,24 @@ namespace Fitness.BLL
             return CommentDAL.GetCommentByCommentID(commentID);
         }
 
-        public string DeleteComment(string token, int commentID)
+        public string DeleteComment(string token, int commentID,int postID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             bool result = false;
-            if (tokenRes.Role == "admin" || CommentDAL.IsPostOwner(tokenRes.userID, commentID))
+            PostBLL postBLL = new PostBLL();
+            int PostUserID = postBLL.GetPostByPostID(token, postID).userID;
+            bool isPostOwner = false;
+            if (PostUserID == tokenRes.userID) { 
+                isPostOwner = true;
+            }
+            if (tokenRes.Role == "admin" || isPostOwner)
             {
+                CommentDAL.CommentsCountMinusOne(postID);
                 result = CommentDAL.DeleteComment(commentID);
-                CommentDAL.CommentsCountMinusOne(CommentDAL.GetCommentByCommentID(commentID)[0].postID);
             }
             else
                 return "身份权限不符";
-            return result ? "删除评论成功" : "删除评论失败";
+            return result ?"评论删除成功" : "评论删除失败";
         }
 
         public string LikeComment(string token, int commentID)
