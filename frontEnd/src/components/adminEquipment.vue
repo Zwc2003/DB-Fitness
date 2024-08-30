@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import equipmentBG2 from '../assets/strength.png';
+import equipmentBG2 from '../assets/images/strength.png';
 import axios from 'axios';
 import { ElNotification } from "element-plus";
 

@@ -1,9 +1,11 @@
 <template>
     <div class="background">
+        <div class="background-image"></div>
         <div class="login-container">
             <div class="gradient-background"></div>
             <div class="content">
-                <h1 class="title">FitFit</h1>
+<!--                <h1 class="title">FitFit</h1>-->
+                <div class="title-img"></div>
                 <el-card class="login-card">
                     <h2 class="login-title">用户注册</h2>
                     <el-form :model="SignUpForm" :rules="rules" label-position="left" label-width="80px">
@@ -235,36 +237,74 @@ export default {
 </script>
 
 <style scoped>
+/*.background {*/
+/*    background-image: url('../components/icons/background.jpg');*/
+/*    background-size: cover;*/
+/*    background-position: center;*/
+/*    width: 100%;*/
+/*    height: 100vh;*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*}*/
+
 .background {
-    background-image: url('../components/icons/background.jpg');
-    background-size: cover;
-    background-position: center;
+    display: flex;
     width: 100%;
     height: 100vh;
-    position: absolute;
-    top: 0;
-    left: 0;
+}
+
+.background-image {
+    background-image: url('../components/icons/background.jpg');
+    background-size: cover; /* 确保背景图片填充整个容器 */
+    background-position: center;
+    width: 70%; /* 背景图片区域占左边 80% */
+    height: 100%;
+}
+.title-img {
+  background-image: url('../assets/images/login_signup.jpg');
+  background-size: contain; /* 使图片在容器内保持比例 */
+  background-repeat: no-repeat; /* 防止图片重复 */
+  background-position: center; /* 将图片居中显示 */
+  width: 100%; /* 设置容器宽度 */
+  height: auto; /* 高度自动，取决于容器内容 */
+  aspect-ratio: 16 / 9; /* 或者你可以设置一个固定的宽高比 */
 }
 
 
+/*.login-container {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    width: 40%;*/
+/*    !* 设置容器的宽度，可以根据需求调整 *!*/
+/*    height: 100vh;*/
+/*    !* 使容器占满整个视口高度 *!*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    border-radius: 0 0 0 0;*/
+/*    !* 只在左侧圆角 *!*/
+/*}*/
+
+/*.content {*/
+/*    width: 70%;*/
+/*    !* 设置内容区域的宽度，可以根据需求调整 *!*/
+/*    border-radius: 8px;*/
+/*    !* 圆角 *!*/
+/*}*/
+
 .login-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 40%;
-    /* 设置容器的宽度，可以根据需求调整 */
-    height: 100vh;
-    /* 使容器占满整个视口高度 */
+    width: 40%; /* 登录容器占右边 20% */
+    height: 100%; /* 使容器占满整个视口高度 */
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 0 0 0 0;
-    /* 只在左侧圆角 */
+    background-color: white; /* 设置背景颜色或保持透明 */
 }
 
 .content {
-    width: 70%;
-    /* 设置内容区域的宽度，可以根据需求调整 */
+    width: 80%; /* 设置内容区域的宽度，可以根据需求调整 */
     border-radius: 8px;
     /* 圆角 */
 }
@@ -285,6 +325,7 @@ export default {
     /* 去除边框 */
     box-shadow: none;
     /* 去除阴影 */
+    padding: 20px;
 }
 
 .login-title {

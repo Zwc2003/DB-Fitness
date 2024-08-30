@@ -3,11 +3,11 @@
         <div class="common-layout">
             <el-container>
                 <el-header>
-                    <img src="../assets/logo.png" alt="FitFit" class="logo" />
+                    <img src="../assets/images/logo.png" alt="FitFit" class="logo" />
                     <span>FitFit</span>
                     <div class="user">
                         <el-dropdown>
-                            <img src="../assets/user.jpeg" alt="User" class="dropdownlink" />
+                            <img src="../assets/images/user.jpeg" alt="User" class="dropdownlink" />
                             <template #dropdown>
                                 <el-dropdown-menu>
                                     <el-dropdown-item @click="goPage('/home')">

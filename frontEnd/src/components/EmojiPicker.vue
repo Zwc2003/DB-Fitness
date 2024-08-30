@@ -12,7 +12,7 @@
       </div>
       <template #reference>
         <img 
-          src="../assets/emoji.jpg" 
+          src="../assets/images/emoji.jpg"
           alt="Emoji" 
           class="emoji-image" 
           @click="togglePopover"

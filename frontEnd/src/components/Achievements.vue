@@ -3,7 +3,7 @@
     <!-- 勋章展示 -->
     <div class="video-container">
       <video class="responsive-video" autoplay loop muted>
-        <source src="/src/assets/medal.mp4" type="video/mp4" />
+        <source src="/src/assets/videos/medal.mp4" type="video/mp4" />
         您的浏览器不支持视频标签。
       </video>
     </div>

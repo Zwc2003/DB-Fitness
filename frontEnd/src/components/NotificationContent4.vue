@@ -28,8 +28,8 @@
               :class="{ 'user-message': message.sender === 'user', 'friend-message': message.sender === 'assistant' }">
               <div class="message-sender"
                 :class="{ 'user-message': message.sender === 'user', 'friend-message': message.sender === 'assistant' }">
-                <img v-if="message.sender === 'user'" src="../assets/我的.png" alt="User Icon">
-                <img v-else-if="message.sender === 'assistant'" src="../assets/我的2.png" alt="Coach Icon">
+                <img v-if="message.sender === 'user'" src="../assets/images/我的.png" alt="User Icon">
+                <img v-else-if="message.sender === 'assistant'" src="../assets/images/我的2.png" alt="Coach Icon">
                 <span class="message-sender-name" :class="message.sender === 'user' ? 'user-color' : 'friend-color'">{{
         message.sender }}:</span>
               </div>
@@ -291,7 +291,7 @@ onBeforeUnmount(() => {
 }
 
 .nodata {
-  background-image: url("../assets/happy.png");
+  background-image: url("../assets/images/happy.png");
   background-repeat: no-repeat;
   background-size: 35%;
   background-position: center 50%;
