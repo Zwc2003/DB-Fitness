@@ -53,20 +53,13 @@
             </div>
 
 
-            <div class="post-actions">
-                <button @click="toggleLike(post.postID)" class="btn-action">
-                    👍 {{ postLiked ? '取消' : '点赞' }} {{ post.likesCount }}
-                </button>
-                <button @click="reportPost" class="btn-action">🚩 举报</button>
-                <button @click="openShareDialog" class="btn-action">🔗 分享</button>
-                <button @click="forwardPost" class="btn-action">🔄 转发</button>
-            </div>
+
             <el-divider class="post-divider"
                 style="border-width: 8px; border-color:#E1FFFF; background-color: 	#E1FFFF;"></el-divider>
             <div class="comments-section">
                 <h3>评论</h3>
-                <div class="comments-container">
-                    <div v-for="comment in comments" :key="comment.commentID" class="comment-item">
+                <div class="comments-container" ref="commentsContainer">
+                    <div v-for="comment in comments" :key="comment.commentID" class="comment-item" >
                         <p><strong>{{ comment.userName }}</strong>: {{ comment.content }}</p>
                         <el-text class="comment-time">{{ comment.commentTime }}</el-text>
                         <div class="comment-actions">
@@ -113,14 +106,33 @@
                     <p>正在回复 @{{ replyingTo.userName }} 的评论：</p>
                 </div>
 
-                <!-- 输入框和提交按钮 -->
-                <div class="input-container fixed-input">
-                    <textarea v-model="newCommentText" placeholder="写下你的评论..." @focus="clearReplyTarget"></textarea>
-                    <div class="actions">
-                        <button class="emoji-button" ref="emojiButton" @click="toggleEmojiPicker">😊</button>
-                        <button class="btn-primary" @click="addComment">发表评论</button>
-                    </div>
-                </div>
+                <!-- 切换容器的按钮 -->
+                <button class="toggle-container-button" @click="toggleContainer">
+                    {{ isContainerVisible ? '收起评论栏' : '弹出评论栏' }}
+                </button>
+               <!-- 共同的容器 -->
+                <transition name="slide-vertical">
+                  <div v-show="isContainerVisible" class="actions-container">
+                      <!-- 输入框和提交按钮 -->
+                      <div class="input-container fixed-input">
+                          <textarea v-model="newCommentText" placeholder="写下你的评论..." @focus="clearReplyTarget"></textarea>
+                          <div class="actions">
+                              <button class="emoji-button" ref="emojiButton" @click="toggleEmojiPicker">😊</button>
+                              <button class="btn-primary" @click="addComment">发表评论</button>
+                          </div>
+                      </div>
+
+                      <!-- 帖子操作按钮 -->
+                      <div class="post-actions">
+                          <button @click="toggleLike(post.postID)" class="btn-action">
+                              👍 {{ postLiked ? '取消' : '点赞' }} {{ post.likesCount }}
+                          </button>
+                          <button @click="reportPost" class="btn-action">🚩 举报</button>
+                          <button @click="openShareDialog" class="btn-action">🔗 分享</button>
+                          <button @click="forwardPost" class="btn-action">🔄 转发</button>
+                      </div>
+                  </div>
+                </transition>
             </div>
         </div>
 
@@ -215,7 +227,8 @@ export default {
             hotPosts: [],
             shareDialogVisible: false,
             reportDialogVisible: false,
-            shareLink: ""
+            shareLink: "",
+            isContainerVisible: true, // 容器初始显示状态
         };
     },
     mounted() {
@@ -244,6 +257,10 @@ export default {
     methods: {
         isCurrentUser(userName) {
             return this.currentUser === userName || this.currentUser === 'admin';
+        },
+        toggleContainer() {
+            this.isContainerVisible = !this.isContainerVisible; // 切换容器显示状态
+            console.log('isContainerVisible:', this.isContainerVisible); // 调试输出
         },
         fetchPostDetail() {
             const token = localStorage.getItem('token');
@@ -461,6 +478,16 @@ export default {
                                     message: '回复成功',
                                     type: 'success',
                                 });
+                                // 添加评论后滚动到最新评论的位置
+                                this.$nextTick(() => {
+                                    setTimeout(() => {
+                                        // 使用 window.scrollTo 滚动到页面底部
+                                        window.scrollTo({
+                                            top: document.documentElement.scrollHeight,
+                                            behavior: 'smooth' // 平滑滚动
+                                        });
+                                    }, 100); // 添加一点延迟以确保内容渲染完成
+                                });
                             } else {
                                 ElNotification({
                                     title: '错误',
@@ -488,6 +515,16 @@ export default {
                                     message: '评论发布成功',
                                     type: 'success',
                                 });
+                                // 添加评论后滚动到页面底部
+                                this.$nextTick(() => {
+                                    setTimeout(() => {
+                                        // 使用 window.scrollTo 滚动到页面底部
+                                        window.scrollTo({
+                                            top: document.documentElement.scrollHeight,
+                                            behavior: 'smooth' // 平滑滚动
+                                        });
+                                    }, 100); // 添加一点延迟以确保内容渲染完成
+                                });
                             } else {
                                 ElNotification({
                                     title: '错误',
@@ -505,6 +542,7 @@ export default {
                         });
                 }
             }
+
         },
         likeComment(commentID) {
             const token = localStorage.getItem('token');
@@ -625,6 +663,7 @@ export default {
         setReplyTarget(comment) {
             this.replyingTo = comment;
             this.newCommentText = `@${comment.userName} `;
+
         },
         clearReplyTarget() {
             if (!this.newCommentText.trim()) {
@@ -774,7 +813,7 @@ export default {
 .post-container {
     display: flex;
     flex-direction: column;
-    width: 800px;
+    width: 700px;
     margin: 0 auto;
     background-color: transparent;
     border: none;
@@ -853,9 +892,10 @@ export default {
 
 .comments-section {
     width: 100%;
-    max-height: 300px;
+    /*max-height: 800px;*/
     overflow-y: auto;
     margin-top: 20px;
+    margin-bottom: 100px;
     background-color: rgba(255, 255, 255, 0.5);
 }
 
@@ -907,7 +947,7 @@ textarea {
 }
 
 .input-container {
-    position: relative;
+    position: absolute;
     width: 100%;
 }
 
@@ -1122,13 +1162,13 @@ textarea {
     /* 图片居中显示 */
     margin-bottom: 20px;
     /* 图片和内容之间的间距 */
+    max-height: 300px;
+
 }
 
 .post-image .image {
-    width: 40%;
     max-width: 100%;
-    /* 图片自适应容器宽度 */
-    height: auto;
+    height: 100%;
     border-radius: 5px;
 }
 
@@ -1154,8 +1194,8 @@ textarea {
 
 .backtop-button {
     position: fixed;
-    bottom: 600px !important;
-    left: 25px !important;
+    bottom: 60px !important;
+    right: 25px !important;
     z-index: 2;
     width: 60px !important;
     /* 增加按钮的宽度 */
@@ -1164,7 +1204,7 @@ textarea {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: transform 0.3s ease;
+    transition: transform 0.5s ease;
     /* 添加缩放的过渡效果 */
 }
 
@@ -1182,4 +1222,56 @@ textarea {
     padding: 15px;
     /* 内边距 */
 }
+.toggle-container-button {
+    position: fixed;
+    bottom: 60px; /* 让按钮位于容器上方 */
+    left: 20%;
+    transform: translateX(-50%);
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    z-index: 1001; /* 确保按钮在容器之上 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    opacity: 1; /* 初始完全不透明 */
+    transition: opacity 0.5s ease, transform 0.5s ease; /* 控制透明度和位移的过渡效果 */
+}
+
+/* 点击时的缩放效果 */
+.toggle-container-button:active {
+    transform: translateX(-50%) scale(0.95); /* 点击时缩小按钮 */
+    background-color: #0056b3; /* 点击时按钮颜色变深 */
+    transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
+
+.actions-container {
+    position: fixed;
+    left: 50%; /* 定位到页面的水平中心 */
+    bottom: 0; /* 定位到页面的底部 */
+    transform: translateX(-50%); /* 将容器向左移动自身宽度的50%，以实现居中 */
+    background: rgba(255, 255, 255, 0.8); /* 半透明背景，确保背景与内容分离 */
+    backdrop-filter: blur(10px); /* 磨砂效果 */
+    padding: 15px;
+    border-radius: 10px 10px 0 0; /* 只为顶部添加圆角 */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5); /* 在顶部添加阴影，使其从页面底部凸出 */
+    width: 700px; /* 宽度设为100%，以适应移动设备 */
+    height: 150px;
+    /*max-width: 600px; !* 限制最大宽度 *!*/
+    z-index: 1000; /* 确保容器在页面的其他内容上方 */
+}
+
+.input-container,
+.post-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%; /* 保证内容宽度占满父容器 */
+}
+
+
+
 </style>

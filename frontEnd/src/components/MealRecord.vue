@@ -253,7 +253,7 @@
 import axios from 'axios';
 import { marked } from 'marked';
 import { ElNotification } from 'element-plus';
-import anaBG from '../assets/anaBG.png';
+import anaBG from '../assets/images/anaBG.png';
 import { onMounted, ref } from 'vue';
 
 export default {
@@ -936,7 +936,7 @@ export default {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-image: url('src/assets/anaBG.png') !important;
+  background-image: url('../assets/images/anaBG.png') !important;
   display: flex;
   flex-direction: column;
   margin-left: -35%;

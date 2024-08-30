@@ -1,3 +1,131 @@
+<template>
+    <Navigator />
+    <CommonLayout />
+    <!-- 悬浮的置顶和刷新按钮 -->
+    <el-backtop class="backtop-button"/>
+    <div class="floating-refresh-button" style="z-index: 2;">
+        <el-button type="primary" @click="fetchAllEquipmentGuide" class="refresh-button">
+            <el-icon><refresh /></el-icon>
+        </el-button>
+    </div>
+
+    <div class="carousel-container-top" >
+        <el-carousel indicator-position="outside">
+            <el-carousel-item v-for="(item, index) in items" :key="index">
+                <img :src="item.src" :alt="item.alt" class="carousel-image" />
+            </el-carousel-item>
+        </el-carousel>
+    </div>
+
+    <div v-if="showMask" class="mask"></div>
+    <div class="card_1">
+        <el-card class="custom-card" style="max-width: 1000px; flex: 65;" shadow="hover"
+            @click="showNotification(equipmentList)">
+            <img :src="equipmentList.value[0].imgUrl" class="hover-zoom"
+                style="width: 100%; height: 300px; object-fit: cover;" />
+            <div class="footer-content" style="background-color: #ffffff; text-align: left;">
+                <br>
+                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; font-weight: bold ;">
+                    {{ equipmentList.value[0].equipmentName }}
+                </p><br>
+                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px;">
+                    {{ equipmentList.value[0].shortIntr }}
+                </p><br><br><br>
+            </div>
+        </el-card>
+        <el-card class="custom-card" style="max-width: 1000px; flex: 35;" shadow="hover"
+            @click="showNotification2(equipmentList)">
+            <img :src="equipmentList.value[1].imgUrl" class="hover-zoom"
+                style="width: 100%; height: 200px; object-fit: cover;" />
+            <div class="footer-content" style="background-color: #33aee3; text-align: left;">
+                <br>
+                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; color: white; font-weight: bold ;">
+                    {{ equipmentList.value[1].equipmentName }}
+                </p><br>
+                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px; color: white;">
+                    {{ equipmentList.value[1].shortIntr }}
+                </p><br><br><br><br><br><br>
+            </div>
+        </el-card>
+    </div>
+    <div class="card_2">
+        <el-card class="custom-card" style="max-width: 1000px; flex: 32;" shadow="hover"
+            @click="showNotification3(equipmentList)">
+            <img :src="equipmentList.value[2].imgUrl" class="hover-zoom"
+                style="width: 100%; height: 250px; object-fit: cover;" />
+            <div class="footer-content" style="background-color: #3453dd; text-align: left;">
+                <br>
+                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; color: white; font-weight: bold ;">
+                    {{ equipmentList.value[2].equipmentName }}
+                </p><br>
+                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px; color: white;">
+                    {{ equipmentList.value[2].shortIntr }}
+                </p><br><br><br><br><br><br><br>
+            </div>
+        </el-card>
+        <el-card class="custom-card" style="max-width: 1000px; flex: 32;" shadow="hover"
+            @click="showNotification4(equipmentList)">
+            <img :src="equipmentList.value[3].imgUrl" class="hover-zoom"
+                style="width: 100%; height: 250px; object-fit: cover;" />
+            <div class="footer-content" style="background-color: #ffffff; text-align: left;">
+                <br>
+                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; font-weight: bold ;">
+                    {{ equipmentList.value[3].equipmentName }}
+                </p><br>
+                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px;">
+                    {{ equipmentList.value[3].shortIntr }}
+                </p><br><br><br><br><br><br><br>
+            </div>
+        </el-card>
+        <el-card class="custom-card" style="max-width: 1000px; flex: 35;" shadow="hover"
+            @click="showNotification5(equipmentList)">
+            <img :src="equipmentList.value[4].imgUrl" class="hover-zoom"
+                style="width: 100%; height: 250px; object-fit: cover;" />
+            <div class="footer-content" style="background-color: #ededed; text-align: left;">
+                <br>
+                <p
+                    style="font-size: 30px; margin-left: 25px; margin-right: 25px; color: rgb(0, 0, 0); font-weight: bold ;">
+                    {{ equipmentList.value[4].equipmentName }}
+                </p>
+                <br>
+                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px; color: rgb(0, 0, 0);">
+                    {{ equipmentList.value[4].shortIntr }}
+                </p><br><br><br><br><br><br><br>
+            </div>
+        </el-card>
+    </div>
+    <div class="card_3">
+        <el-card class="custom-card" style="max-width: 1000px; flex: 65;" shadow="hover"
+            @click="showNotification6(equipmentList)">
+            <img :src="equipmentList.value[5].imgUrl" class="hover-zoom"
+                style="width: 100%; height: 300px; object-fit: cover;" />
+            <div class="footer-content" style="background-color: #ffffff; text-align: left;">
+                <br>
+                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; font-weight: bold ;">
+                    {{ equipmentList.value[5].equipmentName }}
+                </p><br>
+                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px;">
+                    {{ equipmentList.value[5].shortIntr }}
+                </p><br><br><br>
+            </div>
+        </el-card>
+        <el-card class="custom-card" style="max-width: 1000px; flex: 35;" shadow="hover"
+            @click="showNotification7(equipmentList)">
+            <img :src="equipmentList.value[6].imgUrl" class="hover-zoom"
+                style="width: 100%; height: 250px; object-fit: cover;" />
+            <div class="footer-content" style="background-color: #3453dd; text-align: left;">
+                <br>
+                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; color: white; font-weight: bold ;">
+                    {{ equipmentList.value[6].equipmentName }}
+                </p><br>
+                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px; color: white;">
+                    {{ equipmentList.value[6].shortIntr }}
+                </p><br><br><br><br><br><br>
+            </div>
+        </el-card>
+    </div>
+</template>
+
 <script setup>
 import Navigator from '../components/NavigationBar.vue'
 import { ref, h } from 'vue'
@@ -15,9 +143,9 @@ import NotificationContent7 from '../components/NotificationContent7.vue'
 import CommonLayout from "../components/CommonLayout.vue";
 
 const items = ref([
-    { src: new URL('../assets/top1.png', import.meta.url).href, alt: 'Image 1' },
-    { src: new URL('../assets/top2.png', import.meta.url).href, alt: 'Image 2' },
-    { src: new URL('../assets/top3.png', import.meta.url).href, alt: 'Image 3' }
+    { src: new URL('../assets/images/top1.png', import.meta.url).href, alt: 'Image 1' },
+    { src: new URL('../assets/images/top2.png', import.meta.url).href, alt: 'Image 2' },
+    { src: new URL('../assets/images/top3.png', import.meta.url).href, alt: 'Image 3' }
 ])
 
 // 表单数据和管理操作
@@ -204,134 +332,6 @@ function openInNewTab(url) {
     win.focus();
 }
 </script>
-
-<template>
-    <Navigator />
-    <CommonLayout />
-    <!-- 悬浮的置顶和刷新按钮 -->
-    <el-backtop class="backtop-button"/>
-    <div class="floating-refresh-button" style="z-index: 2;">
-        <el-button type="primary" @click="fetchAllEquipmentGuide" class="refresh-button">
-            <el-icon><refresh /></el-icon>
-        </el-button>
-    </div>
-
-    <div class="carousel-container-top" >
-        <el-carousel indicator-position="outside">
-            <el-carousel-item v-for="(item, index) in items" :key="index">
-                <img :src="item.src" :alt="item.alt" class="carousel-image" />
-            </el-carousel-item>
-        </el-carousel>
-    </div>
-
-    <div v-if="showMask" class="mask"></div>
-    <div class="card_1">
-        <el-card class="custom-card" style="max-width: 1000px; flex: 65;" shadow="hover"
-            @click="showNotification(equipmentList)">
-            <img :src="equipmentList.value[0].imgUrl" class="hover-zoom"
-                style="width: 100%; height: 300px; object-fit: cover;" />
-            <div class="footer-content" style="background-color: #ffffff; text-align: left;">
-                <br>
-                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; font-weight: bold ;">
-                    {{ equipmentList.value[0].equipmentName }}
-                </p><br>
-                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px;">
-                    {{ equipmentList.value[0].shortIntr }}
-                </p><br><br><br>
-            </div>
-        </el-card>
-        <el-card class="custom-card" style="max-width: 1000px; flex: 35;" shadow="hover"
-            @click="showNotification2(equipmentList)">
-            <img :src="equipmentList.value[1].imgUrl" class="hover-zoom"
-                style="width: 100%; height: 200px; object-fit: cover;" />
-            <div class="footer-content" style="background-color: #33aee3; text-align: left;">
-                <br>
-                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; color: white; font-weight: bold ;">
-                    {{ equipmentList.value[1].equipmentName }}
-                </p><br>
-                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px; color: white;">
-                    {{ equipmentList.value[1].shortIntr }}
-                </p><br><br><br><br><br><br>
-            </div>
-        </el-card>
-    </div>
-    <div class="card_2">
-        <el-card class="custom-card" style="max-width: 1000px; flex: 32;" shadow="hover"
-            @click="showNotification3(equipmentList)">
-            <img :src="equipmentList.value[2].imgUrl" class="hover-zoom"
-                style="width: 100%; height: 250px; object-fit: cover;" />
-            <div class="footer-content" style="background-color: #3453dd; text-align: left;">
-                <br>
-                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; color: white; font-weight: bold ;">
-                    {{ equipmentList.value[2].equipmentName }}
-                </p><br>
-                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px; color: white;">
-                    {{ equipmentList.value[2].shortIntr }}
-                </p><br><br><br><br><br><br><br>
-            </div>
-        </el-card>
-        <el-card class="custom-card" style="max-width: 1000px; flex: 32;" shadow="hover"
-            @click="showNotification4(equipmentList)">
-            <img :src="equipmentList.value[3].imgUrl" class="hover-zoom"
-                style="width: 100%; height: 250px; object-fit: cover;" />
-            <div class="footer-content" style="background-color: #ffffff; text-align: left;">
-                <br>
-                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; font-weight: bold ;">
-                    {{ equipmentList.value[3].equipmentName }}
-                </p><br>
-                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px;">
-                    {{ equipmentList.value[3].shortIntr }}
-                </p><br><br><br><br><br><br><br>
-            </div>
-        </el-card>
-        <el-card class="custom-card" style="max-width: 1000px; flex: 35;" shadow="hover"
-            @click="showNotification5(equipmentList)">
-            <img :src="equipmentList.value[4].imgUrl" class="hover-zoom"
-                style="width: 100%; height: 250px; object-fit: cover;" />
-            <div class="footer-content" style="background-color: #ededed; text-align: left;">
-                <br>
-                <p
-                    style="font-size: 30px; margin-left: 25px; margin-right: 25px; color: rgb(0, 0, 0); font-weight: bold ;">
-                    {{ equipmentList.value[4].equipmentName }}
-                </p>
-                <br>
-                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px; color: rgb(0, 0, 0);">
-                    {{ equipmentList.value[4].shortIntr }}
-                </p><br><br><br><br><br><br><br>
-            </div>
-        </el-card>
-    </div>
-    <div class="card_3">
-        <el-card class="custom-card" style="max-width: 1000px; flex: 65;" shadow="hover"
-            @click="showNotification6(equipmentList)">
-            <img :src="equipmentList.value[5].imgUrl" class="hover-zoom"
-                style="width: 100%; height: 300px; object-fit: cover;" />
-            <div class="footer-content" style="background-color: #ffffff; text-align: left;">
-                <br>
-                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; font-weight: bold ;">
-                    {{ equipmentList.value[5].equipmentName }}
-                </p><br>
-                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px;">
-                    {{ equipmentList.value[5].shortIntr }}
-                </p><br><br><br>
-            </div>
-        </el-card>
-        <el-card class="custom-card" style="max-width: 1000px; flex: 35;" shadow="hover"
-            @click="showNotification7(equipmentList)">
-            <img :src="equipmentList.value[6].imgUrl" class="hover-zoom"
-                style="width: 100%; height: 250px; object-fit: cover;" />
-            <div class="footer-content" style="background-color: #3453dd; text-align: left;">
-                <br>
-                <p style="font-size: 30px; margin-left: 25px; margin-right: 25px; color: white; font-weight: bold ;">
-                    {{ equipmentList.value[6].equipmentName }}
-                </p><br>
-                <p style="font-size: 20px; margin-left: 25px; margin-right: 25px; color: white;">
-                    {{ equipmentList.value[6].shortIntr }}
-                </p><br><br><br><br><br><br>
-            </div>
-        </el-card>
-    </div>
-</template>
 
 <style>
 

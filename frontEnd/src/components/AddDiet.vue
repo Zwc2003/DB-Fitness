@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import foodBG2 from '../assets/foodBG2.jpg';
+import foodBG2 from '../assets/images/foodBG2.jpg';
 import axios from 'axios';
 import { ElNotification } from 'element-plus';
 

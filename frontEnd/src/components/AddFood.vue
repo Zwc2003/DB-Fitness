@@ -68,7 +68,7 @@
 <script lang="ts">
 import { defineComponent, nextTick } from 'vue';
 import { ElNotification } from 'element-plus';
-import foodBG1 from '../assets/foodBG1.jpg';
+import foodBG1 from '../assets/images/foodBG1.jpg';
 import axios from 'axios';
 
 export default defineComponent({

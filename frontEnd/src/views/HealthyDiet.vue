@@ -113,12 +113,12 @@
   }
   
   .button1 {
-    background: url("../assets/healthyFoodBG1.png");
+    background: url("../assets/images/healthyFoodBG1.png");
     background-size: 320px 630px;
   }
   
   .button2 {
-    background: url("../assets/healthyFoodBG2.jpg");
+    background: url("../assets/images/healthyFoodBG2.jpg");
     background-size: 320px 630px;
   }
   

@@ -1,7 +1,7 @@
 <template>
     <div :class="['head_con', navBarFixed ? 'navBarWrap' : '']">
         <div class="logo-container">
-            <img src="../assets/logo.png" alt="FitFit" class="logo">
+            <img src="../assets/images/logo.png" alt="FitFit" class="logo">
         </div>
         <div class="wrapper">
             <nav>
@@ -23,10 +23,12 @@
 
 
                 <label for="home" class="home" @click="delayedNavigation('/home')">
-                    <el-icon>
-                        <House />
-                    </el-icon>
-                    首页
+                    <router-link to="/home">
+                      <el-icon>
+                          <House />
+                      </el-icon>
+                      首页
+                    </router-link>
                 </label>
                 <label for="equipment" class="equipment" @click="delayedNavigation('/equipment')">
                     <router-link to="/equipment">
@@ -112,37 +114,46 @@
             </nav>
         </div>
         <div class="avatar-container">
-            <el-dropdown>
-                <img src="../assets/user.jpeg" alt="User" class="dropdownlink">
-                <template #dropdown>
-                    <el-dropdown-menu>
-                        <el-dropdown-item @click="navigateToUserProfile">
-                            <el-icon>
-                                <Setting />
-                            </el-icon>
-                            账号设置
-                        </el-dropdown-item>
-                        <el-dropdown-item @click="navigateToLoginOut">
-                            <el-icon>
-                                <Switch />
-                            </el-icon>
-                            切换账号
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </template>
-            </el-dropdown>
+            <template v-if="token">
+                <el-dropdown>
+                    <img :src="iconUrl" alt="User" class="dropdownlink">
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item @click="navigateToUserProfile">
+                                <el-icon>
+                                    <Setting />
+                                </el-icon>
+                                账号设置
+                            </el-dropdown-item>
+                            <el-dropdown-item @click="navigateToLoginOut">
+                                <el-icon>
+                                    <Switch />
+                                </el-icon>
+                                切换账号
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
+            </template>
+            <template v-else>
+                <el-button type="primary" class="round-button" @click="navigateToLoginOut">登录/注册</el-button>
+            </template>
         </div>
     </div>
 </template>
 
 <script>
 import router from "../router/index.js";
+import axios from "axios";
+import {ElNotification} from "element-plus";
 
 export default {
     name: "NavigationBar",
     data() {
         return {
             navBarFixed: false,
+            token: localStorage.getItem('token'),  // 从 localStorage 获取 token
+            iconUrl: this.$store.state.iconUrl? this.$store.state.iconUrl : require("../assets/images/user.jpeg"),
         };
     },
     props: {
@@ -165,7 +176,7 @@ export default {
             this.router().push(`/user/${userID}`);
         },
         navigateToLoginOut(){
-          this.router().push(`/`);
+          this.router().push(`/login`);
           localStorage.removeItem('token')
         },
         watchScroll() {
@@ -176,7 +187,7 @@ export default {
             } else {
                 this.navBarFixed = false;
             }
-        }
+        },
     },
     mounted() {
         window.addEventListener("scroll", this.watchScroll);
@@ -266,7 +277,7 @@ body {
 .wrapper nav .tab {
     position: absolute;
     height: 100%;
-    width: 12%;
+    width: 11%;
     left: 0px;
     bottom: 0px;
     background: linear-gradient(to right, #f09819, #ff5858);
@@ -297,11 +308,11 @@ body {
 }
 
 .wrapper nav #forum:checked~.tab {
-    left: 33%;
+    left: 33.5%;
 }
 
 .wrapper nav #achievement:checked~.tab {
-    left: 44%;
+    left: 44.5%;
 }
 
 /* .wrapper nav #rank:checked~.tab {
@@ -309,19 +320,19 @@ body {
 } */
 
 .wrapper nav #course:checked~.tab {
-    left: 55%;
+    left: 55.5%;
 }
 
 .wrapper nav #plan:checked~.tab {
-    left: 66%;
+    left: 66.5%;
 }
 
 .wrapper nav #chat:checked~.tab {
-    left: 77%;
+    left: 78%;
 }
 
 .wrapper nav #healthyDiet:checked~.tab {
-    left: 88%;
+    left: 89%;
 }
 
 .wrapper nav #mealPlanner:checked~.tab {
@@ -379,4 +390,21 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     /* 添加阴影以区别于内容 */
 }
+
+.round-button {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* 圆形 */
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px !important; /* 根据需要调整字体大小 */
+    color: #fff;
+    border: none; /* 去除默认边框 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加轻微的阴影效果 */
+    cursor: pointer;
+}
+
+
 </style>

@@ -1,8 +1,11 @@
 <template>
     <div class="background">
+        <div class="background-image"></div>
         <div class="login-container">
             <div class="content">
-                <h1 class="title">FitFit</h1>
+                <div class="title-img"></div>
+<!--                <h1 class="title">FitFit</h1>-->
+<!--                <h3 class="sub-title">你的智能健身管家</h3>-->
                 <el-card class="login-card">
                     <h2 class="login-title">登录</h2>
                     <el-tabs v-model="activeName" class="tabs">
@@ -139,6 +142,7 @@ export default
                         // 存储用户信息
                         store.commit('setUserID', response1.data.userID);
                         store.commit('setName', response1.data.userName);
+                        store.commit('setIconUrl',response1.data.iconURL)
 
                         // 存储当前用户发帖权限
                         store.commit('setIsPost', response1.data.isPost);
@@ -181,48 +185,144 @@ export default
 </script>
 
 <style scoped>
+/*.background {*/
+/*    background-image: url('../components/icons/background.jpg');*/
+/*    background-size: 100%;*/
+/*    background-position: center;*/
+/*    width: 100%;*/
+/*    height: 100vh;*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*}*/
+
+
+
+/*.login-container {*/
+/*    position: absolute;*/
+/*    top: 0;*/
+/*    right: 0;*/
+/*    width: 40%;*/
+/*    !* 设置容器的宽度，可以根据需求调整 *!*/
+/*    height: 100vh;*/
+/*    !* 使容器占满整个视口高度 *!*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    border-radius: 0 0 0 0;*/
+/*    !* 只在左侧圆角 *!*/
+/*}*/
+
+/*.content {*/
+/*    width: 70%;*/
+/*    !* 设置内容区域的宽度，可以根据需求调整 *!*/
+/*    border-radius: 8px;*/
+/*    !* 圆角 *!*/
+/*}*/
+
+/*.title {*/
+/*    margin-top: 20px;*/
+/*    margin-bottom: 20px;*/
+/*    text-align: center;*/
+/*    font-size: 3.5rem;*/
+/*    font-weight: bold;*/
+/*    font-family: 'PingFang SC', sans-serif;*/
+/*    color: rgb(68, 177, 25);*/
+/*    !* 标题颜色 *!*/
+/*}*/
+
+/*.login-card {*/
+/*    padding: 10px;*/
+/*    border: none;*/
+/*    !* 去除边框 *!*/
+/*    box-shadow: none;*/
+/*    !* 去除阴影 *!*/
+/*}*/
+
+/*.login-title {*/
+/*    text-align: center;*/
+/*    margin-bottom: 20px;*/
+/*    color: #333;*/
+/*    !* 登录标题颜色 *!*/
+/*}*/
+
+/*.tabs {*/
+/*    margin-top: 20px;*/
+/*}*/
+
+/*.login-button {*/
+/*    width: 100%;*/
+/*    background-color: #409EFF;*/
+/*    !* 设置按钮颜色 *!*/
+/*    color: #fff;*/
+/*    border-radius: 5px;*/
+/*}*/
+
+/*.login-button:hover {*/
+/*    background-color: #66b1ff;*/
+/*    !* 悬停效果 *!*/
+/*}*/
+
+
 .background {
-    background-image: url('../components/icons/background.jpg');
-    background-size: cover;
-    background-position: center;
+    display: flex;
     width: 100%;
     height: 100vh;
-    position: absolute;
-    top: 0;
-    left: 0;
 }
+
+.background-image {
+    background-image: url('../components/icons/background.jpg');
+    background-size: cover; /* 确保背景图片填充整个容器 */
+    background-position: center;
+    width: 70%; /* 背景图片区域占左边 80% */
+    height: 100%;
+}
+.title-img {
+  background-image: url('../assets/images/login_signup.jpg');
+  background-size: contain; /* 使图片在容器内保持比例 */
+  background-repeat: no-repeat; /* 防止图片重复 */
+  background-position: center; /* 将图片居中显示 */
+  width: 100%; /* 设置容器宽度 */
+  height: auto; /* 高度自动，取决于容器内容 */
+  aspect-ratio: 16 / 9; /* 或者你可以设置一个固定的宽高比 */
+}
+
 
 
 .login-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 40%;
-    /* 设置容器的宽度，可以根据需求调整 */
-    height: 100vh;
-    /* 使容器占满整个视口高度 */
+    width: 40%; /* 登录容器占右边 20% */
+    height: 100%; /* 使容器占满整个视口高度 */
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 0 0 0 0;
-    /* 只在左侧圆角 */
+    background-color: white; /* 设置背景颜色或保持透明 */
 }
 
 .content {
-    width: 70%;
-    /* 设置内容区域的宽度，可以根据需求调整 */
+    width: 70%; /* 设置内容区域的宽度，可以根据需求调整 */
     border-radius: 8px;
     /* 圆角 */
 }
 
 .title {
     margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 0px;
     text-align: center;
     font-size: 3.5rem;
     font-weight: bold;
     font-family: 'PingFang SC', sans-serif;
-    color: rgb(44, 225, 44);
+    color: rgb(68, 177, 25);
+    /* 标题颜色 */
+}
+.sub-title
+{
+    margin-top: 0px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: 'PingFang SC', sans-serif;
+    color: rgb(68, 177, 25);
     /* 标题颜色 */
 }
 
@@ -257,4 +357,5 @@ export default
     background-color: #66b1ff;
     /* 悬停效果 */
 }
+
 </style>
