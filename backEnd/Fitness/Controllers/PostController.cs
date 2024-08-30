@@ -53,25 +53,25 @@ namespace Fitness.Controllers
 
         // 删除帖子
         [HttpDelete]
-        public ActionResult<string> DeletePostByPostID(string token, int postID)
+        public ActionResult<string> DeletePostByPostID(string token, int postID,int postOwnerID)
         {
-            string result = _postBLL.Delete(token, postID);
+            string result = _postBLL.Delete(token, postID,postOwnerID);
             return result;
         }
 
         // 点赞帖子
         [HttpGet]
-        public ActionResult<string> LikePost(string token, int postID)
+        public ActionResult<string> LikePost(string token, int postID,int postOwnerID)
         {
-            string result = _postBLL.LikePost(token, postID);
+            string result = _postBLL.LikePost(token, postID, postOwnerID);
             return result;
         }
 
         // 取消点赞帖子
         [HttpGet]
-        public ActionResult<string> CancleLikePost(string token, int postID)
+        public ActionResult<string> CancleLikePost(string token, int postID,int postOwnerID)
         {
-            string result = _postBLL.CancleLike(token, postID);
+            string result = _postBLL.CancleLike(token, postID, postOwnerID);
             return result;
         }
 

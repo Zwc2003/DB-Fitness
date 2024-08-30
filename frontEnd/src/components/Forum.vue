@@ -177,7 +177,7 @@ export default {
                 forwardCount: null,
                 commentsCount: null,
                 refrencePostID: null,
-                imgUrl: ''
+                imgUrl: 'null'
             },
             allPosts: [],
             filteredPosts: [],
@@ -274,9 +274,9 @@ export default {
                     forwardCount: 0,
                     commentsCount: 0,
                     refrencepostID: -1,
-                    imgUrl: this.newPost.imgUrl === null ? " " : this.newPost.imgUrl
+                    imgUrl: this.newPost.imgUrl === 'null' ? 'null' : this.newPost.imgUrl
                 };
-                console.log("url", this.newPost.imgUrl)
+                console.log("url", newPost.imgUrl);
                 axios.post(`http://localhost:8080/api/Post/PublishPost?token=${token}`, newPost)
                     .then(response => {
                         this.allPosts.push(newPost);
@@ -317,33 +317,34 @@ export default {
             this.$forceUpdate();
         },
 
-        deletePost(postID) {
-            //const token = this.$store.state.token;
-            const token = localStorage.getItem('token');
-            axios.delete('http://localhost:8080/api/Post/DeletePostByPostID', {
-                params: {
-                    token: token,
-                    postID: postID
-                }
-            })
-                .then(response => {
-                    this.allPosts = this.allPosts.filter(post => post.postID !== postID);
-                    this.filteredPosts = this.filteredPosts.filter(post => post.postID !== postID);
-                    this.updateHotPosts();
-                    ElNotification({
-                        title: '成功',
-                        message: '帖子删除成功！',
-                        type: 'success',
-                    });
-                })
-                .catch(error => {
-                    ElNotification({
-                        title: '错误',
-                        message: '删除帖子时发生错误，请稍后再试。',
-                        type: 'error',
-                    });
-                });
-        },
+        // deletePost(postID,postOwnerID) {
+        //     //const token = this.$store.state.token;
+        //     const token = localStorage.getItem('token');
+        //     axios.delete('http://localhost:8080/api/Post/DeletePostByPostID', {
+        //         params: {
+        //             token: token,
+        //             postID: postID,
+        //             postOwnerID:postOwnerID
+        //         }
+        //     })
+        //         .then(response => {
+        //             this.allPosts = this.allPosts.filter(post => post.postID !== postID);
+        //             this.filteredPosts = this.filteredPosts.filter(post => post.postID !== postID);
+        //             this.updateHotPosts();
+        //             ElNotification({
+        //                 title: '成功',
+        //                 message: '帖子删除成功！',
+        //                 type: 'success',
+        //             });
+        //         })
+        //         .catch(error => {
+        //             ElNotification({
+        //                 title: '错误',
+        //                 message: '删除帖子时发生错误，请稍后再试。',
+        //                 type: 'error',
+        //             });
+        //         });
+        // },
 
         updateHotPosts() {
             this.hotPosts = this.allPosts
