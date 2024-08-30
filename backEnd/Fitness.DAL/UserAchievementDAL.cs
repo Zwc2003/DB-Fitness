@@ -213,13 +213,13 @@ namespace Fitness.DAL
             // 获取查询结果并赋值给Exercise类
             DataRow row = resultTable.Rows[0];
             int ans = 100;
-            if (String.IsNullOrEmpty(row["Age"].ToString())) ans -= 10;
-            if (String.IsNullOrEmpty(row["Gender"].ToString())) ans -= 10;
-            if (String.IsNullOrEmpty(row["Tags"].ToString())) ans -= 10;
-            if (String.IsNullOrEmpty(row["Introduction"].ToString())) ans -= 10;
-            if (String.IsNullOrEmpty(row["iconURL"].ToString())) ans -= 10;
-            if (String.IsNullOrEmpty(row["goalType"].ToString())) ans -= 10;
-            if (String.IsNullOrEmpty(row["goalWeight"].ToString())) ans -= 10;
+            if (Convert.ToInt32(row["Age"]) == -1) ans -= 10;
+            if (row["Gender"].ToString() == "null") ans -= 10;
+            if (row["Tags"].ToString() == "null") ans -= 10;
+            if (row["Introduction"].ToString() == "null") ans -= 10;
+            if (row["iconURL"].ToString() == "null") ans -= 10;
+            if (row["goalType"].ToString() == "null") ans -= 10;
+            if (Convert.ToInt32(row["goalWeight"]) == -1) ans -= 10;
 
             return ans;
         }
