@@ -352,6 +352,7 @@ async function deleteContent(content) {
                 params: {
                     token: localStorage.getItem('token'),
                     postID: content.postID,
+                    postOwnerID: content.userID
                 }
             });
             if (response.data.message === '删除帖子成功') {

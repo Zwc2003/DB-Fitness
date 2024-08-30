@@ -398,7 +398,8 @@ export default {
                 axios.get('http://localhost:8080/api/Post/CancleLikePost', {
                     params: {
                         token: token,
-                        postID: postID
+                        postID: postID,
+                        postOwnerID: this.post.userID
                     }
                 })
                     .then(() => {
@@ -421,7 +422,8 @@ export default {
                 axios.get('http://localhost:8080/api/Post/LikePost', {
                     params: {
                         token: token,
-                        postID: postID
+                        postID: postID,
+                        postOwnerID: this.post.userID
                     }
                 })
                     .then(() => {
