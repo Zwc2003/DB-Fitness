@@ -1,43 +1,41 @@
 <template>
-
-
   <el-button plain @click="loadWeeksData" class="button">
     生成健身计划
   </el-button>
 
-  <el-collapse class='list' v-model="activeName">
+  <el-collapse class="list" v-model="activeName">
     <el-collapse-item
-        v-for="(week,index) in weeks.plan"
-        :key="index"
-        :title="titles[index]"
-        class="custom-collapse-item"
+      v-for="(week, index) in weeks.plan"
+      :key="index"
+      :title="titles[index]"
+      class="custom-collapse-item"
     >
-      <el-timeline class="line" >
+      <el-timeline class="line">
         <el-timeline-item
-            v-for="(item, index) in week"
-            :key="index"
-            :timestamp="item.timestamp"
-            class="custom-timeline-item"
-            placement="top"
+          v-for="(item, index) in week"
+          :key="index"
+          :timestamp="item.timestamp"
+          class="custom-timeline-item"
+          placement="top"
         >
           <el-container>
             <el-popover placement="right" :width="500" trigger="click">
               <template #reference>
                 <el-card class="card" shadow="hover">
-                  <img :src="item.coverUrl" alt="Event Image"  class="event-image"/>
+                  <img :src="item.coverUrl" alt="Event Image" class="event-image" />
                   <template #footer>{{ item.workoutName }}</template>
                 </el-card>
-              </template> 
+              </template>
               <div style="padding-left: 20px">
-                <el-table :data="item.exercises" :row-style="{height:50+'px'}" stripe  class="table">
+                <el-table :data="item.exercises" :row-style="{height:50+'px'}" stripe class="table">
                   <el-table-column type="selection" width="55" />
-                  <el-table-column prop="exerciseName" label="动作" width="150"/>
+                  <el-table-column prop="exerciseName" label="动作" width="150" />
                   <el-table-column prop="count" label="组数" />
-                  <el-table-column prop="time" label="时间"  />
-                  <el-table-column label="演示" >
+                  <el-table-column prop="time" label="时间" />
+                  <el-table-column label="演示">
                     <template v-slot="{ row }">
                       <div>
-                        <img ref="imageRef" @click="open(row)" :src="row.coverUrl" alt="Click to open the Message Box" class="gif"/>
+                        <img ref="imageRef" @click="open(row)" :src="row.coverUrl" alt="Click to open the Message Box" class="gif" />
                       </div>
                     </template>
                   </el-table-column>
@@ -49,8 +47,6 @@
       </el-timeline>
     </el-collapse-item>
   </el-collapse>
-
-
 </template>
 
 <style scoped>
@@ -131,51 +127,63 @@
   width:600px;
   height:600px;
 }
+.el-container {
+  width: 300px; /* 与卡片宽度一致 */
+  height: 200px; /* 与卡片高度一致 */
+}
 </style>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import type { Action } from 'element-plus' ;
+import { ref, onMounted } from 'vue';
+import { ElMessageBox } from 'element-plus';
 import axios from 'axios';
+
 const weeks = ref([]);
-const titles=["第一周","第二周", "第三周", "第四周"];
+const titles = ["第一周", "第二周", "第三周", "第四周"];
 const loading = ref(true);
+
 function loadWeeksData() {
   loading.value = true;
-  axios.get('http://localhost:8080/api/FitnessPlan/GetPlan',
-      {
-        params: {
-          token: localStorage.getItem('token')
-        }
-      }
-  ).then(response => {
+  axios.get('http://localhost:8080/api/FitnessPlan/GetPlan', {
+    params: {
+      token: localStorage.getItem('token')
+    }
+  }).then(response => {
     weeks.value = response.data; // 假设数据结构中 weeks 在顶层
+    localStorage.setItem('savedFitnessPlan', JSON.stringify(weeks.value)); // 保存数据到本地存储
     loading.value = false;
-    console.log(response.data);
   }).catch(error => {
     console.error('Failed to fetch data:', error);
     loading.value = false;
   });
 }
 
+function loadSavedPlan() {
+  const savedPlan = localStorage.getItem('savedFitnessPlan');
+  if (savedPlan) {
+    weeks.value = JSON.parse(savedPlan);
+    loading.value = false;
+  } else {
+    loadWeeksData();
+  }
+}
 
 const open = (row) => {
   ElMessageBox.alert(
-
-      '<div class="video-div"><video controls autoplay src="' + row.gifUrl + '" class="dialog-video"></video></div>',
-      row.explanation,
-      {
-        dangerouslyUseHTMLString: true,
-        confirmButtonText: 'OK',
-        customStyle: {
-          'max-width': '55%',
-          height: '100%'
-        },
-        callback: (action: Action) => {
-
-        },
+    '<div class="video-div"><video controls autoplay src="' + row.gifUrl + '" class="dialog-video"></video></div>',
+    row.explanation,
+    {
+      dangerouslyUseHTMLString: true,
+      confirmButtonText: 'OK',
+      customStyle: {
+        'max-width': '55%',
+        height: '100%'
       }
-  )
+    }
+  );
 }
+
+onMounted(() => {
+  loadSavedPlan(); // 组件挂载时加载保存的数据或生成新的计划
+});
 </script>
