@@ -90,6 +90,12 @@ namespace Fitness.BLL
                 if (status == 1) return new LoginToken("Invalid", "Internal server error. Please try again later.");
                 bool isPass = PasswordHelper.VerifyPassword(password, loginInfo.hashedPassword, loginInfo.Salt);
             if (isPass) {
+                //管理员与用户身份校验
+                bool isAdmin = false;
+                isAdmin = UserDAL.IsEmailInManager(email);
+                if (role == "admin" && !isAdmin) { 
+                    return new LoginToken("Invalid", "身份权限不符");
+                }
                 var res = new LoginToken(_jwtHelper.GenerateToken(loginInfo.userID, role), "登录成功");
                 int userID = _jwtHelper.ValidateToken(res.token).userID;
                 DateTime dt_last = UserDAL.GetLastLoginTime(userID);

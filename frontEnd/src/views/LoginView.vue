@@ -126,6 +126,10 @@ export default
                     const message = response.data.message;
                     let notificationType = 'info';  // 默认类型为 'info'
 
+                    if(message ==='身份权限不符'){
+                        notificationType = 'error';
+                    }
+
                     if (message === '登录成功') {
                         notificationType = 'success';
 

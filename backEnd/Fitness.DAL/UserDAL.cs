@@ -97,6 +97,28 @@ namespace Fitness.DAL
 
         }
 
+        public static bool IsEmailInManager(string email)
+        {
+            try
+            {
+                DataTable dt = OracleHelper.ExecuteTable("SELECT * FROM \"Manager\" WHERE \"Email\"=:Email",
+                    new OracleParameter("Email", OracleDbType.Varchar2) { Value = email }
+                );
+
+                if (dt.Rows.Count != 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+
+        }
+
         //获取所有用户
         public static List<expandUserInfo> GetAllUser(out int status)
         {
