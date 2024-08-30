@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Fitness.BLL
 {
@@ -18,6 +19,8 @@ namespace Fitness.BLL
         //likeComment
 
         private readonly JWTHelper _jwtHelper = new();
+        private readonly UserAchievementBLL _userAchievement = new UserAchievementBLL();
+        private readonly PostBLL postbll = new PostBLL();
 
         public string PublishComment(string token, Comment comment)
         {
@@ -32,6 +35,9 @@ namespace Fitness.BLL
             bool result = CommentDAL.Insert(comment);
             //帖子评论量+1
             result = result && CommentDAL.CommentsCountAddOne(comment.postID);
+            //更新成就
+            int achieveUserID = postbll.GetPostByPostID(token, comment.postID).userID;
+            _userAchievement.UpdateBeComment(achieveUserID, 1);
             //调用通知接口
             return result ? "发布评论成功" : "发布评论失败";
         }
@@ -48,6 +54,9 @@ namespace Fitness.BLL
             bool result = CommentDAL.Insert(replyComment);
             //帖子评论量+1
             result = result && CommentDAL.CommentsCountAddOne(replyComment.postID);
+            //更新成就
+            int achieveUserID = postbll.GetPostByPostID(token, replyComment.postID).userID;
+            _userAchievement.UpdateBeComment(achieveUserID, 1);
             //调用通知接口
 
             return result ? "回复成功" : "回复失败";
@@ -82,6 +91,8 @@ namespace Fitness.BLL
             }
             else
                 return "身份权限不符";
+            //更新成就
+            _userAchievement.UpdateBeComment(PostUserID, -1);
             return result ?"评论删除成功" : "评论删除失败";
         }
 

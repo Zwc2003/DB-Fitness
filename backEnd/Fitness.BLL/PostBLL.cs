@@ -18,7 +18,8 @@ namespace Fitness.BLL
     {
 
         private readonly JWTHelper _jwtHelper = new();
-
+        private readonly UserAchievementBLL _userAchievement = new UserAchievementBLL();
+        private readonly PostBLL postbll = new PostBLL();
         public string Post(string token, Post post)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
@@ -56,16 +57,15 @@ namespace Fitness.BLL
                     message = "发帖失败"
                 });
             }
-
+            
             Publish publish = new Publish();
             publish.postID = postId;
             publish.userID = post.userID;
             publish.publishTime = post.postTime;
 
-            
-
-            //Console.WriteLine(publish.postID);
             PublishDAL.Post(publish);
+            //更新成就
+            _userAchievement.UpdatePostAchievement(tokenRes.userID, 1);
             return JsonConvert.SerializeObject(new
             {
                 postID = postId,
@@ -204,6 +204,9 @@ namespace Fitness.BLL
             }
             PublishDAL.Delete(postID);
             PostDAL.Delete(postID);
+            //更新成就
+            int userID = postbll.GetPostByPostID(token, postID).userID;
+            _userAchievement.UpdatePostAchievement(userID,-1);
             return JsonConvert.SerializeObject(new
             {
                 message = "删除帖子成功"
@@ -215,6 +218,8 @@ namespace Fitness.BLL
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             if (PostDAL.Like(postID))
             {
+                int userID = postbll.GetPostByPostID(token,postID).userID;
+                _userAchievement.UpdateBeLiked(userID,1);
                 return JsonConvert.SerializeObject(new
                 {
                     message = "成功点赞帖子"
@@ -227,7 +232,6 @@ namespace Fitness.BLL
                     message = "点赞帖子失败"
                 });
             }
-            //todo
             //通知被点赞方，接入成就系统
         }
 
@@ -236,6 +240,8 @@ namespace Fitness.BLL
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             if (PostDAL.CancleLike(postID))
             {
+                int userID = postbll.GetPostByPostID(token, postID).userID;
+                _userAchievement.UpdateBeLiked(userID, -1);
                 return JsonConvert.SerializeObject(new
                 {
                     message = "成功取消点赞"

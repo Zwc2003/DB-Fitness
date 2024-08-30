@@ -153,7 +153,7 @@ export default {
         return {
             navBarFixed: false,
             token: localStorage.getItem('token'),  // 从 localStorage 获取 token
-            iconUrl: this.$store.state.iconUrl
+            iconUrl: this.$store.state.iconUrl? this.$store.state.iconUrl : require("../assets/images/user.jpeg"),
         };
     },
     props: {
@@ -176,7 +176,7 @@ export default {
             this.router().push(`/user/${userID}`);
         },
         navigateToLoginOut(){
-          this.router().push(`/`);
+          this.router().push(`/login`);
           localStorage.removeItem('token')
         },
         watchScroll() {

@@ -33,6 +33,13 @@ const router = createRouter({
     //首页
     {
       //path: '/',
+      path: "/",
+      name: 'no_login_home',
+      component: HomeView,
+      meta: { requiresAuth: false }
+    },
+    {
+      //path: '/',
       path: "/home",
       name: 'home',
       component: HomeView,
@@ -119,7 +126,7 @@ const router = createRouter({
     // 登录界面
     {
       //path: '/login',
-      path: '/',
+      path: '/login',
       name: 'LoginView',
       component: LoginView
     },

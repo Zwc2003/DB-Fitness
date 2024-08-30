@@ -101,13 +101,16 @@ namespace Fitness.BLL
                 DateTime dt_last = UserDAL.GetLastLoginTime(userID);
                 DateTime dt_now = DateTime.Now;
                 UserDAL.UpdateLoginTime(userID,dt_now);
-                //活力币+1
                 //判断是否首次登录系统
                 bool isSameDate = dt_last.Date == dt_now.Date;
                 if (!isSameDate)
                 {
                     var vigorTokenBLL = new VigorTokenBLL();
+                    var userAchievementBLL = new UserAchievementBLL();
+                    //活力币+1
                     vigorTokenBLL.UpdateBalance(userID, $"本日{dt_now.Date}首次登录系统,获得50活力币", 50);
+                    //成就更新
+                    userAchievementBLL.UpdateLoginAchievement(userID);
                 }
                 return res;
             }
@@ -154,8 +157,8 @@ namespace Fitness.BLL
                 int st;
                 //可以再利用st添加一些出错的处理：方便前后端对接出错时处理
                 UserDAL.UpdateExpandUserInfo(tokenRes.userID, userinfo, out st);
-
                 //！！！记得同步更新FoodPlan表
+                //待补充个人资料更新的成就
 
                 return "更新成功";
             }
