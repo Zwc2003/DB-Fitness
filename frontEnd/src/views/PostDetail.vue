@@ -591,11 +591,13 @@ export default {
             axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
                 params: {
                     token: token,
-                    commentID: commentID
+                    commentID: commentID,
+                    postID: this.post.postID
+
                 }
             })
                 .then(response => {
-                    if (response.data.message === '评论删除成功') {
+                    if (response.data === '评论删除成功') {
                         this.comments = this.comments.filter(c => c.commentID !== commentID);
                         this.post.commentsCount--;
                         ElNotification({
@@ -612,6 +614,7 @@ export default {
                     }
                 })
                 .catch(error => {
+                    console.log(error);
                     ElNotification({
                         title: '错误',
                         message: '删除评论时发生错误',
