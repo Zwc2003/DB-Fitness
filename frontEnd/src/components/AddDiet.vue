@@ -31,7 +31,7 @@
                         </el-card>
                     </el-col>
                     <el-col :span="2" style="align-items: flex-end;">
-                        <div style="margin: 95px 0" />
+                        <div style="margin: 100% 0" />
                         <el-button @click="showModi(item)" size="large" :style="{ fontSize: '18px' }" type="primary"
                             icon="Edit" circle />
                         <div style="margin: 10px 0" />
