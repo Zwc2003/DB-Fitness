@@ -121,7 +121,7 @@
   object-fit: cover; /* 保持图片的宽高比，裁剪超出部分 */
 }
 .gif:hover {
-  content: url(../assets/play.jpeg); /* 鼠标悬停时显示的图片路径 */
+  content: url(../assets/images/strength.png); /* 鼠标悬停时显示的图片路径 */
 }
 .dialog-video{
   width:600px;
@@ -135,7 +135,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-import { ElMessageBox } from 'element-plus';
+import {ElMessageBox, ElNotification} from 'element-plus';
 import axios from 'axios';
 
 const weeks = ref([]);
@@ -152,6 +152,11 @@ function loadWeeksData() {
     weeks.value = response.data; // 假设数据结构中 weeks 在顶层
     localStorage.setItem('savedFitnessPlan', JSON.stringify(weeks.value)); // 保存数据到本地存储
     loading.value = false;
+    ElNotification({
+            message: "健身计划成功生成！",
+            type: 'success',
+            duration: 2000
+          });
   }).catch(error => {
     console.error('Failed to fetch data:', error);
     loading.value = false;

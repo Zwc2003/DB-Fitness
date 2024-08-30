@@ -222,7 +222,7 @@ namespace Fitness.BLL
             // 确保每条饮食计划只能更新一次成就进度
             DataTable dt = foodPlanDAL.GetFoodPlanAchieGain(foodPlanID);
             DataRow dr = dt.Rows[0];
-            int haveGainAchievement = Convert.ToInt32(dr["achievementGian"]);
+            int haveGainAchievement = Convert.ToInt32(dr["achievementGain"]);
             int userID = Convert.ToInt32(dr["userID"]);
 
 

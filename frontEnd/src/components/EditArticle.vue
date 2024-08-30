@@ -15,7 +15,7 @@
         <div class="editor-upload-container">
             <!-- 上传图片组件 -->
             <el-upload class="avatar-uploader" :show-file-list="false" :before-upload="beforeAvatarUpload">
-                <img v-if="localImgUrl" :src="localImgUrl" class="avatar" />
+                <img v-if="localImgUrl!=`null`" :src="localImgUrl" class="avatar" />
                 <el-icon v-else class="avatar-uploader-icon">
                     <Plus />
                 </el-icon>
@@ -40,6 +40,7 @@ import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import { mapState } from 'vuex'
 
 export default {
+
 
     components: { Editor, Toolbar },
     props: {
@@ -69,7 +70,7 @@ export default {
             });
         },
         beforeAvatarUpload(file) {
-            this.localImgUrl = null;
+            this.localImgUrl = "null";
             const isJPGorPNG = file.type === 'image/jpeg' || file.type === 'image/png';
             const isLt2M = file.size / 1024 / 1024 < 2;
 
@@ -97,7 +98,7 @@ export default {
         const localContent = ref(props.content)
         const localCategory = ref(props.category || ' ') // 如果未选择类别，默认为空格
         const titlePlaceholder = ref('请输入标题')
-        const localImgUrl = ref(props.imgUrl || null)
+        const localImgUrl = ref(props.imgUrl || "null")
 
         onMounted(() => {
             setTimeout(() => {
@@ -169,8 +170,15 @@ export default {
         }
 
         const emitAddPost = () => {
-            emit('add-post')
+            emit('add-post', {
+                title: localTitle.value,
+                content: localContent.value,
+                category: localCategory.value,
+                imgUrl: localImgUrl.value,
+            });
         }
+
+
 
         return {
             editorRef,

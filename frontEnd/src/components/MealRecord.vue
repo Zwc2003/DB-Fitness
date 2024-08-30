@@ -845,7 +845,7 @@ export default {
 <style scoped>
 .recordContainer {
   background-color: rgb(247, 251, 254);
-  width : 90%
+  width : 100%
 }
 
 .meal-item {
@@ -932,23 +932,24 @@ export default {
 }
 
 .ana-container {
-  height: 800px;
+  height: 80vh;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-image: url('../assets/images/anaBG.png') !important;
   display: flex;
+  /*width: 100%;*/
   flex-direction: column;
-  margin-left: -35%;
+
 }
 
 .ana-style {
-  height: 650px;
-  width:420px;
+  height: 65vh;
+  width:20vw;
   overflow-y: auto;
   font-size: 18px;
   color: rgb(30, 29, 29);
-  padding: 30px !important; 
+  padding: 30px !important;
 }
 
 .loading-container {
@@ -969,6 +970,7 @@ export default {
   flex-grow: 1;
   justify-content: center;
   align-items: center;
+  margin: 20px;
 }
 
 .glow-button {
