@@ -2,22 +2,25 @@
     <div class="bg">
         <div class="user-profile">
             <div class="profile-container">
-              <div class="back-button-container">
-                        <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
-                            <el-icon>
-                                <arrow-left />
-                            </el-icon>
-                        </el-button>
-                    </div>
+                <div class="back-button-container">
+                    <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
+                        <el-icon>
+                            <arrow-left />
+                        </el-icon>
+                    </el-button>
+                </div>
                 <aside class="profile-sidebar">
                     <div class="avatar-wrapper" @click="showLargeImage">
                         <img :src="imagePreview || profile.iconURL || defaultAvatar" alt="avatar" class="avatar">
                         <span class="edit-icon" @click.stop="triggerFileInput">&#9998;</span>
                     </div>
-                    <h2>{{ profile.userName }}</h2>    
+                    <h2>{{ profile.userName }}</h2>
                     <div class="tags">
-                        <span v-for="(tag, index) in profile.tags" :key="index" class="tag" >{{ tag }}</span>
-                        <!-- :style="{ backgroundColor: tag.color }" -->
+                        <span v-for="(tag, index) in tags" :key="index"
+                            :style="{ backgroundColor: colors[index % colors.length] }" class="tag">
+                            {{ tag }}
+                            <span class="remove-tag" @click="removeTag(index)">×</span>
+                        </span>
                         <span v-if="addingTag" class="tag-input">
                             <input type="text" v-model="newTag" @blur="addTag" @keyup.enter="addTag" />
                         </span>
@@ -160,28 +163,31 @@
                             </button>
                         </div>
                         <div v-if="achievementsVisible">
-                          <div class="achievement-container">
-                              <!-- 使用 v-for 循环生成成就图片 -->
-                              <div v-for="(achievement, index) in achievements" :key="index" class="achievement-item-wrapper">
-                                  <div class="achievement-item" :style="{ '--progress': getProgress(achievement) }"
-                                       @mouseover="showTooltip(index)"
-                                       @mouseleave="hideTooltip">
-                                      <img :src="getImagePath(achievement.achievementId)" alt="Achievement Badge" />
-                                  </div>
-                                  <div v-if="tooltipVisibleIndex === index" class="tooltip">
-                                      <h4>{{ achievement.name }}</h4>
-                                      <div class="achievement-content">
-                                          <span :style="{ fontSize: '15px', color: '#ffffff' }">目标: {{ achievement.target }}</span>
-                                      </div>
-                                      <div class="achievement-content">
-                                          <span :style="{ fontSize: '15px', color: '#ffffff' }">完成情况: {{ (achievement.progress * 100 / achievement.target).toFixed(2) }}%</span>
-                                      </div>
-                                      <div class="achievement-content">
-                                          <span :style="{ fontSize: '15px', color: '#ffffff' }">状态: {{ achievement.isAchieved ? '已完成' : '未完成' }}</span>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
+                            <div class="achievement-container">
+                                <!-- 使用 v-for 循环生成成就图片 -->
+                                <div v-for="(achievement, index) in achievements" :key="index"
+                                    class="achievement-item-wrapper">
+                                    <div class="achievement-item" :style="{ '--progress': getProgress(achievement) }"
+                                        @mouseover="showTooltip(index)" @mouseleave="hideTooltip">
+                                        <img :src="getImagePath(achievement.achievementId)" alt="Achievement Badge" />
+                                    </div>
+                                    <div v-if="tooltipVisibleIndex === index" class="tooltip">
+                                        <h4>{{ achievement.name }}</h4>
+                                        <div class="achievement-content">
+                                            <span :style="{ fontSize: '15px', color: '#ffffff' }">目标: {{
+                                                achievement.target }}</span>
+                                        </div>
+                                        <div class="achievement-content">
+                                            <span :style="{ fontSize: '15px', color: '#ffffff' }">完成情况: {{
+                                                (achievement.progress * 100 / achievement.target).toFixed(2) }}%</span>
+                                        </div>
+                                        <div class="achievement-content">
+                                            <span :style="{ fontSize: '15px', color: '#ffffff' }">状态: {{
+                                                achievement.isAchieved ? '已完成' : '未完成' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </section>
                 </main>
@@ -227,13 +233,13 @@ export default {
                 iconURL: '',
                 age: -1,
                 gender: '',
-                tags:'',
+                tags: '',
                 introduction: '',
                 goalType: '',
                 goalWeight: null,
                 isMember: null,
             },
-            tags:[],
+            tags: [],
             posts: [],
             colors: ['#e57373', '#81c784', '#64b5f6', '#ffb74d', '#ba68c8', '#4db6ac'],
             addingTag: false,
@@ -250,14 +256,14 @@ export default {
             achievements: [], // 成就列表
             tooltipVisibleIndex: null,  // 鼠标悬停显示的提示信息
             achievementImages: {
-              1: Achievement_1,
-              2: Achievement_2,
-              3: Achievement_3,
-              4: Achievement_4,
-              5: Achievement_5,
-              6: Achievement_6,
-              7: Achievement_7,
-              8: Achievement_8,
+                1: Achievement_1,
+                2: Achievement_2,
+                3: Achievement_3,
+                4: Achievement_4,
+                5: Achievement_5,
+                6: Achievement_6,
+                7: Achievement_7,
+                8: Achievement_8,
             },
 
         };
@@ -274,7 +280,7 @@ export default {
 
     },
     mounted() {
-      this.fetchAchievements();
+        this.fetchAchievements();
     },
 
 
@@ -292,8 +298,8 @@ export default {
             this.achievementsVisible = !this.achievementsVisible;
         },
         showTooltip(index) {
-        console.log("Tooltip show for index:", index);
-        this.tooltipVisibleIndex = index;
+            console.log("Tooltip show for index:", index);
+            this.tooltipVisibleIndex = index;
         },
         hideTooltip() {
             console.log("Tooltip hide");
@@ -304,7 +310,7 @@ export default {
             return Math.min(1, Math.max(0, progress)); // 确保在0到1之间
         },
         getImagePath(achievementId) {
-          return this.achievementImages[achievementId] || ''; // 返回对应的图片路径，如果不存在则返回空字符串
+            return this.achievementImages[achievementId] || ''; // 返回对应的图片路径，如果不存在则返回空字符串
         },
         async fetchUserProfile() {
             const token = localStorage.getItem('token');
@@ -312,7 +318,7 @@ export default {
                 const response = await axios.get(`http://localhost:8080/api/User/GetPersonalProfile?token=${token}`);
                 this.profile = response.data;
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
-                this.tags = this.profile.tags.split('#');
+                this.tags = this.profile.tags ? this.profile.tags.split('#').filter(Boolean) : [];
                 console.log(this.tags);
                 ElNotification({
                     title: '成功',
@@ -380,11 +386,11 @@ export default {
                 // 将获取到的成就数据存储到组件的 data 属性中
                 const data = response.data;
                 this.achievements = data.achievements.map(achievement => ({
-                  achievementId: achievement.achievementId,
-                  name: achievement.name,
-                  target: parseInt(achievement.target, 10),
-                  progress: parseInt(achievement.progress, 10),
-                  isAchieved: achievement.isAchieved === "true"
+                    achievementId: achievement.achievementId,
+                    name: achievement.name,
+                    target: parseInt(achievement.target, 10),
+                    progress: parseInt(achievement.progress, 10),
+                    isAchieved: achievement.isAchieved === "true"
                 }));
 
                 ElNotification({
@@ -413,12 +419,14 @@ export default {
             this.isLargeImageVisible = false;
         },
         addTag() {
-            if (this.newTag) {
-                const colorIndex = Math.floor(Math.random() * this.colors.length);
-                this.profile.tags.push({ text: this.newTag, color: this.colors[colorIndex] });
+            if (this.newTag.trim()) {
+                this.tags.push(this.newTag.trim());
                 this.newTag = '';
                 this.addingTag = false;
             }
+        },
+        removeTag(index) {
+            this.tags.splice(index, 1);
         },
         cancelEdit() {
             this.profile = JSON.parse(JSON.stringify(this.originalProfile));
@@ -430,8 +438,8 @@ export default {
         },
         async saveProfile() {
             try {
-                const tags = Array.isArray(this.profile.tags) ? this.profile.tags : [];
-                const formattedTags = tags.join('#')+'#';
+                //const tags = Array.isArray(this.profile.tags) ? this.profile.tags : [];
+                const formattedTags = this.tags.join('#') + '#';
                 const token = localStorage.getItem('token');
                 const postData = {
                     userID: this.profile.userID,
@@ -445,13 +453,13 @@ export default {
                     goalType: this.profile.goalType,
                     goalWeight: this.profile.goalWeight,
                 };
-                console.log("上传资料：",postData);
+                console.log("上传资料：", postData);
 
-                const response = await axios.post(`http://localhost:8080/api/User/UpdateProfile?token=${token}`,postData);
-                console.log("上传响应：",response.data);
+                const response = await axios.post(`http://localhost:8080/api/User/UpdateProfile?token=${token}`, postData);
+                console.log("上传响应：", response.data);
 
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
-                if(response.data==='更新成功')
+                if (response.data === '更新成功')
                     ElNotification({
                         title: '成功',
                         message: '保存成功！',
@@ -487,7 +495,7 @@ export default {
         async getVigorTokenRecordsFromDB() {
             const token = localStorage.getItem('token');
             try {
-                const response =await axios.get(`http://localhost:8080/api/User/GetVigorTokenReacords?token=${token}`);
+                const response = await axios.get(`http://localhost:8080/api/User/GetVigorTokenReacords?token=${token}`);
                 this.vigorTokenRecords = response.data.records.map(item => ({
                     recordID: item.recordID,
                     reason: item.reason,
@@ -571,7 +579,7 @@ export default {
     flex-direction: column;
     position: relative;
     /*justify-content: center;*/
-    top:150px;
+    top: 150px;
     background-color: transparent;
     border: none;
 
@@ -632,7 +640,14 @@ export default {
     color: white;
     margin: 3px;
     display: inline-block;
+    position: relative;
 }
+
+.remove-tag {
+    margin-left: 8px;
+    cursor: pointer;
+}
+
 
 .tag-input input {
     padding: 5px;
@@ -826,7 +841,8 @@ select {
 .balance-records-container {
     width: 100%;
     max-height: 60vh;
-    overflow-y: auto; /* 垂直滚动条 */
+    overflow-y: auto;
+    /* 垂直滚动条 */
     margin-top: 20px;
 }
 
@@ -898,13 +914,17 @@ select {
     /* 调整为你需要的左边距 */
     z-index: 1000;
 }
+
 .button-container {
-    text-align: left; /* 确保按钮靠左对齐 */
+    text-align: left;
+    /* 确保按钮靠左对齐 */
 }
 
 .toggle-button {
-    background-color: #43b984; /* 按钮背景颜色 */
-    color: #ffffff; /* 按钮文字颜色 */
+    background-color: #43b984;
+    /* 按钮背景颜色 */
+    color: #ffffff;
+    /* 按钮文字颜色 */
     border: none;
     padding: 10px 20px;
     margin-bottom: 10px;
@@ -917,15 +937,20 @@ select {
 }
 
 .toggle-button:hover {
-    background-color: #296446; /* 悬停时的背景颜色 */
+    background-color: #296446;
+    /* 悬停时的背景颜色 */
 }
 
 .toggle-button:active {
-    transform: scale(0.98); /* 点击时的缩小效果 */
+    transform: scale(0.98);
+    /* 点击时的缩小效果 */
 }
 
-.post-list, .vitality-balance, .achievement-section  {
-    margin-bottom: 20px; /* 为两个部分添加一些下边距 */
+.post-list,
+.vitality-balance,
+.achievement-section {
+    margin-bottom: 20px;
+    /* 为两个部分添加一些下边距 */
 }
 
 
@@ -940,27 +965,37 @@ select {
 }
 
 .achievement-item-wrapper {
-    position: relative; /* 确保 tooltip 能正确定位 */
-    width: 20%;  /* 宽度为父容器的20% */
-    aspect-ratio: 1 / 1;  /* 保持宽高比为1:1，确保容器为正方形 */
+    position: relative;
+    /* 确保 tooltip 能正确定位 */
+    width: 20%;
+    /* 宽度为父容器的20% */
+    aspect-ratio: 1 / 1;
+    /* 保持宽高比为1:1，确保容器为正方形 */
 }
 
 .achievement-item {
     position: relative;
-    width: 80%;  /* 宽度为父容器的100% */
-    aspect-ratio: 1 / 1;  /* 保持宽高比为1:1，确保容器为正方形 */
+    width: 80%;
+    /* 宽度为父容器的100% */
+    aspect-ratio: 1 / 1;
+    /* 保持宽高比为1:1，确保容器为正方形 */
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* 确保遮罩层不会超出图片边界 */
-    border-radius: 50%; /* 保持圆形 */
+    overflow: hidden;
+    /* 确保遮罩层不会超出图片边界 */
+    border-radius: 50%;
+    /* 保持圆形 */
     background-color: transparent;
 }
 
 .achievement-item img {
-    width: 100%;  /* 宽度占满容器 */
-    height: 100%; /* 高度占满容器 */
-    object-fit: cover; /* 确保图片填满容器且不失真 */
+    width: 100%;
+    /* 宽度占满容器 */
+    height: 100%;
+    /* 高度占满容器 */
+    object-fit: cover;
+    /* 确保图片填满容器且不失真 */
     border-radius: 50%;
     position: relative;
     z-index: 1;
@@ -973,21 +1008,27 @@ select {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5); /* 半透明黑色遮罩 */
-    border-radius: 50%; /* 保持与图片一致的圆形 */
+    background: rgba(0, 0, 0, 0.5);
+    /* 半透明黑色遮罩 */
+    border-radius: 50%;
+    /* 保持与图片一致的圆形 */
     z-index: 2;
     transform-origin: bottom;
-    transform: scaleY(calc(1 - var(--progress))); /* 根据进度动态调整 */
-    transition: transform 0.3s ease; /* 添加动画效果 */
+    transform: scaleY(calc(1 - var(--progress)));
+    /* 根据进度动态调整 */
+    transition: transform 0.3s ease;
+    /* 添加动画效果 */
 }
 
 .achievement-item:hover::before {
-    transform: scaleY(0); /* 悬停时显示完整图片 */
+    transform: scaleY(0);
+    /* 悬停时显示完整图片 */
 }
 
 .tooltip {
     position: absolute;
-    bottom: 100%; /* 确保 tooltip 在 achievement-item 的上方 */
+    bottom: 100%;
+    /* 确保 tooltip 在 achievement-item 的上方 */
     left: 50%;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.8);
@@ -1009,6 +1050,4 @@ select {
     text-align: left;
     overflow: auto;
 }
-
-
 </style>
