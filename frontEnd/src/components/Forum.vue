@@ -87,7 +87,7 @@
                             <span class="category-tag">{{ post.postCategory }}</span>
                         </h3>
                         <!-- 图片展示 -->
-                        <div v-if="post.imgUrl" class="post-image">
+                        <div v-if="post.imgUrl!=`null`" class="post-image">
                             <img :src="post.imgUrl" alt="Post Image" class="image" />
                         </div>
                         <p class="post-snippet">{{ truncatedContent(post.postContent) }}</p>
@@ -313,6 +313,7 @@ export default {
                 title: '',
                 content: '',
                 category: '',
+                imgUrl: 'null'
             };
             this.$forceUpdate();
         },

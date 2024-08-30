@@ -439,8 +439,8 @@ function openInNewTab(url) {
     border-radius: 10px !important;
     padding: 20px !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
-    width: 1200px !important;
-    max-height: calc(100vh - 200px) !important;
+    width: 75% !important;
+    max-height: calc(100vh - 100px) !important;
     /* 设置最大高度 */
     overflow-y: auto !important;
     /* 添加垂直滚动条 */

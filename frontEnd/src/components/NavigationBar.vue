@@ -336,11 +336,11 @@ body {
 }
 
 .wrapper nav #mealPlanner:checked~.tab {
-    left: 88%;
+    left: 89%;
 }
 
 .wrapper nav #mealRecord:checked~.tab {
-    left: 88%;
+    left: 89%;
 }
 
 .avatar-container {
