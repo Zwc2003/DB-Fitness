@@ -153,7 +153,7 @@ export default {
         return {
             navBarFixed: false,
             token: localStorage.getItem('token'),  // 从 localStorage 获取 token
-            iconUrl: this.$store.state.iconUrl? this.$store.state.iconUrl : require("../assets/images/user.jpeg"),
+            iconUrl: this.$store.state.iconUrl,
         };
     },
     props: {
