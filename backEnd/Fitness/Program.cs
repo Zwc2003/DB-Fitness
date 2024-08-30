@@ -52,11 +52,10 @@ builder.Services.AddHostedService<DatabasePingService>();
 
 var app = builder.Build();
 
-// 使用 CORS 中间件
-app.UseCors();
 // 使用 SignalR 中间件
 app.UseRouting();
-
+// 使用 CORS 中间件
+app.UseCors();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<ChatHub>("/chathub");//这一行代码将 ChatHub 类映射到 /chathub 路径。
