@@ -107,6 +107,7 @@
 
 <script>
 import CourseHome from "@/components/CourseHome.vue";
+import axios from "axios";
 
 export default {
   components: {
@@ -162,6 +163,17 @@ export default {
         { key: "price", label: "课程价格" },
         { key: "category", label: "课程类别" },
       ],
+
+      apiUrl: "/api/Course",
+      courseDetails: {},
+      courseList: [],
+      courseComments: [],
+      searchResults: [],
+      reservationStatus: "",
+      paymentStatus: "",
+      cancellationStatus: "",
+      commentStatus: "",
+      ratingStatus: "",
     };
   },
   methods: {
@@ -193,6 +205,70 @@ export default {
         // 更新 filteredCourses，显示推荐的课程
       }
       this.isDialogVisible = true;
+    },
+
+    //搜索课程
+    async searchCourses(keyword, typeID, minPrice = null, maxPrice = null) {
+      try {
+        const response = await axios.get(`${this.apiUrl}/SearchCourse`, {
+          params: { keyword, typeID, minPrice, maxPrice },
+        });
+        this.searchResults = response.data;
+      } catch (error) {
+        console.error("Error searching courses:", error);
+      }
+    },
+
+    //获取所有课程,课程中心大厅展示
+    async getAllCourses() {
+      try {
+        const response = await axios.get(`${this.apiUrl}/GetAllCourse`);
+        this.courseList = response.data;
+      } catch (error) {
+        console.error("Error fetching all courses:", error);
+      }
+    },
+
+    //预约课程
+    async reserveCourse(classID, payMethod) {
+      try {
+        const response = await axios.post(`${this.apiUrl}/ReserveCourse`, {
+          classID,
+          payMethod,
+        });
+        this.reservationStatus = response.data;
+      } catch (error) {
+        console.error("Error reserving course:", error);
+      }
+    },
+
+    //课程详情展示
+    async getCourseById(classID) {
+      try {
+        const response = await axios.get(`${this.apiUrl}/GetCourseByClassID`, {
+          params: { classID },
+        });
+        this.courseDetails = response.data;
+      } catch (error) {
+        console.error("Error fetching course details:", error);
+      }
+    },
+
+    //用户身份
+
+    //查看课程评论
+    async getCourseComments(classID) {
+      try {
+        const response = await axios.get(
+          `${this.apiUrl}/GetCourseCommentByClassID`,
+          {
+            params: { classID },
+          }
+        );
+        this.courseComments = response.data;
+      } catch (error) {
+        console.error("Error fetching course comments:", error);
+      }
     },
   },
   mounted() {

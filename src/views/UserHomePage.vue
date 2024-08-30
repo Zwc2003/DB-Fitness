@@ -162,6 +162,8 @@ import { dataType } from "element-plus/es/components/table-v2/src/common";
 import { computed } from "vue";
 import CourseCard from "@/components/CourseCard.vue";
 
+import axios from "axios";
+
 export default {
   components: {
     CourseCard,
@@ -448,6 +450,48 @@ export default {
         return "warning";
       } else {
         return "success";
+      }
+    },
+
+    //购物车
+    async payCourseFare(paymentMethod, bookID, amount) {
+      try {
+        const response = await axios.post(`${this.apiUrl}/PayCourseFare`, {
+          paymentMethod,
+          bookID,
+          amount,
+        });
+        this.paymentStatus = response.data;
+      } catch (error) {
+        console.error("Error paying for course:", error);
+      }
+    },
+
+    //今日课程列表
+
+    //评论课程
+    async publishComment(classID, comment) {
+      try {
+        const response = await axios.post(`${this.apiUrl}/PublishComment`, {
+          classID,
+          comment,
+        });
+        this.commentStatus = response.data;
+      } catch (error) {
+        console.error("Error publishing comment:", error);
+      }
+    },
+
+    //打分课程
+    async gradeCourse(classID, content) {
+      try {
+        const response = await axios.post(`${this.apiUrl}/GradeCourse`, {
+          classID,
+          Content: content,
+        });
+        this.ratingStatus = response.data;
+      } catch (error) {
+        console.error("Error rating course:", error);
       }
     },
   },

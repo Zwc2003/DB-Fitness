@@ -196,6 +196,7 @@ import * as echarts from "echarts";
 import { ElNotification as notify } from "element-plus";
 import { computed } from "vue";
 import TeachCard from "@/components/TeachCard.vue";
+import axios from "axios";
 
 export default {
   components: {
@@ -496,6 +497,83 @@ export default {
       } else {
         return "success";
       }
+    },
+
+    //发布课程
+    publishCourse(courseData) {
+      return axios
+        .post("/api/Course/PublishCourse", courseData, {
+          headers: {
+            Authorization: `Bearer ${token}`, // 添加token
+          },
+        })
+        .then((response) => {
+          console.log("课程发布成功:", response.data);
+        })
+        .catch((error) => {
+          console.error(
+            "课程发布失败:",
+            error.response ? error.response.data : error.message
+          );
+        });
+    },
+
+    //编辑课程
+    modifyCourse(courseData) {
+      return axios
+        .post("/api/Course/ModifyCourse", courseData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log("课程修改成功:", response.data);
+        })
+        .catch((error) => {
+          console.error(
+            "课程修改失败:",
+            error.response ? error.response.data : error.message
+          );
+        });
+    },
+    //删除课程
+    deleteCourse(classID) {
+      return axios
+        .delete(`/api/Course/DeleteCourseByClassID`, {
+          data: { classID },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log("课程删除成功:", response.data);
+        })
+        .catch((error) => {
+          console.error(
+            "课程删除失败:",
+            error.response ? error.response.data : error.message
+          );
+        });
+    },
+
+    //查看课程
+    getCoursesByUserID() {
+      return axios
+        .get("/api/Course/GetCourseByUserID", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log("获取课程列表成功:", response.data);
+          return response.data; // 返回课程列表数据
+        })
+        .catch((error) => {
+          console.error(
+            "获取课程列表失败:",
+            error.response ? error.response.data : error.message
+          );
+        });
     },
   },
 

@@ -16,9 +16,7 @@ import "calendar-vue3/dist/style.css";
 const app = createApp(App);
 
 app.use(router);
-//补充
 app.use(ElementPlus);
-//app.use(store);
 app.use(ArcoVue);
 app.mount("#app");
 
