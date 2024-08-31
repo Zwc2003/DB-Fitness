@@ -1,11 +1,17 @@
 <template>
-  <CartSidebar
-    :cartCourses="cartCourses"
-    :isCartVisible="isCartVisible"
-    @update:isCartVisible="isCartVisible = $event"
-    @removeCourse="removeCourse"
-    class="cart-sidebarr"
-  />
+  <div class="cart-sidebarr">
+    <el-card shadow="hover">
+      <div class="vitality-content">
+        活力币: <span class="vitality-number">{{ vitalityCoins }}</span> 个
+      </div>
+    </el-card>
+    <CartSidebar
+      :cartCourses="cartCourses"
+      :isCartVisible="isCartVisible"
+      @update:isCartVisible="isCartVisible = $event"
+      @removeCourse="removeCourse"
+    />
+  </div>
   <div aria-label="A complete example of page header">
     <el-page-header @back="onBack">
       <template #breadcrumb>
@@ -125,6 +131,7 @@ export default {
 
   data() {
     return {
+      vitalityCoins: 100, // 假设活力币数量为100，可以根据实际数据进行调整
       usercourses: [
         {
           name: "普拉提",
@@ -418,6 +425,20 @@ export default {
 </script>
 
 <style scoped>
+.vitality-box {
+  max-width: 300px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.vitality-content {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.vitality-number {
+  color: #ff6600; /* 可以根据需要调整颜色 */
+}
 .cart-sidebarr {
   position: absolute;
   top: 10%;
@@ -426,6 +447,8 @@ export default {
   background-color: #fff;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   padding: 0px;
+  display: flex;
+  justify-content: space-between; /* 子元素之间的空间平均分布 */
 }
 
 .el-page-header {
