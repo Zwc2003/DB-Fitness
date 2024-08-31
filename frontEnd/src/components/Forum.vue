@@ -264,7 +264,7 @@ export default {
                 const cleanedContent = this.cleanHtml(this.newPost.content);
                 const newPost = {
                     postID: -1,
-                    userID: -1,
+                    userID: localStorage.getItem('userID'),
                     userName: name,
                     postTitle: this.newPost.title,
                     postContent: cleanedContent,
@@ -279,7 +279,10 @@ export default {
                 console.log("url", newPost.imgUrl);
                 axios.post(`http://localhost:8080/api/Post/PublishPost?token=${token}`, newPost)
                     .then(response => {
-                        this.allPosts.push(newPost);
+                        console.log(response.data);
+                        console.log(response.data.postID);
+                        newPost.postID = response.data.postID;
+                        this.allPosts.unshift(newPost);
                         this.updateHotPosts();
                         this.resetNewPostForm();
                         ElNotification({
