@@ -197,6 +197,24 @@ export default {
     created() {
         this.fetchAllPosts();
     },
+    actions: {
+        pollIsPost({ commit, state }) {
+            setInterval(async () => {
+                try {
+                    const response = await axios.get(
+                        `http://localhost:8080/api/User/GetPersonalProfile?token=${state.token}`
+                    );
+                    const newIsPost = response.data.isPost;
+                    console.log("isPost", newIsPost);
+                    if (newIsPost !== state.isPost) {
+                        commit("setIsPost", newIsPost);
+                    }
+                } catch (error) {
+                    console.error("Error polling isPost status:", error);
+                }
+            }, 3000); // 每5秒检查一次
+        },
+    },
     methods: {
         scrollRight() {
             this.currentIndex = (this.currentIndex + 1) % this.categories.length;
@@ -251,7 +269,7 @@ export default {
         addPost() {
 
             // 检查用户是否被禁言
-            if (this.$store.state.isPost === 'false') {
+            if (this.$store.state.isPost === 0) {
                 ElNotification({
                     title: '警告',
                     message: '您已被禁言，无法发帖。',

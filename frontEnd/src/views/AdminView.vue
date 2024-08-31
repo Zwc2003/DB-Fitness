@@ -46,7 +46,7 @@
                     </div>
                 </el-header>
                 <el-container>
-                    <el-aside width="200px" :style="{ height: 'calc(100vh - 50px)'}">
+                    <el-aside width="200px" :style="{ height: 'calc(100vh - 50px)' }">
                         <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen"
                             @close="handleClose">
                             <el-menu-item index="1" @click="active = 1">
@@ -82,6 +82,11 @@
                             <el-table :data="filteredUsers" style="width: 100%">
                                 <el-table-column prop="userName" label="用户名"></el-table-column>
                                 <el-table-column prop="userID" label="用户ID"></el-table-column>
+                                <el-table-column prop="registrationTime" label="注册时间">
+                                    <template #default="{ row }">
+                                        {{ formatDate(row.registrationTime) }}
+                                    </template>
+                                </el-table-column>
                                 <el-table-column prop="isMember" label="是否会员">
                                     <template #default="{ row }">
                                         {{ row.isMember === 1 ? '是' : '否' }}
@@ -97,13 +102,17 @@
                                 <el-table-column fixed="right" label="操作" width="250">
                                     <template #default="{ row }">
                                         <el-button size="small" :type="row.status === '已禁言' ? 'primary' : 'danger'"
-                                            @click="row.status === '正常' ? restrictUser(row) : cancelBanUser(row)">
+                                            @click="row.status === '正常' ? restrictUser(row) : cancelBanUser(row)"
+                                            :disabled="row.status === '已删除'">
                                             {{ row.status === '已禁言' ? '取消禁言' : '限制言论' }}
                                         </el-button>
                                         <el-button size="small" type="warning" @click="deactivateUser(row)"
-                                            :disabled="row.status === '已删除'">删除用户</el-button>
+                                            :disabled="row.status === '已删除'">
+                                            删除用户
+                                        </el-button>
                                     </template>
                                 </el-table-column>
+
                             </el-table>
                         </div>
 
@@ -114,9 +123,8 @@
                                 <el-table-column prop="userName" label="作者"></el-table-column>
                                 <el-table-column prop="postCategory" label="类型">
                                     <template #default="{ row }">
-                                        <el-tag :type="row.postID ? 'info' : 'warning'">{{
-                                            row.postID
-                                            ? '帖子' : '评论' }}</el-tag>
+                                        <el-tag :type="row.postID ? 'info' : 'warning'">{{ row.postID ? '帖子' : '评论'
+                                            }}</el-tag>
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="postTime" label="发布时间">
@@ -203,8 +211,17 @@ async function fetchUsers() {
         const token = localStorage.getItem('token');
         const response = await axios.get(`http://localhost:8080/api/User/GetAllUser?token=${token}`);
         users.value = response.data;
+
+        users.value.sort((a, b) => new Date(a.registrationTime) - new Date(b.registrationTime));
+
         users.value.forEach(user => {
-            user.status = '正常';
+            if (user.isDelete === 1) {
+                user.status = '已删除';
+            } else if (user.isPost === 0) {
+                user.status = '已禁言';
+            } else {
+                user.status = '正常';
+            }
         });
     } catch (error) {
         ElNotification({
@@ -216,11 +233,16 @@ async function fetchUsers() {
 }
 
 // 获取帖子信息
+// 获取帖子信息
 async function fetchPosts() {
     try {
         const token = localStorage.getItem('token');
         const response = await axios.get(`http://localhost:8080/api/Post/GetAllPost?token=${token}`);
         contentList.value = response.data;
+
+        // 按照发布时间从小到大排序
+        contentList.value.sort((a, b) => new Date(a.postTime) - new Date(b.postTime));
+
         contentList.value.forEach(post => {
             post.status = '正常';
         });
@@ -232,6 +254,7 @@ async function fetchPosts() {
         });
     }
 }
+
 
 // 页面加载时获取数据
 onMounted(() => {

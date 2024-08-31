@@ -218,22 +218,6 @@ export default createStore({
         console.error("Error adding course to cart:", error);
       }
     },
-    pollIsPost({ commit, state }) {
-      setInterval(async () => {
-        try {
-          const response = await axios.get(
-            `http://localhost:8080/api/User/GetPersonalProfile?token=${state.token}`
-          );
-          const newIsPost = response.data.isPost;
-          console.log("isPost", newIsPost);
-          if (newIsPost !== state.isPost) {
-            commit("setIsPost", newIsPost);
-          }
-        } catch (error) {
-          console.error("Error polling isPost status:", error);
-        }
-      }, 5000000); // 每5秒检查一次
-    },
   },
   modules: {
     // 在这里可以添加模块pollIsPost

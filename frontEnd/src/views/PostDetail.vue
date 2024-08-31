@@ -42,7 +42,7 @@
             </div>
 
             <!-- 显示图片（如果存在） -->
-            <div v-if="post.imgUrl!='null'" class="post-image">
+            <div v-if="post.imgUrl != 'null'" class="post-image">
                 <img :src="post.imgUrl" alt="Post Image" class="image" />
             </div>
 
@@ -59,7 +59,7 @@
             <div class="comments-section">
                 <h3>评论</h3>
                 <div class="comments-container" ref="commentsContainer">
-                    <div v-for="comment in comments" :key="comment.commentID" class="comment-item" >
+                    <div v-for="comment in comments" :key="comment.commentID" class="comment-item">
                         <p><strong>{{ comment.userName }}</strong>: {{ comment.content }}</p>
                         <el-text class="comment-time">{{ comment.commentTime }}</el-text>
                         <div class="comment-actions">
@@ -110,28 +110,29 @@
                 <button class="toggle-container-button" @click="toggleContainer">
                     {{ isContainerVisible ? '收起评论栏' : '弹出评论栏' }}
                 </button>
-               <!-- 共同的容器 -->
+                <!-- 共同的容器 -->
                 <transition name="slide-vertical">
-                  <div v-show="isContainerVisible" class="actions-container">
-                      <!-- 输入框和提交按钮 -->
-                      <div class="input-container fixed-input">
-                          <textarea v-model="newCommentText" placeholder="写下你的评论..." @focus="clearReplyTarget"></textarea>
-                          <div class="actions">
-                              <button class="emoji-button" ref="emojiButton" @click="toggleEmojiPicker">😊</button>
-                              <button class="btn-primary" @click="addComment">发表评论</button>
-                          </div>
-                      </div>
+                    <div v-show="isContainerVisible" class="actions-container">
+                        <!-- 输入框和提交按钮 -->
+                        <div class="input-container fixed-input">
+                            <textarea v-model="newCommentText" placeholder="写下你的评论..."
+                                @focus="clearReplyTarget"></textarea>
+                            <div class="actions">
+                                <button class="emoji-button" ref="emojiButton" @click="toggleEmojiPicker">😊</button>
+                                <button class="btn-primary" @click="addComment">发表评论</button>
+                            </div>
+                        </div>
 
-                      <!-- 帖子操作按钮 -->
-                      <div class="post-actions">
-                          <button @click="toggleLike(post.postID)" class="btn-action">
-                              👍 {{ postLiked ? '取消' : '点赞' }} {{ post.likesCount }}
-                          </button>
-                          <button @click="reportPost" class="btn-action">🚩 举报</button>
-                          <button @click="openShareDialog" class="btn-action">🔗 分享</button>
-                          <button @click="forwardPost" class="btn-action">🔄 转发</button>
-                      </div>
-                  </div>
+                        <!-- 帖子操作按钮 -->
+                        <div class="post-actions">
+                            <button @click="toggleLike(post.postID)" class="btn-action">
+                                👍 {{ postLiked ? '取消' : '点赞' }} {{ post.likesCount }}
+                            </button>
+                            <button @click="reportPost" class="btn-action">🚩 举报</button>
+                            <button @click="openShareDialog" class="btn-action">🔗 分享</button>
+                            <button @click="forwardPost" class="btn-action">🔄 转发</button>
+                        </div>
+                    </div>
                 </transition>
             </div>
         </div>
@@ -253,6 +254,24 @@ export default {
         this.fetchPostDetail();
         this.fetchRelatedPosts();
         this.fetchHotPosts();
+    },
+    actions: {
+        pollIsPost({ commit, state }) {
+            setInterval(async () => {
+                try {
+                    const response = await axios.get(
+                        `http://localhost:8080/api/User/GetPersonalProfile?token=${state.token}`
+                    );
+                    const newIsPost = response.data.isPost;
+                    console.log("isPost", newIsPost);
+                    if (newIsPost !== state.isPost) {
+                        commit("setIsPost", newIsPost);
+                    }
+                } catch (error) {
+                    console.error("Error polling isPost status:", error);
+                }
+            }, 3000); // 每5秒检查一次
+        },
     },
     methods: {
         isCurrentUser(userName) {
@@ -1224,9 +1243,11 @@ textarea {
     padding: 15px;
     /* 内边距 */
 }
+
 .toggle-container-button {
     position: fixed;
-    bottom: 60px; /* 让按钮位于容器上方 */
+    bottom: 60px;
+    /* 让按钮位于容器上方 */
     left: 20%;
     transform: translateX(-50%);
     background-color: #007bff;
@@ -1235,34 +1256,48 @@ textarea {
     border-radius: 20px;
     padding: 10px 20px;
     cursor: pointer;
-    z-index: 1001; /* 确保按钮在容器之上 */
+    z-index: 1001;
+    /* 确保按钮在容器之上 */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-    opacity: 1; /* 初始完全不透明 */
-    transition: opacity 0.5s ease, transform 0.5s ease; /* 控制透明度和位移的过渡效果 */
+    opacity: 1;
+    /* 初始完全不透明 */
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    /* 控制透明度和位移的过渡效果 */
 }
 
 /* 点击时的缩放效果 */
 .toggle-container-button:active {
-    transform: translateX(-50%) scale(0.95); /* 点击时缩小按钮 */
-    background-color: #0056b3; /* 点击时按钮颜色变深 */
+    transform: translateX(-50%) scale(0.95);
+    /* 点击时缩小按钮 */
+    background-color: #0056b3;
+    /* 点击时按钮颜色变深 */
     transition: transform 0.1s ease, background-color 0.1s ease;
 }
 
 
 .actions-container {
     position: fixed;
-    left: 50%; /* 定位到页面的水平中心 */
-    bottom: 0; /* 定位到页面的底部 */
-    transform: translateX(-50%); /* 将容器向左移动自身宽度的50%，以实现居中 */
-    background: rgba(255, 255, 255, 0.8); /* 半透明背景，确保背景与内容分离 */
-    backdrop-filter: blur(10px); /* 磨砂效果 */
+    left: 50%;
+    /* 定位到页面的水平中心 */
+    bottom: 0;
+    /* 定位到页面的底部 */
+    transform: translateX(-50%);
+    /* 将容器向左移动自身宽度的50%，以实现居中 */
+    background: rgba(255, 255, 255, 0.8);
+    /* 半透明背景，确保背景与内容分离 */
+    backdrop-filter: blur(10px);
+    /* 磨砂效果 */
     padding: 15px;
-    border-radius: 10px 10px 0 0; /* 只为顶部添加圆角 */
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5); /* 在顶部添加阴影，使其从页面底部凸出 */
-    width: 700px; /* 宽度设为100%，以适应移动设备 */
+    border-radius: 10px 10px 0 0;
+    /* 只为顶部添加圆角 */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+    /* 在顶部添加阴影，使其从页面底部凸出 */
+    width: 700px;
+    /* 宽度设为100%，以适应移动设备 */
     height: 150px;
     /*max-width: 600px; !* 限制最大宽度 *!*/
-    z-index: 1000; /* 确保容器在页面的其他内容上方 */
+    z-index: 1000;
+    /* 确保容器在页面的其他内容上方 */
 }
 
 .input-container,
@@ -1271,9 +1306,7 @@ textarea {
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
-    width: 100%; /* 保证内容宽度占满父容器 */
+    width: 100%;
+    /* 保证内容宽度占满父容器 */
 }
-
-
-
 </style>
