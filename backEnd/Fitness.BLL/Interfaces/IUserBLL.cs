@@ -16,7 +16,7 @@ namespace Fitness.BLL.Interfaces
         public expandUserInfo GetProfileByUserID(string token, int userID);
         public string UpdateProfile(string token, expandUserInfo userinfo);
         public List<expandUserInfo> GetProfileByName(string token, string username);
-        public List<expandUserInfo> GetAllUser(string token);
+        public List<basicUserInfo> GetAllUser(string token);
 
         //权限管理
         public string removeUser(string token, int userID);

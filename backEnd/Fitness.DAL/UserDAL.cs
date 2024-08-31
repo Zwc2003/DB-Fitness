@@ -63,6 +63,23 @@ namespace Fitness.DAL
             return expandinfo;
         }
 
+        private static basicUserInfo basicUserInfoToModel(DataRow row)
+        {
+            basicUserInfo basicinfo = new(Convert.ToInt32(row["userID"]), row["userName"].ToString(), row["iconURL"].ToString(), Convert.ToString(row["Email"]),Convert.ToDateTime(row["registrationTime"]), Convert.ToInt32(row["isPost"]), Convert.ToInt32(row["isDelete"]), Convert.ToInt32(row["isMember"]));
+            return basicinfo;
+        }
+        private static List<basicUserInfo> basicUserInfoToModelList(DataTable dt)
+        {
+            List<basicUserInfo> basic_userInfoList = new();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                DataRow dr = dt.Rows[i];
+                basicUserInfo userinfo = basicUserInfoToModel(dr);
+                basic_userInfoList.Add(userinfo);
+            }
+            return basic_userInfoList;
+        }
+
         private static List<expandUserInfo> expandUserInfoToModelList(DataTable dt)
         {
             List<expandUserInfo> ex_userInfoList = new();
@@ -120,15 +137,14 @@ namespace Fitness.DAL
         }
 
         //获取所有用户
-        public static List<expandUserInfo> GetAllUser(out int status)
+        public static List<basicUserInfo> GetAllUser(out int status)
         {
             try
             {
                 OracleParameter[] oracleParameters = new OracleParameter[]
                {
-                    new OracleParameter("isDelete", OracleDbType.Int32) {Value = 0 }
                };
-                DataTable dt = OracleHelper.ExecuteTable("SELECT \"userID\",\"userName\", \"iconURL\", \"Age\", \"Gender\",\"Tags\", \"Introduction\",\"isMember\",\"goalType\",\"goalWeight\" FROM \"User\" WHERE \"isDelete\" = :isDelete"
+                DataTable dt = OracleHelper.ExecuteTable("SELECT \"userID\",\"userName\",\"iconURL\", \"Email\", \"registrationTime\", \"isPost\",\"isDelete\", \"isMember\" FROM \"User\""
                     , oracleParameters);
                 if (dt.Rows.Count == 0)
                 {
@@ -136,7 +152,7 @@ namespace Fitness.DAL
                     return null;
                 }
                 status = 0;//操作成功
-                return expandUserInfoToModelList(dt);
+                return basicUserInfoToModelList(dt);
             }
             catch (Exception ex)
             {

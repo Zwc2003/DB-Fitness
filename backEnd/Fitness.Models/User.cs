@@ -146,18 +146,29 @@ namespace Fitness.Models
     {
         public int userID { get; set; }
 
-        public string Password { get; set; }
+        public string userName { get; set; }
 
-        public string Salt { get; set; }
+        public string iconURL { get; set; }
 
         public string Email { get; set; }
 
-        public DateTime registrationTime { get; set; } = DateTime.Now;
+        public DateTime registrationTime { get; set; }
 
         //用户账户状态信息
-        public int isPost { get; set; } = 1;
-        public int isDelete { get; set; } = 0;
-
+        public int isPost { get; set; }
+        public int isDelete { get; set; } 
+        public int isMember { get; set; }
+        public basicUserInfo(int userID, string userName, string iconURL, string email, DateTime registrationTime, int isPost, int isDelete, int isMember)
+        {
+            this.userID = userID;
+            this.userName = userName;
+            this.iconURL = iconURL;
+            Email = email;
+            this.registrationTime = registrationTime;
+            this.isPost = isPost;
+            this.isDelete = isDelete;
+            this.isMember = isMember;
+        }
     }
 
     public class expandUserInfo
