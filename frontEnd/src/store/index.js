@@ -1,29 +1,42 @@
 //import { l } from 'vite/dist/node/types.d-aGj9QkWt';
-import { createStore } from 'vuex'
-import axios from 'axios';
+import { createStore } from "vuex";
+import axios from "axios";
 
 // 在 store.js 中
 export default createStore({
   state: {
-    role: localStorage.getItem('role') || 'unAuthenticated',
-    username: localStorage.getItem('username') || '',
-    token: localStorage.getItem('token') || '',
-    recipe: localStorage.getItem('recipe') || '',
-    userID: localStorage.getItem('userID') || '',
-    name: localStorage.getItem('name') || '',
-    isPost: localStorage.getItem('isPost') || '',
-    iconUrl: localStorage.getItem('iconUrl') || '',
+    role: localStorage.getItem("role") || "unAuthenticated",
+    username: localStorage.getItem("username") || "",
+    token: localStorage.getItem("token") || "",
+    recipe: localStorage.getItem("recipe") || "",
+    userID: localStorage.getItem("userID") || "",
+    name: localStorage.getItem("name") || "",
+    isPost: localStorage.getItem("isPost") || "",
+    iconUrl: localStorage.getItem("iconUrl") || "",
     // role: 'unAuthenticated',
     // username: '',
     // token: '',
-    categories: ["全部帖子", "健身计划", "饮食营养", "健身打卡", "健身问答", "健身挑战", "设备器材", "健身分享", "活动赛事", "初学指南",],
+    categories: [
+      "全部帖子",
+      "健身计划",
+      "饮食营养",
+      "健身打卡",
+      "健身问答",
+      "健身挑战",
+      "设备器材",
+      "健身分享",
+      "活动赛事",
+      "初学指南",
+    ],
     targetInfomation: {
-      id: '',
-      img: '',
-      name: '',
+      id: "",
+      img: "",
+      name: "",
     },
     //用户列表
     userList: [], //只返回好友的ID，无其他字段，使用其他字段从userListInformation中获取
+    // 存储预约课程的数组
+    bookedCourses: [],
     //用户列表的相关信息
     userListInformation: [
       // {
@@ -103,69 +116,76 @@ export default createStore({
     ],
   },
   mutations: {
+    //添加到预约课程数组中
+    addToBookedCourses(state, course) {
+      console.log("Adding course to cart:", course);
+      state.bookedCourses.push(course);
+    },
     setIsPost(state, isPost) {
       state.isPost = isPost;
-      localStorage.setItem('isPost', isPost);
+      localStorage.setItem("isPost", isPost);
     },
 
     setUserID(state, userID) {
       state.userID = userID;
-      localStorage.setItem('userID', userID);
+      localStorage.setItem("userID", userID);
     },
     setName(state, name) {
       state.name = name;
-      localStorage.setItem('name', name);
+      localStorage.setItem("name", name);
     },
     setRole(state, role) {
       state.role = role;
       // 将数据保存到 LocalStorage
-      localStorage.setItem('role', role);
+      localStorage.setItem("role", role);
     },
     setUsername(state, username) {
       state.username = username;
-      localStorage.setItem('username', username);
+      localStorage.setItem("username", username);
     },
     setIconUrl(state, iconUrl) {
       state.iconUrl = iconUrl;
-      localStorage.setItem('iconUrl', iconUrl);
+      localStorage.setItem("iconUrl", iconUrl);
     },
     setToken(state, token) {
       state.token = token;
-      localStorage.setItem('token', token);
+      localStorage.setItem("token", token);
     },
     setRecipe(state, recipe) {
       state.recipe = recipe;
-      localStorage.setItem('recipe', recipe);
+      localStorage.setItem("recipe", recipe);
     },
     removeRecipe(state, recipe) {
       state.recipe = undefined;
-      localStorage.removeItem('recipe');
+      localStorage.removeItem("recipe");
     },
     setTargetInformation(state, info) {
       state.targetInfomation = info;
-      console.log('targetInfomation:', state.targetInfomation);
+      console.log("targetInfomation:", state.targetInfomation);
     },
     setUserList(state, userList) {
       state.userList = userList;
-      localStorage.setItem('userList', userList);
-      console.log('Updated Friend List:', state.userList);
+      localStorage.setItem("userList", userList);
+      console.log("Updated Friend List:", state.userList);
     },
     setUserListInformation(state, userListInformation) {
       state.userListInformation = userListInformation;
-      localStorage.setItem('userListInformation', userListInformation);
-      console.log('User List Information Updated:', state.userListInformation);
+      localStorage.setItem("userListInformation", userListInformation);
+      console.log("User List Information Updated:", state.userListInformation);
     },
     addMessage(state, message) {
       const targetName = message.targetName;
       const targetId = message.targetId;
-      const target = state.MessageList.find(item => item.targetName === targetName);
+      const target = state.MessageList.find(
+        (item) => item.targetName === targetName
+      );
 
       if (target) {
         target.list.push({
           is_me: message.list.is_me,
           time: message.list.time,
           message: message.list.message,
-          messageType: message.list.messageType
+          messageType: message.list.messageType,
         });
         console.log(message.list.message);
       } else {
@@ -178,28 +198,39 @@ export default createStore({
                 is_me: message.list.is_me,
                 time: message.list.time,
                 message: message.list.message,
-                messageType: message.list.messageType
+                messageType: message.list.messageType,
               },
             ],
           });
         }
       }
-      localStorage.setItem('MessageList', state.MessageList);
-      console.log('Updated Message List:', state.MessageList);
-    }
+      localStorage.setItem("MessageList", state.MessageList);
+      console.log("Updated Message List:", state.MessageList);
+    },
   },
   actions: {
+    // 提交 mutation 到 Vuex store
+    addToCart({ commit }, course) {
+      console.log("Dispatching addToCart action with:", course);
+      try {
+        commit("addToBookedCourses", course);
+      } catch (error) {
+        console.error("Error adding course to cart:", error);
+      }
+    },
     pollIsPost({ commit, state }) {
       setInterval(async () => {
         try {
-          const response = await axios.get(`http://localhost:8080/api/User/GetPersonalProfile?token=${state.token}`);
+          const response = await axios.get(
+            `http://localhost:8080/api/User/GetPersonalProfile?token=${state.token}`
+          );
           const newIsPost = response.data.isPost;
-          console.log("isPost",newIsPost)
+          console.log("isPost", newIsPost);
           if (newIsPost !== state.isPost) {
-            commit('setIsPost', newIsPost);
+            commit("setIsPost", newIsPost);
           }
         } catch (error) {
-          console.error('Error polling isPost status:', error);
+          console.error("Error polling isPost status:", error);
         }
       }, 5000000); // 每5秒检查一次
     },
