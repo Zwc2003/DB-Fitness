@@ -14,7 +14,7 @@
             <b class="bolder">教学课单</b>
           </div>
           <div class="title-right">
-            <b>{{ courseName }}</b>
+            <b class="bolder">{{ courseName }}</b>
             <span class="learning-status">教学中</span>
           </div>
           <div class="icoin-container">
@@ -45,7 +45,7 @@
         <el-icon>
           <CaretRight />
         </el-icon>
-        <b>教学进度</b>
+        <b class="bolder">教学进度</b>
         <div class="course-progress" :style="progressStyle">
           {{ courseProgress }}
         </div>
@@ -54,9 +54,9 @@
         <el-icon>
           <CaretRight />
         </el-icon>
-        <b>课程时间</b>
+        <b class="bolder">课程时间</b>
         <div class="course-time" :style="timeStyle">
-          {{ courseTime }}
+          {{ startTime }} - {{ endTime }}
         </div>
       </div>
     </el-card>
@@ -225,6 +225,8 @@ export default {
           rating: 4,
         },
       ],
+
+      showDialog: false,
     };
   },
 
@@ -238,33 +240,31 @@ export default {
       type: String,
       default: "0节课/0节课",
     },
-    courseTime: {
+    startTime: {
       type: String,
-      default: "0000.00.00-0000.00.00",
+      default: "2022-08-23T14:00:00",
+    },
+    endTime: {
+      type: String,
+      default: "2024-08-23T14:00:00",
     },
   },
 
-  setup(props) {
-    const courseEndTime = new Date("2024-08-23T14:00:00");
-    const showDialog = ref(false);
-
-    const progressStyle = {
-      color: "#337ecc",
-      fontWeight: "bold",
-      marginLeft: "10px",
-    };
-    const timeStyle = {
-      color: "#337ecc",
-      fontWeight: "bold",
-      marginLeft: "10px",
-    };
-
-    return {
-      courseEndTime,
-      showDialog,
-      progressStyle,
-      timeStyle,
-    };
+  computed: {
+    progressStyle() {
+      return {
+        color: "#337ecc",
+        fontWeight: "bold",
+        marginLeft: "10px",
+      };
+    },
+    timeStyle() {
+      return {
+        color: "#337ecc",
+        fontWeight: "bold",
+        marginLeft: "10px",
+      };
+    },
   },
 
   methods: {
@@ -368,29 +368,31 @@ export default {
 }
 
 .title-right {
-  margin-left: 20px; /* 将课程名推向右侧 */
-  font-size: larger; /* 可以根据需要调整课程名的字体大小 */
+  margin-left: 20px;
+  font-size: larger;
 }
 
 .learning-status {
-  padding: 2px 6px; /* 内边距 */
+  padding: 2px 6px;
   background-color: white;
-  color: orange; /* 文本颜色 */
-  font-size: 12px; /* 字体大小 */
-  border: 2px solid orange; /* 边框颜色 */
-  border-radius: 3px; /* 边框圆角 */
+  color: orange;
+  font-size: 12px;
+  border: 2px solid orange;
+  border-radius: 3px;
   margin-left: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .card-firstrow {
+  margin-top: 5px;
+  margin-bottom: 7px;
   display: flex;
-  align-items: center; /* 垂直居中对齐 */
+  align-items: center;
 }
 
 .card-secondrow {
   display: flex;
-  align-items: center; /* 垂直居中对齐 */
+  align-items: center;
 }
 
 .continue-learn {

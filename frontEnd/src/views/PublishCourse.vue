@@ -61,7 +61,8 @@
           :key="index"
           :courseName="teachcourse.name"
           :courseProgress="teachcourse.progress"
-          :courseTime="teachcourse.time"
+          :startTime="teachcourse.startTime"
+          :endTime="teachcourse.endTime"
         />
         <!-- 橙色按钮，带有白色粗加号 -->
         <el-button type="primary" @click="showModal = true" class="plus-button">
@@ -169,17 +170,20 @@ export default {
         {
           name: "普拉提",
           progress: "25节/32节课",
-          time: "2017.05.01-2018.06.05",
+          startTime: "2017.05.01",
+          endTime: "2018.06.05",
         },
         {
           name: "瑜伽",
           progress: "15节课/20节课",
-          time: "2018.01.01-2018.12.01",
+          startTime: "2017.05.01",
+          endTime: "2018.06.05",
         },
         {
           name: "运动",
           progress: "15节课/20节课",
-          time: "2018.01.01-2018.12.01",
+          startTime: "2017.05.01",
+          endTime: "2018.06.05",
         },
       ],
       courseData: [

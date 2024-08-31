@@ -14,7 +14,7 @@
             <b class="bolder">继续学习</b>
           </div>
           <div class="title-right">
-            <b>{{ courseName }}</b>
+            <b class="bolder">{{ courseName }}</b>
             <span class="learning-status">学习中</span>
           </div>
           <div class="icoin-container">
@@ -34,7 +34,7 @@
         <el-icon>
           <CaretRight />
         </el-icon>
-        <b>学习进度</b>
+        <b class="bolder">学习进度</b>
         <div class="course-progress" :style="progressStyle">
           {{ courseProgress }}
         </div>
@@ -43,9 +43,9 @@
         <el-icon>
           <CaretRight />
         </el-icon>
-        <b>有效日期</b>
+        <b class="bolder">有效日期</b>
         <div class="course-time" :style="timeStyle">
-          {{ courseTime }}
+          {{ startTime }} - {{ endTime }}
         </div>
       </div>
     </el-card>
@@ -135,6 +135,11 @@ export default {
         courseDescription:
           "BODYCOMBAT能训练到你的腿部、手臂、背部和肩膀，对核心部位有显著效果。在课程中你能消耗卡路里、提高协调性、敏捷性和速度，感觉自己充满力量。BODYCOMBAT 训练内容进行调整使之符合自身水平和目标。我们的教练将始终提供多重训练强度供你选择。在开始的时候，你可以每周参加1至2节课，很快你就能体会到骁勇精壮的感觉。",
       },
+      showDialog: false,
+      showRateDialog: false,
+      showInputDialog: false,
+      ratingValue: 0,
+      inputText: "",
     };
   },
 
@@ -148,51 +153,37 @@ export default {
       type: String,
       default: "0节课/0节课",
     },
-    courseTime: {
+    startTime: {
       type: String,
-      default: "0000.00.00-0000.00.00",
+      default: "2022-08-23T14:00:00",
+    },
+    endTime: {
+      type: String,
+      default: "2024-08-23T14:00:00",
     },
   },
-
-  setup(props) {
-    const courseEndTime = new Date("2024-08-23T14:00:00");
-    const showDialog = ref(false);
-    const showRateDialog = ref(false);
-    const showInputDialog = ref(false);
-    const ratingValue = ref(0);
-    const inputText = ref("");
-
-    const progressStyle = {
-      color: "#337ecc",
-      fontWeight: "bold",
-      marginLeft: "10px",
-    };
-    const timeStyle = {
-      color: "#337ecc",
-      fontWeight: "bold",
-      marginLeft: "10px",
-    };
-
-    return {
-      courseEndTime,
-      showDialog,
-      showRateDialog,
-      showInputDialog,
-      ratingValue,
-      inputText,
-      progressStyle,
-      timeStyle,
-    };
+  computed: {
+    progressStyle() {
+      return {
+        color: "#337ecc",
+        fontWeight: "bold",
+        marginLeft: "10px",
+      };
+    },
+    timeStyle() {
+      return {
+        color: "#337ecc",
+        fontWeight: "bold",
+        marginLeft: "10px",
+      };
+    },
   },
 
   methods: {
-    handleContinue() {
-      // 点击时执行的操作，例如跳转
-      console.log("继续学习按钮被点击");
-    },
     handleStarClick() {
       const currentTime = new Date();
-      if (currentTime < this.courseEndTime) {
+      const courseEndTime = new Date(this.endTime);
+      if (currentTime < courseEndTime) {
         // 如果课程未结束，显示提示弹窗
         this.showDialog = true;
       } else {
@@ -200,16 +191,18 @@ export default {
         this.showRateDialog = true;
       }
     },
+    //显示评论的框
     handleChatClick() {
       this.showInputDialog = true;
     },
+    //提交评分
     submitRating() {
       // 在此处理评分提交的逻辑，例如发送到后端
       console.log("提交评分:", this.ratingValue);
       this.showRateDialog = false;
     },
+    //提交评论
     submitComment() {
-      // 在此处理评论提交的逻辑，例如发送到后端
       console.log("提交评论:", this.inputText);
       this.showInputDialog = false;
     },
@@ -267,6 +260,7 @@ export default {
   align-items: center;
   height: 10px;
   justify-content: flex-start;
+  width: 500px;
 }
 
 .title-left {
@@ -293,6 +287,8 @@ export default {
 .card-firstrow {
   display: flex;
   align-items: center; /* 垂直居中对齐 */
+  margin-top: 5px;
+  margin-bottom: 7px;
 }
 
 .card-secondrow {

@@ -61,7 +61,8 @@
           :key="index"
           :courseName="usercourse.name"
           :courseProgress="usercourse.progress"
-          :courseTime="usercourse.time"
+          :startTime="usercourse.coursestartTime"
+          :endTime="usercourse.courseendTime"
         />
       </div>
       <div class="course-list">
@@ -126,19 +127,22 @@ export default {
     return {
       usercourses: [
         {
-          name: "普拉",
+          name: "普拉提",
           progress: "25节/32节课",
-          time: "2017.05.01-2018.06.05",
+          coursestartTime: "2017.05.01",
+          courseendTime: "2018.06.05",
         },
         {
           name: "瑜伽",
           progress: "15节课/20节课",
-          time: "2018.01.01-2018.12.01",
+          coursestarTime: "2018.01.01",
+          courseendTime: "2018.12.01",
         },
         {
           name: "运动",
           progress: "15节课/20节课",
-          time: "2018.01.01-2018.12.01",
+          coursestartTime: "2018.01.01",
+          courseendTime: "2024.12.01",
         },
       ],
       courseData: [
