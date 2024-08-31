@@ -15,7 +15,7 @@
       </h3>
       <div v-if="hovered" class="description">
         <p class="coursefeature">
-          <b>{{ courseFeatures }}</b>
+          <b>{{ courseName }}</b>
         </p>
         <p>{{ courseDescription }}</p>
         <button @click="showModal = true">进入课程</button>
@@ -30,12 +30,14 @@
     :courseName="thecourse.courseName"
     :courseStartTime="thecourse.courseStartTime"
     :courseEndTime="thecourse.courseEndTime"
+    :courseGrade="thecourse.courseGrade"
+    :coursePrice="thecourse.coursePrice"
+    :courseDescription="thecourse.courseDescription"
     :classTime="thecourse.classTime"
     :features="thecourse.features"
     :instructorImage="thecourse.instructorImage"
     :instructorName="thecourse.instructorName"
     :instructorHonors="thecourse.instructorHonors"
-    :courseDescription="thecourse.courseDescription"
     :coursePhotoUrl="thecourse.coursePhotoUrl"
     @close="showModal = false"
   />
@@ -62,11 +64,6 @@ export default {
       type: String,
       required: true,
       default: "举重阻尼训练",
-    },
-    courseFeatures: {
-      type: String,
-      required: true,
-      default: "力量训练",
     },
     courseDescription: {
       type: String,
@@ -102,25 +99,46 @@ export default {
       required: true,
       default: 0,
     },
+    instructorName: {
+      type: String,
+      required: true,
+      default: "王教练",
+    },
+    instructorHonors: {
+      type: String,
+      required: true,
+      default: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
+    },
+    instructorImage: {
+      type: String,
+      required: true,
+      default:
+        "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
+    },
+    features: {
+      type: Array,
+      required: true,
+      default: ["感受力量涌现", "助力有氧健身", "训练全身各处"],
+    },
   },
 
   data() {
     return {
       showModal: false,
       thecourse: {
-        isVisible: false,
-        courseName: "肌肉力量训练",
-        courseStartTime: "2022.03.04",
-        courseEndTime: "2023.03.04",
-        classTime: "每周三",
-        features: ["感受力量涌现", "助力有氧健身", "训练全身各处"],
-        instructorImage:
-          "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
-        instructorName: "王教练",
-        instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
-        courseDescription:
-          "BODYCOMBAT能训练到你的腿部、手臂、背部和肩膀，对核心部位有显著效果。在课程中你能消耗卡路里、提高协调性、敏捷性和速度，感觉自己充满力量。BODYCOMBAT 训练内容进行调整使之符合自身水平和目标。我们的教练将始终提供多重训练强度供你选择。在开始的时候，你可以每周参加1至2节课，很快你就能体会到骁勇精壮的感觉。",
         coursePhotoUrl: this.coursePhotoUrl,
+        courseName: this.courseName,
+        courseDescription: this.courseDescription,
+        courseStartTime: this.courseStartTime,
+        courseEndTime: this.courseEndTime,
+        courseGrade: this.courseGrade,
+        coursePrice: this.coursePrice,
+        isVisible: false,
+        classTime: "每周三",
+        features: this.features,
+        instructorImage: this.instructorImage,
+        instructorName: this.instructorName,
+        instructorHonors: this.instructorHonors,
       },
     };
   },
@@ -128,6 +146,36 @@ export default {
   watch: {
     coursePhotoUrl(newVal) {
       this.thecourse.coursePhotoUrl = newVal;
+    },
+    courseName(newVal) {
+      this.thecourse.courseName = newVal;
+    },
+    courseDescription(newVal) {
+      this.thecourse.courseDescription = newVal;
+    },
+    courseStartTime(newVal) {
+      this.thecourse.courseStartTime = newVal;
+    },
+    courseEndTime(newVal) {
+      this.thecourse.courseEndTime = newVal;
+    },
+    courseGrade(newVal) {
+      this.thecourse.courseGrade = newVal;
+    },
+    coursePrice(newVal) {
+      this.thecourse.coursePrice = newVal;
+    },
+    instructorName(newVal) {
+      this.thecourse.instructorName = newVal;
+    },
+    instructorHonors(newVal) {
+      this.thecourse.instructorHonors = newVal;
+    },
+    instructorImage(newVal) {
+      this.thecourse.instructorImage = newVal;
+    },
+    features(newVal) {
+      this.thecourse.features = newVal;
     },
   },
   setup(props, { emit }) {

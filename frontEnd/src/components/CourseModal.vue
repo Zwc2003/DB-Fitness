@@ -7,11 +7,14 @@
       <div class="modal-content">
         <button class="close-button" @click="closeModal">X</button>
         <div class="course-info">
-          <h1 class="course-title">{{ courseTitle }}</h1>
+          <h1 class="course-title">{{ courseName }}</h1>
           <p class="course-details">
-            课程有效时间：{{ startTime }} - {{ endTime }}
+            课程有效时间：<b class="boldd">{{ courseStartTime }}</b> -
+            <b class="boldd">{{ courseEndTime }}</b>
           </p>
-          <p class="course-details">每周上课时间：{{ classTime }}</p>
+          <p class="course-details">
+            每周上课时间：<b class="boldd">{{ classTime }}</b>
+          </p>
           <div class="features">
             <div
               class="feature-item"
@@ -29,31 +32,49 @@
               alt="Instructor"
               class="instructor-image"
             />
-            <h2 class="instructor-name">{{ instructorName }}</h2>
-            <p class="instructor-honors">{{ instructorHonors }}</p>
+            <div class="duiqi">
+              <div class="instructor-info">
+                <h2 class="instructor-name">
+                  <b class="boldd">{{ instructorName }}</b>
+                </h2>
+                <div class="instructor-tag">
+                  <span class="tag">职业教练</span>
+                  <el-icon class="trophy-icon"><GoldMedal /></el-icon>
+                </div>
+              </div>
+              <p class="instructor-honors">{{ instructorHonors }}</p>
+            </div>
           </div>
           <p class="course-description">
-            <b>课程须知</b>：{{ courseDescription }}
+            <b class="boldd">课程须知</b>：{{ courseDescription }}
           </p>
-          <!-- 播放按钮 -->
-          <button class="play-button" @click="showVideoModal = true">
-            播放视频
-          </button>
 
-          <!-- 视频模态框 -->
-          <div v-if="showVideoModal" class="video-modal">
-            <video controls width="100%" height="100%">
-              <source :src="videoUrl" type="video/mp4" />
-              您的浏览器不支持视频播放。
-            </video>
-            <button class="close-button" @click="showVideoModal = false">
-              关闭
-            </button>
-          </div>
+          <p class="nandu" :style="iconContainerStyle">
+            <b class="boldd">课程难度</b>:
+            <el-icon v-if="courseGrade >= 1" style="margin-right: 10px">
+              <Flag />
+            </el-icon>
+            <el-icon v-if="courseGrade >= 2" style="margin-right: 10px">
+              <Flag />
+            </el-icon>
+            <el-icon v-if="courseGrade >= 3" style="margin-right: 10px">
+              <Flag />
+            </el-icon>
+            <el-icon v-if="courseGrade >= 4" style="margin-right: 10px">
+              <Flag />
+            </el-icon>
+            <el-icon v-if="courseGrade >= 5" style="margin-right: 10px">
+              <Flag />
+            </el-icon>
+          </p>
+          <p class="nandu">
+            <b class="boldd">课程费用</b>：{{ coursePrice
+            }}<el-icon class="coinn"><Coin /></el-icon>
+          </p>
         </div>
 
         <div class="yuyue">
-          <el-icon style="font-size: 25px"><ShoppingTrolley /></el-icon>
+          <el-icon style="font-size: 35px"><ShoppingTrolley /></el-icon>
           <button class="book-button" @click="addToCart">加入购物车</button>
         </div>
       </div>
@@ -62,8 +83,6 @@
 </template>
 
 <script>
-import { ref } from "vue";
-
 export default {
   props: {
     isVisible: {
@@ -114,7 +133,7 @@ export default {
       type: String,
       default:
         "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
-    }, // 教练头像图片路径
+    },
     instructorName: {
       type: String,
       default: "王教练",
@@ -128,24 +147,14 @@ export default {
       default:
         "BODYCOMBAT能训练到你的腿部、手臂、背部和肩膀，对核心部位有显著效果。在课程中你能消耗卡路里、提高协调性、敏捷性和速度，感觉自己充满力量。BODYCOMBAT 训练内容进行调整使之符合自身水平和目标。我们的教练将始终提供多重训练强度供你选择。在开始的时候，你可以每周参加1至2节课，很快你就能体会到骁勇精壮的感觉。",
     },
-  },
-
-  setup(props) {
-    // 控制视频模态框显示的变量
-    const showVideoModal = ref(false);
-
-    // 视频URL，替换为你的视频文件路径
-    const videoUrl = "path-to-your-video.mp4";
-
-    const addToCart = () => {
-      // 添加到购物车的逻辑
-    };
-
-    return {
-      showVideoModal,
-      videoUrl,
-      addToCart,
-    };
+    courseGrade: {
+      type: Number,
+      default: 4,
+    },
+    coursePrice: {
+      type: Number,
+      default: 1,
+    },
   },
 
   emits: ["close"],
@@ -155,9 +164,25 @@ export default {
       this.$emit("close");
     },
 
-    playVideo() {
-      // 这里可以添加点击播放按钮时的逻辑
-      console.log("播放视频");
+    async addToCart() {
+      // 创建课程对象
+      const course = {
+        coursePhotoUrl: this.coursePhotoUrl,
+        courseName: this.courseName,
+        courseStartTime: this.courseStartTime,
+        courseEndTime: this.courseEndTime,
+        classTime: this.classTime,
+        features: this.features,
+        instructorImage: this.instructorImage,
+        instructorName: this.instructorName,
+        instructorHonors: this.instructorHonors,
+        courseDescription: this.courseDescription,
+        courseGrade: this.courseGrade,
+        coursePrice: this.coursePrice,
+      };
+
+      // 调用 Vuex action 添加课程到购物车
+      await this.$store.dispatch("addToCart", course);
     },
   },
 
@@ -187,7 +212,7 @@ export default {
         position: "absolute",
         top: 0,
         left: 0,
-        width: "50%", // 左半边覆盖
+        width: "50%",
         height: "100%",
         backgroundImage: `url(${this.coursePhotoUrl})`,
         backgroundSize: "cover",
@@ -199,21 +224,12 @@ export default {
 </script>
 
 <style scoped>
-.video-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.boldd {
+  font-weight: bold;
 }
 
-video {
-  max-width: 90%;
-  max-height: 90%;
+.duiqi {
+  text-align: left;
 }
 
 .close-button {
@@ -265,6 +281,7 @@ video {
 .course-title {
   font-size: 2.5em;
   font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .course-details {
@@ -284,23 +301,26 @@ video {
 
 .parallelogram {
   width: 100px;
-  background-color: #c45656; /* 文字背景色 */
-  color: white; /* 文字颜色 */
-  padding: 10px 20px; /* 文字内边距 */
-  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%); /* 创建平行四边形 */
-  display: inline-block; /* 使平行四边形能够包含在.feature-text span中 */
+  background-color: #c45656;
+  color: white;
+  padding: 10px 20px;
+  clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+  display: inline-block;
+  margin: 18px;
+  margin-bottom: -5px;
+  margin-top: -8px;
 }
 
 .feature-item span {
-  font-size: 1em; /* 特性字体大小 */
-  font-weight: bold; /* 特性字体加粗 */
-  margin-right: 5px; /* 为特性文本添加右边距 */
+  font-size: 1em;
+  font-weight: bold;
+  margin-right: 5px;
 }
 
 .instructor-info {
   display: flex;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 12px;
 }
 
 .instructor-image {
@@ -311,7 +331,53 @@ video {
 }
 
 .instructor-name {
+  margin-left: 2%;
   font-size: 1.4em;
+}
+
+.instructor-info {
+  display: flex;
+  align-items: center;
+}
+
+.instructor-name {
+  margin-right: 10px; /* 调整名字和方框之间的间距 */
+}
+
+.instructor-tag {
+  display: flex;
+  align-items: center;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #ffdd57;
+  border-radius: 4px;
+  margin-right: 8px; /* 调整方框和图标之间的间距 */
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.trophy-icon {
+  font-size: 24px;
+  color: gold;
+  font-weight: bold;
+  stroke-width: 2;
+}
+
+.nandu {
+  margin-top: 20px;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.coinn {
+  margin-left: 5px;
+  font-weight: bold;
+  font-size: 14px;
+  color: gold;
 }
 
 .instructor-honors {
@@ -320,23 +386,21 @@ video {
 }
 
 .course-description {
-  font-size: 1em;
+  font-size: 1rem;
   margin-top: 20px;
-}
-
-.play-button {
-  padding: 10px 20px;
-  background-color: white;
-  color: red;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2em;
-  margin-top: 20px;
+  text-align: left;
 }
 
 .yuyue {
   font-size: 1.2rem;
   margin-left: 300px;
   margin-bottom: 100px;
+  display: flex;
+  align-items: center; /* 水平对齐图标和按钮 */
+}
+
+.book-button {
+  margin-left: 10px;
+  font-size: 20px;
 }
 </style>

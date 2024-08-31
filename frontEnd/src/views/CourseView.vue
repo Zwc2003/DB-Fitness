@@ -1,42 +1,6 @@
-{ id: 1, title: '爆发力量训练',
-description:'专注于加强腹部、背部和臀部肌肉，提高身体爆发力', imageUrl:
-'/images/activity1.jpg', time: '2024-06-15 10:00', location: '健身房A', teacher:
-{ name: '朴男', imageUrl: '/images/pn.jpg' }, tagText: 'L2初级进阶', isSignedUp:
-false }, { id: 2, title: '下肢力量训练',
-description:'增强大腿、臀部和小腿肌肉，提高爆发力、耐力和运动表现', imageUrl:
-'/images/activity2.jpg', time: '2024-06-16 15:00', location: '健身房B', teacher:
-{ name: '鹿晨辉', imageUrl: '/images/l.jpg' }, tagText: 'L1入门级别',
-isSignedUp: false }, { id: 3, title:'马甲线塑造虐腹训练', description:
-'强化核心，打造腹部肌肉轮廓', imageUrl: '/images/activity3.jpg', time:
-'2024-06-20 18:00', location: '瑜伽房', teacher: { name: '帕梅拉', imageUrl:
-'/images/p.jpg' }, tagText: 'L4高级专业', isSignedUp: false }, { id: 4,
-title:'紧致臀腿线条进阶训练', description: '瑜伽站立稳定类体式，塑造臀腿线条',
-imageUrl: '/images/activity4.jpg', time: '2024-06-25 14:00', location: '瑜伽房',
-teacher: { name: '帕梅拉', imageUrl: '/images/p.jpg' }, tagText: 'L2初级进阶',
-isSignedUp: false } { image:
-"https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescription:
-"适合希望迅速实现瘦身、紧致和健美效果的人士。
-通过重复多次举起轻量级到中量级的重量", }, { image:
-"https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescription:
-"适合希望迅速实现瘦身、紧致和健美效果的人士。
-通过重复多次举起轻量级到中量级的重量", }, { image:
-"https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescription:
-"适合希望迅速实现瘦身、紧致和健美效果的人士。
-通过重复多次举起轻量级到中量级的重量", }, { image:
-"https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescription:
-"适合希望迅速实现瘦身、紧致和健美效果的人士。
-通过重复多次举起轻量级到中量级的重量", },
-
 <template>
   <NavigationBar />
   <div class="trans">
-    <el-button @click="toggleRole">
-      {{ userRole }}
-    </el-button>
     <router-link v-if="userRole === '普通用户'" to="/userhome">
       <el-button type="primary">我的主页</el-button>
     </router-link>
@@ -62,7 +26,7 @@ courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescript
               @click="selectOption(option.key)"
               :class="{ active: selectedOption === option.key }"
             >
-              <b>{{ option.label }}</b>
+              <b class="boldd">{{ option.label }}</b>
               <div
                 v-if="
                   hoveredOption === option.key || selectedOption === option.key
@@ -71,10 +35,7 @@ courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescript
               ></div>
             </span>
           </div>
-          <div v-if="showInput" class="input-box">
-            <input v-model="inputValue" placeholder="请输入内容" />
-            <button @click="submitInput">提交</button>
-          </div>
+
           <div class="red-box" @click="showRecommendation">
             想知道什么课程适合我
           </div>
@@ -95,6 +56,10 @@ courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescript
         :coursePrice="course.coursePrice"
         :courseFeatures="course.courseFeatures"
         :courseDescription="course.courseDescription"
+        :instructorName="course.instructorName"
+        :instructorHonors="course.instructorHonors"
+        :instructorImage="course.instructorImage"
+        :features="course.features"
         :width="300"
         :height="400"
       />
@@ -127,14 +92,11 @@ export default {
       dialogMessage: "",
       hoveredOption: null,
       selectedOption: null,
-      showInput: false, //弹窗
-      inputValue: "", //用户输入的筛选的特征
       filterOptions: [
-        //筛选课程的标签
-        { key: "all", label: "全部课程" },
-        { key: "fitness", label: "课程关键词" },
-        { key: "price", label: "课程价格" },
-        { key: "category", label: "课程类别" },
+        { key: "全部", label: "全部课程" },
+        { key: "塑身", label: "塑身课程" },
+        { key: "高强度", label: "高强度间歇课程" },
+        { key: "青少年", label: "青少年趣味课程" },
       ],
     };
   },
@@ -171,57 +133,103 @@ export default {
       }
       this.isDialogVisible = true;
     },
+
+    //大厅获取课程API
+    async fetchCourses() {
+      try {
+        const response = await fetch("/api/Course/GetAllCourse", {
+          method: "GET",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch courses");
+        }
+
+        const coursesData = await response.json();
+
+        this.courses = coursesData.map((course) => ({
+          coursePhotoUrl: course.coursePhotoUrl || "",
+          courseName: course.courseName || "Unnamed Course",
+          courseDescription:
+            course.courseDescription || "No description available",
+          courseStartTime: course.courseStartTime || "",
+          courseEndTime: course.courseEndTime || "",
+          courseGrade: course.courseGrade || 0,
+          coursePrice: course.coursePrice || 0,
+          instructorName: course.instructorName || "Unknown Instructor",
+          instructorHonors: course.instructorHonors || "No honors available",
+          instructorImage: course.instructorImage || "",
+          features: course.features || [],
+        }));
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    },
   },
   mounted() {
+    this.fetchCourses();
     // 假设这是从后端获取的课程数据
     (this.courses = [
       {
         coursePhotoUrl:
           "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
         courseName: "举重阻尼训练",
-        courseFeatures: "力量训练",
         courseDescription:
-          "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-        courseStartTime: "",
-        courseEndTime: "",
-        courseGrade: "",
-        coursePrice: "",
+          "举重阻尼训练是一种结合了力量训练与控制力训练的高效健身课程。提高肌肉力量和爆发力，增强肌肉控制和稳定性，本课程适合各种健身水平的人士，无论是初学者还是经验丰富的运动员，都可以在教练的指导下找到适合自己的训练强度。",
+        courseStartTime: "2022-08-08",
+        courseEndTime: "2024-08-08",
+        courseGrade: "4",
+        coursePrice: "50",
+        instructorName: "朴男",
+        instructorHonors:
+          "男Krisun，极限运动员，世界纪录保持者，抖音创作者，其抖音号“朴男Krisun”，拥有粉丝169.3万",
+        instructorImage: "/images/pn.jpg",
+        features: ["感受力量涌现", "增强肌肉控制", "训练全身各处"],
       },
       {
         coursePhotoUrl:
           "https://www.lesmills.com.cn/uploads/20211207/d5d8d0860359243eee20bc507bf2c231.jpg",
         courseName: "平衡与专注、持久与柔软",
-        courseFeatures: "力量训练",
         courseDescription:
-          "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-        courseStartTime: "",
-        courseEndTime: "",
-        courseGrade: "",
-        coursePrice: "",
+          "持久与柔软瑜伽课程旨在帮助学员通过瑜伽的练习，提升身心的平衡，增强专注力，同时提高身体的持久力和柔软度。本课程适合所有级别的瑜伽爱好者，无论是初学者还是有经验的练习者，都可以在这个课程中找到适合自己的挑战和放松",
+        courseStartTime: "2022-08-08",
+        courseEndTime: "2024-08-09",
+        courseGrade: "2",
+        coursePrice: "10",
+        instructorName: "帕梅拉",
+        instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
+        instructorImage: "/images/p.jpg",
+        features: ["提升身心平衡", "助力有氧健身", "维护心理健康"],
       },
       {
         coursePhotoUrl:
           "https://www.lesmills.com.cn/uploads/20211207/30c00cdf6752eeda8356ecd01893dabd.jpg",
         courseName: "30到45分钟核心训练",
-        courseFeatures: "力量训练",
         courseDescription:
-          "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-        courseStartTime: "",
-        courseEndTime: "",
-        courseGrade: "",
-        coursePrice: "",
+          "核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。这门30到45分钟的核心训练课程专为忙碌的现代人设计，旨在通过高强度、集中的训练，快速有效地加强你的核心力量和稳定性。",
+        courseStartTime: "2022-08-08",
+        courseEndTime: "2024-08-09",
+        courseGrade: "3",
+        coursePrice: "30",
+        instructorName: "鹿晨辉",
+        instructorHonors: "鹿晨辉，国家级健美一级裁判和国家职业健身培训师。",
+        instructorImage: "/images/l.jpg",
+        features: ["感受力量涌现", "增强肌肉控制", "减少受伤风险"],
       },
       {
         coursePhotoUrl:
           "https://www.lesmills.com.cn/uploads/20211207/e4466eb6aace56fdaff24fc4c3c318af.jpg",
         courseName: "瘦身、紧致、有型",
-        courseFeatures: "力量训练",
         courseDescription:
-          "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-        courseStartTime: "",
-        courseEndTime: "",
-        courseGrade: "",
-        coursePrice: "",
+          "这门课程专为追求健康、紧致身材的学员设计。通过结合有氧运动、力量训练和功能性练习，本课程旨在帮助学员减少体脂、塑造肌肉线条，同时提升整体的身体力量和灵活性，让身体更加有型。",
+        courseStartTime: "2022-08-08",
+        courseEndTime: "2024-08-09",
+        courseGrade: "2",
+        coursePrice: "20",
+        instructorName: "帕梅拉",
+        instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
+        instructorImage: "/images/p.jpg",
+        features: ["增强心肺功能", "助力有氧健身", "塑造紧致线条"],
       },
     ]),
       (this.filteredCourses = this.courses); // 默认展示所有课程
@@ -230,6 +238,9 @@ export default {
 </script>
 
 <style scoped>
+.boldd {
+  font-weight: bolder;
+}
 .trans {
   position: absolute;
   top: 13%;
@@ -252,7 +263,6 @@ export default {
   background-image: url("https://www.lesmills.com.cn/uploads/20230316/f3e86ab4e56683a1481b0c0b4562d799.png");
   background-size: cover;
   background-position: center;
-  margin-left: -95px;
   margin-top: 30px;
 }
 

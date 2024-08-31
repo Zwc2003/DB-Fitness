@@ -52,8 +52,6 @@
 
 <script>
 import { ref, computed } from "vue";
-import { ElIcon } from "element-plus";
-import { ShoppingTrolley, Right } from "@element-plus/icons-vue";
 
 export default {
   props: {
