@@ -61,8 +61,8 @@
           :key="index"
           :courseName="usercourse.name"
           :courseProgress="usercourse.progress"
-          :startTime="usercourse.coursestartTime"
-          :endTime="usercourse.courseendTime"
+          :startTime="usercourse.startTime"
+          :endTime="usercourse.endTime"
         />
       </div>
       <div class="course-list">
@@ -129,20 +129,20 @@ export default {
         {
           name: "普拉提",
           progress: "25节/32节课",
-          coursestartTime: "2017.05.01",
-          courseendTime: "2018.06.05",
+          startTime: "2017.05.01",
+          endTime: "2018.06.05",
         },
         {
           name: "瑜伽",
           progress: "15节课/20节课",
-          coursestarTime: "2018.01.01",
-          courseendTime: "2018.12.01",
+          startTime: "2018.01.01",
+          endTime: "2018.12.01",
         },
         {
           name: "运动",
           progress: "15节课/20节课",
-          coursestartTime: "2018.01.01",
-          courseendTime: "2024.12.01",
+          startTime: "2018.01.01",
+          endTime: "2024.12.01",
         },
       ],
       courseData: [
@@ -430,7 +430,7 @@ export default {
 
 .el-page-header {
   width: 1300px;
-  margin-top: -380px;
+  margin-top: -380%;
   margin-right: -1200px;
 }
 

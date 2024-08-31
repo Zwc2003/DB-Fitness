@@ -1,20 +1,35 @@
-const activities = ref([ { id: 1, title: '爆发力量训练', description:
-'专注于加强腹部、背部和臀部肌肉，提高身体爆发力', imageUrl:
+{ id: 1, title: '爆发力量训练',
+description:'专注于加强腹部、背部和臀部肌肉，提高身体爆发力', imageUrl:
 '/images/activity1.jpg', time: '2024-06-15 10:00', location: '健身房A', teacher:
 { name: '朴男', imageUrl: '/images/pn.jpg' }, tagText: 'L2初级进阶', isSignedUp:
-false // 初始报名状态为未报名 }, { id: 2, title: '下肢力量训练', description:
-'增强大腿、臀部和小腿肌肉，提高爆发力、耐力和运动表现', imageUrl:
+false }, { id: 2, title: '下肢力量训练',
+description:'增强大腿、臀部和小腿肌肉，提高爆发力、耐力和运动表现', imageUrl:
 '/images/activity2.jpg', time: '2024-06-16 15:00', location: '健身房B', teacher:
 { name: '鹿晨辉', imageUrl: '/images/l.jpg' }, tagText: 'L1入门级别',
-isSignedUp: false // 初始报名状态为未报名 }, { id: 3, title:
-'马甲线塑造虐腹训练', description: '强化核心，打造腹部肌肉轮廓', imageUrl:
-'/images/activity3.jpg', time: '2024-06-20 18:00', location: '瑜伽房', teacher:
-{ name: '帕梅拉', imageUrl: '/images/p.jpg' }, tagText: 'L4高级专业',
-isSignedUp: false // 初始报名状态为未报名 }, { id: 4, title:
-'紧致臀腿线条进阶训练', description: '瑜伽站立稳定类体式，塑造臀腿线条',
+isSignedUp: false }, { id: 3, title:'马甲线塑造虐腹训练', description:
+'强化核心，打造腹部肌肉轮廓', imageUrl: '/images/activity3.jpg', time:
+'2024-06-20 18:00', location: '瑜伽房', teacher: { name: '帕梅拉', imageUrl:
+'/images/p.jpg' }, tagText: 'L4高级专业', isSignedUp: false }, { id: 4,
+title:'紧致臀腿线条进阶训练', description: '瑜伽站立稳定类体式，塑造臀腿线条',
 imageUrl: '/images/activity4.jpg', time: '2024-06-25 14:00', location: '瑜伽房',
 teacher: { name: '帕梅拉', imageUrl: '/images/p.jpg' }, tagText: 'L2初级进阶',
-isSignedUp: false // 初始报名状态为未报名 }
+isSignedUp: false } { image:
+"https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
+courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescription:
+"适合希望迅速实现瘦身、紧致和健美效果的人士。
+通过重复多次举起轻量级到中量级的重量", }, { image:
+"https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
+courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescription:
+"适合希望迅速实现瘦身、紧致和健美效果的人士。
+通过重复多次举起轻量级到中量级的重量", }, { image:
+"https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
+courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescription:
+"适合希望迅速实现瘦身、紧致和健美效果的人士。
+通过重复多次举起轻量级到中量级的重量", }, { image:
+"https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
+courseName: "举重阻尼训练", courseFeatures: "力量训练", courseDescription:
+"适合希望迅速实现瘦身、紧致和健美效果的人士。
+通过重复多次举起轻量级到中量级的重量", },
 
 <template>
   <NavigationBar />
@@ -72,8 +87,12 @@ isSignedUp: false // 初始报名状态为未报名 }
       <CourseHome
         v-for="(course, index) in courses"
         :key="index"
-        :image="course.image"
+        :coursePhotoUrl="course.coursePhotoUrl"
         :courseName="course.courseName"
+        :courseStartTime="course.courseStartTime"
+        :courseEndTime="course.courseEndTime"
+        :courseGrade="course.courseGrade"
+        :coursePrice="course.coursePrice"
         :courseFeatures="course.courseFeatures"
         :courseDescription="course.courseDescription"
         :width="300"
@@ -103,40 +122,7 @@ export default {
   data() {
     return {
       userRole: "教练",
-      courses: [
-        {
-          image:
-            "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-          courseName: "举重阻尼训练",
-          courseFeatures: "力量训练",
-          courseDescription:
-            "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-        },
-        {
-          image:
-            "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-          courseName: "举重阻尼训练",
-          courseFeatures: "力量训练",
-          courseDescription:
-            "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-        },
-        {
-          image:
-            "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-          courseName: "举重阻尼训练",
-          courseFeatures: "力量训练",
-          courseDescription:
-            "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-        },
-        {
-          image:
-            "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-          courseName: "举重阻尼训练",
-          courseFeatures: "力量训练",
-          courseDescription:
-            "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-        },
-      ],
+      courses: [],
       isDialogVisible: false,
       dialogMessage: "",
       hoveredOption: null,
@@ -190,36 +176,52 @@ export default {
     // 假设这是从后端获取的课程数据
     (this.courses = [
       {
-        image:
+        coursePhotoUrl:
           "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
         courseName: "举重阻尼训练",
         courseFeatures: "力量训练",
         courseDescription:
           "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
+        courseStartTime: "",
+        courseEndTime: "",
+        courseGrade: "",
+        coursePrice: "",
       },
       {
-        image:
+        coursePhotoUrl:
           "https://www.lesmills.com.cn/uploads/20211207/d5d8d0860359243eee20bc507bf2c231.jpg",
         courseName: "平衡与专注、持久与柔软",
         courseFeatures: "力量训练",
         courseDescription:
           "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
+        courseStartTime: "",
+        courseEndTime: "",
+        courseGrade: "",
+        coursePrice: "",
       },
       {
-        image:
+        coursePhotoUrl:
           "https://www.lesmills.com.cn/uploads/20211207/30c00cdf6752eeda8356ecd01893dabd.jpg",
         courseName: "30到45分钟核心训练",
         courseFeatures: "力量训练",
         courseDescription:
           "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
+        courseStartTime: "",
+        courseEndTime: "",
+        courseGrade: "",
+        coursePrice: "",
       },
       {
-        image:
+        coursePhotoUrl:
           "https://www.lesmills.com.cn/uploads/20211207/e4466eb6aace56fdaff24fc4c3c318af.jpg",
         courseName: "瘦身、紧致、有型",
         courseFeatures: "力量训练",
         courseDescription:
           "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
+        courseStartTime: "",
+        courseEndTime: "",
+        courseGrade: "",
+        coursePrice: "",
       },
     ]),
       (this.filteredCourses = this.courses); // 默认展示所有课程
