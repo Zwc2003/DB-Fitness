@@ -1,6 +1,6 @@
 <template>
     <div class="forum-bg">
-        <el-backtop class="backtop-button"/>
+        <el-backtop class="backtop-button" />
         <div class="forum-container">
             <!-- 帖子卡片 -->
             <el-card class="card">
@@ -87,7 +87,7 @@
                             <span class="category-tag">{{ post.postCategory }}</span>
                         </h3>
                         <!-- 图片展示 -->
-                        <div v-if="post.imgUrl!=`null`" class="post-image">
+                        <div v-if="post.imgUrl != `null`" class="post-image">
                             <img :src="post.imgUrl" alt="Post Image" class="image" />
                         </div>
                         <p class="post-snippet">{{ truncatedContent(post.postContent) }}</p>
@@ -147,6 +147,7 @@ import { ElNotification } from 'element-plus';
 import { IconCalendar, IconTrophy, IconArrowRight, IconFire, IconHome } from '@arco-design/web-vue/es/icon';
 import { postMixin } from '../mixins/postMixin.js';
 import { LikeOutlined, MessageOutlined, ShareAltOutlined } from '@ant-design/icons-vue';
+import store from '../store/index.js';
 
 
 export default {
@@ -196,6 +197,8 @@ export default {
     },
     created() {
         this.fetchAllPosts();
+        store.dispatch('pollIsPost');  // 开启轮询，更新发帖权限
+
     },
     methods: {
         scrollRight() {
@@ -221,7 +224,8 @@ export default {
         getAllPosts(token) {
             return axios.get(`http://localhost:8080/api/Post/GetAllPost?token=${token}`)
                 .then(response => {
-                    this.allPosts = response.data;
+                    // 按时间由近及远排序
+                    this.allPosts = response.data.sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
                     this.filteredPosts = this.allPosts;
                     this.updateHotPosts();
                     return response;
@@ -236,6 +240,8 @@ export default {
                 });
         },
 
+
+
         filterByCategory(category) {
             this.selectedCategory = category;
             if (category === "全部帖子") {
@@ -248,7 +254,7 @@ export default {
         addPost() {
 
             // 检查用户是否被禁言
-            if (this.$store.state.isPost === 'false') {
+            if (this.$store.state.isPost === 0) {
                 ElNotification({
                     title: '警告',
                     message: '您已被禁言，无法发帖。',

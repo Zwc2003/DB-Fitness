@@ -17,20 +17,20 @@ namespace Fitness.Models
         {
             _logger = logger;
         }
-        public async Task SendMessageToFriend(Message message)
+        public async Task SendMessage(Message message)
         {
             try
             {
-                var receiverId = message.receiverID.ToString();
-                await Clients.User(receiverId).SendAsync("ReceiveMessage", message);
+                Console.WriteLine(message);
+                await Clients.All.SendAsync("ReceiveMessage", message);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error sending message to friend");
                 throw; // 抛出异常以确保客户端知道有问题
             }
-            /*            MessageBLL messageBLL = new MessageBLL();
-                        messageBLL.InsertMessage(message);*/
+            /*  MessageBLL messageBLL = new MessageBLL();
+                messageBLL.InsertMessage(message);*/
         }
 
     }

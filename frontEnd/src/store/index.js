@@ -233,7 +233,7 @@ export default createStore({
         } catch (error) {
           console.error("Error polling isPost status:", error);
         }
-      }, 5000000); // 每5秒检查一次
+      }, 3000); // 每5秒检查一次
     },
   },
   modules: {

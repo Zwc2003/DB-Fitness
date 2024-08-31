@@ -46,7 +46,7 @@
                     </div>
                 </el-header>
                 <el-container>
-                    <el-aside width="200px" :style="{ height: 'calc(100vh - 50px)'}">
+                    <el-aside width="200px" :style="{ height: 'calc(100vh - 50px)' }">
                         <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen"
                             @close="handleClose">
                             <el-menu-item index="1" @click="active = 1">
@@ -80,8 +80,14 @@
                         <div v-if="active == 1">
                             <el-input v-model="searchQuery" placeholder="搜索用户ID或用户名" clearable class="search-box" />
                             <el-table :data="filteredUsers" style="width: 100%">
+                                <el-table-column prop="email" label="邮箱地址"></el-table-column>
                                 <el-table-column prop="userName" label="用户名"></el-table-column>
                                 <el-table-column prop="userID" label="用户ID"></el-table-column>
+                                <el-table-column prop="registrationTime" label="注册时间">
+                                    <template #default="{ row }">
+                                        {{ formatDate(row.registrationTime) }}
+                                    </template>
+                                </el-table-column>
                                 <el-table-column prop="isMember" label="是否会员">
                                     <template #default="{ row }">
                                         {{ row.isMember === 1 ? '是' : '否' }}
@@ -96,14 +102,18 @@
                                 </el-table-column>
                                 <el-table-column fixed="right" label="操作" width="250">
                                     <template #default="{ row }">
-                                        <el-button size="small" :type="row.status === '已禁言' ? 'primary' : 'danger'"
-                                            @click="row.status === '正常' ? restrictUser(row) : cancelBanUser(row)">
-                                            {{ row.status === '已禁言' ? '取消禁言' : '限制言论' }}
+                                        <el-button size="small" :type="row.status === '禁言' ? 'primary' : 'danger'"
+                                            @click="row.status === '正常' ? restrictUser(row) : cancelBanUser(row)"
+                                            :disabled="row.status === '删除'">
+                                            {{ row.status === '禁言' ? '取消禁言' : '限制言论' }}
                                         </el-button>
                                         <el-button size="small" type="warning" @click="deactivateUser(row)"
-                                            :disabled="row.status === '已删除'">删除用户</el-button>
+                                            :disabled="row.status === '删除'">
+                                            删除用户
+                                        </el-button>
                                     </template>
                                 </el-table-column>
+
                             </el-table>
                         </div>
 
@@ -114,9 +124,8 @@
                                 <el-table-column prop="userName" label="作者"></el-table-column>
                                 <el-table-column prop="postCategory" label="类型">
                                     <template #default="{ row }">
-                                        <el-tag :type="row.postID ? 'info' : 'warning'">{{
-                                            row.postID
-                                            ? '帖子' : '评论' }}</el-tag>
+                                        <el-tag :type="row.postID ? 'info' : 'warning'">{{ row.postID ? '帖子' : '评论'
+                                            }}</el-tag>
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="postTime" label="发布时间">
@@ -133,9 +142,9 @@
                                 <el-table-column fixed="right" label="操作" width="250">
                                     <template #default="{ row }">
                                         <el-button size="small" type="danger" @click="deleteContent(row)"
-                                            :disabled="row.status === '已删除'">删除</el-button>
+                                            :disabled="row.status === '删除'">删除</el-button>
                                         <el-button size="small" @click="navigateToPost(row)"
-                                            :disabled="row.status === '已删除'">查看评论</el-button>
+                                            :disabled="row.status === '删除'">查看评论</el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -203,8 +212,17 @@ async function fetchUsers() {
         const token = localStorage.getItem('token');
         const response = await axios.get(`http://localhost:8080/api/User/GetAllUser?token=${token}`);
         users.value = response.data;
+
+        users.value.sort((a, b) => new Date(a.registrationTime) - new Date(b.registrationTime));
+
         users.value.forEach(user => {
-            user.status = '正常';
+            if (user.isDelete === 1) {
+                user.status = '删除';
+            } else if (user.isPost === 0) {
+                user.status = '禁言';
+            } else {
+                user.status = '正常';
+            }
         });
     } catch (error) {
         ElNotification({
@@ -216,11 +234,16 @@ async function fetchUsers() {
 }
 
 // 获取帖子信息
+// 获取帖子信息
 async function fetchPosts() {
     try {
         const token = localStorage.getItem('token');
         const response = await axios.get(`http://localhost:8080/api/Post/GetAllPost?token=${token}`);
         contentList.value = response.data;
+
+        // 按照发布时间从小到大排序
+        contentList.value.sort((a, b) => new Date(a.postTime) - new Date(b.postTime));
+
         contentList.value.forEach(post => {
             post.status = '正常';
         });
@@ -232,6 +255,7 @@ async function fetchPosts() {
         });
     }
 }
+
 
 // 页面加载时获取数据
 onMounted(() => {
@@ -254,16 +278,16 @@ function formatDate(date) {
 // 获取标签样式
 function getTagStyle(row) {
     if (row.status === '正常') return { backgroundColor: 'green', color: 'white' };
-    if (row.status === '已禁言') return { backgroundColor: 'yellow', color: 'black' };
-    if (row.status === '已删除') return { backgroundColor: 'red', color: 'white' };
+    if (row.status === '禁言') return { backgroundColor: 'yellow', color: 'black' };
+    if (row.status === '删除') return { backgroundColor: 'red', color: 'white' };
     return {};
 }
 
 // 获取标签类型
 function getTagType(row) {
     if (row.status === '正常') return 'success';
-    if (row.status === '已禁言') return 'warning';
-    if (row.status === '已删除') return 'danger';
+    if (row.status === '禁言') return 'warning';
+    if (row.status === '删除') return 'danger';
     return 'info';
 }
 
@@ -277,7 +301,7 @@ async function restrictUser(user) {
             }
         });
         if (response.data === '禁言成功') {
-            user.status = '已禁言';
+            user.status = '禁言';
             ElNotification({
                 title: '成功',
                 message: `用户 ${user.userName} 已成功禁言。`,
@@ -327,7 +351,7 @@ async function deactivateUser(user) {
             }
         });
         if (response.data === '删除成功') {
-            user.status = '已删除';
+            user.status = '删除';
             ElNotification({
                 title: '成功',
                 message: `用户 ${user.userName} 已成功删除。`,
@@ -356,7 +380,7 @@ async function deleteContent(content) {
                 }
             });
             if (response.data.message === '删除帖子成功') {
-                content.status = '已删除';
+                content.status = '删除';
                 ElNotification({
                     title: '成功',
                     message: `帖子 ${content.postTitle} 已成功删除。`,
@@ -371,7 +395,7 @@ async function deleteContent(content) {
                 }
             })
             if (response.data === '评论删除成功') {
-                content.status = '已删除';
+                content.status = '删除';
                 ElNotification({
                     title: '成功',
                     message: '评论已成功删除。',

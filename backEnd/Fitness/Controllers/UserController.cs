@@ -67,7 +67,7 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<expandUserInfo>> GetAllUser(string token)
+        public ActionResult<List<basicUserInfo>> GetAllUser(string token)
         {
             return _userBLL.GetAllUser(token);
         }

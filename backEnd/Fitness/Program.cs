@@ -11,9 +11,7 @@ using Fitness.DAL;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -27,23 +25,31 @@ builder.Services.AddSingleton<ICourseBLL, CourseBLL>();
 builder.Services.AddSingleton<IPostBLL, PostBLL>();
 builder.Services.AddSingleton<ICommentBLL, CommentBLL>();
 builder.Services.AddSingleton<IMessageBLL, MessageBLL>();
-builder.Services.AddSingleton<IVigorTokenBLL, VigorTokenBLL>();
+builder.Services.AddSingleton<IVigorTokenBLL, VigorTokenBLL>(); // 这行是重复的，可能需要去掉
 
-//添加 IMemoryCache 服务
+// 添加 IMemoryCache 服务
 builder.Services.AddMemoryCache();
-//注册 SignalR 服务
-builder.Services.AddSignalR();
-//注册 VerificationHelper 服务
+
+// 注册 SignalR 服务
+builder.Services.AddSignalR().AddJsonProtocol(options =>
+{
+    //加配置可以传给客户端对象，否则只能传字符串
+    options.PayloadSerializerOptions.PropertyNamingPolicy = null;
+});
+;
+
+// 注册 VerificationHelper 服务
 builder.Services.AddSingleton<VerificationHelper>();
-//配置 CORS（跨域资源共享）:因为 SignalR 需要支持跨域请求。
+
+// 配置 CORS（跨域资源共享）: 因为 SignalR 需要支持跨域请求。
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
+    options.AddDefaultPolicy(policy =>
     {
-        builder.WithOrigins("http://localhost:5173")
-               .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials(); // 必须允许凭据来支持SignalR
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // 必须允许凭据来支持SignalR
     });
 });
 
@@ -52,16 +58,6 @@ builder.Services.AddHostedService<DatabasePingService>();
 
 var app = builder.Build();
 
-// 使用 SignalR 中间件
-app.UseRouting();
-// 使用 CORS 中间件
-app.UseCors();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapHub<ChatHub>("/chathub");//这一行代码将 ChatHub 类映射到 /chathub 路径。
-    //当客户端连接到 http://yourdomain/chatHub 时，它会与 SignalR Hub 建立连接。
-});
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -69,16 +65,35 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseAuthorization();
-
-//服务端启用后端跨域请求协议
-app.UseCors(builder =>
+var webSocketOptions = new WebSocketOptions()
 {
-    builder.AllowAnyHeader()
-           .AllowAnyOrigin()
-           .AllowAnyMethod();
+    KeepAliveInterval = TimeSpan.FromSeconds(120),
+};
+
+// 允许的域名
+/*webSocketOptions.AllowedOrigins.Add("https://app.example.com");
+webSocketOptions.AllowedOrigins.Add("https://www.app.example.com");
+*/
+// 开发环境的域名
+webSocketOptions.AllowedOrigins.Add("http://localhost:5173");
+
+app.UseWebSockets(webSocketOptions);
+
+// 配置中间件顺序
+app.UseRouting();      // 先定义路由
+
+app.UseCors();         // 使用全局CORS策略
+
+// 如果有身份验证，应该在这里添加 app.UseAuthentication();
+
+app.UseAuthorization(); // 授权中间件
+
+// 配置 SignalR 路由
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("/chathub"); // 映射 SignalR hub 到指定路径
+    endpoints.MapControllers();            // 映射控制器
 });
 
-app.MapControllers();
-
+// 运行应用
 app.Run();

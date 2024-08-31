@@ -187,7 +187,7 @@ namespace Fitness.BLL
                 else return result;
             }
 
-            public List<expandUserInfo> GetAllUser(string token)
+            public List<basicUserInfo> GetAllUser(string token)
             {
                 int st;
                 TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
