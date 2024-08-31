@@ -1,6 +1,6 @@
 <template>
     <div class="forum-bg">
-        <el-backtop class="backtop-button"/>
+        <el-backtop class="backtop-button" />
         <div class="forum-container">
             <!-- 帖子卡片 -->
             <el-card class="card">
@@ -87,7 +87,7 @@
                             <span class="category-tag">{{ post.postCategory }}</span>
                         </h3>
                         <!-- 图片展示 -->
-                        <div v-if="post.imgUrl!=`null`" class="post-image">
+                        <div v-if="post.imgUrl != `null`" class="post-image">
                             <img :src="post.imgUrl" alt="Post Image" class="image" />
                         </div>
                         <p class="post-snippet">{{ truncatedContent(post.postContent) }}</p>
@@ -221,7 +221,8 @@ export default {
         getAllPosts(token) {
             return axios.get(`http://localhost:8080/api/Post/GetAllPost?token=${token}`)
                 .then(response => {
-                    this.allPosts = response.data;
+                    // 按时间由近及远排序
+                    this.allPosts = response.data.sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
                     this.filteredPosts = this.allPosts;
                     this.updateHotPosts();
                     return response;
@@ -235,6 +236,7 @@ export default {
                     throw error;
                 });
         },
+
 
         filterByCategory(category) {
             this.selectedCategory = category;
