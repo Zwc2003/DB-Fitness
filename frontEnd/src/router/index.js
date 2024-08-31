@@ -1,31 +1,32 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
 import SignUpView from "../views/SignUpView.vue";
-import CourseView from '../views/CourseView.vue';
+import CourseView from "../views/CourseView.vue";
 import TweetsView from "../views/TweetsView.vue";
 import CameraView from "../views/CameraView.vue";
 // import FitnessChart from './components/dataVis.vue'
 import EquipmentGuide from "../views/EquipmentGuideView.vue";
-import EquipmentDetails from '../components/EquipmentDetails.vue';
-import adminEquipment from "../components/adminEquipment.vue"
-import AddDiet from "../components/AddDiet.vue"
-import FitnessGuide from "../views/FitnessGuideView.vue"
-import FitnessDetail from "../components/FitnessDetail.vue"
-import AdminEquipmentView from '../views/AdminEquipmentView.vue'
-import MealRecordView from '../views/MealRecordView.vue'
-import MealPlannerView from '../views/MealPlannerView.vue'
-import HealthyDiet from '../views/HealthyDiet.vue'
-import AddFoodView from '../views/AddFoodView.vue'
-import Achievements from '../views/AchievementsView.vue'
-import FitnessPlan from '../views/FitnessPlanView.vue'
+import EquipmentDetails from "../components/EquipmentDetails.vue";
+import adminEquipment from "../components/adminEquipment.vue";
+import AddDiet from "../components/AddDiet.vue";
+import FitnessGuide from "../views/FitnessGuideView.vue";
+import FitnessDetail from "../components/FitnessDetail.vue";
+import AdminEquipmentView from "../views/AdminEquipmentView.vue";
+import MealRecordView from "../views/MealRecordView.vue";
+import MealPlannerView from "../views/MealPlannerView.vue";
+import HealthyDiet from "../views/HealthyDiet.vue";
+import AddFoodView from "../views/AddFoodView.vue";
+import Achievements from "../views/AchievementsView.vue";
+import FitnessPlan from "../views/FitnessPlanView.vue";
 
-import chatRoom from '../views/chatRoom.vue'
-import ForumView from '../views/ForumView.vue'
-import PostDetail from '../views/PostDetail.vue'
-import UserProfile from '../views/UserProfile.vue'
-import AdminView from '../views/AdminView.vue'
-
+import chatRoom from "../views/chatRoom.vue";
+import ForumView from "../views/ForumView.vue";
+import PostDetail from "../views/PostDetail.vue";
+import UserProfile from "../views/UserProfile.vue";
+import AdminView from "../views/AdminView.vue";
+import UserHomePage from "../views/UserHomePage.vue";
+import PublishCourse from "../views/PublishCourse.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,44 +35,54 @@ const router = createRouter({
     {
       //path: '/',
       path: "/",
-      name: 'no_login_home',
+      name: "no_login_home",
       component: HomeView,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: false },
     },
     {
       //path: '/',
       path: "/home",
-      name: 'home',
+      name: "home",
       component: HomeView,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: false },
     },
     //课程报名
     {
       path: "/course",
-      name: 'course',
+      name: "course",
       component: CourseView,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: false },
+    },
+    //用户课程中心
+    {
+      path: "/userhome",
+      name: "userhome",
+      component: UserHomePage,
+    },
+    {
+      path: "/publishcourse",
+      name: "publishcourse",
+      component: PublishCourse,
     },
     //健身器材
     {
-      path: '/equipment',
-      name: 'tweets',
+      path: "/equipment",
+      name: "tweets",
       component: TweetsView,
     },
     //ai健身
     {
-      path: '/aifit',
-      name: 'FitnessGuide',
+      path: "/aifit",
+      name: "FitnessGuide",
       component: FitnessGuide,
       meta: { requiresAuth: false },
     },
     //聊天室页面
     {
-      path: '/chat',
-      name: 'chatRoom',
+      path: "/chat",
+      name: "chatRoom",
       component: chatRoom,
     },
-
 
     // // 用户信息界面
     // {
@@ -83,90 +94,90 @@ const router = createRouter({
     // },
     //成就页面
     {
-      path: '/achievements',
-      name: 'achievements',
+      path: "/achievements",
+      name: "achievements",
       component: Achievements,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: false },
     },
     // 健身计划
     {
-      path: '/fitnessPlan',
-      name: 'fitnessPlan',
+      path: "/fitnessPlan",
+      name: "fitnessPlan",
       component: FitnessPlan,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: false },
     },
     //饮食计划页面
     {
       path: "/mealPlanner",
-      name: 'MealPlanner',
+      name: "MealPlanner",
       component: MealPlannerView,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: false },
     },
     //饮食记录页面
     {
       path: "/mealRecord",
-      name: 'MealRecord',
+      name: "MealRecord",
       component: MealRecordView,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: false },
     },
     //健康饮食页面
     {
       path: "/healthyDiet",
-      name: 'healtyhDiet',
+      name: "healtyhDiet",
       component: HealthyDiet,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: false },
     },
     //增加食物部分————管理员功能
     {
       path: "/addFood",
-      name: 'AddFood',
+      name: "AddFood",
       component: AddFoodView,
-      meta: { requiresAuth: false }
+      meta: { requiresAuth: false },
     },
     // 登录界面
     {
       //path: '/login',
-      path: '/login',
-      name: 'LoginView',
-      component: LoginView
+      path: "/login",
+      name: "LoginView",
+      component: LoginView,
     },
     // 注册界面
     {
-      path: '/signup',
-      name: 'SignUpView',
-      component: SignUpView
+      path: "/signup",
+      name: "SignUpView",
+      component: SignUpView,
     },
     // 论坛界面
     {
-      path: '/forum',
-      name: 'ForumView',
-      component: ForumView
+      path: "/forum",
+      name: "ForumView",
+      component: ForumView,
     },
     // 帖子细节界面
     {
-      path: '/post/:postID',
+      path: "/post/:postID",
       //path: '/',
-      name: 'PostDetail',
+      name: "PostDetail",
       component: PostDetail,
-      props: true
+      props: true,
     },
     // 用户信息界面
     {
-      path: '/user/:userID',
+      path: "/user/:userID",
       //path: '/',
-      name: 'UserProfile',
+      name: "UserProfile",
       component: UserProfile,
-      props: true
+      props: true,
     },
     // 管理员界面
     {
-      path: '/admin',
+      path: "/admin",
       //path: '/',
-      name: 'AdminView',
+      name: "AdminView",
       component: AdminView,
-      props: true
-    }
-  ]
-})
+      props: true,
+    },
+  ],
+});
 
-export default router
+export default router;

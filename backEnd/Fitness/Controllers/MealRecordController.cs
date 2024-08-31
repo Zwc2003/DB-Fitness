@@ -52,9 +52,11 @@ namespace Fitness.Controllers
 
         // 根据userID和日期获取所有饮食记录的详细信息
         [HttpGet]
-        public ActionResult<GetAllMealRecordsDetailsRes> GetAllDetails(int userID,DateTime date)
+        public ActionResult<GetAllMealRecordsDetailsRes> GetAllDetails(string token,DateTime date)
         {
             Console.WriteLine($"获取所有饮食记录的详细信息");
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
             return _mealRecordBLL.GetAllDetails(userID, date);
         }
 

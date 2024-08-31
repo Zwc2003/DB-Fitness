@@ -153,7 +153,6 @@ export default {
         return {
             navBarFixed: false,
             token: localStorage.getItem('token'),  // 从 localStorage 获取 token
-            // iconUrl: this.$store.state.iconUrl? this.$store.state.iconUrl : require("../assets/images/user.jpeg"),
             iconUrl: this.$store.state.iconUrl,
         };
     },
@@ -337,11 +336,11 @@ body {
 }
 
 .wrapper nav #mealPlanner:checked~.tab {
-    left: 88%;
+    left: 89%;
 }
 
 .wrapper nav #mealRecord:checked~.tab {
-    left: 88%;
+    left: 89%;
 }
 
 .avatar-container {

@@ -32,7 +32,7 @@ namespace Fitness.BLL
             //post.refrencePostID = -1;
             int st;
             post.userName = UserDAL.GetUserByUserID(tokenRes.userID,out st).userName;
-
+            
 
             // 首先要判断是否已经为url
             if (post.imgUrl != "null" && !UrlHelper.IsUrl(post.imgUrl)) {

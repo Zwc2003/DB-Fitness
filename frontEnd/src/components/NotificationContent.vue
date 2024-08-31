@@ -284,10 +284,12 @@ onBeforeUnmount(() => {
   font-size: 18px;
   cursor: pointer;
   color-scheme: light;
+
 }
 
 .chat-demo {
   opacity: 0.65;
+
 }
 
 .right-body {

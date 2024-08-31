@@ -622,9 +622,9 @@ export default {
         }))
       };
       const token = localStorage.getItem('token');
-      console.log("创建 ", requestData);
       axios.post(`http://localhost:8080/api/MealRecords/Create?token=${token}`, requestData)
         .then(response => {
+          console.log("创建 ", requestData);
           console.log(response.data.message);
           ElNotification({
             message: response.data.message,
@@ -639,9 +639,10 @@ export default {
             if (this.oneDayRecord[check][i].mealTime === requestData.mealTime) {
               this.oneDayRecord[check][i].recordID = response.data.recordID;
               this.oneDayRecord[check][i].calorie = response.data.calorie;
-              setTimeout(() => {
+              //setTimeout(() => {
                 this.getAISuggestions(this.oneDayRecord[check][i].recordID);
-              }, 10000);
+              //}, 10000);
+              break;
             }
           }
         })
@@ -650,28 +651,48 @@ export default {
         });
     },
     getAISuggestions(recordID) {
-      console.log("获取AI建议", recordID);
-      //const token = localStorage.getItem('token');
-      axios.get(`http://localhost:8080/api/MealRecords/AISuggestions`, {
-        params: {
-          recordID: recordID,
-        }
-      })
-        .then(response => {
-          console.log("AI建议:", response.data);
-          const check = this.formatDate(this.selectedDate);
-          for (let i = 0; i < this.oneDayRecord[check].length; i++) {
-            if (this.oneDayRecord[check][i].recordID === recordID) {
-              this.oneDayRecord[check][i].diningAdvice = marked(response.data.diningAdvice);
-              this.oneDayRecord[check][i].loading = false;
-            }
+  console.log("获取AI建议", recordID);
+  const maxAttempts = 20;
+
+  // 这个函数每次调用都会创建一个独立的 attempts 变量
+  const pollForAISuggestions = (attempts = 0) => {
+    console.log("获取AI建议", recordID);
+    axios.get(`http://localhost:8080/api/MealRecords/AISuggestions`, {
+      params: {
+        recordID: recordID,
+      }
+    })
+    .then(response => {
+      console.log("轮询尝试次数:", attempts, "AI建议:", response.data);
+      if (response.data && response.data.diningAdvice) {
+        console.log("AI建议:", response.data.diningAdvice);
+        const check = this.formatDate(this.selectedDate);
+        for (let i = 0; i < this.oneDayRecord[check].length; i++) {
+          if (this.oneDayRecord[check][i].recordID === recordID) {
+            this.oneDayRecord[check][i].diningAdvice = marked(response.data.diningAdvice);
+            this.oneDayRecord[check][i].loading = false;
           }
-          this.getVigorTokenBalance();
-        })
-        .catch(error => {
-          console.error("Error getting AI suggestions:", error);
+        }
+        this.getVigorTokenBalance();
+        // 收到有效的AI建议，停止轮询
+      } else if (attempts < maxAttempts) {
+        setTimeout(() => pollForAISuggestions(attempts + 1), 1000);  // 1秒后再次检查
+      } else {
+        console.error("AI suggestions could not be retrieved after 10 attempts.");
+        ElNotification({
+          message: "AI建议获取失败，请稍后重试",
+          type: 'error',
+          duration: 2000
         });
-    },
+      }
+    })
+    .catch(error => {
+      console.error("Error getting AI suggestions:", error);
+    });
+  };
+
+  pollForAISuggestions();  // 开始轮询，每次调用都会创建独立的 attempts 变量
+},
     // 得到AI分析
     getAIAnalysis(/*userID*/) {
       const date = this.formatDate(this.selectedDate);
@@ -765,9 +786,9 @@ export default {
           }
           for (let i = 0; i < this.oneDayRecord[check].length; i++) {
             if (this.oneDayRecord[check][i].recordID === planContent.recordID) {
-              setTimeout(() => {
+              //setTimeout(() => {
                 this.getAISuggestions(this.oneDayRecord[check][i].recordID);
-              }, 5000);
+              //}, 5000);
             }
           }
         })
@@ -845,7 +866,7 @@ export default {
 <style scoped>
 .recordContainer {
   background-color: rgb(247, 251, 254);
-  width : 90%
+  width : 100%
 }
 
 .meal-item {
@@ -932,23 +953,24 @@ export default {
 }
 
 .ana-container {
-  height: 800px;
+  height: 80vh;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-image: url('../assets/images/anaBG.png') !important;
   display: flex;
+  /*width: 100%;*/
   flex-direction: column;
-  margin-left: -35%;
+
 }
 
 .ana-style {
-  height: 650px;
-  width:420px;
+  height: 65vh;
+  width:20vw;
   overflow-y: auto;
   font-size: 18px;
   color: rgb(30, 29, 29);
-  padding: 30px !important; 
+  padding: 30px !important;
 }
 
 .loading-container {
@@ -969,6 +991,7 @@ export default {
   flex-grow: 1;
   justify-content: center;
   align-items: center;
+  margin: 20px;
 }
 
 .glow-button {

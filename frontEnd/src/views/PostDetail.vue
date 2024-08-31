@@ -42,7 +42,7 @@
             </div>
 
             <!-- 显示图片（如果存在） -->
-            <div v-if="post.imgUrl" class="post-image">
+            <div v-if="post.imgUrl!='null'" class="post-image">
                 <img :src="post.imgUrl" alt="Post Image" class="image" />
             </div>
 

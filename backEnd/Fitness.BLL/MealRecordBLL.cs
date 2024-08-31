@@ -171,6 +171,7 @@ namespace Fitness.BLL
 
                 int totalcalorie = 0;
                 
+                
 
                 DataTable dtDetailFoods = mealRecordDAL.GetMealRecordsFoodsByID(single.recordID);
 
@@ -189,7 +190,7 @@ namespace Fitness.BLL
                 }
 
                 single.totalCalorie = totalcalorie;
-
+                
                 res.records.Add(single);
 
             }
