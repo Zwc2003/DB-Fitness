@@ -147,6 +147,7 @@ import { ElNotification } from 'element-plus';
 import { IconCalendar, IconTrophy, IconArrowRight, IconFire, IconHome } from '@arco-design/web-vue/es/icon';
 import { postMixin } from '../mixins/postMixin.js';
 import { LikeOutlined, MessageOutlined, ShareAltOutlined } from '@ant-design/icons-vue';
+import store from '../store/index.js';
 
 
 export default {
@@ -196,24 +197,8 @@ export default {
     },
     created() {
         this.fetchAllPosts();
-    },
-    actions: {
-        pollIsPost({ commit, state }) {
-            setInterval(async () => {
-                try {
-                    const response = await axios.get(
-                        `http://localhost:8080/api/User/GetPersonalProfile?token=${state.token}`
-                    );
-                    const newIsPost = response.data.isPost;
-                    console.log("isPost", newIsPost);
-                    if (newIsPost !== state.isPost) {
-                        commit("setIsPost", newIsPost);
-                    }
-                } catch (error) {
-                    console.error("Error polling isPost status:", error);
-                }
-            }, 3000); // 每5秒检查一次
-        },
+        store.dispatch('pollIsPost');  // 开启轮询，更新发帖权限
+
     },
     methods: {
         scrollRight() {

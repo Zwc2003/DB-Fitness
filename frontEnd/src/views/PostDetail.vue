@@ -196,6 +196,7 @@ import axios from 'axios';
 import { ElNotification } from 'element-plus';
 import { IconArrowLeft, IconFire, IconLink, } from '@arco-design/web-vue/es/icon';
 import { EmojiButton } from '@joeattardi/emoji-button';
+import store from '../store/index.js';
 
 export default {
     components: {
@@ -254,24 +255,8 @@ export default {
         this.fetchPostDetail();
         this.fetchRelatedPosts();
         this.fetchHotPosts();
-    },
-    actions: {
-        pollIsPost({ commit, state }) {
-            setInterval(async () => {
-                try {
-                    const response = await axios.get(
-                        `http://localhost:8080/api/User/GetPersonalProfile?token=${state.token}`
-                    );
-                    const newIsPost = response.data.isPost;
-                    console.log("isPost", newIsPost);
-                    if (newIsPost !== state.isPost) {
-                        commit("setIsPost", newIsPost);
-                    }
-                } catch (error) {
-                    console.error("Error polling isPost status:", error);
-                }
-            }, 3000); // 每5秒检查一次
-        },
+        store.dispatch('pollIsPost');  // 开启轮询，更新发帖权限
+
     },
     methods: {
         isCurrentUser(userName) {
