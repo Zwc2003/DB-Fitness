@@ -36,7 +36,7 @@ export default createStore({
     //用户列表
     userList: [], //只返回好友的ID，无其他字段，使用其他字段从userListInformation中获取
     // 存储预约课程的数组
-    bookedCourses: [],
+    courses: [],
     //用户列表的相关信息
     userListInformation: [
       // {
@@ -120,6 +120,7 @@ export default createStore({
     addToBookedCourses(state, course) {
       console.log("Adding course to cart:", course);
       state.bookedCourses.push(course);
+      //console.log(this.$store.state.bookedCourses);
     },
     setIsPost(state, isPost) {
       state.isPost = isPost;

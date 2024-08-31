@@ -29,10 +29,16 @@
           class="cart-item"
         >
           <el-checkbox v-model="course.selected" />
-          <img :src="course.image" alt="课程图片" class="course-image" />
-          <span>{{ course.name }}</span>
-          <span>￥{{ course.price }}</span>
-          <span>{{ course.time }}</span>
+          <img
+            :src="course.coursePhotoUrl"
+            alt="课程图片"
+            class="course-image"
+          />
+          <span>{{ course.courseName }}</span>
+          <span
+            >{{ course.coursePrice }}<el-icon><Coin /></el-icon
+          ></span>
+          <span>{{ course.courseStartTime }}-{{ course.courseEndTime }}</span>
           <span class="delete-text" @click="removeCourse(index)">删除</span>
         </div>
         <!-- 统计信息 -->
@@ -41,9 +47,13 @@
             共{{ cartCourses.length }}个课程，已选择{{
               selectedCourses.length
             }}个，课程共计：
-            <strong class="total-price">￥{{ totalPrice }}</strong>
+            <strong class="total-price"
+              >{{ totalPrice }}<el-icon><Coin /></el-icon
+            ></strong>
           </span>
-          <el-button type="primary" class="checkout-button">下单结算</el-button>
+          <el-button type="primary" class="checkout-button" @click="checkout"
+            >下单结算</el-button
+          >
         </div>
       </div>
     </transition>
@@ -65,8 +75,18 @@ export default {
       required: true,
       default: true,
     },
+    usercourses: {
+      type: Array,
+      required: true,
+      default: [],
+    },
   },
-  emits: ["update:isCartVisible", "removeCourse"],
+  emits: [
+    "update:isCartVisible",
+    "removeCourse",
+    "update:userCourses",
+    "checkout",
+  ],
   setup(props, { emit }) {
     const toggleCartSidebar = () => {
       emit("update:isCartVisible", !props.isCartVisible);
@@ -81,14 +101,22 @@ export default {
     );
 
     const totalPrice = computed(() =>
-      selectedCourses.value.reduce((total, course) => total + course.price, 0)
+      selectedCourses.value.reduce(
+        (total, course) => total + course.coursePrice,
+        0
+      )
     );
+
+    const checkout = () => {
+      emit("checkout", selectedCourses.value);
+    };
 
     return {
       toggleCartSidebar,
       removeCourse,
       selectedCourses,
       totalPrice,
+      checkout,
     };
   },
 };

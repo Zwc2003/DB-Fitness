@@ -86,7 +86,7 @@ export default {
   },
   data() {
     return {
-      userRole: "教练",
+      userRole: "普通用户",
       courses: [],
       isDialogVisible: false,
       dialogMessage: "",

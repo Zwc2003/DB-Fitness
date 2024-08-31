@@ -12,9 +12,7 @@
         <div class="card-header">
           <div class="title-left">
             <b class="bolder">继续学习</b>
-          </div>
-          <div class="title-right">
-            <b class="bolder">{{ courseName }}</b>
+            <b class="title-right">{{ courseName }}</b>
             <span class="learning-status">学习中</span>
           </div>
           <div class="icoin-container">
@@ -45,7 +43,7 @@
         </el-icon>
         <b class="bolder">有效日期</b>
         <div class="course-time" :style="timeStyle">
-          {{ startTime }} - {{ endTime }}
+          {{ courseStartTime }} - {{ courseEndTime }}
         </div>
       </div>
     </el-card>
@@ -59,16 +57,18 @@
   <CourseModal
     v-if="showModal"
     :isVisible="showModal"
-    :modalBackground="thecourse.background"
-    :courseTitle="thecourse.title"
-    :startTime="thecourse.start"
-    :endTime="thecourse.end"
+    :courseName="thecourse.courseName"
+    :courseStartTime="thecourse.courseStartTime"
+    :courseEndTime="thecourse.courseEndTime"
+    :courseGrade="thecourse.courseGrade"
+    :coursePrice="thecourse.coursePrice"
+    :courseDescription="thecourse.courseDescription"
     :classTime="thecourse.classTime"
     :features="thecourse.features"
     :instructorImage="thecourse.instructorImage"
     :instructorName="thecourse.instructorName"
     :instructorHonors="thecourse.instructorHonors"
-    :courseDescription="thecourse.courseDescription"
+    :coursePhotoUrl="thecourse.coursePhotoUrl"
     @close="showModal = false"
   />
 
@@ -116,24 +116,89 @@ export default {
     CourseModal,
   },
   name: "CourseCard",
+
+  props: {
+    coursePhotoUrl: {
+      type: String,
+      required: true,
+      default:
+        "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
+    },
+    courseName: {
+      type: String,
+      required: true,
+      default: "举重阻尼训练",
+    },
+    courseDescription: {
+      type: String,
+      required: true,
+      default:
+        "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
+    },
+    courseStartTime: {
+      type: String,
+      required: true,
+      default: "2024-08-08T17:42:16.103Z",
+    },
+    courseEndTime: {
+      type: String,
+      required: true,
+      default: "2024-08-08T17:42:16.103Z",
+    },
+    courseGrade: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    coursePrice: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    instructorName: {
+      type: String,
+      required: true,
+      default: "王教练",
+    },
+    instructorHonors: {
+      type: String,
+      required: true,
+      default: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
+    },
+    instructorImage: {
+      type: String,
+      required: true,
+      default:
+        "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
+    },
+    features: {
+      type: Array,
+      required: true,
+      default: ["感受力量涌现", "助力有氧健身", "训练全身各处"],
+    },
+    courseProgress: {
+      type: String,
+      default: "0节课/0节课",
+    },
+  },
+
   data() {
     return {
       showModal: false,
       thecourse: {
-        isVisible: false,
-        background:
-          "https://www.lesmills.com.cn/uploads/20231104/fbdee91e55d525de27a01e2e0a74040b.png",
-        title: "肌肉力量训练",
-        start: "2022.03.04",
-        end: "2023.03.04",
+        coursePhotoUrl: this.coursePhotoUrl,
+        courseName: this.courseName,
+        courseDescription: this.courseDescription,
+        courseStartTime: this.courseStartTime,
+        courseEndTime: this.courseEndTime,
+        courseGrade: this.courseGrade,
+        coursePrice: this.coursePrice,
         classTime: "每周三",
-        features: ["感受力量涌现", "助力有氧健身", "训练全身各处"],
-        instructorImage:
-          "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
-        instructorName: "王教练",
-        instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
-        courseDescription:
-          "BODYCOMBAT能训练到你的腿部、手臂、背部和肩膀，对核心部位有显著效果。在课程中你能消耗卡路里、提高协调性、敏捷性和速度，感觉自己充满力量。BODYCOMBAT 训练内容进行调整使之符合自身水平和目标。我们的教练将始终提供多重训练强度供你选择。在开始的时候，你可以每周参加1至2节课，很快你就能体会到骁勇精壮的感觉。",
+        courseProgress: this.courseProgress,
+        features: this.features,
+        instructorImage: this.instructorImage,
+        instructorName: this.instructorName,
+        instructorHonors: this.instructorHonors,
       },
       showDialog: false,
       showRateDialog: false,
@@ -143,25 +208,45 @@ export default {
     };
   },
 
-  props: {
-    // 定义组件的属性
-    courseName: {
-      type: String,
-      default: "名称",
+  watch: {
+    coursePhotoUrl(newVal) {
+      this.thecourse.coursePhotoUrl = newVal;
     },
-    courseProgress: {
-      type: String,
-      default: "0节课/0节课",
+    courseName(newVal) {
+      this.thecourse.courseName = newVal;
     },
-    startTime: {
-      type: String,
-      default: "2022-08-23T14:00:00",
+    courseDescription(newVal) {
+      this.thecourse.courseDescription = newVal;
     },
-    endTime: {
-      type: String,
-      default: "2024-08-23T14:00:00",
+    courseStartTime(newVal) {
+      this.thecourse.courseStartTime = newVal;
+    },
+    courseEndTime(newVal) {
+      this.thecourse.courseEndTime = newVal;
+    },
+    courseGrade(newVal) {
+      this.thecourse.courseGrade = newVal;
+    },
+    coursePrice(newVal) {
+      this.thecourse.coursePrice = newVal;
+    },
+    instructorName(newVal) {
+      this.thecourse.instructorName = newVal;
+    },
+    instructorHonors(newVal) {
+      this.thecourse.instructorHonors = newVal;
+    },
+    instructorImage(newVal) {
+      this.thecourse.instructorImage = newVal;
+    },
+    features(newVal) {
+      this.thecourse.features = newVal;
+    },
+    courseProgress(newVal) {
+      this.thecourse.courseProgress = newVal;
     },
   },
+
   computed: {
     progressStyle() {
       return {
@@ -214,18 +299,6 @@ export default {
 .bolder {
   font-weight: bold;
 }
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.icoin-container {
-  margin-left: 100px;
-  padding-left: 100px;
-  display: flex;
-  align-items: center;
-}
 
 .icon-course-container {
   display: flex;
@@ -259,18 +332,25 @@ export default {
   display: flex;
   align-items: center;
   height: 10px;
-  justify-content: flex-start;
-  width: 500px;
+  justify-content: space-between;
+  width: 470px;
 }
 
 .title-left {
+  display: flex;
+  align-items: center;
   font-size: smaller;
   font-weight: bold;
 }
 
 .title-right {
-  margin-left: 20px; /* 将课程名推向右侧 */
-  font-size: larger; /* 可以根据需要调整课程名的字体大小 */
+  font-weight: bold;
+  font-size: 1.2rem; /* 可以根据需要调整课程名的字体大小 */
+}
+
+.title-left .bolder,
+.title-left .title-right {
+  margin-right: 10px;
 }
 
 .learning-status {
@@ -280,8 +360,13 @@ export default {
   font-size: 12px; /* 字体大小 */
   border: 2px solid orange; /* 边框颜色 */
   border-radius: 3px; /* 边框圆角 */
-  margin-left: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+}
+
+.icoin-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
 .card-firstrow {

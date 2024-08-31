@@ -28,16 +28,9 @@ import AdminView from "../views/AdminView.vue";
 import UserHomePage from "../views/UserHomePage.vue";
 import PublishCourse from "../views/PublishCourse.vue";
 
-import Try from "../views/Try.vue";
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: "/try",
-      name: "try",
-      component: Try,
-    },
     //首页
     {
       //path: '/',
