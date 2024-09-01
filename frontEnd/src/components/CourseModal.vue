@@ -13,7 +13,8 @@
             <b class="boldd">{{ courseEndTime }}</b>
           </p>
           <p class="course-details">
-            每周上课时间：<b class="boldd">{{ classTime }}</b>
+            上课时间：<b class="boldd">{{ classDate }}</b
+            ><b class="boldd">{{ classTime }}</b>
           </p>
           <div class="features">
             <div
@@ -119,9 +120,13 @@ export default {
       type: String,
       default: "2023.03.04",
     },
+    classDate: {
+      type: String,
+      default: "每天",
+    },
     classTime: {
       type: String,
-      default: "每周三",
+      default: "17:00 - 18:30",
     },
     features: {
       type: Array,
@@ -164,7 +169,7 @@ export default {
       this.$emit("close");
     },
 
-    async addToCart() {
+    addToCart() {
       // 创建课程对象
       const course = {
         coursePhotoUrl: this.coursePhotoUrl,
@@ -180,9 +185,11 @@ export default {
         courseGrade: this.courseGrade,
         coursePrice: this.coursePrice,
       };
+      // 调用 Vuex mutation，将课程添加到购物车中
+      this.$store.commit("ADD_COURSE_TO_CART", course);
 
-      // 调用 Vuex action 添加课程到购物车
-      await this.$store.dispatch("addToCart", course);
+      // 可选：添加成功后的提示
+      this.$message.success("课程已成功加入购物车！");
     },
   },
 
