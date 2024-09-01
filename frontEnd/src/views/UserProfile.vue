@@ -439,7 +439,7 @@ export default {
             });
         },
         async saveProfile() {
-            if (this.profile.userID !== this.userID && this.profile.userID !== 21) {  // 检查 userID 是否匹配
+            if (this.profile.userID !== this.userID && this.$store.state.role !== 'admin') {  // 检查 userID 是否匹配
                 this.profile = JSON.parse(JSON.stringify(this.originalProfile)); // 恢复原始数据
                 this.tags = [...this.originalTags]; // 恢复初始状态的标签
                 this.imagePreview = this.originalImagePreview; // 恢复初始状态的头像

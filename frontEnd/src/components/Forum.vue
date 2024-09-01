@@ -81,7 +81,16 @@
                 <EditArticle v-model:title="newPost.title" v-model:content="newPost.content"
                     v-model:category="newPost.category" v-model:imgUrl="newPost.imgUrl" @add-post="addPost" />
                 <!-- 搜索框 -->
-                <el-input v-model="searchQuery" placeholder="搜索帖子..." class="search-box" @input="filterPosts" />
+                <div>
+                    <el-input v-model="searchQuery" placeholder="搜索帖子..." class="search-box" @input="filterPosts"
+                        clearable>
+                        <template #prefix>
+                            <el-icon>
+                                <search />
+                            </el-icon>
+                        </template>
+                    </el-input>
+                </div>
                 <!-- 帖子列表部分 -->
                 <div v-for="post in filteredPosts" :key="post.postID" class="post-item">
                     <div class="post-content">
@@ -151,7 +160,7 @@ import { IconCalendar, IconTrophy, IconArrowRight, IconFire, IconHome } from '@a
 import { postMixin } from '../mixins/postMixin.js';
 import { LikeOutlined, MessageOutlined, ShareAltOutlined } from '@ant-design/icons-vue';
 import store from '../store/index.js';
-
+import { Search } from '@element-plus/icons-vue'; // 导入放大镜图标
 
 export default {
     mixins: [postMixin],
@@ -166,6 +175,7 @@ export default {
         LikeOutlined,
         MessageOutlined,
         ShareAltOutlined,
+        Search,
     },
     data() {
         return {
@@ -354,7 +364,7 @@ export default {
 <style scoped>
 /* 新增搜索框样式 */
 .search-box {
-    height: 40px;
+    height: 50px;
     margin-top: 20px;
     margin-bottom: 20px;
     width: 100%;
