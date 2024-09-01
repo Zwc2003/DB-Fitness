@@ -68,8 +68,7 @@ namespace Fitness.BLL
             //更新成就
             _userAchievement.UpdatePostAchievement(tokenRes.userID, 1);
             //插入一条AI评论
-            string type = post.postCategory;
-            if(type =="")
+
 
             return JsonConvert.SerializeObject(new
             {
@@ -276,7 +275,7 @@ namespace Fitness.BLL
         }
 
         // 评论区——健身教练AI
-        public MessageRes FitCoachComment(string postType, string postContent)
+        public MessageRes FitCoachComment(string postType,string postContent)
         {
 
             string sys = "- Role: 专业健身教练\r\n" +

@@ -21,7 +21,7 @@ namespace Fitness.BLL.Interfaces
         // 健身教练AI
         public MessageRes FitCoachComment(string postType, string postContent);
         // 营养顾问AI
-        public MessageRes NutriExpertComment(string postType, string postContent);
+        public MessageRes NutriExpertComment(string postContent);
         // 激励导师AI
         public MessageRes MotivatorComment(string postType, string postContent);
 
