@@ -1,6 +1,6 @@
 <template>
     <div class="main-container">
-        <NavigationBar class="navbar-planner"/>
+        <navigation-bar class="navbar-planner"/>
         <div class="page-content">
             <div class="back-button-container">
                 <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
@@ -62,17 +62,29 @@
 </style>
 
 <script>
-import NavigationBar from "../components/NavigationBar.vue";
 import MealPlanner from "../components/MealPlanner.vue";
 import { ArrowLeft } from '@element-plus/icons-vue'  // 引入ArrowLeft图标
 import CommonLayout from "../components/CommonLayout.vue";
+import {ElNotification} from "element-plus";
 
 export default {
-    components: { NavigationBar, MealPlanner,ArrowLeft, CommonLayout },
+    components: {  MealPlanner,ArrowLeft, CommonLayout },
     methods: {
         goBack() {
             this.$router.back(); // 使用Vue Router的back方法返回上一页
         }
+    },
+    created() {
+      let token = localStorage.getItem('token');
+      if (token == null) {
+        ElNotification({
+          title: '提示',
+          message: '请先登录',
+          type: 'warning',
+          duration: 2000
+        })
+        this.$router.push('/login')
+      }
     }
 }
 </script>

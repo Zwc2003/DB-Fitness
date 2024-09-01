@@ -9,9 +9,10 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
+import NavigationBar from './components/NavigationBar.vue';
 
 const app = createApp(App)
-
+app.component('NavigationBar', NavigationBar);
 app.use(router)
 app.use(store)
 app.use(ElementPlus, {

@@ -1,5 +1,5 @@
 <template>
-    <NavigationBar />
+    <navigation-bar />
     <div class="spacer"></div> <!-- 添加一个间隔元素 -->
     <AIGuide />
     <CommonLayout />
@@ -9,15 +9,27 @@
 
 import { defineComponent } from "vue";
 import { RouterView } from 'vue-router';
-import NavigationBar from "../components/NavigationBar.vue";
 import FitnessGuide from "../components/FitnessGuide.vue";
 import AIGuide from "../components/AIGuide.vue"
 import adminEquipment from "../components/adminEquipment.vue"
 import AddDiet from "../components/AddDiet.vue"
 import CommonLayout from '../components/CommonLayout.vue';
+import {ElNotification} from "element-plus";
 
 export default defineComponent({
-    components: { NavigationBar, FitnessGuide, AIGuide, adminEquipment, AddDiet,CommonLayout }
+    components: {  FitnessGuide, AIGuide, adminEquipment, AddDiet,CommonLayout },
+    created() {
+      let token = localStorage.getItem('token');
+      if (token == null) {
+        ElNotification({
+          title: '提示',
+          message: '请先登录',
+          type: 'warning',
+          duration: 2000
+        })
+        this.$router.push('/login')
+      }
+    }
 })
 </script>
 

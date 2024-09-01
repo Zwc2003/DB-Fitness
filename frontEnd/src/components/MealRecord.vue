@@ -143,6 +143,7 @@
         <el-dialog v-model="dialogVisible">
           <el-form ref="form">
             <h2>{{ this.formatDate(this.selectedDate) }} 饮食记录</h2>
+            <h4>注意：输入自定义食物可能会导致热量计算不准确噢！</h4>
             <br>
             <el-upload class="avatar-uploader" :show-file-list="false" :before-upload="beforeAvatarUpload">
               <img v-if="imageUrl" :src="imageUrl" class="avatar" />
@@ -160,12 +161,32 @@
                 </el-tag>
               </div>
               <div class="custom-select">
-                <el-select v-if="inputVisible" ref="selectRef" v-model="inputValue" @change="handleInputConfirm"
-                  @blur="handleInputConfirm" placeholder="选择食物">
-                  <el-option v-for="item in food" :key="item.value" :label="item.label" :value="item.value"
-                    :disabled="isOptionDisabled(item.value)"></el-option>
+                <el-select
+                  v-if="inputVisible"
+                  ref="selectRef"
+                  v-model="inputValue"
+                  @change="handleInputConfirm"
+                  @blur="handleInputConfirm"
+                  placeholder="输入/选择食物"
+                  filterable
+                  allow-create
+                  default-first-option
+                  :style="{ width: '300px', height: '40px' }"
+                >
+                  <el-option
+                    v-for="item in food"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                    :disabled="isOptionDisabled(item.value)"
+                  ></el-option>
                 </el-select>
-                <el-button v-else class="button-new-tag" :disabled="!canAdd" @click="showInput">
+                <el-button
+                  v-else
+                  class="button-new-tag"
+                  :disabled="!canAdd"
+                  @click="showInput"
+                >
                   + 点击添加食物
                 </el-button>
               </div>
@@ -197,12 +218,32 @@
                 </el-tag>
               </div>
               <div class="custom-select">
-                <el-select v-if="inputVisible" ref="selectRef" v-model="inputValue" @change="handleInputConfirm"
-                  @blur="handleInputConfirm" placeholder="选择食物">
-                  <el-option v-for="item in food" :key="item.value" :label="item.label" :value="item.value"
-                    :disabled="isOptionDisabled(item.value)"></el-option>
+                <el-select
+                  v-if="inputVisible"
+                  ref="selectRef"
+                  v-model="inputValue"
+                  @change="handleInputConfirm"
+                  @blur="handleInputConfirm"
+                  placeholder="输入/选择食物"
+                  filterable
+                  allow-create
+                  default-first-option
+                  :style="{ width: '300px', height: '40px' }"
+                >
+                  <el-option
+                    v-for="item in food"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                    :disabled="isOptionDisabled(item.value)"
+                  ></el-option>
                 </el-select>
-                <el-button v-else class="button-new-tag" :disabled="!canAdd" @click="showInput">
+                <el-button
+                  v-else
+                  class="button-new-tag"
+                  :disabled="!canAdd"
+                  @click="showInput"
+                >
                   + 点击添加食物
                 </el-button>
               </div>
@@ -390,15 +431,22 @@ export default {
     // 标签输入确定：添加时
     handleInputConfirm() {
       if (this.inputValue && this.currentRecord.totalNumOfFoods < 5) {
+        // 检查输入值是否在已存在的选项中，如果不存在则添加新选项
+        const existingItem = this.food.find(item => item.value === this.inputValue);
+        if (!existingItem) {
+          this.food.push({ value: this.inputValue, label: this.inputValue });
+        }
+
         this.currentRecord.totalNumOfFoods++;
-        this.dynamicTags.push(this.inputValue);             //动态添加标签
-        this.tagQuantities[this.inputValue] = 0;              //为每个标签设置初始数据：食物数量
-        this.selectedFoods.push(this.inputValue);           //设定选择食物
-      }
-      this.inputVisible = false;
-      this.inputValue = '';
-      if (this.currentRecord.totalNumOfFoods == 5) {
-        this.canAdd = false;
+        this.dynamicTags.push(this.inputValue); // 动态添加标签
+        this.tagQuantities[this.inputValue] = 0; // 为每个标签设置初始数据：食物数量
+        this.selectedFoods.push(this.inputValue); // 设定选择食物
+
+        this.inputVisible = false;
+        this.inputValue = '';
+        if (this.currentRecord.totalNumOfFoods === 5) {
+          this.canAdd = false;
+        }
       }
     },
     // 删除标签：添加时
@@ -655,44 +703,44 @@ export default {
   const maxAttempts = 20;
 
   // 这个函数每次调用都会创建一个独立的 attempts 变量
-  const pollForAISuggestions = (attempts = 0) => {
-    console.log("获取AI建议", recordID);
-    axios.get(`http://localhost:8080/api/MealRecords/AISuggestions`, {
-      params: {
-        recordID: recordID,
-      }
-    })
-    .then(response => {
-      console.log("轮询尝试次数:", attempts, "AI建议:", response.data);
-      if (response.data && response.data.diningAdvice) {
-        console.log("AI建议:", response.data.diningAdvice);
-        const check = this.formatDate(this.selectedDate);
-        for (let i = 0; i < this.oneDayRecord[check].length; i++) {
-          if (this.oneDayRecord[check][i].recordID === recordID) {
-            this.oneDayRecord[check][i].diningAdvice = marked(response.data.diningAdvice);
-            this.oneDayRecord[check][i].loading = false;
-          }
+    const pollForAISuggestions = (attempts = 0) => {
+      console.log("获取AI建议", recordID);
+      axios.get(`http://localhost:8080/api/MealRecords/AISuggestions`, {
+        params: {
+          recordID: recordID,
         }
-        this.getVigorTokenBalance();
-        // 收到有效的AI建议，停止轮询
-      } else if (attempts < maxAttempts) {
-        setTimeout(() => pollForAISuggestions(attempts + 1), 1000);  // 1秒后再次检查
-      } else {
-        console.error("AI suggestions could not be retrieved after 10 attempts.");
-        ElNotification({
-          message: "AI建议获取失败，请稍后重试",
-          type: 'error',
-          duration: 2000
-        });
-      }
-    })
-    .catch(error => {
-      console.error("Error getting AI suggestions:", error);
-    });
-  };
+      })
+      .then(response => {
+        console.log("轮询尝试次数:", attempts, "AI建议:", response.data);
+        if (response.data && response.data.diningAdvice) {
+          console.log("AI建议:", response.data.diningAdvice);
+          const check = this.formatDate(this.selectedDate);
+          for (let i = 0; i < this.oneDayRecord[check].length; i++) {
+            if (this.oneDayRecord[check][i].recordID === recordID) {
+              this.oneDayRecord[check][i].diningAdvice = marked(response.data.diningAdvice);
+              this.oneDayRecord[check][i].loading = false;
+            }
+          }
+          this.getVigorTokenBalance();
+          // 收到有效的AI建议，停止轮询
+        } else if (attempts < maxAttempts) {
+          setTimeout(() => pollForAISuggestions(attempts + 1), 1000);  // 1秒后再次检查
+        } else {
+          console.error("AI suggestions could not be retrieved after 10 attempts.");
+          ElNotification({
+            message: "AI建议获取失败，请稍后重试",
+            type: 'error',
+            duration: 2000
+          });
+        }
+      })
+      .catch(error => {
+        console.error("Error getting AI suggestions:", error);
+      });
+    };
 
-  pollForAISuggestions();  // 开始轮询，每次调用都会创建独立的 attempts 变量
-},
+    pollForAISuggestions();  // 开始轮询，每次调用都会创建独立的 attempts 变量
+  },
     // 得到AI分析
     getAIAnalysis(/*userID*/) {
       const date = this.formatDate(this.selectedDate);
@@ -948,7 +996,7 @@ export default {
 
 .left-align {
   text-align: left;
-  margin: 0;
+  margin: 0px;
   padding: 0;
 }
 
@@ -970,7 +1018,7 @@ export default {
   overflow-y: auto;
   font-size: 18px;
   color: rgb(30, 29, 29);
-  padding: 30px !important;
+  padding:30px !important;
 }
 
 .loading-container {

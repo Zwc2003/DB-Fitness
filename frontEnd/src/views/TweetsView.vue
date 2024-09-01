@@ -1,5 +1,5 @@
 <template>
-    <Navigator />
+    <navigation-bar />
     <CommonLayout />
     <!-- 悬浮的置顶和刷新按钮 -->
     <el-backtop class="backtop-button"/>
@@ -127,7 +127,6 @@
 </template>
 
 <script setup>
-import Navigator from '../components/NavigationBar.vue'
 import { ref, h } from 'vue'
 import { nextTick } from 'vue';
 import { onMounted, onBeforeMount } from 'vue'
@@ -141,6 +140,19 @@ import NotificationContent5 from '../components/NotificationContent5.vue'
 import NotificationContent6 from '../components/NotificationContent6.vue'
 import NotificationContent7 from '../components/NotificationContent7.vue'
 import CommonLayout from "../components/CommonLayout.vue";
+import {useRouter} from 'vue-router'
+
+// let token = localStorage.getItem('token');
+// if(token==null)
+// {
+//   ElNotification({
+//     title: '提示',
+//     message: '请先登录',
+//     type: 'warning',
+//     duration: 2000
+//   })
+//   this.$router.push('/login')
+// }
 
 const items = ref([
     { src: new URL('../assets/images/top1.png', import.meta.url).href, alt: 'Image 1' },
@@ -157,7 +169,7 @@ const form = ref({
 })
 // 伪造的假数据
 const fakeData = [
-    { equipmentName: '1', imgUrl: 'https://image-tongji-sse-db.oss-cn-shanghai.aliyuncs.com/%E5%8D%95%E8%BD%A6%E6%9C%BA.png', shortIntr: '提高心肺耐力的最佳选择' },
+    { equipmentName: '单车机', imgUrl: 'https://image-tongji-sse-db.oss-cn-shanghai.aliyuncs.com/%E5%8D%95%E8%BD%A6%E6%9C%BA.png', shortIntr: '提高心肺耐力的最佳选择' },
     { equipmentName: '单杠', imgUrl: 'https://image-tongji-sse-db.oss-cn-shanghai.aliyuncs.com/%E5%8D%95%E8%BD%A6%E6%9C%BA.png', shortIntr: '锻炼上肢力量的经典器械' },
     { equipmentName: '动感单车', imgUrl: 'https://image-tongji-sse-db.oss-cn-shanghai.aliyuncs.com/%E5%8D%95%E8%BD%A6%E6%9C%BA.png', shortIntr: '高效的有氧运动工具' },
     { equipmentName: '瑜伽垫', imgUrl: 'https://image-tongji-sse-db.oss-cn-shanghai.aliyuncs.com/%E5%8D%95%E8%BD%A6%E6%9C%BA.png', shortIntr: '舒适的柔韧性训练基础' },
@@ -168,6 +180,8 @@ const fakeData = [
 
 const equipmentList = ref([]) // 默认情况下先使用fakeData
 equipmentList.value = ref(fakeData)
+
+
 
 
 
@@ -331,6 +345,19 @@ function openInNewTab(url) {
     var win = window.open(url, '_blank');
     win.focus();
 }
+onMounted(() => {
+  let token = localStorage.getItem('token');
+  if (token == null) {
+    ElNotification({
+      title: '提示',
+      message: '请先登录',
+      type: 'warning',
+      duration: 2000
+    })
+    const router = useRouter()
+    router.push('/login')
+  }
+});
 </script>
 
 <style>

@@ -24,6 +24,7 @@ using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Fitness.BLL.Core;
+using System.Runtime.CompilerServices;
 
 namespace Fitness.BLL
 {
@@ -84,11 +85,15 @@ namespace Fitness.BLL
                     for (int i = 0; i < mealRecordInfo.foods.Count; i++)
                     {
                         prePrompt += mealRecordInfo.foods[i].foodName + ":" + mealRecordInfo.foods[i].quantity.ToString() + "克;";
-                        
-                        DataTable dtCalorie = mealRecordDAL.GetOneFoodCalorie(mealRecordInfo.foods[i].foodName);
-                        DataRow drCalorie = dtCalorie.Rows[0];
-                        totalCalorie +=Convert.ToInt32(drCalorie["calorie"]) * mealRecordInfo.foods[i].quantity;
 
+                        if(mealRecordDAL.CheckFoodExists(mealRecordInfo.foods[i].foodName))
+                        {
+                            DataTable dtCalorie = mealRecordDAL.GetOneFoodCalorie(mealRecordInfo.foods[i].foodName);
+                            DataRow drCalorie = dtCalorie.Rows[0];
+                            totalCalorie += Convert.ToInt32(drCalorie["calorie"]) * mealRecordInfo.foods[i].quantity;
+                        }
+                        
+                        
                         MealRecordFood mealRecordFood = new()
                         {
                             recordID = recordID,
@@ -182,10 +187,13 @@ namespace Fitness.BLL
                     DataRow drDetailFoods = dtDetailFoods.Rows[j];
                     food.foodName = drDetailFoods["foodName"].ToString();
                     food.quantity = Convert.ToInt32(drDetailFoods["foodAmount"]);
-                    DataTable dtCalorie = mealRecordDAL.GetOneFoodCalorie(food.foodName);
-                    DataRow drCalorie = dtCalorie.Rows[0];
-                    food.calorie = Convert.ToInt32(drCalorie["calorie"])*food.quantity; // 这个食物的所有calorie
-                    totalcalorie += food.calorie;
+                    if(mealRecordDAL.CheckFoodExists(food.foodName))
+                    {
+                        DataTable dtCalorie = mealRecordDAL.GetOneFoodCalorie(food.foodName);
+                        DataRow drCalorie = dtCalorie.Rows[0];
+                        food.calorie = Convert.ToInt32(drCalorie["calorie"]) * food.quantity; // 这个食物的所有calorie
+                        totalcalorie += food.calorie;
+                    }
                     single.foods.Add(food);
                 }
 

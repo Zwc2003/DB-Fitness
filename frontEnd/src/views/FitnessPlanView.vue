@@ -1,13 +1,83 @@
+<template>
+  <navigation-bar/>
+  <div>
+    <el-button plain @click="dialogFormVisible = true" class="bot">
+      填写你的体测表
+    </el-button>
+  </div>
+  <el-dialog v-model="dialogFormVisible" title="体测信息" width="400">
+    <el-form :model="form" :rules="rules"  ref="ruleFormRef">
+      <el-form-item label="身高(cm)" :label-width="formLabelWidth" prop="height">
+        <el-input-number v-model.number="form.height" autocomplete="off"  :precision="2" :controls="false"></el-input-number>
+      </el-form-item>
+      <el-form-item label="体重(kg)" :label-width="formLabelWidth" prop="weight">
+        <el-input-number v-model.number="form.weight" autocomplete="off"  :precision="2" :controls="false"></el-input-number>
+      </el-form-item>
+      <el-form-item label="BMI" :label-width="formLabelWidth" prop="BMI">
+        <el-input-number v-model.number="form.BMI" autocomplete="off"  :precision="1" :controls="false"></el-input-number>
+      </el-form-item>
+      <el-form-item label="体脂率" :label-width="formLabelWidth" prop="bodyFatRate">
+        <el-input-number v-model.number="form.bodyFatRate" autocomplete="off"  :precision="1" :controls="false"></el-input-number>
+      </el-form-item>
+      <el-form-item label="俯卧撑个数" :label-width="formLabelWidth" prop="pushups">
+        <el-input-number v-model.number="form.pushups" autocomplete="off"  :controls="false"></el-input-number>
+      </el-form-item>
+      <el-form-item label="深蹲个数" :label-width="formLabelWidth" prop="squats">
+        <el-input-number v-model.number="form.squats" autocomplete="off"  :controls="false"></el-input-number>
+      </el-form-item>
+      <el-form-item label="仰卧起坐个数" :label-width="formLabelWidth" prop="situps">
+        <el-input-number v-model.number="form.situps" autocomplete="off"  :controls="false"></el-input-number>
+      </el-form-item>
+      <el-form-item label="引体向上个数" :label-width="formLabelWidth" prop="pullup">
+        <el-input-number v-model.number="form.pullup" autocomplete="off"  :controls="false"></el-input-number>
+      </el-form-item>
+      <el-form-item label="一千米时间(s)" :label-width="formLabelWidth" prop="longDistance">
+        <el-input-number v-model.number="form.longDistance" autocomplete="off"  :controls="false"></el-input-number>
+      </el-form-item>
+      <el-form-item label="健身目标" :label-width="formLabelWidth" prop="goal">
+        <el-select v-model="form.goal" placeholder="Please select a target">
+          <el-option label="减脂" value="loseWeight" />
+          <el-option label="增肌" value="buildMuscle" />
+          <el-option label="塑型" value="bodySculpting" />
+        </el-select>
+      </el-form-item>
+
+
+
+
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button  type="primary" @click="submitForm(ruleFormRef)">
+          创建
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
+
+
+  <TimeThread></TimeThread>
+
+
+
+
+
+
+</template>
+
 <script setup lang="ts">
 
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 import type { Action } from 'element-plus'
-import NavigationBar from "../components/NavigationBar.vue";
 import TimeThread from "../components/TimeThread.vue";
+import {useRouter} from 'vue-router'
 import axios from "axios";
+import {ElNotification} from "element-plus";
 const dialogFormVisible = ref(false)
 const formLabelWidth = '110px'
+
 interface RuleForm {
   height: number,
   weight: number,
@@ -124,75 +194,23 @@ function submit() {
   });
 }
 const activeName = ref(1);
+
+onMounted(() => {
+  let token = localStorage.getItem('token');
+  if (token == null) {
+    ElNotification({
+      title: '提示',
+      message: '请先登录',
+      type: 'warning',
+      duration: 2000
+    })
+    const router = useRouter()
+    router.push('/login')
+  }
+});
 </script>
 
-<template>
-  <NavigationBar/>
-  <div>
-    <el-button plain @click="dialogFormVisible = true" class="bot">
-      填写你的体测表
-    </el-button>
-  </div>
-  <el-dialog v-model="dialogFormVisible" title="体测信息" width="400">
-    <el-form :model="form" :rules="rules"  ref="ruleFormRef">
-      <el-form-item label="身高(cm)" :label-width="formLabelWidth" prop="height">
-        <el-input-number v-model.number="form.height" autocomplete="off"  :precision="2" :controls="false"></el-input-number>
-      </el-form-item>
-      <el-form-item label="体重(kg)" :label-width="formLabelWidth" prop="weight">
-        <el-input-number v-model.number="form.weight" autocomplete="off"  :precision="2" :controls="false"></el-input-number>
-      </el-form-item>
-      <el-form-item label="BMI" :label-width="formLabelWidth" prop="BMI">
-        <el-input-number v-model.number="form.BMI" autocomplete="off"  :precision="1" :controls="false"></el-input-number>
-      </el-form-item>
-      <el-form-item label="体脂率" :label-width="formLabelWidth" prop="bodyFatRate">
-        <el-input-number v-model.number="form.bodyFatRate" autocomplete="off"  :precision="1" :controls="false"></el-input-number>
-      </el-form-item>
-      <el-form-item label="俯卧撑个数" :label-width="formLabelWidth" prop="pushups">
-        <el-input-number v-model.number="form.pushups" autocomplete="off"  :controls="false"></el-input-number>
-      </el-form-item>
-      <el-form-item label="深蹲个数" :label-width="formLabelWidth" prop="squats">
-        <el-input-number v-model.number="form.squats" autocomplete="off"  :controls="false"></el-input-number>
-      </el-form-item>
-      <el-form-item label="仰卧起坐个数" :label-width="formLabelWidth" prop="situps">
-        <el-input-number v-model.number="form.situps" autocomplete="off"  :controls="false"></el-input-number>
-      </el-form-item>
-      <el-form-item label="引体向上个数" :label-width="formLabelWidth" prop="pullup">
-        <el-input-number v-model.number="form.pullup" autocomplete="off"  :controls="false"></el-input-number>
-      </el-form-item>
-      <el-form-item label="一千米时间(s)" :label-width="formLabelWidth" prop="longDistance">
-        <el-input-number v-model.number="form.longDistance" autocomplete="off"  :controls="false"></el-input-number>
-      </el-form-item>
-      <el-form-item label="健身目标" :label-width="formLabelWidth" prop="goal">
-        <el-select v-model="form.goal" placeholder="Please select a target">
-          <el-option label="减脂" value="loseWeight" />
-          <el-option label="增肌" value="buildMuscle" />
-          <el-option label="塑型" value="bodySculpting" />
-        </el-select>
-      </el-form-item>
 
-
-
-
-    </el-form>
-    <template #footer>
-      <div class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button  type="primary" @click="submitForm(ruleFormRef)">
-          创建
-        </el-button>
-      </div>
-    </template>
-  </el-dialog>
-
-
-  <TimeThread></TimeThread>
-
-
-
-
-
-
-</template>
 
 <style>
 .bot{

@@ -1,5 +1,4 @@
 <template>
-  <NavigationBar />
   <div class="container">
     <div class="title">
       <span>健身动作指导</span>
@@ -256,8 +255,6 @@
 <script>
 import ElementPlus from 'element-plus'
 import axios from 'axios'
-// import marked from 'marked'
-// eslint-disable-next-line no-unused-vars
 import MarkdownIt from 'markdown-it'
 import { ElNotification } from 'element-plus';
 const md = new MarkdownIt()
@@ -375,10 +372,6 @@ export default {
           console.log('Base64 string:', this.screenshotsCurrent.screenshotUrl) // 这里可以查看 Base64 字符串
         }
       } else {
-        // this.$message({
-        //   type: 'warning',
-        //   message: '请上传正确的图像格式'
-        // })
         ElNotification({
           title: '注意',
           message: `请上传正确的图像格式！`,
@@ -403,10 +396,6 @@ export default {
           type: 'success',
           duration: 2000
         })
-        // this.$message({
-        //   type: 'success',
-        //   message: '删除成功'
-        // })
       })
     },
     // 上传图片
@@ -438,7 +427,6 @@ export default {
           type: 'error',
           duration: 2000
         })
-        //this.$message.error('请先上传图片或检查图片是否上传成功')
         return
       }
       console.log('开始分析')

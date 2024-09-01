@@ -2,7 +2,7 @@
     <div class="container">
       <CommonLayout />
       <div class="navigation-bar">
-        <NavigationBar />
+         <navigation-bar />
       </div>
       <div class="title">
         <span>请选择您要使用的功能</span>
@@ -37,12 +37,11 @@
   </template>
   
   <script>
-  import NavigationBar from '../components/NavigationBar.vue'
   import CommonLayout from "../components/CommonLayout.vue";
+  import {ElNotification} from "element-plus";
   export default {
     name: 'Tracking',
     components: {
-      NavigationBar,
       CommonLayout
     },
     methods: {
@@ -53,6 +52,18 @@
       // 跳转到 MealRecordView
       goToMealRecord() {
         this.$router.push({ path: '/MealRecord' });
+      }
+    },
+    created() {
+      let token = localStorage.getItem('token');
+      if (token == null) {
+        ElNotification({
+          title: '提示',
+          message: '请先登录',
+          type: 'warning',
+          duration: 2000
+        })
+        this.$router.push('/login')
       }
     }
   }
