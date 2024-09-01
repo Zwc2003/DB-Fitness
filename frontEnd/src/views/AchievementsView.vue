@@ -25,8 +25,8 @@
     background-color: #f7fbff;
     width: 50vw;
     height: 80vh;
-    margin-top: 150vh;
-    margin-bottom: 10vh;
+    margin-top: 200vh;
+    margin-bottom: -10vh;
     justify-content: center;
 }
 </style>
