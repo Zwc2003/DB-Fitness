@@ -8,6 +8,13 @@
                 </el-icon>
             </el-button>
         </div>
+        <div class="backHome-button-container">
+            <el-button @click="goBackToHome" circle style="font-size: 24px; width: 50px; height: 50px;">
+                <el-icon>
+                    <house />
+                </el-icon>
+            </el-button>
+        </div>
 
         <!-- 相关帖子推荐 -->
         <el-card class="card">
@@ -406,6 +413,9 @@ export default {
         },
         goBack() {
             this.$router.go(-1);
+        },
+        goBackToHome(){
+          this.$router.push('/forum');
         },
         toggleLike(postID) {
             const token = localStorage.getItem('token');
@@ -1221,12 +1231,23 @@ textarea {
     position: absolute;
     top: 1vh;
     /* 调整为你需要的上边距 */
+    left: 5vw;
+    /* 调整为你需要的左边距 */
+    z-index: 1000;
+
+
+}
+
+.backHome-button-container{
+  position: absolute;
+    top: 1vh;
+    /* 调整为你需要的上边距 */
     left: 1vw;
     /* 调整为你需要的左边距 */
     z-index: 1000;
     /* 确保按钮在日历表之上 */
-
 }
+
 
 .backtop-button {
     position: fixed;

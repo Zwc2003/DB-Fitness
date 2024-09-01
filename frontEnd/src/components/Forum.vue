@@ -2,8 +2,6 @@
     <div class="forum-bg">
         <el-backtop class="backtop-button" />
         <div class="forum-container">
-
-
             <!-- 帖子卡片 -->
             <el-card class="card">
                 <!-- 站内公告 -->
