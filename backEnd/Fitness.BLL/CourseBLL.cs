@@ -29,37 +29,37 @@ namespace Fitness.BLL
                 return "身份权限不符！";
             }
 
-               OracleTransaction transaction = null;
-                try
-                {
+            OracleTransaction transaction = null;
+            try
+            {
                 // 插入课程信息
-                    int res = CourseDAL.Insert(course);
-                    if (res == -1)
-                    {
-                        //transaction.Rollback();
-                        return "课程发布失败：无法插入课程信息";
-                    }
+                int res = CourseDAL.Insert(course);
+                if (res == -1)
+                {
+                    //transaction.Rollback();
+                    return "课程发布失败：无法插入课程信息";
+                }
                 Console.WriteLine(res);
                 // 插入教练授课信息
                 Teaches teaches = new Teaches
-                    {
-                        coachID = tokenRes.userID,
-                        classID = res,
-                        typeID = course.typeID
-                    };
-
-                    if (!TeachesDAL.Insert(teaches,transaction))
-                    {
-                        return "课程发布失败：无法插入教练授课信息";
-                    }
-
-                    return "课程发布成功";
-                }
-                catch (Exception ex)
                 {
-                    Console.WriteLine($"发布课程时出错：{ex.Message}");
-                    return $"课程发布失败：{ex.Message}";
+                    coachID = tokenRes.userID,
+                    classID = res,
+                    typeID = course.typeID
+                };
+
+                if (!TeachesDAL.Insert(teaches, transaction))
+                {
+                    return "课程发布失败：无法插入教练授课信息";
                 }
+
+                return "课程发布成功";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"发布课程时出错：{ex.Message}");
+                return $"课程发布失败：{ex.Message}";
+            }
         }
 
         // 修改课程
@@ -165,7 +165,8 @@ namespace Fitness.BLL
             { "instructorHonors", instructorHonors },
             { "iconURL", iconURL },
             { "features", course.features },
-            { "courseType", typeName }
+            { "courseType", typeName },
+            { "classTime", course.classTime }
         };
 
                     courseDetails.Add(courseInfo);

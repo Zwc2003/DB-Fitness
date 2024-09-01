@@ -21,23 +21,13 @@ namespace Fitness.Controllers
         [HttpPost]
         public ActionResult<string> PublishComment( string token, [FromBody] Comment comment)
         {
-            var result = _commentBLL.PublishComment(token, comment);
-            if (result == "发布评论成功")
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
+            return _commentBLL.PublishComment(token, comment);
         }
 
         [HttpPost]
         public ActionResult<string> ReplyComment(string token, [FromBody] Comment comment)
         {
-            var result = _commentBLL.ReplyComment(token, comment);
-            if (result == "回复成功")
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
+            return _commentBLL.ReplyComment(token, comment);
         }
 
         [HttpGet]

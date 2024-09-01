@@ -2,6 +2,7 @@
 using Fitness.BLL.Interfaces;
 using Fitness.DAL;
 using Fitness.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,14 +33,19 @@ namespace Fitness.BLL
             comment.parentCommentID = -1;
             int st;
             comment.userName = UserDAL.GetUserByUserID(tokenRes.userID,out st).userName;
-            bool result = CommentDAL.Insert(comment);
+            int result = CommentDAL.Insert(comment);
             //帖子评论量+1
-            result = result && CommentDAL.CommentsCountAddOne(comment.postID);
+            CommentDAL.CommentsCountAddOne(comment.postID);
             //更新成就
             int achieveUserID = postbll.GetPostByPostID(token, comment.postID).userID;
             _userAchievement.UpdateBeComment(achieveUserID, 1);
             //调用通知接口
-            return result ? "发布评论成功" : "发布评论失败";
+
+            return JsonConvert.SerializeObject(new
+            {
+                commentID = result,
+                message = "发布评论成功"
+            });
         }
 
         public string ReplyComment(string token, Comment replyComment)
@@ -51,15 +57,19 @@ namespace Fitness.BLL
             replyComment.likesCount = 0;
             int st;
             replyComment.userName = UserDAL.GetUserByUserID(tokenRes.userID, out st).userName;
-            bool result = CommentDAL.Insert(replyComment);
+            int  result =CommentDAL.Insert(replyComment);
             //帖子评论量+1
-            result = result && CommentDAL.CommentsCountAddOne(replyComment.postID);
+            CommentDAL.CommentsCountAddOne(replyComment.postID);
             //更新成就
             int achieveUserID = postbll.GetPostByPostID(token, replyComment.postID).userID;
             _userAchievement.UpdateBeComment(achieveUserID, 1);
             //调用通知接口
 
-            return result ? "回复成功" : "回复失败";
+            return JsonConvert.SerializeObject(new
+            {
+                commentID = result,
+                message = "回复成功"
+            });
         }
 
         public List<Comment> GetCommentByPostID(string token,int postID)

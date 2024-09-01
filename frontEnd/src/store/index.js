@@ -53,7 +53,8 @@ export default createStore({
         instructorImage: "/images/pn.jpg",
         features: ["增强心肺功能", "提升肌肉力量", "塑造紧致线条"],
         selected: true,
-        classTime: "10:00-11:00",
+        classTime: "17:00 - 18:00",
+        isbooked: 0,
       },
       {
         coursePhotoUrl:
@@ -70,7 +71,8 @@ export default createStore({
         instructorImage: "/images/p.jpg",
         features: ["增强心肺功能", "助力有氧健身", "塑造紧致线条"],
         selected: false,
-        classTime: "10:00-11:00",
+        classTime: "10:00 - 11:00",
+        isbooked: 0,
       },
       {
         coursePhotoUrl:
@@ -87,7 +89,8 @@ export default createStore({
         instructorImage: "/images/l.jpg",
         features: ["感受力量涌现", "增强肌肉控制", "减少受伤风险"],
         selected: true,
-        classTime: "10:00-11:00",
+        classTime: "10:00 - 11:00",
+        isbooked: 0,
       },
     ],
     //活力币
@@ -110,7 +113,8 @@ export default createStore({
         instructorImage: "/images/pn.jpg",
         features: ["感受力量涌现", "增强肌肉控制", "训练全身各处"],
         courseProgress: "25节/32节课",
-        classTime: "10:00-11:00",
+        classTime: "17:00 - 18:00",
+        isbooked: 1,
       },
       {
         coursePhotoUrl:
@@ -127,7 +131,8 @@ export default createStore({
         instructorImage: "/images/p.jpg",
         features: ["提升身心平衡", "助力有氧健身", "维护心理健康"],
         courseProgress: "25节/32节课",
-        classTime: "10:00-11:00",
+        classTime: "10:00 - 11:00",
+        isbooked: 1,
       },
       {
         coursePhotoUrl:
@@ -144,7 +149,8 @@ export default createStore({
         instructorImage: "/images/l.jpg",
         features: ["感受力量涌现", "增强肌肉控制", "减少受伤风险"],
         courseProgress: "25节/32节课",
-        classTime: "10:00-11:00",
+        classTime: "10:00 - 11:00",
+        isbooked: 1,
       },
       {
         coursePhotoUrl:
@@ -161,85 +167,15 @@ export default createStore({
         instructorImage: "/images/p.jpg",
         features: ["增强心肺功能", "助力有氧健身", "塑造紧致线条"],
         courseProgress: "25节/32节课",
-        classTime: "10:00-11:00",
+        classTime: "10:00 - 11:00",
+        isbooked: 1,
       },
     ],
     //用户列表的相关信息
     userListInformation: [
-      // {
-      //   id:0,
-      //   name: '同济',
-      //   img: userImage,
-      //   age:'18',
-      //   gender:'男',
-      //   tags:'...',
-      //   introduction:'',
-      //   goalType:'',
-      //   goalWeight:'',
-      // }, {
-      //   id:0,
-      //   name: '同济',
-      //   img: userImage,
-      //   age:'18',
-      //   gender:'男',
-      //   tags:'...',
-      //   introduction:'',
-      //   goalType:'',
-      //   goalWeight:'',
-      // }, {
-      //   id:1,
-      //   name: '大学',
-      //   img: userImage,
-      //   age:'18',
-      //   gender:'男',
-      //   tags:'...',
-      //   introduction:'',
-      //   goalType:'',
-      //   goalWeight:'',
-      // }, {
-      //   id:2,
-      //   name: '学院',
-      //   img: userImage,
-      //   age:'18',
-      //   gender:'男',
-      //   tags:'...',
-      //   introduction:'',
-      //   goalType:'',
-      //   goalWeight:'',
-      // }
     ],
     //聊天记录
     MessageList: [
-      // {
-      //   targetName: "同济",
-      //   targetId:0,
-      //   list: [
-      //     {
-      //       is_me: false,//用来判断是聊天对象发送的消息还是我发送的消息
-      //       time: new Date().toLocaleString(),//发送信息的时间
-      //       message: "哈喽",
-      //       messageType: '',
-      //     },
-      //     {
-      //       is_me: true,
-      //       time: "",
-      //       message: "https://wxls-cms.oss-cn-hangzhou.aliyuncs.com/online/2024-04-18/218da022-f4bf-456a-99af-5cb8e157f7b8.jpg",
-      //       messageType: 'image', // 指定消息类型为图片
-      //     },
-      //     {
-      //         is_me: false,//用来判断是聊天对象发送的消息还是我发送的消息
-      //         time: "",//发送信息的时间
-      //         message: "hello",
-      //         messageType: '',
-      //       },
-      //       {
-      //         is_me: true,
-      //         time: "",
-      //         message: "hi",
-      //         messageType: '',
-      //       },
-      //   ],
-      // },
     ],
   },
   mutations: {
@@ -369,7 +305,7 @@ export default createStore({
         } catch (error) {
           console.error("Error polling isPost status:", error);
         }
-      }, 3000); // 每5秒检查一次
+      }, 50000000); // 每5秒检查一次
     },
   },
   modules: {

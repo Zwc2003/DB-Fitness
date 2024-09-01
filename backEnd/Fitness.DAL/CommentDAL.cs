@@ -1,6 +1,7 @@
 ﻿using Fitness.DAL.Core;
 using Fitness.Models;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -76,22 +77,25 @@ namespace Fitness.DAL
             return null;
         }
 
-        public static bool Insert(Comment comment)
+        public static int Insert(Comment comment)
         {
-            string query = "INSERT INTO \"Comment\" (\"userID\", \"userName\",\"postID\", \"parentCommentID\", \"commentTime\", \"likesCount\", \"Content\")"+ 
-                "VALUES(:userID,:userName, :postID, :parentCommentID, :commentTime, :likesCount, :Content)";
+            string query = "INSERT INTO \"Comment\" (\"userID\", \"userName\",\"postID\", \"parentCommentID\", \"commentTime\", \"likesCount\", \"Content\")" +
+                "VALUES(:userID,:userName, :postID, :parentCommentID, :commentTime, :likesCount, :Content) " +
+                "RETURNING \"commentID\" INTO :commentID";
 
             OracleParameter[] parameters = {
                 new OracleParameter("userID", OracleDbType.Int32) { Value = comment.userID },
                 new OracleParameter("userName",OracleDbType.NVarchar2){Value = comment.userName},
                 new OracleParameter("postID", OracleDbType.Int32) { Value = comment.postID },
-                new OracleParameter("parentCommentID", OracleDbType.Int32) { Value = comment.parentCommentID == 0 ? 0 : (object)comment.parentCommentID },
+                new OracleParameter("parentCommentID", OracleDbType.Int32) { Value = comment.parentCommentID == -1 ? -1 : (object)comment.parentCommentID },
                 new OracleParameter("commentTime", OracleDbType.TimeStamp) { Value = comment.commentTime },
                 new OracleParameter("likesCount", OracleDbType.Int32) { Value = comment.likesCount },
-                new OracleParameter("Content", OracleDbType.NVarchar2) { Value = comment.Content }
+                new OracleParameter("Content", OracleDbType.NVarchar2) { Value = comment.Content },
+                new OracleParameter("commentID", OracleDbType.Int32, ParameterDirection.Output)
              };
             int rowsAffected = OracleHelper.ExecuteNonQuery(query,null, parameters);
-            return rowsAffected > 0;
+            OracleDecimal oracleInt = (OracleDecimal)parameters[7].Value;
+            return oracleInt.ToInt32();
         }
 
         public static bool DeleteComment(int commentID)

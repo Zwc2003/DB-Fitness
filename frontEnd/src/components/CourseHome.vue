@@ -39,6 +39,7 @@
     :instructorName="thecourse.instructorName"
     :instructorHonors="thecourse.instructorHonors"
     :coursePhotoUrl="thecourse.coursePhotoUrl"
+    :isbooked="thecourse.isbooked"
     @close="showModal = false"
   />
 </template>
@@ -125,6 +126,10 @@ export default {
       required: true,
       default: "17:00-18:30",
     },
+    isbooked: {
+      type: Boolean,
+      default: "0",
+    },
   },
 
   data() {
@@ -144,6 +149,7 @@ export default {
         instructorImage: this.instructorImage,
         instructorName: this.instructorName,
         instructorHonors: this.instructorHonors,
+        isbooked: this.isbooked,
       },
     };
   },
@@ -184,6 +190,9 @@ export default {
     },
     classTime(newVal) {
       this.thecourse.classTime = newVal;
+    },
+    isbook(newVal) {
+      this.thecourse.isbooked = newVal;
     },
   },
   setup(props, { emit }) {
