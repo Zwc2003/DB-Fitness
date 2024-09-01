@@ -37,6 +37,7 @@ namespace Fitness.Models
         public string coursePhotoUrl { get; set; }
         public string courseVideoUrl { get; set; }
         public string features { get; set; }
+        public string classTime { get; set; }
     }
 
     public class BookCourseInfo

@@ -165,7 +165,8 @@ namespace Fitness.BLL
             { "instructorHonors", instructorHonors },
             { "iconURL", iconURL },
             { "features", course.features },
-            { "courseType", typeName }
+            { "courseType", typeName },
+            { "classTime", course.classTime }
         };
 
                     courseDetails.Add(courseInfo);
