@@ -50,15 +50,35 @@
                         </el-tag>
                     </div>
                     <div class="custom-select">
-                        <el-select v-if="inputVisible" ref="selectRef" v-model="inputValue" @change="handleInputConfirm"
-                            @blur="handleInputConfirm" placeholder="选择食物">
-                            <el-option v-for="item in food" :key="item.value" :label="item.label" :value="item.value"
-                                :disabled="isOptionDisabled(item.value)"></el-option>
-                        </el-select>
-                        <el-button v-else class="button-new-tag" :disabled="!canAdd" @click="showInput">
-                            + 点击添加食物
-                        </el-button>
-                    </div>
+                      <el-select
+                          v-if="inputVisible"
+                          ref="selectRef"
+                          v-model="inputValue"
+                          @change="handleInputConfirm"
+                          @blur="handleInputConfirm"
+                          placeholder="输入/选择食物"
+                          filterable
+                          allow-create
+                          default-first-option
+                          :style="{ width: '140px', height: '40px' }"
+                      >
+                          <el-option
+                              v-for="item in food"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value"
+                              :disabled="isOptionDisabled(item.value)"
+                          ></el-option>
+                      </el-select>
+                      <el-button
+                          v-else
+                          class="button-new-tag"
+                          :disabled="!canAdd"
+                          @click="showInput"
+                      >
+                          + 点击添加食物
+                      </el-button>
+                  </div>
                 </div>
             </el-form>
             <div class="center-button-container">
@@ -97,15 +117,35 @@
                         </el-tag>
                     </div>
                     <div class="custom-select">
-                        <el-select v-if="inputVisible" ref="selectRef" v-model="inputValue" @change="handleInputConfirm"
-                            @blur="handleInputConfirm" placeholder="选择食物">
-                            <el-option v-for="item in food" :key="item.value" :label="item.label" :value="item.value"
-                                :disabled="isOptionDisabled(item.value)"></el-option>
-                        </el-select>
-                        <el-button v-else class="button-new-tag" :disabled="!canAdd" @click="showInput">
-                            + 点击添加食物
-                        </el-button>
-                    </div>
+                      <el-select
+                          v-if="inputVisible"
+                          ref="selectRef"
+                          v-model="inputValue"
+                          @change="handleInputConfirm"
+                          @blur="handleInputConfirm"
+                          placeholder="输入/选择食物"
+                          filterable
+                          allow-create
+                          default-first-option
+                          :style="{ width: '140px', height: '40px' }"
+                      >
+                          <el-option
+                              v-for="item in food"
+                              :key="item.value"
+                              :label="item.label"
+                              :value="item.value"
+                              :disabled="isOptionDisabled(item.value)"
+                          ></el-option>
+                      </el-select>
+                      <el-button
+                          v-else
+                          class="button-new-tag"
+                          :disabled="!canAdd"
+                          @click="showInput"
+                      >
+                          + 点击添加食物
+                      </el-button>
+                  </div>
                 </div>
             </el-form>
             <div class="center-button-container">
@@ -223,16 +263,22 @@ export default defineComponent({
         // 标签输入确定：添加时
         handleInputConfirm() {
             if (this.inputValue && this.currentFormData.numOfTypes < 5) {
-                this.inputVisible=true;
+                // 检查输入值是否在已存在的选项中，如果不存在则添加新选项
+                const existingItem = this.food.find(item => item.value === this.inputValue);
+                if (!existingItem) {
+                    this.food.push({ value: this.inputValue, label: this.inputValue });
+                }
+
                 this.currentFormData.numOfTypes++;
-                this.dynamicTags.push(this.inputValue);             //动态添加标签
-                this.tagQuantities[this.inputValue] = 0;              //为每个标签设置初始数据：食物数量
-                this.selectedFoods.push(this.inputValue);           //设定选择食物
-            }
-            this.inputVisible = false;
-            this.inputValue = '';
-            if (this.currentFormData.numOfTypes == 5) {
-                this.canAdd = false;
+                this.dynamicTags.push(this.inputValue);
+                this.tagQuantities[this.inputValue] = 0;
+                this.selectedFoods.push(this.inputValue);
+
+                this.inputVisible = false;
+                this.inputValue = '';
+                if (this.currentFormData.numOfTypes == 5) {
+                    this.canAdd = false;
+                }
             }
         },
         // 打开计划安排
