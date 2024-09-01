@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <NavigationBar />
+        <navigation-bar />
         <div class="achievements">
             <Achievements />
         </div>
@@ -32,11 +32,10 @@
 </style>
 
 <script>
-import NavigationBar from "../components/NavigationBar.vue";
 import Achievements from "../components/Achievements.vue";
 import CommonLayout from "../components/CommonLayout.vue";
 
 export default {
-    components: { NavigationBar, Achievements,CommonLayout },
+    components: {  Achievements,CommonLayout },
 }
 </script>

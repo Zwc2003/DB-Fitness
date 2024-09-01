@@ -144,7 +144,6 @@
 <script>
 import axios from 'axios';
 import { mapState } from 'vuex';
-import NavigationBar from '../components/NavigationBar.vue';
 import EditArticle from '../components/EditArticle.vue';
 import { ElNotification } from 'element-plus';
 import { IconCalendar, IconTrophy, IconArrowRight, IconFire, IconHome } from '@arco-design/web-vue/es/icon';
@@ -156,7 +155,6 @@ import store from '../store/index.js';
 export default {
     mixins: [postMixin],
     components: {
-        NavigationBar,
         EditArticle,
         IconHome,
         IconCalendar,

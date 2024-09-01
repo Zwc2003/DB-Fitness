@@ -1,5 +1,5 @@
 <template>
-    <Navigator />
+    <navigation-bar />
     <CommonLayout />
     <!-- 悬浮的置顶和刷新按钮 -->
     <el-backtop class="backtop-button"/>
@@ -127,7 +127,6 @@
 </template>
 
 <script setup>
-import Navigator from '../components/NavigationBar.vue'
 import { ref, h } from 'vue'
 import { nextTick } from 'vue';
 import { onMounted, onBeforeMount } from 'vue'

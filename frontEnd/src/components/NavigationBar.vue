@@ -5,7 +5,7 @@
         </div>
         <div class="wrapper">
             <nav>
-                <input type="radio" name="tab" id="home" :checked="$route.path === '/home'">
+                <input type="radio" name="tab" id="home" :checked="$route.path === '/home' || $route.path === '/'">
                 <input type="radio" name="tab" id="equipment" :checked="$route.path === '/equipment'">
                 <input type="radio" name="tab" id="aifit" :checked="$route.path === '/aifit'">
                 <input type="radio" name="tab" id="forum" :checked="$route.path === '/forum'">
@@ -14,12 +14,7 @@
                 <input type="radio" name="tab" id="course" :checked="$route.path === '/course'">
                 <input type="radio" name="tab" id="plan" :checked="$route.path === '/fitnessplan'">
                 <input type="radio" name="tab" id="chat" :checked="$route.path === '/chat'">
-                <input type="radio" name="tab" id="healthyDiet" :checked="$route.path === '/healthyDiet'">
-                <input type="radio" name="tab" id="mealPlanner" :checked="$route.path === '/MealPlanner'">
-                <input type="radio" name="tab" id="mealRecord" :checked="$route.path === '/MealRecord'">
-
-
-
+                <input type="radio" name="tab" id="healthyDiet" :checked="$route.path === '/healthyDiet' || $route.path === '/MealPlanner' || $route.path === '/MealRecord'">
 
 
                 <label for="home" class="home" @click="delayedNavigation('/home')">
@@ -62,14 +57,6 @@
                         健身成就
                     </router-link>
                 </label>
-                <!-- <label for="rank" class="rank" @click="delayedNavigation('/ranking-list')">
-                    <router-link to="/ranking-list">
-                        <el-icon>
-                            <Star />
-                        </el-icon>
-                        排行榜
-                    </router-link>
-                </label> -->
                 <label for="course" class="course" @click="delayedNavigation('/course')">
                     <router-link to="/course">
                         <el-icon>
@@ -102,14 +89,6 @@
                         健康饮食
                     </router-link>
                 </label>
-                <!--
-                <label for="addFood" class="mealPlanner" @click="delayedNavigation('/addFood')">
-                    <el-icon>
-                        <House />
-                    </el-icon>
-                    管理员功能
-                </label>
-                -->
                 <div class="tab"></div>
             </nav>
         </div>
@@ -154,6 +133,7 @@ export default {
             navBarFixed: false,
             token: localStorage.getItem('token'),  // 从 localStorage 获取 token
             iconUrl: this.$store.state.iconUrl,
+            checkLoginInterval: null,  // 定时器ID
         };
     },
     props: {
@@ -188,10 +168,40 @@ export default {
                 this.navBarFixed = false;
             }
         },
+        checkLoginStatus() {
+            // 获取当前路径
+            const currentPath = this.$route.path;
+
+            // // 如果当前路径是 '/home' 或 '/'，则不进行检查
+            if (currentPath === '/home' || currentPath === '/') {
+                return;
+            }
+
+            // 检查 token 是否存在
+            let token = localStorage.getItem('token');
+            if (token == null) {
+                ElNotification({
+                    title: '提示',
+                    message: '请先登录',
+                    type: 'warning',
+                    duration: 2000
+                });
+                this.router().push('/login');
+            }
+        }
     },
     mounted() {
         window.addEventListener("scroll", this.watchScroll);
+        // 每隔20秒检查一次登录状态
+        this.checkLoginInterval = setInterval(this.checkLoginStatus, 20000);
     },
+    beforeUnmount() {
+        // 清理定时器
+        if (this.checkLoginInterval) {
+            clearInterval(this.checkLoginInterval);
+        }
+        window.removeEventListener("scroll", this.watchScroll);
+    }
 };
 </script>
 
@@ -393,13 +403,12 @@ body {
 
 .round-button {
     width: 100px;
-    height: 100px;
-    border-radius: 50%; /* 圆形 */
+    height: 50px;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 16px !important; /* 根据需要调整字体大小 */
+    font-size: 16px ; /* 根据需要调整字体大小 */
     color: #fff;
     border: none; /* 去除默认边框 */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加轻微的阴影效果 */
