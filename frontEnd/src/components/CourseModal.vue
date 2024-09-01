@@ -210,7 +210,7 @@ export default {
         courseName: this.courseName,
         courseStartTime: this.courseStartTime,
         courseEndTime: this.courseEndTime,
-        classTime: this.classTime,
+        classTime: "17:00 - 18:30",
         features: this.features,
         instructorImage: this.instructorImage,
         instructorName: this.instructorName,
