@@ -37,7 +37,7 @@
             <h1 class="post-title">{{ post.postTitle }}</h1>
 
             <div class="post-info">
-                <span class="post-author" @click="goToAuthorProfile">{{ post.userName }}</span>
+                <span class="post-author" @click="goToAuthorProfile(post.userID)">{{ post.userName }}</span>
                 <span class="post-time">{{ post.postTime }}</span>
             </div>
 
@@ -211,6 +211,7 @@ export default {
             newCommentText: "",
             replyingTo: null,
             currentUser: localStorage.getItem('name'),
+            adminUserID: 21,
             post: {
                 postID: null,
                 userID: null,
@@ -251,6 +252,15 @@ export default {
             });
         });
     },
+    watch: {
+        '$route.params.postID': {
+            handler(newVal, oldVal) {
+                this.fetchPostDetail();
+            },
+            immediate: true
+        }
+    },
+
     created() {
         this.fetchPostDetail();
         this.fetchRelatedPosts();
@@ -260,7 +270,7 @@ export default {
     },
     methods: {
         isCurrentUser(userName) {
-            return this.currentUser === userName || this.currentUser === 'admin';
+            return this.currentUser === userName || this.post.userID === this.adminUserID;
         },
         toggleContainer() {
             this.isContainerVisible = !this.isContainerVisible; // 切换容器显示状态
@@ -276,6 +286,7 @@ export default {
                 }
             })
                 .then(response => {
+                    console.log(response.data);
                     this.post = response.data;
                     this.fetchComments(postID);
                     ElNotification({
@@ -700,8 +711,26 @@ export default {
             });
             this.reportDialogVisible = false;
         },
-        goToAuthorProfile() {
-            this.$router.push(`/user/:userID=${this.post.userID}`);
+        goToAuthorProfile(userID) {
+            const token = localStorage.getItem('token');
+            axios.get(`http://localhost:8080/api/User/GetProfile`, {
+                params: {
+                    token: token,
+                    userID: userID,
+                }
+            })
+                .then(response => {
+                    console.log(response.data);
+                    this.$router.push(`/user/${response.data.userID}`);
+                })
+                .catch(error => {
+                    ElNotification({
+                        title: '错误',
+                        message: '获取用户信息失败',
+                        type: 'error',
+                    });
+                });
+            //this.$router.push(`/user/${this.post.userID}`);
         },
         forwardPost() {
             const token = localStorage.getItem('token');
@@ -779,6 +808,7 @@ export default {
                 });
         },
         goToPost(postID) {
+            console.log(this.post.postID);
             this.$router.push(`/post/${postID}`);
         },
         toggleEmojiPicker() {
