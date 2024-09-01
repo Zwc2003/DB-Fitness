@@ -92,7 +92,7 @@
                                         回复
                                     </span>
                                     <span v-if="isCurrentUser(reply.userName)"
-                                        @click="deleteReply(reply.commentID)">删除</span>
+                                        @click="deleteComment(reply.commentID)">删除</span>
                                     <span class="comment-time">{{ formatDate(reply.commentTime) }}</span>
                                 </div>
                             </div>
@@ -352,7 +352,7 @@ export default {
                     }
                 });
         },
-        fetchReplies(comment) {
+        async fetchReplies(comment) {
             const token = localStorage.getItem('token');
             return axios.get(`http://localhost:8080/api/Comment/GetCommentByCommentID`, {
                 params: {
@@ -657,13 +657,25 @@ export default {
                     token: token,
                     commentID: commentID,
                     postID: this.post.postID
-
                 }
             })
                 .then(response => {
                     if (response.data === '评论删除成功') {
-                        this.comments = this.comments.filter(c => c.commentID !== commentID);
-                        this.post.commentsCount--;
+                        // 先找到需要删除的评论所在的数组及其索引
+                        const commentIndex = this.comments.findIndex(c => c.commentID === commentID);
+                        if (commentIndex !== -1) {
+                            // 如果是顶层评论，直接删除
+                            this.comments.splice(commentIndex, 1);
+                        } else {
+                            // 如果是回复，找到该回复所在的评论，并删除
+                            this.comments.forEach(comment => {
+                                const replyIndex = comment.replies.findIndex(reply => reply.commentID === commentID);
+                                if (replyIndex !== -1) {
+                                    comment.replies.splice(replyIndex, 1);
+                                }
+                            });
+                        }
+                        this.post.commentsCount--;  // 减少评论计数
                         ElNotification({
                             title: '成功',
                             message: '评论删除成功',
@@ -686,6 +698,7 @@ export default {
                     });
                 });
         },
+
         setReplyTarget(comment) {
             this.replyingTo = comment;
             this.newCommentText = `@${comment.userName} `;
