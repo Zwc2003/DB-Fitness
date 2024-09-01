@@ -129,17 +129,54 @@ namespace Fitness.BLL
         }
 
         // 获取所有课程
-        public List<Course> GetAllCourse(string token)
+        public string GetAllCourse()
         {
-            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             try
             {
-                return CourseDAL.GetAllCourseRandomly();
+                List<Dictionary<string, string>> courseDetails = new List<Dictionary<string, string>>();
+                List<Course> courses = new List<Course>();
+                courses = CourseDAL.GetAllCourseRandomly();
+                //Console.WriteLine(courses);
+                foreach (var course in courses)
+                {
+                    string typeName = CourseDAL.GetTypeNameByTypeID(course.typeID);
+                    int coachID = CourseDAL.GetCoachIDByClassID(course.classID);
+                    string coachName = string.Empty;
+                    string instructorHonors = string.Empty;
+                    string iconURL = string.Empty;
+                    var coach = CoachDAL.GetCoachByCoachID(coachID);
+                    if (coach != null)
+                    {
+                        coachName = coach.coachName;
+                        instructorHonors = coach.instructorHonors;
+                        iconURL = coach.iconURL;
+                    }
+
+                    var courseInfo = new Dictionary<string, string>
+        {
+            { "coursePhotoUrl", course.coursePhotoUrl },
+            { "courseName", course.courseName },
+            { "courseDescription", course.courseDescription },
+            { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
+            { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
+            { "courseGrade", course.courseGrade.ToString() },
+            { "coursePrice", course.coursePrice.ToString() },
+            { "coachName", coachName },
+            { "instructorHonors", instructorHonors },
+            { "iconURL", iconURL },
+            { "features", course.features },
+            { "courseType", typeName }
+        };
+
+                    courseDetails.Add(courseInfo);
+                }
+
+                return JsonConvert.SerializeObject(courseDetails, Formatting.Indented);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"获取所有课程时出错：{ex.Message}");
-                return new List<Course>();
+                return "";
             }
         }
 

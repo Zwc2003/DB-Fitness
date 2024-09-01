@@ -184,7 +184,7 @@ export default {
           "男Krisun，极限运动员，世界纪录保持者，抖音创作者，其抖音号“朴男Krisun”，拥有粉丝169.3万",
         instructorImage: "/images/pn.jpg",
         features: ["感受力量涌现", "增强肌肉控制", "训练全身各处"],
-        classTime: "10:00-11:00",
+        courseType: "塑形训练"
       },
       {
         coursePhotoUrl:
@@ -200,7 +200,7 @@ export default {
         instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
         instructorImage: "/images/p.jpg",
         features: ["提升身心平衡", "助力有氧健身", "维护心理健康"],
-        classTime: "10:00-11:00",
+        courseType: "瑜伽"
       },
       {
         coursePhotoUrl:
@@ -216,7 +216,7 @@ export default {
         instructorHonors: "鹿晨辉，国家级健美一级裁判和国家职业健身培训师。",
         instructorImage: "/images/l.jpg",
         features: ["感受力量涌现", "增强肌肉控制", "减少受伤风险"],
-        classTime: "10:00-11:00",
+        courseType: "塑形训练"
       },
       {
         coursePhotoUrl:
@@ -232,7 +232,7 @@ export default {
         instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
         instructorImage: "/images/p.jpg",
         features: ["增强心肺功能", "助力有氧健身", "塑造紧致线条"],
-        classTime: "10:00-11:00",
+        courseType: "有氧训练"
       },
     ]),
       (this.filteredCourses = this.courses); // 默认展示所有课程
