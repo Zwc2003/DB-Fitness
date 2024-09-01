@@ -191,6 +191,34 @@ namespace Fitness.DAL
             }
         }
 
+        public bool CheckFoodExists(string foodName)
+        {
+            try
+            {
+                // SQL 查询语句，使用参数化查询防止SQL注入
+                string sql = "SELECT COUNT(*) FROM \"Foods\" WHERE \"foodName\" = :foodName";
+
+                // 创建参数并赋值
+                OracleParameter[] oracleParameters = new OracleParameter[]
+                {
+            new OracleParameter(":foodName", foodName)
+                };
+
+                // 执行查询并获取结果
+                object result = OracleHelper.ExecuteScalar(sql, oracleParameters);
+
+                // 将结果转换为整数并检查是否大于0
+                int count = Convert.ToInt32(result);
+
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
         public DataTable GetOneFoodCalorie(string foodName)
         {
             try

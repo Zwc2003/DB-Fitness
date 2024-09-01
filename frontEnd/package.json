@@ -32,11 +32,12 @@
     "vue": "^3.4.21",
     "vue-router": "^4.0.13",
     "vue-socket.io": "^3.0.10",
-    "vuex": "^4.1.0",
+    "vuex": "^4.0.2",
     "wangeditor": "^4.7.15"
   },
   "devDependencies": {
     "@arco-design/web-vue": "^2.56.1",
+    "@types/markdown-it": "^14.1.2",
     "@types/minimatch": "^5.1.2",
     "@types/web-bluetooth": "^0.0.20",
     "@vitejs/plugin-vue": "^5.0.5",

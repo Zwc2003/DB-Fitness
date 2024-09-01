@@ -1,6 +1,6 @@
 <template>
     <div>
-        <NavigationBar />
+        <navigation-bar />
         <Forum />
         <CommonLayout />
     </div>
@@ -8,13 +8,12 @@
 
 
 <script>
-import NavigationBar from "../components/NavigationBar.vue";
 import Forum from "../components/Forum.vue";
 import CommonLayout from "../components/CommonLayout.vue";
 import {ElNotification} from "element-plus";
 
 export default {
-    components: { NavigationBar, Forum,CommonLayout },
+    components: {  Forum,CommonLayout },
     created() {
       let token = localStorage.getItem('token');
       if (token == null) {

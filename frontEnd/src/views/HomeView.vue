@@ -1,5 +1,5 @@
 <template>
-  <NavigationBar />
+  <navigation-bar />
   <div>
     <video ref="videoPlayer" class="background-image" autoplay loop muted>
       <source src="../assets/videos/HomeVideo.mp4" type="video/mp4">
@@ -30,10 +30,10 @@
 </template>
 
 <script>
-import NavigationBar from "../components/NavigationBar.vue";
+
 
 export default {
-  components: { NavigationBar },
+  components: {  },
   data() {
     return {
 

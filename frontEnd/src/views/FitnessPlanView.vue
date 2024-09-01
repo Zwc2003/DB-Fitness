@@ -1,5 +1,5 @@
 <template>
-  <NavigationBar/>
+  <navigation-bar/>
   <div>
     <el-button plain @click="dialogFormVisible = true" class="bot">
       填写你的体测表
@@ -71,7 +71,6 @@
 import { reactive, ref, onMounted } from 'vue'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 import type { Action } from 'element-plus'
-import NavigationBar from "../components/NavigationBar.vue";
 import TimeThread from "../components/TimeThread.vue";
 import {useRouter} from 'vue-router'
 import axios from "axios";

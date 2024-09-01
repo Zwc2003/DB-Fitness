@@ -120,6 +120,11 @@ export default {
       required: true,
       default: ["感受力量涌现", "助力有氧健身", "训练全身各处"],
     },
+    classTime: {
+      type: String,
+      required: true,
+      default: "17:00-18:30",
+    },
   },
 
   data() {
@@ -134,7 +139,7 @@ export default {
         courseGrade: this.courseGrade,
         coursePrice: this.coursePrice,
         isVisible: false,
-        classTime: "每周三",
+        classTime: this.classTime,
         features: this.features,
         instructorImage: this.instructorImage,
         instructorName: this.instructorName,
@@ -176,6 +181,9 @@ export default {
     },
     features(newVal) {
       this.thecourse.features = newVal;
+    },
+    classTime(newVal) {
+      this.thecourse.classTime = newVal;
     },
   },
   setup(props, { emit }) {

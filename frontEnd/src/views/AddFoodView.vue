@@ -1,7 +1,7 @@
 <template>
     <div >
         <el-header class="header">
-            <NavigationBar />
+            <navigation-bar />
         </el-header>
         <el-row class="container" justify="space-between">
             <el-col :span="10">
@@ -16,13 +16,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import NavigationBar from '../components/NavigationBar.vue';
 import AddFood from '../components/AddFood.vue';
 import AddDiet from '../components/AddDiet.vue';
 
 export default defineComponent({
     components: {
-        NavigationBar,
         AddFood,
         AddDiet
     }

@@ -1,5 +1,4 @@
 <template>
-  <NavigationBar />
   <div class="container">
     <div class="title">
       <span>健身动作指导</span>
@@ -256,8 +255,6 @@
 <script>
 import ElementPlus from 'element-plus'
 import axios from 'axios'
-// import marked from 'marked'
-// eslint-disable-next-line no-unused-vars
 import MarkdownIt from 'markdown-it'
 import { ElNotification } from 'element-plus';
 const md = new MarkdownIt()

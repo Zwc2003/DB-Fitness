@@ -1,5 +1,5 @@
 <template>
-  <NavigationBar />
+  <navigation-bar />
   <div class="trans">
     <router-link v-if="userRole === '普通用户'" to="/userhome">
       <el-button type="primary">我的主页</el-button>
@@ -59,6 +59,7 @@
         :instructorName="course.instructorName"
         :instructorHonors="course.instructorHonors"
         :instructorImage="course.instructorImage"
+        :classTime="course.classTime"
         :features="course.features"
         :width="300"
         :height="400"
@@ -77,12 +78,10 @@
 
 <script>
 import CourseHome from "../components/CourseHome.vue";
-import NavigationBar from "../components/NavigationBar.vue";
 
 export default {
   components: {
     CourseHome,
-    NavigationBar,
   },
   data() {
     return {
