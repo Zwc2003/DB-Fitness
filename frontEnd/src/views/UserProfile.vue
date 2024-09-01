@@ -216,7 +216,6 @@ import Achievement_6 from '../assets/badges/Achievement_6.png';
 import Achievement_7 from '../assets/badges/Achievement_7.png';
 import Achievement_8 from '../assets/badges/Achievement_8.png';
 
-
 export default {
     components: {
         EditableField,
@@ -240,6 +239,7 @@ export default {
                 isMember: null,
             },
             tags: [],
+            originalTags: [], // 保存初始状态的标签
             posts: [],
             colors: ['#e57373', '#81c784', '#64b5f6', '#ffb74d', '#ba68c8', '#4db6ac'],
             addingTag: false,
@@ -247,14 +247,15 @@ export default {
             originalProfile: null,
             defaultAvatar,
             imagePreview: null,
+            originalImagePreview: null, // 保存初始状态的头像
             isLargeImageVisible: false,
             vigorTokenBalance: 0,
             vigorTokenRecords: [],
-            postListVisible: false, // 控制帖子列表的显示与隐藏
-            balanceModuleVisible: false, // 控制余额模块的显示与隐藏
-            achievementsVisible: false, // 控制成就模块的显示与隐藏
-            achievements: [], // 成就列表
-            tooltipVisibleIndex: null,  // 鼠标悬停显示的提示信息
+            postListVisible: false,
+            balanceModuleVisible: false,
+            achievementsVisible: false,
+            achievements: [],
+            tooltipVisibleIndex: null,
             achievementImages: {
                 1: Achievement_1,
                 2: Achievement_2,
@@ -265,25 +266,21 @@ export default {
                 7: Achievement_7,
                 8: Achievement_8,
             },
-
         };
     },
     computed: {
-        ...mapState(['token'])
+        ...mapState(['token', 'userID'])
     },
     created() {
-        this.fetchUserProfile();
+        const userID = this.$route.params.userID;
+        this.fetchUserProfile(userID);
         this.fetchUserPosts();
         this.getVigorTokenBalance();
         this.getVigorTokenRecordsFromDB();
-
-
     },
     mounted() {
         this.fetchAchievements();
     },
-
-
     methods: {
         goBack() {
             this.$router.back();
@@ -307,19 +304,23 @@ export default {
         },
         getProgress(achievement) {
             let progress = achievement.progress / achievement.target;
-            return Math.min(1, Math.max(0, progress)); // 确保在0到1之间
+            return Math.min(1, Math.max(0, progress));
         },
         getImagePath(achievementId) {
-            return this.achievementImages[achievementId] || ''; // 返回对应的图片路径，如果不存在则返回空字符串
+            return this.achievementImages[achievementId] || '';
         },
-        async fetchUserProfile() {
+        async fetchUserProfile(userID) {
             const token = localStorage.getItem('token');
             try {
-                const response = await axios.get(`http://localhost:8080/api/User/GetPersonalProfile?token=${token}`);
+                const response = await axios.get(`http://localhost:8080/api/User/GetProfile`, {
+                    params: { token, userID }
+                });
                 this.profile = response.data;
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
                 this.tags = this.profile.tags ? this.profile.tags.split('#').filter(Boolean) : [];
-                console.log(this.tags);
+                this.originalTags = [...this.tags]; // 保存初始状态的标签
+                this.imagePreview = this.profile.iconURL; // 设置头像预览
+                this.originalImagePreview = this.profile.iconURL; // 保存初始状态的头像
                 ElNotification({
                     title: '成功',
                     message: '用户资料获取成功',
@@ -354,7 +355,7 @@ export default {
         handleFileUpload(event) {
             const file = event.target.files[0];
             if (file) {
-                this.beforeAvatarUpload(file); // 调用图片上传前的处理方法
+                this.beforeAvatarUpload(file);
             }
         },
         beforeAvatarUpload(file) {
@@ -374,16 +375,15 @@ export default {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => {
-                this.imagePreview = reader.result; // 将Base64格式图片赋值给 imagePreview
-                this.profile.iconURL = this.imagePreview; // 将Base64格式图片赋值给 profile.iconURL
+                this.imagePreview = reader.result;
+                this.profile.iconURL = this.imagePreview;
             };
-            return false; // 阻止默认的上传行为
+            return false;
         },
         async fetchAchievements() {
             const token = localStorage.getItem('token');
             try {
                 const response = await axios.get(`http://localhost:8080/api/Achievement/GetAchievement?token=${token}`);
-                // 将获取到的成就数据存储到组件的 data 属性中
                 const data = response.data;
                 this.achievements = data.achievements.map(achievement => ({
                     achievementId: achievement.achievementId,
@@ -430,6 +430,8 @@ export default {
         },
         cancelEdit() {
             this.profile = JSON.parse(JSON.stringify(this.originalProfile));
+            this.tags = [...this.originalTags]; // 恢复初始状态的标签
+            this.imagePreview = this.originalImagePreview; // 恢复初始状态的头像
             ElNotification({
                 title: '提示',
                 message: '编辑已取消',
@@ -437,8 +439,19 @@ export default {
             });
         },
         async saveProfile() {
+            if (this.profile.userID !== this.userID && this.profile.userID !== 21) {  // 检查 userID 是否匹配
+                this.profile = JSON.parse(JSON.stringify(this.originalProfile)); // 恢复原始数据
+                this.tags = [...this.originalTags]; // 恢复初始状态的标签
+                this.imagePreview = this.originalImagePreview; // 恢复初始状态的头像
+                ElNotification({
+                    title: '错误',
+                    message: '无法保存：您没有操作权限，信息已恢复。',
+                    type: 'error',
+                });
+                return;
+            }
+
             try {
-                //const tags = Array.isArray(this.profile.tags) ? this.profile.tags : [];
                 const formattedTags = this.tags.join('#') + '#';
                 const token = localStorage.getItem('token');
                 const postData = {
@@ -459,12 +472,14 @@ export default {
                 console.log("上传响应：", response.data);
 
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
+                this.originalTags = [...this.tags]; // 保存更新后的标签
+                this.originalImagePreview = this.imagePreview; // 保存更新后的头像
                 if (response.data === '更新成功')
                     ElNotification({
                         title: '成功',
                         message: '保存成功！',
                         type: 'success',
-                    })
+                    });
             } catch (error) {
                 console.log(error);
                 ElNotification({
@@ -504,7 +519,6 @@ export default {
                     createTime: item.createTime
                 }));
 
-                // 按 recordID 从大到小排序
                 this.vigorTokenRecords.sort((a, b) => b.recordID - a.recordID);
                 ElNotification({
                     title: '成功',
@@ -522,6 +536,9 @@ export default {
     }
 };
 </script>
+
+
+
 
 <style scoped>
 .bg {

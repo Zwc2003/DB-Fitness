@@ -173,6 +173,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import store from '../store/index.js';
 import { useRouter } from "vue-router";
 import axios from 'axios';
 import { ElNotification } from 'element-plus';
@@ -181,6 +182,7 @@ import { IconMenu } from '@arco-design/web-vue/es/icon';
 import AddFood from '../components/AddFood.vue';
 import AddDiet from '../components/AddDiet.vue';
 import adminEquipment from "../components/adminEquipment.vue"
+import create from '@ant-design/icons-vue/lib/components/IconFont';
 
 const router = useRouter();
 let active = ref(1);
@@ -212,7 +214,6 @@ async function fetchUsers() {
         const token = localStorage.getItem('token');
         const response = await axios.get(`http://localhost:8080/api/User/GetAllUser?token=${token}`);
         users.value = response.data;
-
         users.value.sort((a, b) => new Date(a.registrationTime) - new Date(b.registrationTime));
 
         users.value.forEach(user => {
@@ -233,7 +234,6 @@ async function fetchUsers() {
     }
 }
 
-// 获取帖子信息
 // 获取帖子信息
 async function fetchPosts() {
     try {
@@ -431,6 +431,7 @@ const handleClose = (key, keyPath) => {
 };
 
 const openUser = (userID) => {
+    userID = userID || store.state.userID;
     router.push({
         path: `/user/${userID}`,
     });

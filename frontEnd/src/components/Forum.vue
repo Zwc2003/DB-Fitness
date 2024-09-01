@@ -2,6 +2,8 @@
     <div class="forum-bg">
         <el-backtop class="backtop-button" />
         <div class="forum-container">
+
+
             <!-- 帖子卡片 -->
             <el-card class="card">
                 <!-- 站内公告 -->
@@ -78,7 +80,8 @@
                 </nav>
                 <EditArticle v-model:title="newPost.title" v-model:content="newPost.content"
                     v-model:category="newPost.category" v-model:imgUrl="newPost.imgUrl" @add-post="addPost" />
-
+                <!-- 搜索框 -->
+                <el-input v-model="searchQuery" placeholder="搜索帖子..." class="search-box" @input="filterPosts" />
                 <!-- 帖子列表部分 -->
                 <div v-for="post in filteredPosts" :key="post.postID" class="post-item">
                     <div class="post-content">
@@ -166,6 +169,7 @@ export default {
     },
     data() {
         return {
+            searchQuery: '',  // 新增的搜索查询字段
             newPost: {
                 postID: null,
                 userID: null,
@@ -240,15 +244,20 @@ export default {
                 });
         },
 
-
-
         filterByCategory(category) {
             this.selectedCategory = category;
-            if (category === "全部帖子") {
-                this.filteredPosts = this.allPosts;
-            } else {
-                this.filteredPosts = this.allPosts.filter(post => post.postCategory === category);
-            }
+            this.filterPosts(); // 使用搜索过滤方法
+        },
+
+        filterPosts() {
+            const query = this.searchQuery.toLowerCase();
+            this.filteredPosts = this.allPosts.filter(post => {
+                const matchesTitle = post.postTitle.toLowerCase().includes(query);
+                const matchesContent = post.postContent.toLowerCase().includes(query);
+                const matchesUser = post.userName.toLowerCase().includes(query);
+                const matchesCategory = this.selectedCategory === '全部帖子' || post.postCategory === this.selectedCategory;
+                return (matchesTitle || matchesContent || matchesUser) && matchesCategory;
+            });
         },
 
         addPost() {
@@ -327,35 +336,6 @@ export default {
             this.$forceUpdate();
         },
 
-        // deletePost(postID,postOwnerID) {
-        //     //const token = this.$store.state.token;
-        //     const token = localStorage.getItem('token');
-        //     axios.delete('http://localhost:8080/api/Post/DeletePostByPostID', {
-        //         params: {
-        //             token: token,
-        //             postID: postID,
-        //             postOwnerID:postOwnerID
-        //         }
-        //     })
-        //         .then(response => {
-        //             this.allPosts = this.allPosts.filter(post => post.postID !== postID);
-        //             this.filteredPosts = this.filteredPosts.filter(post => post.postID !== postID);
-        //             this.updateHotPosts();
-        //             ElNotification({
-        //                 title: '成功',
-        //                 message: '帖子删除成功！',
-        //                 type: 'success',
-        //             });
-        //         })
-        //         .catch(error => {
-        //             ElNotification({
-        //                 title: '错误',
-        //                 message: '删除帖子时发生错误，请稍后再试。',
-        //                 type: 'error',
-        //             });
-        //         });
-        // },
-
         updateHotPosts() {
             this.hotPosts = this.allPosts
                 .slice()
@@ -372,6 +352,16 @@ export default {
 
 
 <style scoped>
+/* 新增搜索框样式 */
+.search-box {
+    height: 40px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    font-size: 20;
+}
+
+/* 其他样式保持不变 */
 body {
     margin: 0;
     padding: 0;
