@@ -26,6 +26,11 @@ namespace Fitness.Controllers
         {
             return _userBLL.Login(email, password, role);
         }
+        [HttpGet]
+        public ActionResult<bool> GetTokenInvalidateRes(string token)
+        {
+            return _jwtHelper.ValidateToken(token).IsValid;
+        }
 
         [HttpPost]
         public ActionResult<string> SendVerificationCode(string email)

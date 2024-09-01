@@ -505,7 +505,8 @@ export default {
                 if (this.replyingTo) {
                     axios.post(`http://localhost:8080/api/Comment/ReplyComment?token=${token}`, newComment)
                         .then(response => {
-                            if (response.data === '回复成功') {
+                            if (response.data.message === '回复成功') {
+                                newComment.commentID = response.data.commentID;
                                 this.replyingTo.replies.push(newComment);
                                 this.replyingTo = null;
                                 this.newCommentText = ""; // 清空输入框
@@ -513,16 +514,6 @@ export default {
                                     title: '成功',
                                     message: '回复成功',
                                     type: 'success',
-                                });
-                                // 添加评论后滚动到最新评论的位置
-                                this.$nextTick(() => {
-                                    setTimeout(() => {
-                                        // 使用 window.scrollTo 滚动到页面底部
-                                        window.scrollTo({
-                                            top: document.documentElement.scrollHeight,
-                                            behavior: 'smooth' // 平滑滚动
-                                        });
-                                    }, 100); // 添加一点延迟以确保内容渲染完成
                                 });
                             } else {
                                 ElNotification({
@@ -542,7 +533,8 @@ export default {
                 } else {
                     axios.post(`http://localhost:8080/api/Comment/PublishComment?token=${token}`, newComment)
                         .then(response => {
-                            if (response.data === '发布评论成功') {
+                            if (response.data.message === '发布评论成功') {
+                                newComment.commentID = response.data.commentID;
                                 this.comments.push(newComment);
                                 this.post.commentsCount++;
                                 this.newCommentText = ""; // 清空输入框
