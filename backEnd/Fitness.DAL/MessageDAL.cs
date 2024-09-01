@@ -40,8 +40,8 @@ namespace Fitness.DAL
         // 插入新的消息记录
         public static bool Insert(Message message, OracleTransaction transaction = null)
         {
-            string cmdText = "INSERT INTO \"Messages\" (\"messageID\", \"senderID\", \"receiverID\", \"messageType\", \"Content\", \"sendTime\") " +
-                             "VALUES (:messageID, :senderID, :receiverID, :messageType, :Content, :sendTime)";
+            string cmdText = "INSERT INTO \"Messages\" (\"messageID\", \"senderID\", \"receiverID\", \"messageType\", \"Content\", \"sendTime\",\"isRead\") " +
+                             "VALUES (:messageID, :senderID, :receiverID, :messageType, :Content, :sendTime,:isRead)";
 
             OracleParameter[] parameters = {
             new OracleParameter("messageID", OracleDbType.Int32) { Value = message.messageID },
@@ -49,10 +49,50 @@ namespace Fitness.DAL
             new OracleParameter("receiverID", OracleDbType.Int32) { Value = message.receiverID },
             new OracleParameter("messageType", OracleDbType.Char) { Value = message.messageType },
             new OracleParameter("Content", OracleDbType.Varchar2) { Value = message.Content },
-            new OracleParameter("sendTime", OracleDbType.Date) { Value = message.sendTime }
+            new OracleParameter("sendTime", OracleDbType.Date) { Value = message.sendTime },
+            new OracleParameter("isRead",OracleDbType.Int32){ Value =message.isRead}
         };
             return OracleHelper.ExecuteNonQuery(cmdText, transaction, parameters) > 0;
         }
+
+        public static List<Message> GetUnreadMessages(int userId)
+        {
+            string query = @"SELECT * FROM Messages
+                         WHERE receiverID = :receiverID AND isRead = 0
+                         ORDER BY sendTime DESC";
+
+            OracleParameter[] parameters = {
+            new OracleParameter("receiverID", userId)
+        };
+            DataTable dataTable = OracleHelper.ExecuteTable(query, parameters);
+            List<Message> messages = ToModelList(dataTable);
+            return messages;
+        }
+
+        public static void MarkMessagesAsRead(List<int> messageIds)
+        {
+            if (messageIds == null || messageIds.Count == 0) return;
+
+            string query = "UPDATE \"Messages\" SET \"isRead\" = 1 WHERE \"messageID\" IN (";
+
+            for (int i = 0; i < messageIds.Count; i++)
+            {
+                query += "messageID" + i;
+                if (i < messageIds.Count - 1)
+                    query += ", ";
+            }
+            query += ")";
+
+            List<OracleParameter> parameters = new List<OracleParameter>();
+            for (int i = 0; i < messageIds.Count; i++)
+            {
+                parameters.Add(new OracleParameter("messageID" + i, messageIds[i]));
+            }
+
+            OracleHelper.ExecuteNonQuery(query, null,parameters.ToArray());
+        }
+
+
 
         // 根据用户ID获取消息列表
         public static List<Message> GetMessageByUserID(int userID)
