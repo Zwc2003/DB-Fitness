@@ -87,12 +87,13 @@
           :instructorName="usercourse.instructorName"
           :instructorHonors="usercourse.instructorHonors"
           :classTime="usercourse.classTime"
+          :isbooked="1"
         />
       </div>
       <div class="course-list">
         <h2>您今日的课程列表</h2>
         <el-row
-          v-for="(course, index) in todaycourses"
+          v-for="(course, index) in usercourses"
           :key="index"
           class="course-item"
         >
@@ -102,14 +103,22 @@
               :class="['circle', circleColors[index % circleColors.length]]"
             ></div>
             <!-- 课程名称 -->
-            <div class="course-name">{{ course.name }}</div>
+            <div class="course-name">
+              {{ truncateCourseName(course.courseName) }}
+            </div>
             <!-- 上课时间 -->
-            <div class="course-time">{{ course.time }}</div>
+            <div class="course-time">{{ course.classTime }}</div>
             <!-- 状态框 -->
             <div class="status-box">
               <el-tag :type="getStatusType(course)">
                 {{ getStatusText(course) }}
               </el-tag>
+            </div>
+            <!-- 添加的正方形框和图标 -->
+            <div class="square" @click="handleClick(course)">
+              <el-icon v-if="course.attended">
+                <Select />
+              </el-icon>
             </div>
           </div>
         </el-row>
@@ -229,11 +238,6 @@ export default {
       ],
       selectedPoem: null, // 保存选中的诗
 
-      todaycourses: [
-        { name: "瑜伽", time: "10:00 - 11:00", attended: false },
-        { name: "普拉提", time: "13:00 - 14:00", attended: true },
-        { name: "跑步", time: "18:00 - 19:00", attended: false },
-      ],
       circleColors: ["blue", "yellow", "red", "orange", "green"],
       isCartVisible: false,
     };
@@ -258,6 +262,20 @@ export default {
   },
 
   methods: {
+    //每日课程列表的名字长度问题
+    truncateCourseName(name) {
+      if (name.length > 5) {
+        return name.slice(0, 5) + "...";
+      } else {
+        return name;
+      }
+    },
+
+    //决定今日课程状态
+    handleClick(course) {
+      course.attended = course.attended ? 0 : 1;
+    },
+
     //更新我的课程到store
     ...mapActions(["updateUserCourses"]),
 
@@ -331,14 +349,14 @@ export default {
     //获取今日课程状态
     getStatusText(course) {
       const currentTime = new Date();
-      const [startHour, startMinute] = course.time
+      const [startHour, startMinute] = course.classTime
         .split(" - ")[0]
         .split(":")
         .map(Number);
       const startTime = new Date();
       startTime.setHours(startHour, startMinute);
 
-      const [endHour, endMinute] = course.time
+      const [endHour, endMinute] = course.classTime
         .split(" - ")[1]
         .split(":")
         .map(Number);
@@ -348,9 +366,9 @@ export default {
       if (currentTime < startTime) {
         return "提醒我";
       } else if (currentTime > endTime && course.attended) {
-        return "已完课";
+        return "已打卡";
       } else if (currentTime > endTime && !course.attended) {
-        return "补课";
+        return "未打卡";
       } else {
         return "进行中";
       }
@@ -360,7 +378,7 @@ export default {
     //获取状态的字体样式
     getStatusType(course) {
       const currentTime = new Date();
-      const [startHour, startMinute] = course.time
+      const [startHour, startMinute] = course.classTime
         .split(" - ")[0]
         .split(":")
         .map(Number);
@@ -432,19 +450,19 @@ export default {
   },
 
   computed: {
-    //从store获取用户课程
+    // 从store获取用户课程数组
     usercourses() {
       return this.getUserCourses;
     },
     ...mapGetters(["getUserCourses"]),
 
-    // 使用 mapState 从 Vuex 中获取 state
+    // 获取用户购物车数组
     ...mapState({
       vitalityCoins: (state) => state.vitalityCoins,
       cartCourses: (state) => state.cartCourses,
     }),
 
-    //用户当前健身阶段
+    // 用户当前健身阶段
     currentStage() {
       return this.stages
         .slice()
@@ -478,6 +496,7 @@ export default {
   display: flex;
   flex-direction: column;
   top: 5%;
+  left: 8%;
 }
 
 .kkk {
@@ -485,7 +504,7 @@ export default {
   align-items: center;
   justify-content: flex-end;
   position: absolute;
-  top: 4%;
+  top: 2.5%;
   right: 2%;
   gap: 10px; /* 设置两个组件之间的间距 */
 }
@@ -601,7 +620,7 @@ h2 {
   flex: 1;
   margin-right: 20px;
   font-size: 1rem;
-  width: 60px;
+  width: 100px;
 }
 
 .course-time {
@@ -611,6 +630,10 @@ h2 {
 
 .status-box {
   flex: 1;
+}
+
+.square {
+  margin-left: 5px;
 }
 
 .blue {

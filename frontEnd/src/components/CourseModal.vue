@@ -73,10 +73,21 @@
             }}<el-icon class="coinn"><Coin /></el-icon>
           </p>
         </div>
-
-        <div class="yuyue">
-          <el-icon style="font-size: 35px"><ShoppingTrolley /></el-icon>
-          <button class="book-button" @click="addToCart">加入购物车</button>
+        <div>
+          <div v-if="isbooked == 0" class="yuyue">
+            <el-icon style="font-size: 35px" class="ic"
+              ><ShoppingTrolley
+            /></el-icon>
+            <button class="book-button" @click="addToCart">加入购物车</button>
+          </div>
+          <button
+            v-else
+            :class="buttonClass"
+            @click="handleButtonClick"
+            :disabled="isDisabled"
+          >
+            {{ buttonText }}
+          </button>
         </div>
       </div>
     </div>
@@ -84,8 +95,14 @@
 </template>
 
 <script>
+import { ElMessage } from "element-plus";
+
 export default {
   props: {
+    isbooked: {
+      type: Boolean,
+      default: 1,
+    },
     isVisible: {
       type: Boolean,
       default: 1,
@@ -161,12 +178,29 @@ export default {
       default: 1,
     },
   },
-
+  data() {
+    return {
+      currentState: "", // "remember" | "signIn" | "completed" | "missed"
+    };
+  },
   emits: ["close"],
 
   methods: {
+    //关闭课程模式
     closeModal() {
       this.$emit("close");
+    },
+
+    //点击课程按钮
+    handleButtonClick() {
+      if (this.isDuringClass) {
+        this.currentState = "signedIn";
+      } else if (this.isAfterClass && this.currentState !== "signedIn") {
+        ElMessage({
+          message: "请联系教练补课",
+          type: "warning",
+        });
+      }
     },
 
     addToCart() {
@@ -194,6 +228,7 @@ export default {
   },
 
   computed: {
+    //卡片样式
     containerStyle() {
       return {
         position: "relative",
@@ -225,6 +260,67 @@ export default {
         backgroundSize: "cover",
         backgroundPosition: "center",
       };
+    },
+
+    //获取当前时间
+    currentTime() {
+      return new Date();
+    },
+    //获取课程的开始时间与结束时间
+    timeRange() {
+      const [start, end] = this.classTime.split("-").map((time) => {
+        const [hours, minutes] = time.split(":");
+        const date = new Date();
+        date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        return date;
+      });
+      return { start, end };
+    },
+    //判断是否在课程时间之前
+    isBeforeClass() {
+      return this.currentTime < this.timeRange.start;
+    },
+    //判断是否在课程进行中
+    isDuringClass() {
+      return (
+        this.currentTime >= this.timeRange.start &&
+        this.currentTime <= this.timeRange.end
+      );
+    },
+    //判断是否在课程时间之后
+    isAfterClass() {
+      return this.currentTime > this.timeRange.end;
+    },
+    //按钮的字样
+    buttonText() {
+      if (this.isBeforeClass) {
+        return "记得上课";
+      } else if (this.isDuringClass) {
+        return this.currentState === "signedIn" ? "已上课" : "签到";
+      } else if (this.isAfterClass) {
+        return this.currentState === "signedIn" ? "已上课" : "补课";
+      }
+    },
+    //按钮的样式
+    buttonClass() {
+      if (
+        this.isBeforeClass ||
+        (this.isDuringClass && this.currentState === "signedIn")
+      ) {
+        return "book-button blue";
+      } else if (this.isDuringClass) {
+        return "book-button active";
+      } else if (this.isAfterClass) {
+        return "book-button dark";
+      }
+    },
+    //课程开始前,已经签到,课程结束后,按钮都不能再被点击
+    isDisabled() {
+      return (
+        this.isBeforeClass ||
+        this.currentState === "signedIn" ||
+        (this.isAfterClass && this.currentState === "signedIn")
+      );
     },
   },
 };
@@ -403,11 +499,40 @@ export default {
   margin-left: 300px;
   margin-bottom: 100px;
   display: flex;
-  align-items: center; /* 水平对齐图标和按钮 */
+  align-items: center;
 }
 
 .book-button {
   margin-left: 10px;
   font-size: 20px;
+  cursor: pointer;
+}
+
+.book-button.blue {
+  background-color: blue;
+  color: white;
+
+  padding: 10px 20px;
+  margin-top: -10%;
+}
+
+.book-button.active {
+  background-color: green;
+  color: white;
+
+  padding: 10px 20px;
+  margin-top: -10%;
+}
+
+.book-button.dark {
+  background-color: gray;
+  color: white;
+
+  padding: 10px 20px;
+  margin-top: -10%;
+}
+
+.book-button[disabled] {
+  cursor: not-allowed;
 }
 </style>

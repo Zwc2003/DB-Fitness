@@ -69,6 +69,7 @@
     :instructorName="thecourse.instructorName"
     :instructorHonors="thecourse.instructorHonors"
     :coursePhotoUrl="thecourse.coursePhotoUrl"
+    :isbooked="1"
     @close="showModal = false"
   />
 
