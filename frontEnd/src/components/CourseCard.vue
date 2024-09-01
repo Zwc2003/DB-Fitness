@@ -180,6 +180,10 @@ export default {
       type: String,
       default: "0节课/0节课",
     },
+    classTime: {
+      type: String,
+      default: "17:00-18:30",
+    },
   },
 
   data() {
@@ -193,7 +197,7 @@ export default {
         courseEndTime: this.courseEndTime,
         courseGrade: this.courseGrade,
         coursePrice: this.coursePrice,
-        classTime: "每周三",
+        classTime: this.classTime,
         courseProgress: this.courseProgress,
         features: this.features,
         instructorImage: this.instructorImage,
@@ -244,6 +248,9 @@ export default {
     },
     courseProgress(newVal) {
       this.thecourse.courseProgress = newVal;
+    },
+    classTime(newVal) {
+      this.thecourse.classTime = newVal;
     },
   },
 

@@ -32,7 +32,7 @@
     "vue": "^3.4.21",
     "vue-router": "^4.0.13",
     "vue-socket.io": "^3.0.10",
-    "vuex": "^4.1.0",
+    "vuex": "^4.0.2",
     "wangeditor": "^4.7.15"
   },
   "devDependencies": {
