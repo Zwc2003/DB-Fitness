@@ -95,7 +95,6 @@
                         <button @click="saveProfile" class="save-button">保存</button>
                     </div>
 
-
                     <!-- 帖子列表部分 -->
                     <div class="button-container">
                         <button @click="togglePostList" class="toggle-button">
@@ -215,8 +214,9 @@ import Achievement_5 from '../assets/badges/Achievement_5.png';
 import Achievement_6 from '../assets/badges/Achievement_6.png';
 import Achievement_7 from '../assets/badges/Achievement_7.png';
 import Achievement_8 from '../assets/badges/Achievement_8.png';
-
+import { commonMixin } from '../mixins/checkLoginState';
 export default {
+    mixins: [commonMixin],
     components: {
         EditableField,
     },
@@ -272,19 +272,7 @@ export default {
         ...mapState(['token', 'userID'])
     },
     created() {
-
-        let token = localStorage.getItem('token');
-        if (token == null) {
-            ElNotification({
-                title: '提示',
-                message: '请先登录',
-                type: 'warning',
-                duration: 2000
-            })
-            this.$router.push('/login')
-        }
-        //this.fetchUserProfile();
-
+        this.checkAvailable()
         const userID = this.$route.params.userID;
         this.fetchUserProfile(userID);
         this.fetchUserPosts();
@@ -953,7 +941,6 @@ select {
     text-align: left;
     /* 确保按钮靠左对齐 */
 }
-
 .toggle-button {
     background-color: #43b984;
     /* 按钮背景颜色 */

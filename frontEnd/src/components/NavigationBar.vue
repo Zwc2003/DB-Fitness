@@ -177,8 +177,8 @@ export default {
                 return;
             }
 
-            // 检查 token 是否存在
-            let token = localStorage.getItem('token');
+            const token = localStorage.getItem('token');
+
             if (token == null) {
                 ElNotification({
                     title: '提示',
@@ -187,7 +187,37 @@ export default {
                     duration: 2000
                 });
                 this.router().push('/login');
+                return;
             }
+
+            axios.get(`http://localhost:8080/api/User/GetTokenInvalidateRes`, {
+                params: {
+                    token: token,
+                }
+            })
+                .then(response => {
+                    console.log("登录状态:",response.data);
+                    if(!response.data) {
+                      ElNotification({
+                        title: '提示',
+                        message: '登录已过期，请重新登录',
+                        type: 'warning',
+                        duration: 2000
+                      });
+                      localStorage.removeItem('token');
+                      this.router().push('/login');
+                    }
+                })
+                .catch(error => {
+                    ElNotification({
+                        title: '错误',
+                        message: '获取用户信息失败',
+                        type: 'error',
+                    });
+                });
+
+
+
         }
     },
     mounted() {

@@ -203,8 +203,10 @@ import { ElNotification } from 'element-plus';
 import { IconArrowLeft, IconFire, IconLink, } from '@arco-design/web-vue/es/icon';
 import { EmojiButton } from '@joeattardi/emoji-button';
 import store from '../store/index.js';
+import { commonMixin } from '../mixins/checkLoginState';
 
 export default {
+    mixins: [commonMixin],
     components: {
         IconArrowLeft,
         IconFire,
@@ -267,6 +269,7 @@ export default {
     },
 
     created() {
+        this.checkAvailable()
         this.fetchPostDetail();
         this.fetchRelatedPosts();
         this.fetchHotPosts();

@@ -41,6 +41,9 @@
     "@types/minimatch": "^5.1.2",
     "@types/web-bluetooth": "^0.0.20",
     "@vitejs/plugin-vue": "^5.0.5",
+    "eslint": "8.22.0",
+    "eslint-plugin-html": "^8.1.1",
+    "eslint-plugin-vuefix": "^0.2.1",
     "vite": "^5.4.2"
   }
 }
