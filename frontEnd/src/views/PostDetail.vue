@@ -211,7 +211,7 @@ export default {
             newCommentText: "",
             replyingTo: null,
             currentUser: localStorage.getItem('name'),
-            adminUserID: 21,
+            //adminUserID: 21,
             post: {
                 postID: null,
                 userID: null,
@@ -270,7 +270,7 @@ export default {
     },
     methods: {
         isCurrentUser(userName) {
-            return this.currentUser === userName || this.post.userID === this.adminUserID;
+            return this.currentUser === userName || this.$store.state.role === 'admin';
         },
         toggleContainer() {
             this.isContainerVisible = !this.isContainerVisible; // 切换容器显示状态
