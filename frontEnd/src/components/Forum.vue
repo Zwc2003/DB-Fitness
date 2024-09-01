@@ -100,7 +100,8 @@
                         <div v-if="post.imgUrl != `null`" class="post-image">
                             <img :src="post.imgUrl" alt="Post Image" class="image" />
                         </div>
-                        <p class="post-snippet">{{ truncatedContent(post.postContent) }}</p>
+                        <!-- 使用 v-html 直接渲染保存的内容 -->
+                        <p class="post-snippet" v-html="renderContent(post.postContent)"></p>
                     </div>
                     <div class="post-footer">
                         <span class="post-author">{{ post.userName }}</span>
@@ -119,7 +120,6 @@
                             </span>
                         </span>
                     </div>
-
                 </div>
             </div>
 
@@ -329,7 +329,23 @@ export default {
         },
 
         cleanHtml(content) {
-            return content.replace(/<\/?p>/g, '');
+            // 将 <br> 标签替换为换行符
+            let cleanedContent = content.replace(/<br\s*\/?>/gi, '<br/>');
+
+            // 保留 <span> 标签中的样式信息
+            cleanedContent = cleanedContent.replace(/<span\s+style="font-family:\s*([^;]+);?">/gi, (match, fontFamily) => {
+                return `<span style="font-family:${fontFamily};">`;
+            });
+
+            // 处理其他可能的格式标签
+            cleanedContent = cleanedContent.replace(/<\/?span[^>]*>/gi, '');
+
+            return cleanedContent;
+        },
+
+        renderContent(content) {
+            // 这里可以进一步处理内容，例如对其他 HTML 标签的处理
+            return content;
         },
 
         resetNewPostForm() {
