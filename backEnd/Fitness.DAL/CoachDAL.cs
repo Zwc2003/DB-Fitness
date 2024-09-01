@@ -23,7 +23,8 @@ namespace Fitness.DAL
                row["Gender"].ToString(),
                row["iconURL"].ToString(),
                Convert.ToInt32(row["isMember"]),
-               row["coachName"].ToString()
+               row["coachName"].ToString(),
+               row["instructorHonors"].ToString()
             );
             return coach;
         }
@@ -64,6 +65,24 @@ namespace Fitness.DAL
                 Console.WriteLine(ex.Message);
                 return false;
             }
+        }
+
+        public static Coach GetCoachByCoachID(int coachID)
+        {
+            string query = "SELECT * FROM \"Coach\" WHERE \"coachID\" = :coachID";
+            OracleParameter[] parameters = 
+            {
+                new OracleParameter(":coachID", OracleDbType.Int32) { Value = coachID }
+            };
+            DataTable coachTable = OracleHelper.ExecuteTable(query, parameters);
+
+            if (coachTable.Rows.Count > 0)
+            {
+                DataRow row = coachTable.Rows[0];
+                return ToModel(row);
+            }
+
+            return null;
         }
     }
 

@@ -29,7 +29,8 @@ namespace Fitness.DAL
                 courseLastDays = Convert.ToInt32(row["courseLastDays"]),
                 courseGrade = Convert.ToSingle(row["courseGrade"]),
                 coursePhotoUrl = row["coursePhotoUrl"].ToString(),
-                courseVideoUrl = row["courseVideoUrl"].ToString()
+                courseVideoUrl = row["courseVideoUrl"].ToString(),
+                features = row["features"].ToString()
             };
             return course;
         }
@@ -277,5 +278,30 @@ namespace Fitness.DAL
             return ToModelList(dt);
         }
 
+        public static int GetCoachIDByClassID(int ClassID)
+        {
+            string selectCommand = "SELECT \"coachID\" FROM \"Teaches\" WHERE \"classID\" = :\"classID\"";
+            OracleParameter parameter = new OracleParameter(":classID", ClassID);
+
+            object result = OracleHelper.ExecuteScalar(selectCommand, parameter);
+            if (result != null && result != DBNull.Value)
+            {
+                return Convert.ToInt32(result);
+            }
+            else
+            {
+                throw new Exception($"Class not found for ClassID: {ClassID}");
+            }
+        }
+
+        public static string GetTypeNameByTypeID(int TypeID)
+        {
+            string query = "SELECT \"typeName\" FROM \"CourseType\" WHERE \"typeID\" = :typeID";
+            OracleParameter[] parameters = 
+            {
+                new OracleParameter(":typeID", OracleDbType.Int32) { Value = TypeID }
+            };
+            return OracleHelper.ExecuteScalar(query, parameters)?.ToString();
+        }
     }
 }

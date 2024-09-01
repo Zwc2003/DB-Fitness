@@ -76,8 +76,6 @@
                         <icon-arrow-right />
                     </button>
                 </nav>
-                <EditArticle v-model:title="newPost.title" v-model:content="newPost.content"
-                    v-model:category="newPost.category" v-model:imgUrl="newPost.imgUrl" @add-post="addPost" />
                 <!-- 搜索框 -->
                 <div>
                     <el-input v-model="searchQuery" placeholder="搜索帖子..." class="search-box" @input="filterPosts"
@@ -89,6 +87,9 @@
                         </template>
                     </el-input>
                 </div>
+                <EditArticle v-model:title="newPost.title" v-model:content="newPost.content"
+                    v-model:category="newPost.category" v-model:imgUrl="newPost.imgUrl" @add-post="addPost" />
+
                 <!-- 帖子列表部分 -->
                 <div v-for="post in filteredPosts" :key="post.postID" class="post-item">
                     <div class="post-content">

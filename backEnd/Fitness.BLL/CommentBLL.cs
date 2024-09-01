@@ -74,17 +74,23 @@ namespace Fitness.BLL
             return CommentDAL.GetCommentByCommentID(commentID);
         }
 
-        public string DeleteComment(string token, int commentID,int postID)
+        public string DeleteComment(string token, int commentID, int postID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             bool result = false;
             PostBLL postBLL = new PostBLL();
+            int userid = tokenRes.userID;
             int PostUserID = postBLL.GetPostByPostID(token, postID).userID;
+            int commentOwnerID = CommentDAL.GetByCommentID(commentID).userID;
+            bool isCommentOwner = false;
             bool isPostOwner = false;
-            if (PostUserID == tokenRes.userID) { 
+            if (PostUserID == userid) {
                 isPostOwner = true;
             }
-            if (tokenRes.Role == "admin" || isPostOwner)
+            if (commentOwnerID == userid) { 
+                isCommentOwner = true;
+            }
+            if (tokenRes.Role == "admin" || isPostOwner ||isCommentOwner)
             {
                 CommentDAL.CommentsCountMinusOne(postID);
                 result = CommentDAL.DeleteComment(commentID);

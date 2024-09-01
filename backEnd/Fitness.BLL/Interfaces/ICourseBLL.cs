@@ -13,7 +13,7 @@ namespace Fitness.BLL.Interfaces
         public string ModifyCourse(string token, Course course);
         public string DeleteCourseByClassID(string token, int classID);
         public Course GetCourseByClassID(string token, int classID);
-        public List<Course> GetAllCourse(string token);
+        public string GetAllCourse();
         public string BeTrainee(string token, Trainee trainee);
         public string ReserveCourse(string token, int classID, string payMethod);
         public string PayCourseFare(string token, int bookID, int amount, string payMethod);
