@@ -95,5 +95,26 @@ namespace Fitness.Controllers
             List<Post> posts = _postBLL.Search(token, query, category, dateRange, sortBy);
             return posts;
         }
+
+        // 评论区健身教练AI评论
+        [HttpGet] 
+        public ActionResult<MessageRes> GetFitCoachComment(string postType, string postContent)
+        {
+            return _postBLL.FitCoachComment(postType, postContent);
+        }
+
+        // 评论区营养顾问AI评论
+        [HttpGet]
+        public ActionResult<MessageRes> GetNutriExpertComment(string postType, string postContent)
+        {
+            return _postBLL.NutriExpertComment(postType, postContent);
+        }
+
+        // 评论区激励导师AI评论
+        [HttpGet]
+        public ActionResult<MessageRes> GetMotivatorComment(string postType, string postContent)
+        {
+            return _postBLL.MotivatorComment(postType, postContent);
+        }
     }
 }

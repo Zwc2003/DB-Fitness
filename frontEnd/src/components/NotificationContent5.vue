@@ -38,7 +38,7 @@
             </div>
           </div>
           <div class="right-input" @keyup.enter="handleSearch">
-            <el-input v-model="queryKeyword" placeholder="给AI健身助手发送消息" class="input" style="font-size:20px"></el-input>
+            <el-input v-model="queryKeyword" placeholder="给AI健身助手发送消息" class="input" style="font-size:15px"></el-input>
             <el-button v-if="!loading" type="primary" style="font-size:20px" @click="handleSearch">发送</el-button>
             <el-button v-if="loading" type="primary" style="font-size:20px" @click="closeEventSource">停止</el-button>
           </div>
