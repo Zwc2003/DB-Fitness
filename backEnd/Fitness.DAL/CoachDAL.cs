@@ -45,17 +45,18 @@ namespace Fitness.DAL
         {
             try
             {
-                string sql = "INSERT INTO \"Coach\" (\"coachID\",\"userName\", \"Age\", \"Gender\", \"iconURL\", \"isMember\", \"coachName\") VALUES ( :coachID,:userName, :Age, :Gender, :iconURL, :isMember, :coachName)";
+                string sql = "INSERT INTO \"Coach\" (\"coachID\",\"userName\", \"Age\", \"Gender\", \"iconURL\", \"isMember\", \"coachName\", \"instructorHonors\") VALUES ( :coachID,:userName, :Age, :Gender, :iconURL, :isMember, :coachName, :instructorHonors)";
 
                 OracleParameter[] parameters = new OracleParameter[]
                 {
                 new OracleParameter("coachID", OracleDbType.Int32) { Value = coach.coachID },
-                new OracleParameter("userName", OracleDbType.Varchar2) { Value = coach.userName },
+                new OracleParameter("userName", OracleDbType.NVarchar2) { Value = coach.userName },
                 new OracleParameter("Age", OracleDbType.Int32) { Value = coach.Age },
                 new OracleParameter("Gender", OracleDbType.Varchar2) { Value = coach.Gender },
                 new OracleParameter("iconURL", OracleDbType.Varchar2) { Value = coach.iconURL },
                 new OracleParameter("isMember", OracleDbType.Int32) { Value = coach.isMember },
-                new OracleParameter("coachName", OracleDbType.Varchar2) { Value = coach.coachName }
+                new OracleParameter("coachName", OracleDbType.NVarchar2) { Value = coach.coachName },
+                new OracleParameter("instructorHonors", OracleDbType.NVarchar2) { Value = coach.instructorHonors }
                 };
                 OracleHelper.ExecuteNonQuery(sql,null, parameters);
                 return true;

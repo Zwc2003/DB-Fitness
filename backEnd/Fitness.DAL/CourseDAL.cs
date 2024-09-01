@@ -47,7 +47,7 @@ namespace Fitness.DAL
             return courses;
         }
 
-        // 将 DataTable 转换为 Course 对象列表
+        // 将 DataTable 转换为 BookCourseInfo 对象列表
         public static List<BookCourseInfo> BookCourseInfoToModelList(DataTable dt)
         {
             List<BookCourseInfo> info = new List<BookCourseInfo>();
@@ -145,8 +145,8 @@ namespace Fitness.DAL
                 //上传视频的方法加入
                 string videoUrl = course.courseVideoUrl;
 
-                string sql = $"INSERT INTO \"Course\"( \"typeID\", \"courseName\", \"Capacity\", \"courseDescription\", \"coursePrice\", \"courseStartTime\", \"courseEndTime\", \"courseLastDays\", \"courseGrade\", \"coursePhotoUrl\",\"courseVideoUrl\") " +
-                             $"VALUES(:typeID, :courseName, :Capacity, :courseDescription, :coursePrice, :courseStartTime, :courseEndTime, :courseLastDays, :courseGrade, :coursePhotoUrl,:courseVideoUrl) " +
+                string sql = $"INSERT INTO \"Course\"( \"typeID\", \"courseName\", \"Capacity\", \"courseDescription\", \"coursePrice\", \"courseStartTime\", \"courseEndTime\", \"courseLastDays\", \"courseGrade\", \"coursePhotoUrl\",\"courseVideoUrl\",\"features\",\"classTime\") " +
+                             $"VALUES(:typeID, :courseName, :Capacity, :courseDescription, :coursePrice, :courseStartTime, :courseEndTime, :courseLastDays, :courseGrade, :coursePhotoUrl, :courseVideoUrl, :features, :classTime) " +
                              $"RETURNING \"classID\" INTO :classID";
 
                 OracleParameter[] parameters = new OracleParameter[]
@@ -162,6 +162,8 @@ namespace Fitness.DAL
                     new OracleParameter("courseGrade", OracleDbType.BinaryFloat) { Value = course.courseGrade },
                     new OracleParameter("coursePhotoUrl", OracleDbType.Varchar2) { Value = photoUrl },
                     new OracleParameter("courseVideoUrl", OracleDbType.Varchar2) { Value = videoUrl },
+                    new OracleParameter("features", OracleDbType.NVarchar2) { Value = course.features },
+                    new OracleParameter("classTime", OracleDbType.Varchar2) { Value = course.classTime },
                     new OracleParameter("classID", OracleDbType.Int32, ParameterDirection.Output)
                 };
 
