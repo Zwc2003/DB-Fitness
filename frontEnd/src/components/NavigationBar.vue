@@ -125,9 +125,10 @@
 import router from "../router/index.js";
 import axios from "axios";
 import {ElNotification} from "element-plus";
-
+import { commonMixin } from '../mixins/checkLoginState';
 export default {
     name: "NavigationBar",
+    mixins: [commonMixin],
     data() {
         return {
             navBarFixed: false,
@@ -171,53 +172,11 @@ export default {
         checkLoginStatus() {
             // 获取当前路径
             const currentPath = this.$route.path;
-
             // // 如果当前路径是 '/home' 或 '/'，则不进行检查
             if (currentPath === '/home' || currentPath === '/') {
                 return;
             }
-
-            const token = localStorage.getItem('token');
-
-            if (token == null) {
-                ElNotification({
-                    title: '提示',
-                    message: '请先登录',
-                    type: 'warning',
-                    duration: 2000
-                });
-                this.router().push('/login');
-                return;
-            }
-
-            axios.get(`http://localhost:8080/api/User/GetTokenInvalidateRes`, {
-                params: {
-                    token: token,
-                }
-            })
-                .then(response => {
-                    console.log("登录状态:",response.data);
-                    if(!response.data) {
-                      ElNotification({
-                        title: '提示',
-                        message: '登录已过期，请重新登录',
-                        type: 'warning',
-                        duration: 2000
-                      });
-                      localStorage.removeItem('token');
-                      this.router().push('/login');
-                    }
-                })
-                .catch(error => {
-                    ElNotification({
-                        title: '错误',
-                        message: '获取用户信息失败',
-                        type: 'error',
-                    });
-                });
-
-
-
+            this.checkAvailable()
         }
     },
     mounted() {
