@@ -85,26 +85,23 @@
       <el-form-item label="模态框背景" prop="modalBackground">
         <el-input
           v-model="editForm.modalBackground"
-          placeholder="请输入模态框背景"
+          placeholder="复制图片链接至此处，如：https://www.les.com.cn/123.jpg"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程标题" prop="courseTitle">
         <el-input
           v-model="editForm.courseTitle"
-          placeholder="请输入课程标题"
+          placeholder="30到45分钟核心训练"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程开始时间" prop="startTime">
         <el-input
           v-model="editForm.startTime"
-          placeholder="请输入课程开始时间"
+          placeholder="2024-9-2"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程结束时间" prop="endTime">
-        <el-input
-          v-model="editForm.endTime"
-          placeholder="请输入课程结束时间"
-        ></el-input>
+        <el-input v-model="editForm.endTime" placeholder="2024-10-2"></el-input>
       </el-form-item>
       <el-form-item label="每周几开课" prop="classTime">
         <el-input

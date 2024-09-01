@@ -271,6 +271,10 @@ export default createStore({
         (course) => course.courseName !== courseName
       );
     },
+    //增加教练课程
+    ADD_TEACH_COURSE(state, newCourse) {
+      state.teachcourses.push(newCourse);
+    },
     //课程大厅点击预约进入购物车
     ADD_COURSE_TO_CART(state, course) {
       state.cartCourses.push(course);
@@ -374,6 +378,10 @@ export default createStore({
     //删除
     deleteTeachCourse({ commit }, courseName) {
       commit("DELETE_TEACH_COURSE", courseName);
+    },
+    //添加
+    addTeachCourse({ commit }, newCourse) {
+      commit("ADD_TEACH_COURSE", newCourse);
     },
     pollIsPost({ commit, state }) {
       setInterval(async () => {

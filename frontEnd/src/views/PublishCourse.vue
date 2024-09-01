@@ -82,21 +82,82 @@
           <el-form :model="form">
             <el-form-item label="课程名称">
               <el-input
-                v-model="form.name"
-                placeholder="请输入课程名称 普拉提"
+                v-model="newCourse.courseName"
+                placeholder="30到45分钟核心训练"
               ></el-input>
             </el-form-item>
-            <el-form-item label="进度">
+            <el-form-item label="课程图片">
               <el-input
-                v-model="form.progress"
-                placeholder="请输入课程进度 1节课/20节课"
+                v-model="newCourse.coursePhotoUrl"
+                placeholder="复制图片连接至此处"
               ></el-input>
             </el-form-item>
-            <el-form-item label="时间">
+            <el-form-item label="课程描述">
               <el-input
-                v-model="form.time"
-                placeholder="请输入开始到结束时间 2021.01.01-2022.01.01"
+                v-model="newCourse.courseDescription"
+                placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
               ></el-input>
+            </el-form-item>
+            <el-form-item label="课程开始时间">
+              <el-input
+                v-model="newCourse.courseStartTime"
+                placeholder="2024-8-8"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程结束时间">
+              <el-input
+                v-model="newCourse.courseEndTime"
+                placeholder="2022-9-8"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程等级">
+              <el-input
+                v-model="newCourse.courseGrade"
+                placeholder="2"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程价格">
+              <el-input
+                v-model="newCourse.coursePrice"
+                placeholder="30"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程进度">
+              <el-input
+                v-model="newCourse.courseProgress"
+                placeholder="0节课/30节课"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="特征">
+              <el-input
+                v-model="newCourse.features"
+                placeholder="感受力量涌现"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="教练图片">
+              <el-input
+                v-model="newCourse.instructorImage"
+                placeholder="复制图片链接至此处"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="教练名称">
+              <el-input
+                v-model="newCourse.instructorName"
+                placeholder="鹿晨辉"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="教练荣誉">
+              <el-input
+                v-model="newCourse.instructorHonors"
+                placeholder="国家级健美一级裁判和国家职业健身培训师"
+              ></el-input>
+            </el-form-item>
+            <!-- <el-form-item label="上课时间">
+              <el-input v-model="newCourse.classTime"></el-input>
+            </el-form-item> -->
+            <el-form-item>
+              <el-button type="primary" @click="submitForm">提交</el-button>
+              <el-button @click="showModal = false">取消</el-button>
             </el-form-item>
           </el-form>
           <template #footer>
@@ -118,7 +179,9 @@
               :class="['circle', circleColors[index % circleColors.length]]"
             ></div>
             <!-- 课程名称 -->
-            <div class="course-name">{{ course.courseName }}</div>
+            <div class="course-name">
+              {{ truncateCourseName(course.courseName) }}
+            </div>
             <!-- 上课时间 -->
             <div class="course-time">{{ course.classTime }}</div>
             <!-- 状态框 -->
@@ -158,8 +221,6 @@
 import * as echarts from "echarts";
 import TeachCard from "../components/TeachCard.vue";
 import { mapGetters, mapActions } from "vuex";
-import { ElMessage, ElMessageBox } from "element-plus";
-import { mapState } from "vuex";
 
 export default {
   components: {
@@ -169,10 +230,20 @@ export default {
   data() {
     return {
       showModal: false,
-      form: {
-        name: "",
-        progress: "",
-        time: "",
+      newCourse: {
+        coursePhotoUrl: "",
+        courseName: "",
+        courseDescription: "",
+        courseStartTime: "",
+        courseEndTime: "",
+        courseGrade: "",
+        coursePrice: "",
+        courseProgress: "",
+        features: "",
+        instructorImage: "",
+        instructorName: "",
+        instructorHonors: "",
+        classTime: "17:00 - 18:30",
       },
       courseData: [
         { date: "2024-08-01", duration: 3 },
@@ -291,6 +362,32 @@ export default {
       this.deleteTeachCourse(courseId);
     },
 
+    //添加
+    ...mapActions(["addTeachCourse"]),
+    openModal() {
+      console.log("Opening modal");
+      this.showModal = true;
+    },
+    submitForm() {
+      this.addTeachCourse(this.newCourse);
+      this.newCourse = {
+        coursePhotoUrl: "",
+        courseName: "",
+        courseDescription: "",
+        courseStartTime: "",
+        courseEndTime: "",
+        courseGrade: "",
+        coursePrice: "",
+        courseProgress: "",
+        features: "",
+        instructorImage: "",
+        instructorName: "",
+        instructorHonors: "",
+        classTime: "17:00 - 18:30",
+      };
+      this.showModal = false;
+    },
+
     //回退<-back
     onBack() {
       this.$router.go(-1);
@@ -337,23 +434,6 @@ export default {
       };
 
       chart.setOption(option);
-    },
-
-    saveCourse() {
-      // 将用户输入的课程信息保存到 teachCourses 数组中
-      this.teachcourses.push({
-        name: this.form.name,
-        progress: this.form.progress,
-        time: this.form.time,
-      });
-
-      // 清空表单
-      this.form.name = "";
-      this.form.progress = "";
-      this.form.time = "";
-
-      // 关闭弹窗
-      this.showModal = false;
     },
 
     //鼓励话语生成函数
