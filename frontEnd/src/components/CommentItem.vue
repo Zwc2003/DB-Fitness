@@ -1,6 +1,9 @@
 <template>
     <div class="comment-item">
-        <p><strong>{{ comment.userName }}</strong>: {{ comment.content }}</p>
+        <p>
+            <strong :class="{ 'current-user': isCurrentUser(comment.userName) }">{{ comment.userName }}</strong>:
+            {{ comment.content }}
+        </p>
         <el-text class="comment-time">{{ formatDate(comment.commentTime) }}</el-text>
         <div class="comment-actions">
             <span @click="likeComment(comment.commentID)" @mouseover="highlightCommentAction"
@@ -81,7 +84,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .comment-item {
     margin-bottom: 5px;
@@ -90,6 +92,10 @@ export default {
     border-radius: 5px;
     border: none;
     text-align: left;
+}
+
+.current-user {
+    color: red;
 }
 
 .comment-actions {
