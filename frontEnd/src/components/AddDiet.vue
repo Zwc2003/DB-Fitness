@@ -192,7 +192,7 @@ export default {
             return false;
         },
         addRecipe() {
-            console.log(1);
+            this.imageUrl = '';
             this.dialogVisible = true;
         },
 
