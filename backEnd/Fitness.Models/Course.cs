@@ -36,6 +36,7 @@ namespace Fitness.Models
         public float courseGrade { get; set; } 
         public string coursePhotoUrl { get; set; }
         public string courseVideoUrl { get; set; }
+        public string features { get; set; }
     }
 
     public class BookCourseInfo
@@ -135,6 +136,4 @@ namespace Fitness.Models
 
         public DateTime payTime { get; set; }= DateTime.Now;
     }
-
-
 }

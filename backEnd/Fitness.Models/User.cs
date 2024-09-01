@@ -128,7 +128,9 @@ namespace Fitness.Models
         //教练的真实名称
         public string coachName { get; set; }
 
-        public Coach(int coachID, string userName, int age, string gender, string iconURL, int isMember, string coachName)
+        public string instructorHonors {  get; set; }
+
+        public Coach(int coachID, string userName, int age, string gender, string iconURL, int isMember, string coachName, string instructorHonors)
         {
             this.coachID = coachID;
             this.userName = userName;
@@ -137,6 +139,7 @@ namespace Fitness.Models
             this.iconURL = iconURL;
             this.isMember = isMember;
             this.coachName = coachName;
+            this.instructorHonors = instructorHonors;
         }
 
     }

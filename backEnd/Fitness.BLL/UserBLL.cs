@@ -49,7 +49,7 @@ namespace Fitness.BLL
                     });
                 if (registerInfo.role == "coach")
                 {
-                    Coach coach = new Coach(res, user.userName, user.Age, user.Gender, user.iconURL, user.isMember, registerInfo.coachName);
+                    Coach coach = new Coach(res, user.userName, user.Age, user.Gender, user.iconURL, user.isMember, registerInfo.coachName, "");
                     CoachDAL.Insert(coach);
                 }
                 _verificationHelper.RemoveVerificationCode(registerInfo.email);
