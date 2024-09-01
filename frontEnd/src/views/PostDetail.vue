@@ -409,8 +409,8 @@ export default {
         goBack() {
             this.$router.go(-1);
         },
-        goBackToHome(){
-          this.$router.push('/forum');
+        goBackToHome() {
+            this.$router.push('/forum');
         },
         toggleLike(postID) {
             const token = localStorage.getItem('token');
@@ -481,7 +481,7 @@ export default {
                 if (this.replyingTo) {
                     axios.post(`http://localhost:8080/api/Comment/ReplyComment?token=${token}`, newComment)
                         .then(response => {
-                            if (response.data === '回复成功') {
+                            if (response.data.message === '回复成功') {
                                 this.newCommentText = ""; // 清空输入框
                                 ElNotification({
                                     title: '成功',
@@ -510,7 +510,7 @@ export default {
                     // 处理一级评论发布的情况
                     axios.post(`http://localhost:8080/api/Comment/PublishComment?token=${token}`, newComment)
                         .then(response => {
-                            if (response.data === '发布评论成功') {
+                            if (response.data.message === '发布评论成功') {
                                 this.newCommentText = ""; // 清空输入框
                                 ElNotification({
                                     title: '成功',
@@ -1227,8 +1227,8 @@ textarea {
 
 }
 
-.backHome-button-container{
-  position: absolute;
+.backHome-button-container {
+    position: absolute;
     top: 1vh;
     /* 调整为你需要的上边距 */
     left: 1vw;
