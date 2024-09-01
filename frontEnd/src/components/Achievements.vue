@@ -119,19 +119,31 @@ export default {
 
 <style scoped>
 /* 动态箭头样式 */
+@keyframes fade {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .scroll-arrow {
   position: absolute; /* 绝对定位 */
   bottom: -5px; /* 距离底部的距离 */
   left: 50%; /* 水平居中 */
-  transform: translateX(-50%) ; /* 水平居中调整，并顺时针旋转 90 度 */
+  transform: translateX(-50%); /* 水平居中调整 */
   width: 50px; /* 箭头宽度 */
   height: 50px; /* 箭头高度 */
   background: url('../assets/images/箭头.png') no-repeat center center; /* 背景图标 */
   background-size: contain; /* 使背景图标适应容器 */
   cursor: pointer; /* 鼠标悬停时显示手形光标 */
-  animation: bounce 1s infinite; /* 动画效果 */
-  
+  animation: fade 1.5s infinite; /* 渐变动画效果 */
 }
+
 .video-container {
   justify-content: center;
   position: absolute; /* 绝对定位 */

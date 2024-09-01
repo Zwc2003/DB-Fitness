@@ -28,6 +28,7 @@
     margin-top: 200vh;
     margin-bottom: -10vh;
     justify-content: center;
+    background: url('../assets/images/bg5.jpg') no-repeat center center;
 }
 </style>
 
