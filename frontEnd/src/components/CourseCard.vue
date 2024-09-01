@@ -109,7 +109,6 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import CourseModal from "../components/CourseModal.vue";
 
 export default {
@@ -353,7 +352,7 @@ export default {
 
 .title-right {
   font-weight: bold;
-  font-size: 1.2rem; /* 可以根据需要调整课程名的字体大小 */
+  font-size: 1.2rem;
 }
 
 .title-left .bolder,
@@ -379,14 +378,14 @@ export default {
 
 .card-firstrow {
   display: flex;
-  align-items: center; /* 垂直居中对齐 */
+  align-items: center;
   margin-top: 5px;
   margin-bottom: 7px;
 }
 
 .card-secondrow {
   display: flex;
-  align-items: center; /* 垂直居中对齐 */
+  align-items: center;
 }
 
 .continue-learn {
