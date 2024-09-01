@@ -1,45 +1,71 @@
 <template>
   <div>
-    <h1>课程信息</h1>
-    <CourseCard
-      v-for="(usercourse, index) in usercourses"
-      :key="index"
-      :coursePhotoUrl="usercourse.coursePhotoUrl"
-      :courseName="usercourse.courseName"
-      :courseDescription="usercourse.courseDescription"
-      :courseStartTime="usercourse.courseStartTime"
-      :courseEndTime="usercourse.courseEndTime"
-      :courseGrade="usercourse.courseGrade"
-      :coursePrice="usercourse.coursePrice"
-      :courseProgress="usercourse.courseProgress"
-      :features="usercourse.features"
-      :instructorImage="usercourse.instructorImage"
-      :instructorName="usercourse.instructorName"
-      :instructorHonors="usercourse.instructorHonors"
-    />
-  </div>
-  <!-- <div v-for="course in usercourses" :key="course.courseName">
-      <img :src="course.coursePhotoUrl" alt="course image" />
-      <h2>{{ course.courseName }}</h2>
-      <p>{{ course.courseDescription }}</p>
-      <p>教练: {{ course.instructorName }}</p>
+    <div class="square" @click="handleClick">
+      <el-icon v-if="iconVisible">
+        <Select />
+      </el-icon>
     </div>
-  </div> -->
+  </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import CourseCard from "../components/CourseCard.vue";
+import { ElIcon } from "element-plus";
+import { Select } from "@element-plus/icons-vue";
 
 export default {
   components: {
-    CourseCard,
+    ElIcon,
+    Select,
   },
-  computed: {
-    usercourses() {
-      return this.getUserCourses;
+  props: {
+    usercourses: {
+      type: Array,
+      required: true,
     },
-    ...mapGetters(["getUserCourses"]),
+    todaycourses: {
+      type: Array,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      iconVisible: false,
+    };
+  },
+  methods: {
+    handleClick() {
+      this.iconVisible = !this.iconVisible; // Toggle icon visibility
+
+      // Update todaycourses array based on usercourses
+      this.todaycourses.forEach((course) => {
+        if (
+          course.name === this.usercourses[0].courseName &&
+          course.time === this.usercourses[0].classTime
+        ) {
+          course.attended = 1; // Mark as attended
+        } else {
+          course.attended = 0; // Mark as not attended
+        }
+      });
+    },
   },
 };
 </script>
+
+<style>
+.square {
+  width: 30px;
+  height: 30px;
+  border: 2px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* .el-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+} */
+</style>

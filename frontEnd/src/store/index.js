@@ -53,7 +53,8 @@ export default createStore({
         instructorImage: "/images/pn.jpg",
         features: ["增强心肺功能", "提升肌肉力量", "塑造紧致线条"],
         selected: true,
-        classTime: "10:00-11:00",
+        classTime: "17:00 - 18:00",
+        isbooked: 0,
       },
       {
         coursePhotoUrl:
@@ -70,7 +71,8 @@ export default createStore({
         instructorImage: "/images/p.jpg",
         features: ["增强心肺功能", "助力有氧健身", "塑造紧致线条"],
         selected: false,
-        classTime: "10:00-11:00",
+        classTime: "10:00 - 11:00",
+        isbooked: 0,
       },
       {
         coursePhotoUrl:
@@ -87,7 +89,8 @@ export default createStore({
         instructorImage: "/images/l.jpg",
         features: ["感受力量涌现", "增强肌肉控制", "减少受伤风险"],
         selected: true,
-        classTime: "10:00-11:00",
+        classTime: "10:00 - 11:00",
+        isbooked: 0,
       },
     ],
     //活力币
@@ -110,7 +113,8 @@ export default createStore({
         instructorImage: "/images/pn.jpg",
         features: ["感受力量涌现", "增强肌肉控制", "训练全身各处"],
         courseProgress: "25节/32节课",
-        classTime: "10:00-11:00",
+        classTime: "17:00 - 18:00",
+        isbooked: 1,
       },
       {
         coursePhotoUrl:
@@ -127,7 +131,8 @@ export default createStore({
         instructorImage: "/images/p.jpg",
         features: ["提升身心平衡", "助力有氧健身", "维护心理健康"],
         courseProgress: "25节/32节课",
-        classTime: "10:00-11:00",
+        classTime: "10:00 - 11:00",
+        isbooked: 1,
       },
       {
         coursePhotoUrl:
@@ -144,7 +149,8 @@ export default createStore({
         instructorImage: "/images/l.jpg",
         features: ["感受力量涌现", "增强肌肉控制", "减少受伤风险"],
         courseProgress: "25节/32节课",
-        classTime: "10:00-11:00",
+        classTime: "10:00 - 11:00",
+        isbooked: 1,
       },
       {
         coursePhotoUrl:
@@ -161,7 +167,8 @@ export default createStore({
         instructorImage: "/images/p.jpg",
         features: ["增强心肺功能", "助力有氧健身", "塑造紧致线条"],
         courseProgress: "25节/32节课",
-        classTime: "10:00-11:00",
+        classTime: "10:00 - 11:00",
+        isbooked: 1,
       },
     ],
     //用户列表的相关信息
