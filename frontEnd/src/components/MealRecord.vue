@@ -398,7 +398,7 @@ export default {
       const needToCount = this.formatDate(this.selectedDate);
       let count = 0;
       for (let i = 0; i < this.oneDayRecord[needToCount].length; i++) {
-        count += this.oneDayRecord[needToCount][i].totalCalorie;
+        count += this.oneDayRecord[needToCount][i].calorie;
       }
       return count;
     },
@@ -686,7 +686,7 @@ export default {
           for (let i = 0; i < this.oneDayRecord[check].length; i++) {
             if (this.oneDayRecord[check][i].mealTime === requestData.mealTime) {
               this.oneDayRecord[check][i].recordID = response.data.recordID;
-              this.oneDayRecord[check][i].calorie = response.data.calorie;
+              this.oneDayRecord[check][i].calorie = response.data.totalCalorie;
               //setTimeout(() => {
                 this.getAISuggestions(this.oneDayRecord[check][i].recordID);
               //}, 10000);
