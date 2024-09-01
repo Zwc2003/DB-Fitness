@@ -49,7 +49,7 @@ namespace Fitness.BLL
                     });
                 if (registerInfo.role == "coach")
                 {
-                    Coach coach = new Coach(res, user.userName, user.Age, user.Gender, user.iconURL, user.isMember, registerInfo.coachName);
+                    Coach coach = new Coach(res, user.userName, user.Age, user.Gender, user.iconURL, user.isMember, registerInfo.coachName, "");
                     CoachDAL.Insert(coach);
                 }
                 _verificationHelper.RemoveVerificationCode(registerInfo.email);
@@ -155,11 +155,13 @@ namespace Fitness.BLL
 
                 TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
                 int st;
+                int userid = tokenRes.userID;
                 //可以再利用st添加一些出错的处理：方便前后端对接出错时处理
-                UserDAL.UpdateExpandUserInfo(tokenRes.userID, userinfo, out st);
+                UserDAL.UpdateExpandUserInfo(userid, userinfo, out st);
                 //！！！记得同步更新FoodPlan表
-                //待补充个人资料更新的成就
-
+                //补充个人资料更新的成就
+                UserAchievementBLL UserAchievementBll = new();
+                UserAchievementBll.UpdateUserInfoAchievement(userid);
                 return "更新成功";
             }
 

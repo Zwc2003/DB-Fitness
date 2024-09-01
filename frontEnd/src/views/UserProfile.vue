@@ -275,19 +275,18 @@ export default {
 
         let token = localStorage.getItem('token');
         if (token == null) {
-          ElNotification({
-            title: '提示',
-            message: '请先登录',
-            type: 'warning',
-            duration: 2000
-          })
-          this.$router.push('/login')
+            ElNotification({
+                title: '提示',
+                message: '请先登录',
+                type: 'warning',
+                duration: 2000
+            })
+            this.$router.push('/login')
         }
         //this.fetchUserProfile();
 
         const userID = this.$route.params.userID;
         this.fetchUserProfile(userID);
-
         this.fetchUserPosts();
         this.getVigorTokenBalance();
         this.getVigorTokenRecordsFromDB();
@@ -335,6 +334,7 @@ export default {
                 this.originalTags = [...this.tags]; // 保存初始状态的标签
                 this.imagePreview = this.profile.iconURL; // 设置头像预览
                 this.originalImagePreview = this.profile.iconURL; // 保存初始状态的头像
+                console.log("用户资料：", this.profile);
                 ElNotification({
                     title: '成功',
                     message: '用户资料获取成功',
@@ -453,7 +453,10 @@ export default {
             });
         },
         async saveProfile() {
-            if (this.profile.userID !== this.userID && this.$store.state.role !== 'admin') {  // 检查 userID 是否匹配
+            console.log(this.userID);
+
+            console.log(this.profile.userID);
+            if (this.profile.userID != this.userID) {  // 检查 userID 是否匹配
                 this.profile = JSON.parse(JSON.stringify(this.originalProfile)); // 恢复原始数据
                 this.tags = [...this.originalTags]; // 恢复初始状态的标签
                 this.imagePreview = this.originalImagePreview; // 恢复初始状态的头像

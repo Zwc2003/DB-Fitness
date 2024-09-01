@@ -26,5 +26,7 @@ namespace Fitness.Models
         // 发送时间
         public DateTime sendTime { get; set; }
 
+        public int isRead { get; set; }
+
     }
 }

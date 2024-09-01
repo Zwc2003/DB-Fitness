@@ -2,8 +2,6 @@
     <div class="forum-bg">
         <el-backtop class="backtop-button" />
         <div class="forum-container">
-
-
             <!-- 帖子卡片 -->
             <el-card class="card">
                 <!-- 站内公告 -->
@@ -78,8 +76,6 @@
                         <icon-arrow-right />
                     </button>
                 </nav>
-                <EditArticle v-model:title="newPost.title" v-model:content="newPost.content"
-                    v-model:category="newPost.category" v-model:imgUrl="newPost.imgUrl" @add-post="addPost" />
                 <!-- 搜索框 -->
                 <div>
                     <el-input v-model="searchQuery" placeholder="搜索帖子..." class="search-box" @input="filterPosts"
@@ -91,6 +87,9 @@
                         </template>
                     </el-input>
                 </div>
+                <EditArticle v-model:title="newPost.title" v-model:content="newPost.content"
+                    v-model:category="newPost.category" v-model:imgUrl="newPost.imgUrl" @add-post="addPost" />
+
                 <!-- 帖子列表部分 -->
                 <div v-for="post in filteredPosts" :key="post.postID" class="post-item">
                     <div class="post-content">
@@ -102,7 +101,8 @@
                         <div v-if="post.imgUrl != `null`" class="post-image">
                             <img :src="post.imgUrl" alt="Post Image" class="image" />
                         </div>
-                        <p class="post-snippet">{{ truncatedContent(post.postContent) }}</p>
+                        <!-- 使用 v-html 直接渲染保存的内容 -->
+                        <p class="post-snippet" v-html="renderContent(post.postContent)"></p>
                     </div>
                     <div class="post-footer">
                         <span class="post-author">{{ post.userName }}</span>
@@ -121,7 +121,6 @@
                             </span>
                         </span>
                     </div>
-
                 </div>
             </div>
 
@@ -331,7 +330,23 @@ export default {
         },
 
         cleanHtml(content) {
-            return content.replace(/<\/?p>/g, '');
+            // 将 <br> 标签替换为换行符
+            let cleanedContent = content.replace(/<br\s*\/?>/gi, '<br/>');
+
+            // 保留 <span> 标签中的样式信息
+            cleanedContent = cleanedContent.replace(/<span\s+style="font-family:\s*([^;]+);?">/gi, (match, fontFamily) => {
+                return `<span style="font-family:${fontFamily};">`;
+            });
+
+            // 处理其他可能的格式标签
+            cleanedContent = cleanedContent.replace(/<\/?span[^>]*>/gi, '');
+
+            return cleanedContent;
+        },
+
+        renderContent(content) {
+            // 这里可以进一步处理内容，例如对其他 HTML 标签的处理
+            return content;
         },
 
         resetNewPostForm() {

@@ -41,9 +41,9 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Course>> GetAllCourse([FromHeader] string token)
+        public ActionResult<string> GetAllCourse()
         {
-            return _courseBLL.GetAllCourse(token);
+            return _courseBLL.GetAllCourse();
         }
 
         // public string BeTrainee(string token,Trainee trainee) 

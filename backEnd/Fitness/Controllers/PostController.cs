@@ -105,9 +105,9 @@ namespace Fitness.Controllers
 
         // 评论区营养顾问AI评论
         [HttpGet]
-        public ActionResult<MessageRes> GetNutriExpertComment(string postType, string postContent)
+        public ActionResult<MessageRes> GetNutriExpertComment(string postContent)
         {
-            return _postBLL.NutriExpertComment(postType, postContent);
+            return _postBLL.NutriExpertComment(postContent);
         }
 
         // 评论区激励导师AI评论

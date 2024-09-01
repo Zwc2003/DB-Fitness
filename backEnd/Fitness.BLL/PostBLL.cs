@@ -37,7 +37,6 @@ namespace Fitness.BLL
             int st;
             post.userName = UserDAL.GetUserByUserID(tokenRes.userID,out st).userName;
             
-
             // 首先要判断是否已经为url
             if (post.imgUrl != "null" && !UrlHelper.IsUrl(post.imgUrl)) {
 
@@ -49,8 +48,6 @@ namespace Fitness.BLL
                 post.imgUrl = OSSHelper.GetPublicObjectUrl(objectName);
 
             }
-
-
 
             int postId = PostDAL.Post(post);
             if (postId == 0)
@@ -70,6 +67,9 @@ namespace Fitness.BLL
             PublishDAL.Post(publish);
             //更新成就
             _userAchievement.UpdatePostAchievement(tokenRes.userID, 1);
+            //插入一条AI评论
+
+
             return JsonConvert.SerializeObject(new
             {
                 postID = postId,
@@ -275,7 +275,7 @@ namespace Fitness.BLL
         }
 
         // 评论区——健身教练AI
-        public MessageRes FitCoachComment(string postType, string postContent)
+        public MessageRes FitCoachComment(string postType,string postContent)
         {
 
             string sys = "- Role: 专业健身教练\r\n" +
@@ -301,7 +301,7 @@ namespace Fitness.BLL
         }
 
         // 评论区——营养顾问AI
-        public MessageRes NutriExpertComment(string postType, string postContent)
+        public MessageRes NutriExpertComment(string postContent)
         {
 
             string sys = "- Role: 营养顾问\r\n" +
@@ -319,7 +319,7 @@ namespace Fitness.BLL
 
             MessageRes res = new();
 
-            string Prompt = "帖子类型为" + postType + ",帖子内容为:" + postContent;
+            string Prompt = "帖子内容为:" + postContent;
 
             res.message = Qwen_VL.CallQWenSingle(sys, Prompt);
 
