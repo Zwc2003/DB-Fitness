@@ -272,6 +272,16 @@ export default {
         ...mapState(['token'])
     },
     created() {
+        let token = localStorage.getItem('token');
+        if (token == null) {
+          ElNotification({
+            title: '提示',
+            message: '请先登录',
+            type: 'warning',
+            duration: 2000
+          })
+          this.$router.push('/login')
+        }
         this.fetchUserProfile();
         this.fetchUserPosts();
         this.getVigorTokenBalance();
