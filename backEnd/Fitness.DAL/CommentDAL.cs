@@ -62,6 +62,20 @@ namespace Fitness.DAL
             return null;
         }
 
+        public static Comment GetByCommentID(int commentID)
+        {
+            string query = "SELECT * FROM \"Comment\" WHERE \"commentID\" = :commentID";
+            OracleParameter[] parameters = {
+            new OracleParameter("commentID" , OracleDbType.Int32 ) {Value = commentID }
+        };
+            DataTable table = OracleHelper.ExecuteTable(query, parameters);
+            if (table.Rows.Count > 0)
+            {
+                return ToModel(table.Rows[0]);
+            }
+            return null;
+        }
+
         public static bool Insert(Comment comment)
         {
             string query = "INSERT INTO \"Comment\" (\"userID\", \"userName\",\"postID\", \"parentCommentID\", \"commentTime\", \"likesCount\", \"Content\")"+ 
