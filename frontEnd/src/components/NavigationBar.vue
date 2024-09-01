@@ -103,19 +103,19 @@
                                 <el-icon>
                                     <Setting />
                                 </el-icon>
-                                账号设置
-                            </el-dropdown-item>
-                            <el-dropdown-item @click="navigateToLoginOut">
-                                <el-icon>
-                                    <Switch />
-                                </el-icon>
-                                切换账号
+                                个人资料
                             </el-dropdown-item>
                             <el-dropdown-item v-if="currentUser === 'admin'" @click="navigateToAdminPanel">
                                 <el-icon>
                                     <Tools />
                                 </el-icon>
                                 管理界面
+                            </el-dropdown-item>
+                            <el-dropdown-item @click="navigateToLoginOut">
+                                <el-icon>
+                                    <Switch />
+                                </el-icon>
+                                退出登录
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
