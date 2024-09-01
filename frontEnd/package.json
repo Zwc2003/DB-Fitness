@@ -30,7 +30,7 @@
     "marked": "^14.1.0",
     "socket.io-client": "^4.7.5",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0",
+    "vue-router": "^4.0.13",
     "vue-socket.io": "^3.0.10",
     "vuex": "^4.1.0",
     "wangeditor": "^4.7.15"

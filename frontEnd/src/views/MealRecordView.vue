@@ -19,6 +19,7 @@
 import NavigationBar from "../components/NavigationBar.vue";
 import MealRecord from "../components/MealRecord.vue";
 import CommonLayout from "../components/CommonLayout.vue";
+import {ElNotification} from "element-plus";
 export default {
   components: {
     NavigationBar,
@@ -29,7 +30,19 @@ export default {
     goBack() {
       this.$router.back(); // 使用Vue Router的back方法返回上一页
     }
-  }
+  },
+  created() {
+      let token = localStorage.getItem('token');
+      if (token == null) {
+        ElNotification({
+          title: '提示',
+          message: '请先登录',
+          type: 'warning',
+          duration: 2000
+        })
+        this.$router.push('/login')
+      }
+    }
 }
 </script>
 
