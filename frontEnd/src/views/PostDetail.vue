@@ -410,7 +410,7 @@ export default {
             this.$router.go(-1);
         },
         goBackToHome() {
-            this.$router.push('/forum');
+            this.$router.go(-1);
         },
         toggleLike(postID) {
             const token = localStorage.getItem('token');
@@ -660,31 +660,58 @@ export default {
             const token = localStorage.getItem('token');
 
             try {
-                // 递归删除子评论
-                const comment = this.comments.find(c => c.commentID === commentID) ||
-                    this.comments.flatMap(c => c.replies).find(r => r.commentID === commentID);
-                if (comment && comment.replies && comment.replies.length > 0) {
-                    for (let reply of comment.replies) {
-                        await this.deleteComment(reply.commentID);
+                // 找到目标评论及其所在的父级评论数组（comments 或 replies）
+                const findComment = (commentID, comments) => {
+                    for (let i = 0; i < comments.length; i++) {
+                        if (comments[i].commentID === commentID) {
+                            return { comment: comments[i], parentArray: comments, index: i };
+                        }
+                        if (comments[i].replies && comments[i].replies.length > 0) {
+                            const result = findComment(commentID, comments[i].replies);
+                            if (result) return result;
+                        }
                     }
-                }
+                    return null;
+                };
 
-                // 删除目标评论
-                const response = await axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
-                    params: {
-                        token: token,
-                        commentID: commentID,
-                        postID: this.post.postID
+                // 递归删除子评论，返回删除的评论总数
+                const deleteRecursively = async (comment) => {
+                    let deletedCount = 0;
+                    if (comment.replies && comment.replies.length > 0) {
+                        for (let reply of comment.replies) {
+                            deletedCount += await deleteRecursively(reply);
+                        }
                     }
-                });
 
-                if (response.data === '评论删除成功') {
-                    // 更新评论列表，移除已删除的评论
-                    this.comments = this.comments.filter(c => c.commentID !== commentID);
-                    this.comments.forEach(comment => {
-                        comment.replies = comment.replies.filter(r => r.commentID !== commentID);
+                    // 删除当前评论
+                    const response = await axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
+                        params: {
+                            token: token,
+                            commentID: comment.commentID,
+                            postID: this.post.postID
+                        }
                     });
-                    this.post.commentsCount--;
+
+                    if (response.data === '评论删除成功') {
+                        deletedCount += 1;
+                    } else {
+                        throw new Error('删除评论失败');
+                    }
+
+                    return deletedCount;
+                };
+
+                const { comment, parentArray, index } = findComment(commentID, this.comments);
+
+                if (comment) {
+                    // 先递归删除子评论
+                    const deletedCount = await deleteRecursively(comment);
+
+                    // 从父级数组中移除当前评论
+                    parentArray.splice(index, 1);
+
+                    // 同步更新评论总数
+                    this.post.commentsCount -= deletedCount;
 
                     ElNotification({
                         title: '成功',
@@ -694,7 +721,7 @@ export default {
                 } else {
                     ElNotification({
                         title: '错误',
-                        message: '删除评论失败',
+                        message: '未找到要删除的评论',
                         type: 'error',
                     });
                 }
@@ -707,6 +734,7 @@ export default {
                 });
             }
         },
+
         setReplyTarget(comment) {
             this.replyingTo = comment;
             this.newCommentText = `@${comment.userName} `;
