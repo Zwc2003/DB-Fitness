@@ -30,7 +30,8 @@ namespace Fitness.DAL
                 courseGrade = Convert.ToSingle(row["courseGrade"]),
                 coursePhotoUrl = row["coursePhotoUrl"].ToString(),
                 courseVideoUrl = row["courseVideoUrl"].ToString(),
-                features = row["features"].ToString()
+                features = row["features"].ToString(),
+                classTime = row["classTime"].ToString()
             };
             return course;
         }
