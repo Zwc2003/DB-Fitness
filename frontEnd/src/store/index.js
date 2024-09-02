@@ -42,6 +42,8 @@ export default createStore({
     vitalityCoins: 100,
     //存储用户课程表
     usercourses: [],
+    //教练课程
+    teachcourses: [],
     //用户列表的相关信息
     userListInformation: [],
     //聊天记录

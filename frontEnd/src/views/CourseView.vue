@@ -4,7 +4,7 @@
     <router-link v-if="userRole === 'user'" to="/userhome">
       <el-button type="primary">我的主页</el-button>
     </router-link>
-    <router-link v-else-if="userRole ==='coach'" to="/publishcourse">
+    <router-link v-else-if="userRole === 'coach'" to="/publishcourse">
       <el-button type="primary">我的主页</el-button>
     </router-link>
   </div>
@@ -42,7 +42,37 @@
         </div>
       </div>
     </div>
+    <div class="search-bar">
+      <!-- 搜索框 -->
+      <el-input
+        v-model="searchKey"
+        placeholder="搜索健身课程"
+        style="width: 300px"
+        @keyup.enter="searchCourses"
+      >
+        <template #append>
+          <el-button @click="searchCourses">搜索</el-button>
+        </template>
+      </el-input>
 
+      <!-- 价格区间选择器 -->
+      <el-select
+        v-model="selectedPriceRange"
+        placeholder="选择价格区间"
+        style="margin-left: 16px; width: 180px"
+        @change="updatePriceRange"
+      >
+        <el-option label="0-30活力币" :value="{ min: 0, max: 30 }"></el-option>
+        <el-option
+          label="30-60活力币"
+          :value="{ min: 30, max: 60 }"
+        ></el-option>
+        <el-option
+          label="60-100活力币"
+          :value="{ min: 60, max: 100 }"
+        ></el-option>
+      </el-select>
+    </div>
     <!-- 课程内容展示区域 -->
     <div class="course-grid">
       <CourseHome
@@ -86,6 +116,8 @@ export default {
   },
   data() {
     return {
+      searchKey: "", // 搜索关键词
+      selectedPriceRange: null, // 选中的价格区间
       userRole: "普通用户",
       courses: [],
       isDialogVisible: false,
@@ -101,9 +133,25 @@ export default {
     };
   },
   methods: {
-    toggleRole() {
-      this.userRole = this.userRole === "user" ? "coach" : "user";
+    // 更新价格区间参数
+    updatePriceRange(value) {
+      this.minPrice = value.min;
+      this.maxPrice = value.max;
+      this.searchCourses();
     },
+    // 搜索课程
+    searchCourses() {
+      const params = {
+        key: this.searchKey,
+        minprice: this.minPrice,
+        maxprice: this.maxPrice,
+      };
+      // 调用后端API进行课程筛选
+      console.log("筛选参数:", params);
+      // this.fetchCourses(params); // 这里调用实际的API方法
+    },
+
+    //关键词搜索函数
     selectOption(option) {
       this.selectedOption = option;
       this.showInput = ["fitness", "price", "category"].includes(option);
@@ -137,26 +185,27 @@ export default {
     //大厅获取课程API
     async fetchCourses() {
       const token = localStorage.getItem("token");
-      return axios.get(`http://localhost:8080/api/Course/GetAllCourse?token=${token}`)
-                .then(response => {
-                      this.courses = response.data.map(item => {
-                        if (item.features) {
-                          item.features = item.features.split('#');
-                        }
-                        return item;
-                      });
-                      console.log(this.courses);
-                      this.filteredCourses = this.courses; // 默认展示所有课程
-                })
-                .catch(error => {
-                  console.error("Error fetching courses:", error);
-                    ElNotification({
-                        title: '错误',
-                        message: '获取所有课程时发生错误，请稍后再试。',
-                        type: 'error',
-                    });
-                    throw error;
-                });
+      return axios
+        .get(`http://localhost:8080/api/Course/GetAllCourse?token=${token}`)
+        .then((response) => {
+          this.courses = response.data.map((item) => {
+            if (item.features) {
+              item.features = item.features.split("#");
+            }
+            return item;
+          });
+          console.log(this.courses);
+          this.filteredCourses = this.courses; // 默认展示所有课程
+        })
+        .catch((error) => {
+          console.error("Error fetching courses:", error);
+          ElNotification({
+            title: "错误",
+            message: "获取所有课程时发生错误，请稍后再试。",
+            type: "error",
+          });
+          throw error;
+        });
     },
   },
   mounted() {
@@ -272,9 +321,17 @@ export default {
   cursor: pointer;
 }
 
+.search-bar {
+  position: absolute;
+  right: 5%;
+  top: calc(100% + 10px);
+  display: flex;
+  align-items: center;
+}
+
 .course-grid {
   position: absolute;
-  top: calc(100% + 20px); /* 在 bottom-bar 正下方 20px */
+  top: calc(100% + 25px); /* 在 bottom-bar 正下方 20px */
   left: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);

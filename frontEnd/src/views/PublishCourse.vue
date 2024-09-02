@@ -128,10 +128,29 @@
                 placeholder="0节课/30节课"
               ></el-input>
             </el-form-item>
-            <el-form-item label="特征">
+            <el-form-item label="课程特征">
+              <div>
+                <el-tag
+                  v-for="(feature, index) in newCourse.features"
+                  :key="index"
+                  closable
+                  @close="removeFeature(index)"
+                  style="margin-right: 8px"
+                >
+                  {{ feature }}
+                </el-tag>
+                <el-input
+                  v-model="inputFeature"
+                  placeholder="输入并按回车,如 [力量, 增肌]"
+                  @keyup.enter.native="addFeature"
+                  style="width: 200px"
+                ></el-input>
+              </div>
+            </el-form-item>
+            <el-form-item label="课程分类">
               <el-input
-                v-model="newCourse.features"
-                placeholder="感受力量涌现"
+                v-model="newCourse.courseType"
+                placeholder="高强度间歇/儿童趣味课/低强度塑形/有氧……"
               ></el-input>
             </el-form-item>
             <el-form-item label="教练图片">
@@ -152,9 +171,6 @@
                 placeholder="国家级健美一级裁判和国家职业健身培训师"
               ></el-input>
             </el-form-item>
-            <!-- <el-form-item label="上课时间">
-              <el-input v-model="newCourse.classTime"></el-input>
-            </el-form-item> -->
             <el-form-item>
               <el-button type="primary" @click="submitForm">提交</el-button>
               <el-button @click="showModal = false">取消</el-button>
@@ -239,12 +255,14 @@ export default {
         courseGrade: "",
         coursePrice: "",
         courseProgress: "",
-        features: "",
+        features: [],
+        courseType: "",
         instructorImage: "",
         instructorName: "",
         instructorHonors: "",
         classTime: "17:00 - 18:30",
       },
+      inputFeature: "",
       courseData: [
         { date: "2024-08-01", duration: 3 },
         { date: "2024-08-02", duration: 5 },
@@ -368,6 +386,16 @@ export default {
       console.log("Opening modal");
       this.showModal = true;
     },
+    addFeature() {
+      const feature = this.inputFeature.trim();
+      if (feature && !this.newCourse.features.includes(feature)) {
+        this.newCourse.features.push(feature);
+      }
+      this.inputFeature = ""; // 清空输入框
+    },
+    removeFeature(index) {
+      this.newCourse.features.splice(index, 1);
+    },
     submitForm() {
       this.addTeachCourse(this.newCourse);
       this.newCourse = {
@@ -379,7 +407,8 @@ export default {
         courseGrade: "",
         coursePrice: "",
         courseProgress: "",
-        features: "",
+        features: [],
+        courseType: "",
         instructorImage: "",
         instructorName: "",
         instructorHonors: "",
