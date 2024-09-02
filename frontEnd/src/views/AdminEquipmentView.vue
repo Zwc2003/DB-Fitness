@@ -8,13 +8,12 @@
 
 import { defineComponent } from "vue";
 import { RouterView } from 'vue-router';
-import FitnessGuide from "../components/FitnessGuide.vue";
 import AIGuide from "../components/AIGuide.vue"
 import adminEquipment from "../components/adminEquipment.vue"
 import AddDiet from "../components/AddDiet.vue"
 
 export default defineComponent({
-    components: { FitnessGuide, AIGuide, adminEquipment, AddDiet }
+    components: {  AIGuide, adminEquipment, AddDiet }
 })
 </script>
 

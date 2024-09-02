@@ -4,14 +4,10 @@ import LoginView from "../views/LoginView.vue";
 import SignUpView from "../views/SignUpView.vue";
 import CourseView from "../views/CourseView.vue";
 import TweetsView from "../views/TweetsView.vue";
-import CameraView from "../views/CameraView.vue";
 // import FitnessChart from './components/dataVis.vue'
-import EquipmentGuide from "../views/EquipmentGuideView.vue";
-import EquipmentDetails from "../components/EquipmentDetails.vue";
 import adminEquipment from "../components/adminEquipment.vue";
 import AddDiet from "../components/AddDiet.vue";
 import FitnessGuide from "../views/FitnessGuideView.vue";
-import FitnessDetail from "../components/FitnessDetail.vue";
 import AdminEquipmentView from "../views/AdminEquipmentView.vue";
 import MealRecordView from "../views/MealRecordView.vue";
 import MealPlannerView from "../views/MealPlannerView.vue";
@@ -185,6 +181,14 @@ const router = createRouter({
       component: AdminView,
       props: true,
     },
+    // 排行榜界面
+    {
+      path: "/ranking-list",
+      name: "RankingList",
+      component: RankingList,
+      props: true,
+    },
+
   ],
 });
 

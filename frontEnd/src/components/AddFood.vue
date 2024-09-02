@@ -2,8 +2,8 @@
     <div>
         <el-card :style="{ fontSize: '20px' }" style="height: 100px; padding: 0;">
             <el-row style="margin: 12px; padding: 0;">
-                <el-col :span="3">
-                    修订<br>食物表
+                <el-col :span="3" style="font-size:18px">
+                  食<br>物<br>表
                 </el-col>
                 <el-col :span="21">
                     <el-image :src="foodBG1" style="width: 450px; padding: 0;" />

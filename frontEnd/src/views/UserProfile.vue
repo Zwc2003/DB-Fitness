@@ -215,6 +215,7 @@ import Achievement_6 from '../assets/badges/Achievement_6.png';
 import Achievement_7 from '../assets/badges/Achievement_7.png';
 import Achievement_8 from '../assets/badges/Achievement_8.png';
 import { commonMixin } from '../mixins/checkLoginState';
+import store from "../store";
 export default {
     mixins: [commonMixin],
     components: {
@@ -486,12 +487,17 @@ export default {
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
                 this.originalTags = [...this.tags]; // 保存更新后的标签
                 this.originalImagePreview = this.imagePreview; // 保存更新后的头像
-                if (response.data === '更新成功')
-                    ElNotification({
+                if (response.data === '更新成功'){
+                  ElNotification({
                         title: '成功',
                         message: '保存成功！',
                         type: 'success',
                     });
+                  store.commit('setIconUrl',this.profile.iconURL)
+
+
+                }
+
             } catch (error) {
                 console.log(error);
                 ElNotification({
@@ -546,7 +552,7 @@ export default {
 
 <style scoped>
 .bg {
-    background-image: url('../components/icons/forum-bg.jpg');
+    background-image: url('../assets/images/forum-bg.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

@@ -14,8 +14,9 @@ export const commonMixin = {
             type: 'warning',
             duration: 2000
           })
-
-          this.router().push(`/login`);
+          localStorage.removeItem('iconUrl');
+          this.$router.push({ path: '/login' });
+          //this.router().push(`/login`);
           return;
         };
         axios.get(`http://localhost:8080/api/User/GetTokenInvalidateRes`, {
@@ -32,7 +33,8 @@ export const commonMixin = {
                               duration: 2000
                             });
                             localStorage.removeItem('token');
-                            this.router().push(`/login`);
+                            localStorage.removeItem('iconUrl');
+                            this.$router.push({ path: '/login' });
                           }
                       }).catch(error => {
                           ElNotification({
