@@ -9,7 +9,6 @@
 
 import { defineComponent } from "vue";
 import {RouterView, useRouter} from 'vue-router';
-import FitnessGuide from "../components/FitnessGuide.vue";
 import AIGuide from "../components/AIGuide.vue"
 import adminEquipment from "../components/adminEquipment.vue"
 import AddDiet from "../components/AddDiet.vue"
@@ -20,7 +19,7 @@ import { commonMixin } from '../mixins/checkLoginState';
 
 export default defineComponent({
     mixins: [commonMixin],
-    components: {  FitnessGuide, AIGuide, adminEquipment, AddDiet,CommonLayout },
+    components: {   AIGuide, adminEquipment, AddDiet,CommonLayout },
     created() {
       this.checkAvailable()
     },

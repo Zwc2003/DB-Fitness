@@ -552,7 +552,7 @@ export default {
 
 <style scoped>
 .bg {
-    background-image: url('../components/icons/forum-bg.jpg');
+    background-image: url('../assets/images/forum-bg.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

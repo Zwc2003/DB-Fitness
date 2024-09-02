@@ -273,7 +273,7 @@ export default
 }
 
 .background-image {
-    background-image: url('../components/icons/background.jpg');
+    background-image: url('../assets/images/background.jpg');
     background-size: cover; /* 确保背景图片填充整个容器 */
     background-position: center;
     width: 70%; /* 背景图片区域占左边 80% */
