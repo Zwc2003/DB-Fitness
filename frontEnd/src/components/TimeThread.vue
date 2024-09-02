@@ -150,7 +150,7 @@ function loadWeeksData() {
     }
   }).then(response => {
     weeks.value = response.data; // 假设数据结构中 weeks 在顶层
-    localStorage.setItem('savedFitnessPlan', JSON.stringify(weeks.value)); // 保存数据到本地存储
+    //localStorage.setItem('savedFitnessPlan', JSON.stringify(weeks.value)); // 保存数据到本地存储
     loading.value = false;
     ElNotification({
             message: "健身计划成功生成！",
@@ -164,13 +164,7 @@ function loadWeeksData() {
 }
 
 function loadSavedPlan() {
-  const savedPlan = localStorage.getItem('savedFitnessPlan');
-  if (savedPlan) {
-    weeks.value = JSON.parse(savedPlan);
-    loading.value = false;
-  } else {
     loadWeeksData();
-  }
 }
 
 const open = (row) => {
