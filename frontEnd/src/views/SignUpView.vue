@@ -213,7 +213,7 @@ export default {
 }
 
 .background-image {
-    background-image: url('../components/icons/background.jpg');
+    background-image: url('../assets/images/background.jpg');
     background-size: cover;
     background-position: center;
     width: 70%;

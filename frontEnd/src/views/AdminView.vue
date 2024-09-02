@@ -7,7 +7,7 @@
                     <span>FitFit</span>
                     <div class="user">
                         <el-dropdown>
-                            <img src="../assets/images/user.jpeg" alt="User" class="dropdownlink" />
+                            <img :src="iconUrl" alt="User" class="dropdownlink" />
                             <template #dropdown>
                                 <el-dropdown-menu>
                                     <el-dropdown-item @click="goPage('/home')">
@@ -184,7 +184,7 @@ let article = ref({
 checkAvailable()
 // 用户信息数据结构
 const users = ref([]);
-
+const iconUrl = store.state.iconUrl
 // 帖子数据结构
 const contentList = ref([]);
 

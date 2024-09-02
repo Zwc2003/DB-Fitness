@@ -406,7 +406,7 @@ export default {
             this.$router.go(-1);
         },
         goBackToHome() {
-            this.$router.go(-1);
+            this.$router.push('/forum');
         },
         toggleLike(postID) {
             const token = localStorage.getItem('token');

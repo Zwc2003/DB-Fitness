@@ -13,7 +13,7 @@ export default createStore({
     userID: localStorage.getItem("userID") || "",
     name: localStorage.getItem("name") || "",
     isPost: localStorage.getItem("isPost") || "",
-    iconUrl: localStorage.getItem("iconUrl") || "",
+    iconUrl: localStorage.getItem("iconUrl") || "../assets/images/default-avatar.png",
     // role: 'unAuthenticated',
     // username: '',
     // token: '',
@@ -29,6 +29,8 @@ export default createStore({
       "活动赛事",
       "初学指南",
     ],
+    unreadIDs:[],//未读ID
+
     targetInfomation: {
       id: "",
       img: "",
