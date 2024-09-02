@@ -8,28 +8,22 @@
 <script>
 
 import { defineComponent } from "vue";
-import { RouterView } from 'vue-router';
+import {RouterView, useRouter} from 'vue-router';
 import FitnessGuide from "../components/FitnessGuide.vue";
 import AIGuide from "../components/AIGuide.vue"
 import adminEquipment from "../components/adminEquipment.vue"
 import AddDiet from "../components/AddDiet.vue"
 import CommonLayout from '../components/CommonLayout.vue';
 import {ElNotification} from "element-plus";
+import axios from "axios";
+import { commonMixin } from '../mixins/checkLoginState';
 
 export default defineComponent({
+    mixins: [commonMixin],
     components: {  FitnessGuide, AIGuide, adminEquipment, AddDiet,CommonLayout },
     created() {
-      let token = localStorage.getItem('token');
-      if (token == null) {
-        ElNotification({
-          title: '提示',
-          message: '请先登录',
-          type: 'warning',
-          duration: 2000
-        })
-        this.$router.push('/login')
-      }
-    }
+      this.checkAvailable()
+    },
 })
 </script>
 

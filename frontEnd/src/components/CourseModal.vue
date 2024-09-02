@@ -210,7 +210,7 @@ export default {
         courseName: this.courseName,
         courseStartTime: this.courseStartTime,
         courseEndTime: this.courseEndTime,
-        classTime: this.classTime,
+        classTime: "17:00 - 18:30",
         features: this.features,
         instructorImage: this.instructorImage,
         instructorName: this.instructorName,
@@ -294,7 +294,7 @@ export default {
     //按钮的字样
     buttonText() {
       if (this.isBeforeClass) {
-        return "记得上课";
+        return "准时上课";
       } else if (this.isDuringClass) {
         return this.currentState === "signedIn" ? "已上课" : "签到";
       } else if (this.isAfterClass) {

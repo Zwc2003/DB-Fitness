@@ -161,32 +161,13 @@
                 </el-tag>
               </div>
               <div class="custom-select">
-                <el-select
-                  v-if="inputVisible"
-                  ref="selectRef"
-                  v-model="inputValue"
-                  @change="handleInputConfirm"
-                  @blur="handleInputConfirm"
-                  placeholder="输入/选择食物"
-                  filterable
-                  allow-create
-                  default-first-option
-                  :style="{ width: '300px', height: '40px' }"
-                >
-                  <el-option
-                    v-for="item in food"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                    :disabled="isOptionDisabled(item.value)"
-                  ></el-option>
+                <el-select v-if="inputVisible" ref="selectRef" v-model="inputValue" @change="handleInputConfirm"
+                  @blur="handleInputConfirm" placeholder="输入/选择食物" filterable allow-create default-first-option
+                  :style="{ width: '300px', height: '40px' }">
+                  <el-option v-for="item in food" :key="item.value" :label="item.label" :value="item.value"
+                    :disabled="isOptionDisabled(item.value)"></el-option>
                 </el-select>
-                <el-button
-                  v-else
-                  class="button-new-tag"
-                  :disabled="!canAdd"
-                  @click="showInput"
-                >
+                <el-button v-else class="button-new-tag" :disabled="!canAdd" @click="showInput">
                   + 点击添加食物
                 </el-button>
               </div>
@@ -218,32 +199,13 @@
                 </el-tag>
               </div>
               <div class="custom-select">
-                <el-select
-                  v-if="inputVisible"
-                  ref="selectRef"
-                  v-model="inputValue"
-                  @change="handleInputConfirm"
-                  @blur="handleInputConfirm"
-                  placeholder="输入/选择食物"
-                  filterable
-                  allow-create
-                  default-first-option
-                  :style="{ width: '300px', height: '40px' }"
-                >
-                  <el-option
-                    v-for="item in food"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                    :disabled="isOptionDisabled(item.value)"
-                  ></el-option>
+                <el-select v-if="inputVisible" ref="selectRef" v-model="inputValue" @change="handleInputConfirm"
+                  @blur="handleInputConfirm" placeholder="输入/选择食物" filterable allow-create default-first-option
+                  :style="{ width: '300px', height: '40px' }">
+                  <el-option v-for="item in food" :key="item.value" :label="item.label" :value="item.value"
+                    :disabled="isOptionDisabled(item.value)"></el-option>
                 </el-select>
-                <el-button
-                  v-else
-                  class="button-new-tag"
-                  :disabled="!canAdd"
-                  @click="showInput"
-                >
+                <el-button v-else class="button-new-tag" :disabled="!canAdd" @click="showInput">
                   + 点击添加食物
                 </el-button>
               </div>
@@ -263,7 +225,7 @@
         <el-card class="ana-container">
           <template #header>
             <div class="card-header">
-              <h2 :style="{ fontSize: '30px',color: 'white' }">每日饮食情况总结</h2>
+              <h2 :style="{ fontSize: '30px', color: 'white' }">每日饮食情况总结</h2>
             </div>
           </template>
           <div class="center-content">
@@ -374,22 +336,22 @@ export default {
       }
       else {
         if (this.vigorTokenBalance < 30) {
-        ElNotification({
-          title: '注意',
-          message: `本功能需要耗费30活力币，您的余额为${this.vigorTokenBalance}，余额不足!`,
-          type: 'warning',
-          duration: 2000
-        })
-        return
-      }
-      else{
-        ElNotification({
-          title: '注意',
-          message: `本次消费30活力币，您的余额为${this.vigorTokenBalance-30}`,
-          type: 'success',
-          duration: 2000
-        })
-      }
+          ElNotification({
+            title: '注意',
+            message: `本功能需要耗费30活力币，您的余额为${this.vigorTokenBalance}，余额不足!`,
+            type: 'warning',
+            duration: 2000
+          })
+          return
+        }
+        else {
+          ElNotification({
+            title: '注意',
+            message: `本次消费30活力币，您的余额为${this.vigorTokenBalance - 30}`,
+            type: 'success',
+            duration: 2000
+          })
+        }
         this.anaLoading = true;
         this.getAIAnalysis(/*this.oneDayRecord[needToAna][0].userID*/);
       }
@@ -653,7 +615,7 @@ export default {
       axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`)
         .then(response => {
           this.vigorTokenBalance = response.data.balance;
-          }).catch(error => {
+        }).catch(error => {
           this.vigorTokenBalance = 0;
           console.error("Error fetching vigorTokenBalance:", error);
         });
@@ -686,9 +648,9 @@ export default {
           for (let i = 0; i < this.oneDayRecord[check].length; i++) {
             if (this.oneDayRecord[check][i].mealTime === requestData.mealTime) {
               this.oneDayRecord[check][i].recordID = response.data.recordID;
-              this.oneDayRecord[check][i].calorie = response.data.calorie;
+              this.oneDayRecord[check][i].calorie = response.data.totalCalorie;
               //setTimeout(() => {
-                this.getAISuggestions(this.oneDayRecord[check][i].recordID);
+              this.getAISuggestions(this.oneDayRecord[check][i].recordID);
               //}, 10000);
               break;
             }
@@ -699,48 +661,48 @@ export default {
         });
     },
     getAISuggestions(recordID) {
-  console.log("获取AI建议", recordID);
-  const maxAttempts = 20;
-
-  // 这个函数每次调用都会创建一个独立的 attempts 变量
-    const pollForAISuggestions = (attempts = 0) => {
       console.log("获取AI建议", recordID);
-      axios.get(`http://localhost:8080/api/MealRecords/AISuggestions`, {
-        params: {
-          recordID: recordID,
-        }
-      })
-      .then(response => {
-        console.log("轮询尝试次数:", attempts, "AI建议:", response.data);
-        if (response.data && response.data.diningAdvice) {
-          console.log("AI建议:", response.data.diningAdvice);
-          const check = this.formatDate(this.selectedDate);
-          for (let i = 0; i < this.oneDayRecord[check].length; i++) {
-            if (this.oneDayRecord[check][i].recordID === recordID) {
-              this.oneDayRecord[check][i].diningAdvice = marked(response.data.diningAdvice);
-              this.oneDayRecord[check][i].loading = false;
-            }
-          }
-          this.getVigorTokenBalance();
-          // 收到有效的AI建议，停止轮询
-        } else if (attempts < maxAttempts) {
-          setTimeout(() => pollForAISuggestions(attempts + 1), 1000);  // 1秒后再次检查
-        } else {
-          console.error("AI suggestions could not be retrieved after 10 attempts.");
-          ElNotification({
-            message: "AI建议获取失败，请稍后重试",
-            type: 'error',
-            duration: 2000
-          });
-        }
-      })
-      .catch(error => {
-        console.error("Error getting AI suggestions:", error);
-      });
-    };
+      const maxAttempts = 20;
 
-    pollForAISuggestions();  // 开始轮询，每次调用都会创建独立的 attempts 变量
-  },
+      // 这个函数每次调用都会创建一个独立的 attempts 变量
+      const pollForAISuggestions = (attempts = 0) => {
+        console.log("获取AI建议", recordID);
+        axios.get(`http://localhost:8080/api/MealRecords/AISuggestions`, {
+          params: {
+            recordID: recordID,
+          }
+        })
+          .then(response => {
+            console.log("轮询尝试次数:", attempts, "AI建议:", response.data);
+            if (response.data && response.data.diningAdvice) {
+              console.log("AI建议:", response.data.diningAdvice);
+              const check = this.formatDate(this.selectedDate);
+              for (let i = 0; i < this.oneDayRecord[check].length; i++) {
+                if (this.oneDayRecord[check][i].recordID === recordID) {
+                  this.oneDayRecord[check][i].diningAdvice = marked(response.data.diningAdvice);
+                  this.oneDayRecord[check][i].loading = false;
+                }
+              }
+              this.getVigorTokenBalance();
+              // 收到有效的AI建议，停止轮询
+            } else if (attempts < maxAttempts) {
+              setTimeout(() => pollForAISuggestions(attempts + 1), 1000);  // 1秒后再次检查
+            } else {
+              console.error("AI suggestions could not be retrieved after 10 attempts.");
+              ElNotification({
+                message: "AI建议获取失败，请稍后重试",
+                type: 'error',
+                duration: 2000
+              });
+            }
+          })
+          .catch(error => {
+            console.error("Error getting AI suggestions:", error);
+          });
+      };
+
+      pollForAISuggestions();  // 开始轮询，每次调用都会创建独立的 attempts 变量
+    },
     // 得到AI分析
     getAIAnalysis(/*userID*/) {
       const date = this.formatDate(this.selectedDate);
@@ -835,7 +797,7 @@ export default {
           for (let i = 0; i < this.oneDayRecord[check].length; i++) {
             if (this.oneDayRecord[check][i].recordID === planContent.recordID) {
               //setTimeout(() => {
-                this.getAISuggestions(this.oneDayRecord[check][i].recordID);
+              this.getAISuggestions(this.oneDayRecord[check][i].recordID);
               //}, 5000);
             }
           }
@@ -878,7 +840,7 @@ export default {
   watch: {
     selectedDate(newDate) {
       this.anaLoading = false;
-      this.getAnalysis=false;
+      this.getAnalysis = false;
       this.AIanalysis = "";
       this.getRecordFromDB(/*0,*/ newDate);
     }
@@ -914,7 +876,7 @@ export default {
 <style scoped>
 .recordContainer {
   background-color: rgb(247, 251, 254);
-  width : 100%
+  width: 100%
 }
 
 .meal-item {
@@ -1014,11 +976,11 @@ export default {
 
 .ana-style {
   height: 65vh;
-  width:20vw;
+  width: 20vw;
   overflow-y: auto;
   font-size: 18px;
   color: rgb(30, 29, 29);
-  padding:30px !important;
+  padding: 30px !important;
 }
 
 .loading-container {
@@ -1098,16 +1060,17 @@ export default {
   width: 108px;
   height: 60px;
   color: #269af2;
-  --c: radial-gradient(farthest-side,currentColor 96%,#0000);
-  background: 
+  --c: radial-gradient(farthest-side, currentColor 96%, #0000);
+  background:
     var(--c) 100% 100% /30% 60%,
-    var(--c) 70%  0    /50% 100%,
-    var(--c) 0    100% /36% 68%,
-    var(--c) 27%  18%  /26% 40%,
+    var(--c) 70% 0 /50% 100%,
+    var(--c) 0 100% /36% 68%,
+    var(--c) 27% 18% /26% 40%,
     linear-gradient(currentColor 0 0) bottom/67% 58%;
   background-repeat: no-repeat;
   position: relative;
 }
+
 .loader:after {
   content: "";
   position: absolute;
@@ -1116,15 +1079,19 @@ export default {
   opacity: 0.4;
   animation: l7 1s infinite;
 }
+
 @keyframes l7 {
-  to {transform:scale(1.8);opacity:0}
+  to {
+    transform: scale(1.8);
+    opacity: 0
+  }
 }
 
 .button-custom {
   margin-top: 100px;
   align-items: center;
   border: 0;
-  border-radius: 50%; 
+  border-radius: 50%;
   box-shadow: rgba(151, 65, 252, 0.2) 0 15px 30px -5px;
   box-sizing: border-box;
   color: #FFFFFF;
@@ -1140,20 +1107,18 @@ export default {
   touch-action: manipulation;
   white-space: nowrap;
   cursor: pointer;
-  position: relative; 
-  z-index: 0; 
+  position: relative;
+  z-index: 0;
 }
 
 .button-custom:before {
   content: "";
-  background: linear-gradient(
-    45deg,
-    #B08FAF,
-    #B1D1CE,
-    #A3C3E0,
-    #B1D1CE,
-    #B08FAF
-  );
+  background: linear-gradient(45deg,
+      #B08FAF,
+      #B1D1CE,
+      #A3C3E0,
+      #B1D1CE,
+      #B08FAF);
   position: absolute;
   top: -2px;
   left: -2px;
@@ -1164,16 +1129,18 @@ export default {
   height: calc(100% + 4px);
   animation: glowing-button-85 20s linear infinite;
   transition: opacity 0.3s ease-in-out;
-  border-radius: 50%; 
+  border-radius: 50%;
 }
 
 @keyframes glowing-button-85 {
   0% {
     background-position: 0 0;
   }
+
   50% {
     background-position: 400% 0;
   }
+
   100% {
     background-position: 0 0;
   }
@@ -1188,7 +1155,7 @@ export default {
   background-image: linear-gradient(144deg, #5B42F3 0%, #00DDEB);
   left: 0;
   top: 0;
-  border-radius: 50%; 
+  border-radius: 50%;
 }
 
 .loading-text p {
@@ -1222,10 +1189,10 @@ export default {
 }
 
 .tags-container {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    font-size:16px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  font-size: 16px;
 }
 
 .custom-select {

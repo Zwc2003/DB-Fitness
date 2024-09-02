@@ -43,6 +43,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 .avatar {
   width: 100%;
   height: auto;

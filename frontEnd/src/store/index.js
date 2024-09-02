@@ -171,12 +171,78 @@ export default createStore({
         isbooked: 1,
       },
     ],
+    //存储教练课程
+    teachcourses: [
+      {
+        coursePhotoUrl:
+          "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
+        courseName: "举重阻尼训练",
+        courseDescription:
+          "举重阻尼训练是一种结合了力量训练与控制力训练的高效健身课程。提高肌肉力量和爆发力，增强肌肉控制和稳定性，本课程适合各种健身水平的人士，无论是初学者还是经验丰富的运动员，都可以在教练的指导下找到适合自己的训练强度。",
+        courseStartTime: "2022-08-08",
+        courseEndTime: "2024-08-08",
+        courseGrade: "4",
+        coursePrice: "50",
+        instructorName: "朴男",
+        instructorHonors:
+          "男Krisun，极限运动员，世界纪录保持者，抖音创作者，其抖音号“朴男Krisun”，拥有粉丝169.3万",
+        instructorImage: "/images/pn.jpg",
+        features: ["感受力量涌现", "增强肌肉控制", "训练全身各处"],
+        courseProgress: "25节/32节课",
+        classTime: "17:00 - 18:00",
+        // isbooked: 1,
+        // name: "普拉提",
+        // progress: "25节/32节课",
+        // startTime: "2017.05.01",
+        // endTime: "2018.06.05",
+      },
+      {
+        coursePhotoUrl:
+          "https://www.lesmills.com.cn/uploads/20211207/d5d8d0860359243eee20bc507bf2c231.jpg",
+        courseName: "平衡与专注、持久与柔软",
+        courseDescription:
+          "持久与柔软瑜伽课程旨在帮助学员通过瑜伽的练习，提升身心的平衡，增强专注力，同时提高身体的持久力和柔软度。本课程适合所有级别的瑜伽爱好者，无论是初学者还是有经验的练习者，都可以在这个课程中找到适合自己的挑战和放松",
+        courseStartTime: "2022-08-08",
+        courseEndTime: "2024-08-09",
+        courseGrade: "2",
+        coursePrice: "10",
+        instructorName: "帕梅拉",
+        instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
+        instructorImage: "/images/p.jpg",
+        features: ["提升身心平衡", "助力有氧健身", "维护心理健康"],
+        courseProgress: "25节/32节课",
+        classTime: "10:00 - 11:00",
+        // name: "瑜伽",
+        // progress: "15节课/20节课",
+        // startTime: "2017.05.01",
+        // endTime: "2018.06.05",
+      },
+      {
+        coursePhotoUrl:
+          "https://www.lesmills.com.cn/uploads/20211207/30c00cdf6752eeda8356ecd01893dabd.jpg",
+        courseName: "30到45分钟核心训练",
+        courseDescription:
+          "核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。这门30到45分钟的核心训练课程专为忙碌的现代人设计，旨在通过高强度、集中的训练，快速有效地加强你的核心力量和稳定性。",
+        courseStartTime: "2022-08-08",
+        courseEndTime: "2024-08-09",
+        courseGrade: "3",
+        coursePrice: "30",
+        instructorName: "鹿晨辉",
+        instructorHonors: "鹿晨辉，国家级健美一级裁判和国家职业健身培训师。",
+        instructorImage: "/images/l.jpg",
+        features: ["感受力量涌现", "增强肌肉控制", "减少受伤风险"],
+        courseProgress: "25节/32节课",
+        classTime: "10:00 - 11:00",
+        // name: "运动",
+        // progress: "15节课/20节课",
+        // startTime: "2017.05.01",
+        // endTime: "2018.06.05",
+      },
+    ],
     //用户列表的相关信息
-    userListInformation: [
-    ],
+    userListInformation: [],
     //聊天记录
-    MessageList: [
-    ],
+    MessageList: [],
   },
   mutations: {
     //购物车下单后添加课程到我的
@@ -194,6 +260,20 @@ export default createStore({
     //更新用户课程表
     updateUserCourses(state, courses) {
       state.usercourses = courses;
+    },
+    //更新教练课程表
+    updateTeachCourses(state, courses) {
+      state.teachcourses = courses;
+    },
+    //删除教练课程
+    DELETE_TEACH_COURSE(state, courseName) {
+      state.teachcourses = state.teachcourses.filter(
+        (course) => course.courseName !== courseName
+      );
+    },
+    //增加教练课程
+    ADD_TEACH_COURSE(state, newCourse) {
+      state.teachcourses.push(newCourse);
     },
     //课程大厅点击预约进入购物车
     ADD_COURSE_TO_CART(state, course) {
@@ -291,6 +371,18 @@ export default createStore({
     updateUserCourses({ commit }, courses) {
       commit("updateUserCourses", courses);
     },
+    //上传教练课程表
+    updateTeachCourses({ commit }, courses) {
+      commit("updateTeachCourses", courses);
+    },
+    //删除
+    deleteTeachCourse({ commit }, courseName) {
+      commit("DELETE_TEACH_COURSE", courseName);
+    },
+    //添加
+    addTeachCourse({ commit }, newCourse) {
+      commit("ADD_TEACH_COURSE", newCourse);
+    },
     pollIsPost({ commit, state }) {
       setInterval(async () => {
         try {
@@ -313,5 +405,6 @@ export default createStore({
   },
   getters: {
     getUserCourses: (state) => state.usercourses,
+    getTeachCourses: (state) => state.teachcourses,
   },
 });

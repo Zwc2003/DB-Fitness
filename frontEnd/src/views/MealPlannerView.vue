@@ -66,8 +66,12 @@ import MealPlanner from "../components/MealPlanner.vue";
 import { ArrowLeft } from '@element-plus/icons-vue'  // 引入ArrowLeft图标
 import CommonLayout from "../components/CommonLayout.vue";
 import {ElNotification} from "element-plus";
+import {useRouter} from "vue-router";
+import axios from "axios";
+import { commonMixin } from '../mixins/checkLoginState';
 
 export default {
+    mixins: [commonMixin],
     components: {  MealPlanner,ArrowLeft, CommonLayout },
     methods: {
         goBack() {
@@ -75,16 +79,7 @@ export default {
         }
     },
     created() {
-      let token = localStorage.getItem('token');
-      if (token == null) {
-        ElNotification({
-          title: '提示',
-          message: '请先登录',
-          type: 'warning',
-          duration: 2000
-        })
-        this.$router.push('/login')
-      }
+      this.checkAvailable()
     }
 }
 </script>

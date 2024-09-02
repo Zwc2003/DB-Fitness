@@ -12,30 +12,23 @@
         <div class="card-header">
           <div class="title-left">
             <b class="bolder">教学课单</b>
-          </div>
-          <div class="title-right">
-            <b class="bolder">{{ courseName }}</b>
+            <b class="title-right">{{ courseName }}</b>
             <span class="learning-status">教学中</span>
           </div>
           <div class="icoin-container">
             <el-icon
-              :style="{ fontSize: '20px', marginRight: '20px' }"
+              :style="{ fontSize: '24px', marginRight: '20px' }"
               @click="handleDocumentClick"
             >
               <Document />
             </el-icon>
-            <!-- 编辑按钮 -->
             <el-icon
-              :style="{ fontSize: '20px', marginRight: '20px' }"
+              :style="{ fontSize: '24px', marginRight: '20px' }"
               @click="handleEditClick"
             >
               <Edit />
             </el-icon>
-            <!-- 删除按钮 -->
-            <el-icon
-              :style="{ fontSize: '20px', marginRight: '20px' }"
-              @click="handleDeleteClick"
-            >
+            <el-icon :style="{ fontSize: '24px' }" @click="handleDeleteClick">
               <Delete />
             </el-icon>
           </div>
@@ -56,11 +49,10 @@
         </el-icon>
         <b class="bolder">课程时间</b>
         <div class="course-time" :style="timeStyle">
-          {{ startTime }} - {{ endTime }}
+          {{ courseStartTime }} - {{ courseEndTime }}
         </div>
       </div>
     </el-card>
-    <!-- 查看评论按钮 -->
     <el-card class="continue-learn">
       <template #header class="header2"></template>
       <div class="continue-btn" @click="showComments">查看评论</div>
@@ -71,16 +63,19 @@
   <CourseModal
     v-if="showModall"
     :isVisible="showModall"
-    :modalBackground="thecourse.background"
-    :courseTitle="thecourse.title"
-    :startTime="thecourse.start"
-    :endTime="thecourse.end"
+    :courseName="thecourse.courseName"
+    :courseStartTime="thecourse.courseStartTime"
+    :courseEndTime="thecourse.courseEndTime"
+    :courseGrade="thecourse.courseGrade"
+    :coursePrice="thecourse.coursePrice"
+    :courseDescription="thecourse.courseDescription"
     :classTime="thecourse.classTime"
     :features="thecourse.features"
     :instructorImage="thecourse.instructorImage"
     :instructorName="thecourse.instructorName"
     :instructorHonors="thecourse.instructorHonors"
-    :courseDescription="thecourse.courseDescription"
+    :coursePhotoUrl="thecourse.coursePhotoUrl"
+    :isbooked="1"
     @close="showModall = false"
   />
 
@@ -90,26 +85,23 @@
       <el-form-item label="模态框背景" prop="modalBackground">
         <el-input
           v-model="editForm.modalBackground"
-          placeholder="请输入模态框背景"
+          placeholder="复制图片链接至此处，如：https://www.les.com.cn/123.jpg"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程标题" prop="courseTitle">
         <el-input
           v-model="editForm.courseTitle"
-          placeholder="请输入课程标题"
+          placeholder="30到45分钟核心训练"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程开始时间" prop="startTime">
         <el-input
           v-model="editForm.startTime"
-          placeholder="请输入课程开始时间"
+          placeholder="2024-9-2"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程结束时间" prop="endTime">
-        <el-input
-          v-model="editForm.endTime"
-          placeholder="请输入课程结束时间"
-        ></el-input>
+        <el-input v-model="editForm.endTime" placeholder="2024-10-2"></el-input>
       </el-form-item>
       <el-form-item label="每周几开课" prop="classTime">
         <el-input
@@ -168,7 +160,6 @@
 </template>
 
 <script>
-import { ref } from "vue";
 import CourseModal from "../components/CourseModal.vue";
 
 export default {
@@ -176,25 +167,92 @@ export default {
     CourseModal,
   },
   name: "TeachCard",
+  props: {
+    coursePhotoUrl: {
+      type: String,
+      required: true,
+      default:
+        "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
+    },
+    courseName: {
+      type: String,
+      required: true,
+      default: "举重阻尼训练",
+    },
+    courseDescription: {
+      type: String,
+      required: true,
+      default:
+        "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
+    },
+    courseStartTime: {
+      type: String,
+      required: true,
+      default: "2024-08-08T17:42:16.103Z",
+    },
+    courseEndTime: {
+      type: String,
+      required: true,
+      default: "2024-08-08T17:42:16.103Z",
+    },
+    courseGrade: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    coursePrice: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    instructorName: {
+      type: String,
+      required: true,
+      default: "王教练",
+    },
+    instructorHonors: {
+      type: String,
+      required: true,
+      default: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
+    },
+    instructorImage: {
+      type: String,
+      required: true,
+      default:
+        "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
+    },
+    features: {
+      type: Array,
+      required: true,
+      default: ["感受力量涌现", "助力有氧健身", "训练全身各处"],
+    },
+    courseProgress: {
+      type: String,
+      default: "0节课/0节课",
+    },
+    classTime: {
+      type: String,
+      default: "17:00-18:30",
+    },
+  },
   data() {
     return {
       showModal: false,
       showModall: false,
       thecourse: {
-        isVisible: false,
-        background:
-          "https://www.lesmills.com.cn/uploads/20231104/fbdee91e55d525de27a01e2e0a74040b.png",
-        title: "肌肉力量训练",
-        start: "2022.03.04",
-        end: "2023.03.04",
-        classTime: "每周三",
-        features: ["感受力量涌现", "助力有氧健身", "训练全身各处"],
-        instructorImage:
-          "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
-        instructorName: "王教练",
-        instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
-        courseDescription:
-          "BODYCOMBAT能训练到你的腿部、手臂、背部和肩膀，对核心部位有显著效果。在课程中你能消耗卡路里、提高协调性、敏捷性和速度，感觉自己充满力量。BODYCOMBAT 训练内容进行调整使之符合自身水平和目标。我们的教练将始终提供多重训练强度供你选择。在开始的时候，你可以每周参加1至2节课，很快你就能体会到骁勇精壮的感觉。",
+        coursePhotoUrl: this.coursePhotoUrl,
+        courseName: this.courseName,
+        courseDescription: this.courseDescription,
+        courseStartTime: this.courseStartTime,
+        courseEndTime: this.courseEndTime,
+        courseGrade: this.courseGrade,
+        coursePrice: this.coursePrice,
+        classTime: this.classTime,
+        courseProgress: this.courseProgress,
+        features: this.features,
+        instructorImage: this.instructorImage,
+        instructorName: this.instructorName,
+        instructorHonors: this.instructorHonors,
       },
       showCommentsModal: false,
       editForm: {
@@ -230,23 +288,45 @@ export default {
     };
   },
 
-  props: {
-    // 定义组件的属性
-    courseName: {
-      type: String,
-      default: "名称",
+  watch: {
+    coursePhotoUrl(newVal) {
+      this.thecourse.coursePhotoUrl = newVal;
     },
-    courseProgress: {
-      type: String,
-      default: "0节课/0节课",
+    courseName(newVal) {
+      this.thecourse.courseName = newVal;
     },
-    startTime: {
-      type: String,
-      default: "2022-08-23T14:00:00",
+    courseDescription(newVal) {
+      this.thecourse.courseDescription = newVal;
     },
-    endTime: {
-      type: String,
-      default: "2024-08-23T14:00:00",
+    courseStartTime(newVal) {
+      this.thecourse.courseStartTime = newVal;
+    },
+    courseEndTime(newVal) {
+      this.thecourse.courseEndTime = newVal;
+    },
+    courseGrade(newVal) {
+      this.thecourse.courseGrade = newVal;
+    },
+    coursePrice(newVal) {
+      this.thecourse.coursePrice = newVal;
+    },
+    instructorName(newVal) {
+      this.thecourse.instructorName = newVal;
+    },
+    instructorHonors(newVal) {
+      this.thecourse.instructorHonors = newVal;
+    },
+    instructorImage(newVal) {
+      this.thecourse.instructorImage = newVal;
+    },
+    features(newVal) {
+      this.thecourse.features = newVal;
+    },
+    courseProgress(newVal) {
+      this.thecourse.courseProgress = newVal;
+    },
+    classTime(newVal) {
+      this.thecourse.classTime = newVal;
     },
   },
 
@@ -268,17 +348,13 @@ export default {
   },
 
   methods: {
-    handleContinue() {
-      // 点击时执行的操作，例如跳转
-      console.log("继续学习按钮被点击");
-    },
+    //查看
     handleDocumentClick() {
-      // 预填充编辑表单
-
       this.showModall = true;
     },
+
+    //编辑
     handleEditClick() {
-      // 预填充编辑表单
       this.editForm = {
         modalBackground: "当前背景",
         courseTitle: "当前课程标题",
@@ -293,15 +369,19 @@ export default {
       };
       this.showModal = true;
     },
+
+    //删除
     handleDeleteClick() {
-      // 删除课程卡片逻辑
-      this.$emit("delete-course"); // 通知父组件删除该课程
+      this.$emit("delete-teachcourse", this.courseName); // 通知父组件删除该课程
     },
+
+    //保存修改
     submitEdit() {
-      // 保存修改
       this.showModal = false;
       console.log("提交表单数据:", this.editForm);
     },
+
+    //查看评论
     showComments() {
       this.showCommentsModal = true;
     },
@@ -312,18 +392,6 @@ export default {
 <style scoped>
 .bolder {
   font-weight: bold;
-}
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.icoin-container {
-  margin-left: 70px;
-  padding-left: 100px;
-  display: flex;
-  align-items: center;
 }
 
 .icon-course-container {
@@ -358,18 +426,25 @@ export default {
   display: flex;
   align-items: center;
   height: 10px;
-  justify-content: flex-start;
-  width: 600px;
+  justify-content: space-between;
+  width: 470px;
 }
 
 .title-left {
+  display: flex;
+  align-items: center;
   font-size: smaller;
   font-weight: bold;
 }
 
 .title-right {
-  margin-left: 20px;
-  font-size: larger;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.title-left .bolder,
+.title-left .title-right {
+  margin-right: 10px;
 }
 
 .learning-status {
@@ -383,11 +458,17 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.card-firstrow {
-  margin-top: 5px;
-  margin-bottom: 7px;
+.icoin-container {
   display: flex;
   align-items: center;
+  cursor: pointer;
+}
+
+.card-firstrow {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  margin-bottom: 7px;
 }
 
 .card-secondrow {
@@ -412,5 +493,6 @@ export default {
   cursor: pointer;
   user-select: none;
   border-radius: 3px;
+  margin-top: -10px;
 }
 </style>

@@ -22,23 +22,11 @@
                                         </el-icon>
                                         个人资料
                                     </el-dropdown-item>
-                                    <el-dropdown-item>
-                                        <el-icon>
-                                            <Setting />
-                                        </el-icon>
-                                        账号设置
-                                    </el-dropdown-item>
-                                    <el-dropdown-item>
-                                        <el-icon>
-                                            <Switch />
-                                        </el-icon>
-                                        切换账号
-                                    </el-dropdown-item>
-                                    <el-dropdown-item @click="goPage('/')">
+                                    <el-dropdown-item @click="navigateToLoginOut">
                                         <el-icon>
                                             <SwitchButton />
                                         </el-icon>
-                                        退出
+                                        退出登录
                                     </el-dropdown-item>
                                 </el-dropdown-menu>
                             </template>
@@ -193,7 +181,7 @@ let article = ref({
     title: '',
     comments: []
 });
-
+checkAvailable()
 // 用户信息数据结构
 const users = ref([]);
 
@@ -256,6 +244,43 @@ async function fetchPosts() {
     }
 }
 
+function checkAvailable(){
+        let token = localStorage.getItem('token');
+        if (token == null) {
+          ElNotification({
+            title: '提示',
+            message: '请先登录',
+            type: 'warning',
+            duration: 2000
+          })
+          const router = useRouter()
+          router.push('/login')
+          return;
+        };
+        axios.get(`http://localhost:8080/api/User/GetTokenInvalidateRes`, {
+                      params: {
+                          token: token,
+                      }
+                  }).then(response => {
+                          console.log("登录状态:",response.data);
+                          if(!response.data) {
+                            ElNotification({
+                              title: '提示',
+                              message: '登录已过期，请重新登录',
+                              type: 'warning',
+                              duration: 2000
+                            });
+                            localStorage.removeItem('token');
+                            this.router().push('/login');
+                          }
+                      }).catch(error => {
+                          ElNotification({
+                              title: '错误',
+                              message: '获取用户信息失败',
+                              type: 'error',
+                          });
+                      });
+        }
 
 // 页面加载时获取数据
 onMounted(() => {
@@ -365,6 +390,12 @@ async function deactivateUser(user) {
             type: 'error',
         });
     }
+}
+
+function navigateToLoginOut() {
+    goPage('/login')
+
+    localStorage.removeItem('token')
 }
 
 // 内容管理操作

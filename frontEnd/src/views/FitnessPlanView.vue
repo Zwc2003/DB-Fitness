@@ -35,7 +35,7 @@
         <el-input-number v-model.number="form.longDistance" autocomplete="off"  :controls="false"></el-input-number>
       </el-form-item>
       <el-form-item label="健身目标" :label-width="formLabelWidth" prop="goal">
-        <el-select v-model="form.goal" placeholder="Please select a target">
+        <el-select v-model="form.goal" placeholder="请选择一个健身目标">
           <el-option label="减脂" value="loseWeight" />
           <el-option label="增肌" value="buildMuscle" />
           <el-option label="塑型" value="bodySculpting" />
@@ -58,11 +58,6 @@
 
 
   <TimeThread></TimeThread>
-
-
-
-
-
 
 </template>
 
@@ -194,19 +189,47 @@ function submit() {
   });
 }
 const activeName = ref(1);
+function checkAvailable(){
+    let token = localStorage.getItem('token');
+    if (token == null) {
+      ElNotification({
+        title: '提示',
+        message: '请先登录',
+        type: 'warning',
+        duration: 2000
+      })
+      const router = useRouter()
+      router.push('/login')
+      return;
+    };
+    axios.get(`http://localhost:8080/api/User/GetTokenInvalidateRes`, {
+                  params: {
+                      token: token,
+                  }
+              }).then(response => {
+                      console.log("登录状态:",response.data);
+                      if(!response.data) {
+                        ElNotification({
+                          title: '提示',
+                          message: '登录已过期，请重新登录',
+                          type: 'warning',
+                          duration: 2000
+                        });
+                        localStorage.removeItem('token');
+                        this.router().push('/login');
+                      }
+                  }).catch(error => {
+                      ElNotification({
+                          title: '错误',
+                          message: '获取用户信息失败',
+                          type: 'error',
+                      });
+                  });
+
+}
 
 onMounted(() => {
-  let token = localStorage.getItem('token');
-  if (token == null) {
-    ElNotification({
-      title: '提示',
-      message: '请先登录',
-      type: 'warning',
-      duration: 2000
-    })
-    const router = useRouter()
-    router.push('/login')
-  }
+  checkAvailable()
 });
 </script>
 

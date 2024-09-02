@@ -142,17 +142,6 @@ import NotificationContent7 from '../components/NotificationContent7.vue'
 import CommonLayout from "../components/CommonLayout.vue";
 import {useRouter} from 'vue-router'
 
-// let token = localStorage.getItem('token');
-// if(token==null)
-// {
-//   ElNotification({
-//     title: '提示',
-//     message: '请先登录',
-//     type: 'warning',
-//     duration: 2000
-//   })
-//   this.$router.push('/login')
-// }
 
 const items = ref([
     { src: new URL('../assets/images/top1.png', import.meta.url).href, alt: 'Image 1' },
@@ -180,9 +169,6 @@ const fakeData = [
 
 const equipmentList = ref([]) // 默认情况下先使用fakeData
 equipmentList.value = ref(fakeData)
-
-
-
 
 
 function fetchAllEquipmentGuide() {
@@ -345,18 +331,47 @@ function openInNewTab(url) {
     var win = window.open(url, '_blank');
     win.focus();
 }
+
+function checkAvailable(){
+    let token = localStorage.getItem('token');
+    if (token == null) {
+      ElNotification({
+        title: '提示',
+        message: '请先登录',
+        type: 'warning',
+        duration: 2000
+      })
+      const router = useRouter()
+      router.push('/login')
+      return;
+    };
+    axios.get(`http://localhost:8080/api/User/GetTokenInvalidateRes`, {
+                  params: {
+                      token: token,
+                  }
+              }).then(response => {
+                      console.log("登录状态:",response.data);
+                      if(!response.data) {
+                        ElNotification({
+                          title: '提示',
+                          message: '登录已过期，请重新登录',
+                          type: 'warning',
+                          duration: 2000
+                        });
+                        localStorage.removeItem('token');
+                        this.router().push('/login');
+                      }
+                  }).catch(error => {
+                      ElNotification({
+                          title: '错误',
+                          message: '获取用户信息失败',
+                          type: 'error',
+                      });
+                  });
+
+}
 onMounted(() => {
-  let token = localStorage.getItem('token');
-  if (token == null) {
-    ElNotification({
-      title: '提示',
-      message: '请先登录',
-      type: 'warning',
-      duration: 2000
-    })
-    const router = useRouter()
-    router.push('/login')
-  }
+  checkAvailable()
 });
 </script>
 

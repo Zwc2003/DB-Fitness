@@ -8,6 +8,13 @@
                 </el-icon>
             </el-button>
         </div>
+        <div class="backHome-button-container">
+            <el-button @click="goBackToHome" circle style="font-size: 24px; width: 50px; height: 50px;">
+                <el-icon>
+                    <house />
+                </el-icon>
+            </el-button>
+        </div>
 
         <!-- 相关帖子推荐 -->
         <el-card class="card">
@@ -31,7 +38,6 @@
                 </div>
             </div>
         </el-card>
-
 
         <div class="post-container">
             <h1 class="post-title">{{ post.postTitle }}</h1>
@@ -58,53 +64,15 @@
             <div class="comments-section">
                 <h3>评论</h3>
                 <div class="comments-container" ref="commentsContainer">
-                    <div v-for="comment in comments" :key="comment.commentID" class="comment-item">
-                        <p><strong>{{ comment.userName }}</strong>: {{ comment.content }}</p>
-                        <el-text class="comment-time">{{ formatDate(comment.commentTime) }}</el-text>
-                        <div class="comment-actions">
-                            <span @click="likeComment(comment.commentID)" @mouseover="highlightCommentAction"
-                                @mouseleave="resetCommentAction">
-                                👍 {{ comment.likedByCurrentUser ? '取消' : '点赞' }} {{ comment.likesCount }}
-                            </span>
-                            <span @click="setReplyTarget(comment)" @mouseover="highlightCommentAction"
-                                @mouseleave="resetCommentAction">
-                                回复
-                            </span>
-                            <span v-if="isCurrentUser(comment.userName)"
-                                @click="deleteComment(comment.commentID)">删除</span>
-
-                            <button @click="toggleReplies(comment)" class="btn-if-reply">
-                                {{ comment.showReplies ? '隐藏回复↑' : '显示回复↓' }}
-                            </button>
-                        </div>
-
-                        <!-- 评论的回复 -->
-                        <div v-if="comment.showReplies">
-                            <div v-for="reply in comment.replies" :key="reply.commentID" class="reply-item">
-                                <p><strong>@{{ reply.userName }}: </strong>{{ reply.content }}</p>
-                                <div class="comment-actions">
-                                    <span @click="likeComment(reply.commentID)" @mouseover="highlightCommentAction"
-                                        @mouseleave="resetCommentAction">
-                                        👍 {{ reply.likedByCurrentUser ? '取消' : '点赞' }} {{ reply.likesCount }}
-                                    </span>
-                                    <span @click="setReplyTarget(reply)" @mouseover="highlightCommentAction"
-                                        @mouseleave="resetCommentAction">
-                                        回复
-                                    </span>
-                                    <span v-if="isCurrentUser(reply.userName)"
-                                        @click="deleteComment(reply.commentID)">删除</span>
-                                    <span class="comment-time">{{ formatDate(reply.commentTime) }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <CommentItem v-for="comment in comments" :key="comment.commentID" :comment="comment"
+                        @fetch-replies="fetchReplies" @like-comment="likeComment" @set-reply-target="setReplyTarget"
+                        @delete-comment="deleteComment" />
                 </div>
 
                 <!-- 回复目标显示 -->
                 <div v-if="replyingTo" class="replying-to">
                     <p>正在回复 @{{ replyingTo.userName }} 的评论：</p>
                 </div>
-
                 <!-- 切换容器的按钮 -->
                 <button class="toggle-container-button" @click="toggleContainer">
                     {{ isContainerVisible ? '收起评论栏' : '弹出评论栏' }}
@@ -130,12 +98,14 @@
                             <button @click="reportPost" class="btn-action">🚩 举报</button>
                             <button @click="openShareDialog" class="btn-action">🔗 分享</button>
                             <button @click="forwardPost" class="btn-action">🔄 转发</button>
+                            <button v-if="isCurrentUser(post.userName)" @click="deletePost(post.postID)"
+                                class="btn-action">🗑 删除</button>
+
                         </div>
                     </div>
                 </transition>
             </div>
         </div>
-
 
         <!-- 热帖推荐 -->
         <div class="right-sidebar">
@@ -159,7 +129,6 @@
                 </div>
             </div>
         </div>
-
 
         <!-- 分享弹窗 -->
         <el-dialog title="分享帖子" :visible="shareDialogVisible" width="30%" v-model="shareDialogVisible">
@@ -193,16 +162,22 @@
 <script>
 import axios from 'axios';
 import { ElNotification } from 'element-plus';
-import { IconArrowLeft, IconFire, IconLink, } from '@arco-design/web-vue/es/icon';
+import { IconArrowLeft, IconFire, IconLink } from '@arco-design/web-vue/es/icon';
 import { EmojiButton } from '@joeattardi/emoji-button';
 import store from '../store/index.js';
 
+import { commonMixin } from '../mixins/checkLoginState';
+import CommentItem from '../components/CommentItem.vue';
+
+
 export default {
+    mixins: [commonMixin],
     components: {
         IconArrowLeft,
         IconFire,
         IconLink,
         EmojiButton,
+        CommentItem,
     },
     data() {
         return {
@@ -230,6 +205,7 @@ export default {
             reportDialogVisible: false,
             shareLink: "",
             isContainerVisible: true, // 容器初始显示状态
+            hasCommentsNotification: false,  // 添加标志位
         };
     },
     mounted() {
@@ -260,6 +236,7 @@ export default {
     },
 
     created() {
+        this.checkAvailable()
         this.fetchPostDetail();
         this.fetchRelatedPosts();
         this.fetchHotPosts();
@@ -267,6 +244,40 @@ export default {
 
     },
     methods: {
+        deletePost(postID) {
+            const token = localStorage.getItem('token');
+            axios.delete(`http://localhost:8080/api/Post/DeletePostByPostID`, {
+                params: {
+                    token: token,
+                    postID: postID,
+                    postOwnerID: this.post.userID
+                }
+            })
+                .then(response => {
+                    console.log(response.data);
+                    if (response.data.message === '删除帖子成功') {
+                        ElNotification({
+                            title: '成功',
+                            message: '帖子删除成功',
+                            type: 'success',
+                        });
+                        this.$router.push('/forum'); // 删除后跳转回论坛首页
+                    } else {
+                        ElNotification({
+                            title: '错误',
+                            message: '删除帖子失败',
+                            type: 'error',
+                        });
+                    }
+                })
+                .catch(error => {
+                    ElNotification({
+                        title: '错误',
+                        message: '删除帖子时发生错误',
+                        type: 'error',
+                    });
+                });
+        },
         formatDate(date) {
             const d = new Date(date);
             const year = d.getFullYear();
@@ -298,11 +309,6 @@ export default {
                     console.log(response.data);
                     this.post = response.data;
                     this.fetchComments(postID);
-                    ElNotification({
-                        title: '成功',
-                        message: '帖子详情获取成功',
-                        type: 'success',
-                    });
                 })
                 .catch(error => {
                     ElNotification({
@@ -326,23 +332,23 @@ export default {
                             ...comment,
                             likedByCurrentUser: false,
                             showReplies: false,
-                            replies: []
+                            replies: [] // 确保replies数组存在
                         };
                     });
-                    ElNotification({
-                        title: '成功',
-                        message: '评论获取成功',
-                        type: 'success',
-                    });
+                    this.hasCommentsNotification = false; // 重置标志位
+                    console.log("获取评论成功")
                 })
                 .catch(error => {
                     if (error.response && error.response.status === 404) {
-                        // 处理404错误，假设表示没有回复
-                        ElNotification({
-                            title: '提示',
-                            message: '该帖子暂无评论',
-                            type: 'info',
-                        });
+                        this.comments = []; // 评论列表为空
+                        if (!this.hasCommentsNotification) {  // 检查是否已经提示过
+                            ElNotification({
+                                title: '提示',
+                                message: '该帖子暂无评论',
+                                type: 'info',
+                            });
+                            this.hasCommentsNotification = true;  // 设置标志位为已提示
+                        }
                     } else {
                         ElNotification({
                             title: '错误',
@@ -354,55 +360,38 @@ export default {
         },
         async fetchReplies(comment) {
             const token = localStorage.getItem('token');
-            return axios.get(`http://localhost:8080/api/Comment/GetCommentByCommentID`, {
-                params: {
-                    token: token,
-                    commentID: comment.commentID
-                }
-            })
-                .then(response => {
-                    // 假设返回的数据为空或数组长度为0表示无回复
-                    const replies = response.data.filter(reply => reply.parentCommentID === comment.commentID).map(reply => {
-                        return {
-                            ...reply,
-                            likedByCurrentUser: false
-                        };
-                    });
-
-                    if (replies.length === 0) {
-                        ElNotification({
-                            title: '提示',
-                            message: '该评论无回复',
-                            type: 'info',
-                        });
-                    } else {
-                        comment.replies = replies;
-                        ElNotification({
-                            title: '成功',
-                            message: '回复获取成功',
-                            type: 'success',
-                        });
-                    }
-                })
-                .catch(error => {
-                    if (error.response && error.response.status === 404) {
-                        // 处理404错误，假设表示没有回复
-                        ElNotification({
-                            title: '提示',
-                            message: '该评论无回复',
-                            type: 'info',
-                        });
-                    } else {
-                        // 处理其他错误
-                        ElNotification({
-                            title: '错误',
-                            message: '获取回复时发生错误',
-                            type: 'error',
-                        });
+            try {
+                const response = await axios.get(`http://localhost:8080/api/Comment/GetCommentByCommentID`, {
+                    params: {
+                        token: token,
+                        commentID: comment.commentID
                     }
                 });
+                const replies = response.data.filter(reply => reply.parentCommentID === comment.commentID).map(reply => {
+                    return {
+                        ...reply,
+                        likedByCurrentUser: false,
+                        replies: [] // 确保每个回复都有自己的 replies 数组
+                    };
+                });
+                comment.replies = replies;
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    // 处理404错误，假设表示没有回复
+                    ElNotification({
+                        title: '提示',
+                        message: '该评论暂无回复',
+                        type: 'info',
+                    });
+                } else {
+                    ElNotification({
+                        title: '错误',
+                        message: '获取回复时发生错误',
+                        type: 'error',
+                    });
+                }
+            }
         },
-
 
         toggleReplies(comment) {
             if (!comment.showReplies) {
@@ -414,6 +403,9 @@ export default {
             }
         },
         goBack() {
+            this.$router.go(-1);
+        },
+        goBackToHome() {
             this.$router.go(-1);
         },
         toggleLike(postID) {
@@ -469,16 +461,6 @@ export default {
             }
         },
         addComment() {
-            // 检查用户是否被禁言
-            if (this.$store.state.isPost === 0) {
-                ElNotification({
-                    title: '警告',
-                    message: '您已被禁言，无法发表评论或回复。',
-                    type: 'warning',
-                });
-                return; // 阻止发表评论或回复
-            }
-
             const token = localStorage.getItem('token');
             if (this.newCommentText.trim()) {
                 const newComment = {
@@ -496,15 +478,15 @@ export default {
                     axios.post(`http://localhost:8080/api/Comment/ReplyComment?token=${token}`, newComment)
                         .then(response => {
                             if (response.data.message === '回复成功') {
-                                newComment.commentID = response.data.commentID;
-                                this.replyingTo.replies.push(newComment);
-                                this.replyingTo = null;
                                 this.newCommentText = ""; // 清空输入框
                                 ElNotification({
                                     title: '成功',
                                     message: '回复成功',
                                     type: 'success',
                                 });
+                                // 更新被回复的评论的回复列表
+                                this.fetchReplies(this.replyingTo);
+                                this.replyingTo = null; // 清除回复目标
                             } else {
                                 ElNotification({
                                     title: '错误',
@@ -521,28 +503,17 @@ export default {
                             });
                         });
                 } else {
+                    // 处理一级评论发布的情况
                     axios.post(`http://localhost:8080/api/Comment/PublishComment?token=${token}`, newComment)
                         .then(response => {
                             if (response.data.message === '发布评论成功') {
-                                newComment.commentID = response.data.commentID;
-                                this.comments.push(newComment);
-                                this.post.commentsCount++;
                                 this.newCommentText = ""; // 清空输入框
                                 ElNotification({
                                     title: '成功',
                                     message: '评论发布成功',
                                     type: 'success',
                                 });
-                                // 添加评论后滚动到页面底部
-                                this.$nextTick(() => {
-                                    setTimeout(() => {
-                                        // 使用 window.scrollTo 滚动到页面底部
-                                        window.scrollTo({
-                                            top: document.documentElement.scrollHeight,
-                                            behavior: 'smooth' // 平滑滚动
-                                        });
-                                    }, 100); // 添加一点延迟以确保内容渲染完成
-                                });
+                                this.fetchComments(this.post.postID); // 重新获取评论列表
                             } else {
                                 ElNotification({
                                     title: '错误',
@@ -560,7 +531,6 @@ export default {
                         });
                 }
             }
-
         },
         likeComment(commentID) {
             const token = localStorage.getItem('token');
@@ -642,32 +612,23 @@ export default {
                     });
             }
         },
-        deleteComment(commentID) {
+        /*deleteComment(commentID) {
             const token = localStorage.getItem('token');
             axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
                 params: {
                     token: token,
                     commentID: commentID,
                     postID: this.post.postID
+
                 }
             })
                 .then(response => {
                     if (response.data === '评论删除成功') {
-                        // 先找到需要删除的评论所在的数组及其索引
-                        const commentIndex = this.comments.findIndex(c => c.commentID === commentID);
-                        if (commentIndex !== -1) {
-                            // 如果是顶层评论，直接删除
-                            this.comments.splice(commentIndex, 1);
-                        } else {
-                            // 如果是回复，找到该回复所在的评论，并删除
-                            this.comments.forEach(comment => {
-                                const replyIndex = comment.replies.findIndex(reply => reply.commentID === commentID);
-                                if (replyIndex !== -1) {
-                                    comment.replies.splice(replyIndex, 1);
-                                }
-                            });
-                        }
-                        this.post.commentsCount--;  // 减少评论计数
+                        this.comments = this.comments.filter(c => c.commentID !== commentID);
+                        this.comments.forEach(comment => {
+                            comment.replies = comment.replies.filter(r => r.commentID !== commentID);
+                        });
+                        this.post.commentsCount--;
                         ElNotification({
                             title: '成功',
                             message: '评论删除成功',
@@ -689,6 +650,85 @@ export default {
                         type: 'error',
                     });
                 });
+        },*/
+        // 递归删除评论及其子评论
+        async deleteComment(commentID) {
+            const token = localStorage.getItem('token');
+
+            try {
+                // 找到目标评论及其所在的父级评论数组（comments 或 replies）
+                const findComment = (commentID, comments) => {
+                    for (let i = 0; i < comments.length; i++) {
+                        if (comments[i].commentID === commentID) {
+                            return { comment: comments[i], parentArray: comments, index: i };
+                        }
+                        if (comments[i].replies && comments[i].replies.length > 0) {
+                            const result = findComment(commentID, comments[i].replies);
+                            if (result) return result;
+                        }
+                    }
+                    return null;
+                };
+
+                // 递归删除子评论，返回删除的评论总数
+                const deleteRecursively = async (comment) => {
+                    let deletedCount = 0;
+                    if (comment.replies && comment.replies.length > 0) {
+                        for (let reply of comment.replies) {
+                            deletedCount += await deleteRecursively(reply);
+                        }
+                    }
+
+                    // 删除当前评论
+                    const response = await axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
+                        params: {
+                            token: token,
+                            commentID: comment.commentID,
+                            postID: this.post.postID
+                        }
+                    });
+
+                    if (response.data === '评论删除成功') {
+                        deletedCount += 1;
+                    } else {
+                        throw new Error('删除评论失败');
+                    }
+
+                    return deletedCount;
+                };
+
+                const { comment, parentArray, index } = findComment(commentID, this.comments);
+
+                if (comment) {
+                    // 先递归删除子评论
+                    const deletedCount = await deleteRecursively(comment);
+
+                    // 从父级数组中移除当前评论
+                    parentArray.splice(index, 1);
+
+                    // 同步更新评论总数
+                    this.post.commentsCount -= deletedCount;
+
+                    ElNotification({
+                        title: '成功',
+                        message: '评论删除成功',
+                        type: 'success',
+                    });
+                } else {
+                    ElNotification({
+                        title: '错误',
+                        message: '未找到要删除的评论',
+                        type: 'error',
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+                ElNotification({
+                    title: '错误',
+                    message: '删除评论时发生错误',
+                    type: 'error',
+                });
+            }
         },
 
         setReplyTarget(comment) {
@@ -785,11 +825,7 @@ export default {
                 .then(response => {
                     const allPosts = response.data;
                     this.relatedPosts = allPosts.sort(() => 0.5 - Math.random()).slice(0, 5);
-                    ElNotification({
-                        title: '成功',
-                        message: '相关帖子获取成功',
-                        type: 'success',
-                    });
+                    console.log("获取相关帖子成功")
                 })
                 .catch(error => {
                     ElNotification({
@@ -807,11 +843,7 @@ export default {
                     this.hotPosts = allPosts
                         .sort((a, b) => (b.likesCount + b.commentsCount) - (a.likesCount + a.commentsCount))
                         .slice(0, 5);
-                    ElNotification({
-                        title: '成功',
-                        message: '热帖获取成功',
-                        type: 'success',
-                    });
+                    console.log("获取热帖成功");
                 })
                 .catch(error => {
                     ElNotification({
@@ -822,8 +854,11 @@ export default {
                 });
         },
         goToPost(postID) {
-            console.log(this.post.postID);
-            this.$router.push(`/post/${postID}`);
+            // 更新路由参数，跳转到新帖子
+            this.$router.push(`/post/${postID}`).then(() => {
+                // 重新获取帖子详情和评论
+                this.fetchPostDetail();
+            });
         },
         toggleEmojiPicker() {
             document.body.style.overflow = this.emojiPicker.isOpen ? '' : 'hidden';
@@ -947,37 +982,6 @@ export default {
     margin-top: 20px;
     margin-bottom: 100px;
     background-color: rgba(255, 255, 255, 0.5);
-}
-
-
-.comment-item,
-.reply-item {
-    margin-bottom: 5px;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    border: none;
-    text-align: left;
-
-}
-
-.comment-actions {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-    font-size: 14px;
-    color: #555;
-}
-
-.comment-actions span:hover {
-    cursor: pointer;
-    background-color: #f0f0f0;
-}
-
-.comment-time {
-    margin-left: 0;
-    font-size: 12px;
-    color: #999;
 }
 
 .replying-to {
@@ -1235,12 +1239,23 @@ textarea {
     position: absolute;
     top: 1vh;
     /* 调整为你需要的上边距 */
+    left: 5vw;
+    /* 调整为你需要的左边距 */
+    z-index: 1000;
+
+
+}
+
+.backHome-button-container {
+    position: absolute;
+    top: 1vh;
+    /* 调整为你需要的上边距 */
     left: 1vw;
     /* 调整为你需要的左边距 */
     z-index: 1000;
     /* 确保按钮在日历表之上 */
-
 }
+
 
 .backtop-button {
     position: fixed;

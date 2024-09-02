@@ -145,7 +145,7 @@
 import * as echarts from "echarts";
 import CourseCard from "../components/CourseCard.vue";
 import CartSidebar from "../components/CartSidebar.vue";
-import { ElMessage, ElMessageBox } from "element-plus"; // 引入Element Plus的消息提示组件和消息框组件
+import { ElMessage, ElMessageBox } from "element-plus";
 import { mapGetters, mapActions } from "vuex";
 import { mapState } from "vuex";
 
@@ -236,15 +236,14 @@ export default {
           title: "《观公孙大娘弟子舞剑器行》",
         },
       ],
-      selectedPoem: null, // 保存选中的诗
-
+      selectedPoem: null,
       circleColors: ["blue", "yellow", "red", "orange", "green"],
       isCartVisible: false,
     };
   },
 
   mounted() {
-    //初始化诗句
+    // 初始化诗句
     this.selectRandomPoem();
     //初始化图表
     this.initChart();
@@ -571,7 +570,7 @@ export default {
   margin-top: 3%;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* 保证两个模块从同一高度开始 */
+  align-items: flex-start;
 }
 
 .coursee-list,
@@ -592,7 +591,7 @@ export default {
 }
 
 .course-list {
-  max-width: 35%; /* 控制“今日课程列表”模块的宽度 */
+  max-width: 35%;
   padding: 40px;
   background-color: #f9f9f9;
 }
@@ -634,6 +633,7 @@ h2 {
 
 .square {
   margin-left: 5px;
+  font-size: 1.5rem;
 }
 
 .blue {
@@ -685,7 +685,6 @@ h2 {
 
 .stage-info {
   font-family: "Noto Serif SC", serif;
-
   margin-top: 50px;
   width: 300px;
   margin-left: -50px;
@@ -694,7 +693,7 @@ h2 {
 }
 
 .stage-info p {
-  line-height: 1.8; /* 或者使用 margin-bottom 调整 */
+  line-height: 1.8;
   margin-bottom: 10px;
   color: #337ecc;
   font-weight: bond;
@@ -702,7 +701,7 @@ h2 {
 
 .stage-info h3 {
   color: blueviolet;
-  line-height: 1.8; /* 或者使用 margin-bottom 调整 */
+  line-height: 1.8;
   margin-bottom: 10px;
   font-weight: bold;
 }

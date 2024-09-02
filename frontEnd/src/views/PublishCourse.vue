@@ -1,68 +1,72 @@
 <template>
-  <CartSidebar
-    :cartCourses="cartCourses"
-    :isCartVisible="isCartVisible"
-    @update:isCartVisible="isCartVisible = $event"
-    @removeCourse="removeCourse"
-    class="cart-sidebarr"
-  />
-  <div aria-label="A complete example of page header">
-    <el-page-header @back="onBack">
-      <template #breadcrumb>
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item :to="{ name: 'HomeView' }">
-            FitFit
-          </el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ name: 'course' }">
-            健身课程
-          </el-breadcrumb-item>
-          <el-breadcrumb-item>我的教学</el-breadcrumb-item>
-        </el-breadcrumb>
-      </template>
-      <template #content>
-        <div class="flex items-center">
-          <el-avatar
-            class="mr-3"
-            :size="32"
-            src="https://tse2-mm.cn.bing.net/th/id/OIP-C.xWtwoLeZd-P4SoSZOMGyogHaHZ?w=206&h=205&c=7&r=0&o=5&pid=1.7"
-          />
-          <span class="text-large font-600 mr-3">王教练</span>
-          <span
-            class="text-sm mr-2"
-            style="color: var(--el-text-color-regular)"
-          >
-            2033458
-          </span>
-          <el-tag>欢迎您~</el-tag>
-        </div>
-      </template>
-
-      <div class="poem-display">
-        <div class="poem-content">
-          <span class="poem-text" v-if="selectedPoem">
-            {{ selectedPoem.text }}
-          </span>
-        </div>
-        <div class="author-container" v-if="selectedPoem">
-          <span class="author-title">
-            {{ selectedPoem.author }} - {{ selectedPoem.title }}
-          </span>
-        </div>
-      </div>
-    </el-page-header>
-  </div>
-  <div class="empty-row"></div>
   <div class="aaa">
+    <div aria-label="A complete example of page header">
+      <el-page-header @back="onBack">
+        <template #breadcrumb>
+          <el-breadcrumb separator="/">
+            <el-breadcrumb-item :to="{ name: 'HomeView' }">
+              FitFit
+            </el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ name: 'course' }">
+              健身课程
+            </el-breadcrumb-item>
+            <el-breadcrumb-item>我的教学</el-breadcrumb-item>
+          </el-breadcrumb>
+        </template>
+        <template #content>
+          <div class="flexitems-center">
+            <el-avatar
+              class="mr-3"
+              :size="32"
+              src="https://tse2-mm.cn.bing.net/th/id/OIP-C.xWtwoLeZd-P4SoSZOMGyogHaHZ?w=206&h=205&c=7&r=0&o=5&pid=1.7"
+            />
+            <span>王教练</span>
+            <span
+              class="text-sm mr-2"
+              style="color: var(--el-text-color-regular)"
+            >
+              2033458
+            </span>
+            <el-tag>欢迎您~</el-tag>
+          </div>
+        </template>
+
+        <div class="poem-display">
+          <div class="poem-content">
+            <span class="poem-text" v-if="selectedPoem">
+              {{ selectedPoem.text }}
+            </span>
+          </div>
+          <div class="author-container" v-if="selectedPoem">
+            <span class="author-title">
+              {{ selectedPoem.author }} - {{ selectedPoem.title }}
+            </span>
+          </div>
+        </div>
+      </el-page-header>
+    </div>
+    <div class="empty-row"></div>
+
     <div class="course-calender">
       <div class="my-course-title">我的课堂</div>
       <div class="coursee-list">
         <TeachCard
           v-for="(teachcourse, index) in teachcourses"
           :key="index"
-          :courseName="teachcourse.name"
-          :courseProgress="teachcourse.progress"
-          :startTime="teachcourse.startTime"
-          :endTime="teachcourse.endTime"
+          :coursePhotoUrl="teachcourse.coursePhotoUrl"
+          :courseName="teachcourse.courseName"
+          :courseDescription="teachcourse.courseDescription"
+          :courseStartTime="teachcourse.courseStartTime"
+          :courseEndTime="teachcourse.courseEndTime"
+          :courseGrade="teachcourse.courseGrade"
+          :coursePrice="teachcourse.coursePrice"
+          :courseProgress="teachcourse.courseProgress"
+          :features="teachcourse.features"
+          :instructorImage="teachcourse.instructorImage"
+          :instructorName="teachcourse.instructorName"
+          :instructorHonors="teachcourse.instructorHonors"
+          :classTime="teachcourse.classTime"
+          @delete-teachcourse="removeCourse"
         />
         <!-- 橙色按钮，带有白色粗加号 -->
         <el-button type="primary" @click="showModal = true" class="plus-button">
@@ -78,21 +82,82 @@
           <el-form :model="form">
             <el-form-item label="课程名称">
               <el-input
-                v-model="form.name"
-                placeholder="请输入课程名称 普拉提"
+                v-model="newCourse.courseName"
+                placeholder="30到45分钟核心训练"
               ></el-input>
             </el-form-item>
-            <el-form-item label="进度">
+            <el-form-item label="课程图片">
               <el-input
-                v-model="form.progress"
-                placeholder="请输入课程进度 1节课/20节课"
+                v-model="newCourse.coursePhotoUrl"
+                placeholder="复制图片连接至此处"
               ></el-input>
             </el-form-item>
-            <el-form-item label="时间">
+            <el-form-item label="课程描述">
               <el-input
-                v-model="form.time"
-                placeholder="请输入开始到结束时间 2021.01.01-2022.01.01"
+                v-model="newCourse.courseDescription"
+                placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
               ></el-input>
+            </el-form-item>
+            <el-form-item label="课程开始时间">
+              <el-input
+                v-model="newCourse.courseStartTime"
+                placeholder="2024-8-8"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程结束时间">
+              <el-input
+                v-model="newCourse.courseEndTime"
+                placeholder="2022-9-8"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程等级">
+              <el-input
+                v-model="newCourse.courseGrade"
+                placeholder="2"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程价格">
+              <el-input
+                v-model="newCourse.coursePrice"
+                placeholder="30"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程进度">
+              <el-input
+                v-model="newCourse.courseProgress"
+                placeholder="0节课/30节课"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="特征">
+              <el-input
+                v-model="newCourse.features"
+                placeholder="感受力量涌现"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="教练图片">
+              <el-input
+                v-model="newCourse.instructorImage"
+                placeholder="复制图片链接至此处"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="教练名称">
+              <el-input
+                v-model="newCourse.instructorName"
+                placeholder="鹿晨辉"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="教练荣誉">
+              <el-input
+                v-model="newCourse.instructorHonors"
+                placeholder="国家级健美一级裁判和国家职业健身培训师"
+              ></el-input>
+            </el-form-item>
+            <!-- <el-form-item label="上课时间">
+              <el-input v-model="newCourse.classTime"></el-input>
+            </el-form-item> -->
+            <el-form-item>
+              <el-button type="primary" @click="submitForm">提交</el-button>
+              <el-button @click="showModal = false">取消</el-button>
             </el-form-item>
           </el-form>
           <template #footer>
@@ -104,7 +169,7 @@
       <div class="course-list">
         <h2>您今日的教学任务</h2>
         <el-row
-          v-for="(course, index) in courses"
+          v-for="(course, index) in teachcourses"
           :key="index"
           class="course-item"
         >
@@ -114,14 +179,22 @@
               :class="['circle', circleColors[index % circleColors.length]]"
             ></div>
             <!-- 课程名称 -->
-            <div class="course-name">{{ course.name }}</div>
+            <div class="course-name">
+              {{ truncateCourseName(course.courseName) }}
+            </div>
             <!-- 上课时间 -->
-            <div class="course-time">{{ course.time }}</div>
+            <div class="course-time">{{ course.classTime }}</div>
             <!-- 状态框 -->
             <div class="status-box">
               <el-tag :type="getStatusType(course)">
                 {{ getStatusText(course) }}
               </el-tag>
+            </div>
+            <!-- 添加的正方形框和图标 -->
+            <div class="square" @click="handleClick(course)">
+              <el-icon v-if="course.attended">
+                <Select />
+              </el-icon>
             </div>
           </div>
         </el-row>
@@ -145,47 +218,33 @@
 </template>
 
 <script>
-import { ref, reactive } from "vue";
 import * as echarts from "echarts";
-import { ElNotification as notify } from "element-plus";
-import { computed } from "vue";
 import TeachCard from "../components/TeachCard.vue";
-import CartSidebar from "../components/CartSidebar.vue";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: {
     TeachCard,
-    CartSidebar,
   },
 
   data() {
     return {
       showModal: false,
-      form: {
-        name: "",
-        progress: "",
-        time: "",
+      newCourse: {
+        coursePhotoUrl: "",
+        courseName: "",
+        courseDescription: "",
+        courseStartTime: "",
+        courseEndTime: "",
+        courseGrade: "",
+        coursePrice: "",
+        courseProgress: "",
+        features: "",
+        instructorImage: "",
+        instructorName: "",
+        instructorHonors: "",
+        classTime: "17:00 - 18:30",
       },
-      teachcourses: [
-        {
-          name: "普拉提",
-          progress: "25节/32节课",
-          startTime: "2017.05.01",
-          endTime: "2018.06.05",
-        },
-        {
-          name: "瑜伽",
-          progress: "15节课/20节课",
-          startTime: "2017.05.01",
-          endTime: "2018.06.05",
-        },
-        {
-          name: "运动",
-          progress: "15节课/20节课",
-          startTime: "2017.05.01",
-          endTime: "2018.06.05",
-        },
-      ],
       courseData: [
         { date: "2024-08-01", duration: 3 },
         { date: "2024-08-02", duration: 5 },
@@ -255,54 +314,85 @@ export default {
           title: "《观公孙大娘弟子舞剑器行》",
         },
       ],
-      selectedPoem: null, // 保存选中的诗
-
-      courses: [
-        { name: "瑜伽", time: "10:00 - 11:00", attended: false },
-        { name: "普拉提", time: "13:00 - 14:00", attended: true },
-        { name: "跑步", time: "18:00 - 19:00", attended: false },
-      ],
+      selectedPoem: null,
       circleColors: ["blue", "yellow", "red", "orange", "green"],
       isCartVisible: false,
-      cartCourses: [
-        {
-          image:
-            "https://tse2-mm.cn.bing.net/th/id/OIP-C.GIvUZUnbp2xh7xKqzV5CPgHaE7?w=268&h=180&c=7&r=0&o=5&pid=1.7",
-          name: "运动健身",
-          price: 100,
-          time: "2022 06 07-2023 06 07",
-          selected: true,
-        },
-        {
-          image:
-            "https://tse3-mm.cn.bing.net/th/id/OIP-C.VqoEEkEfYw9eANM7GUlz3AHaEo?w=276&h=180&c=7&r=0&o=5&pid=1.7",
-          name: "普拉提",
-          price: 200,
-          time: "2022 01 01-2023 01 01",
-          selected: false,
-        },
-        {
-          image:
-            "https://tse3-mm.cn.bing.net/th/id/OIP-C.oXrQec5a4Au63MDb2vLCRwHaE8?w=246&h=180&c=7&r=0&o=5&pid=1.7",
-          name: "长跑",
-          price: 150,
-          time: "2022 11 13-2023 11 13",
-          selected: true,
-        },
-      ],
     };
   },
 
   mounted() {
-    // 组件挂载后立即选择一首随机古诗
+    // 初始化诗句
     this.selectRandomPoem();
-    //上课时间统计图
+    // 初始化图表
     this.initChart();
     //生成鼓励的话
     this.generateEncouragementMessage();
+
+    // 检查并加载全局存储的 teachcourses
+    if (!this.getTeachCourses.length) {
+      // 初始化 teachcourses 数据
+      const initialCourses = [
+        // 初始数据...
+      ];
+      this.updateTeachCourses(initialCourses);
+    }
   },
 
   methods: {
+    //每日教学列表的名字长度问题
+    truncateCourseName(name) {
+      if (name.length > 5) {
+        return name.slice(0, 5) + "...";
+      } else {
+        return name;
+      }
+    },
+
+    //决定今日课程状态
+    handleClick(course) {
+      course.attended = course.attended ? 0 : 1;
+    },
+
+    //更新我的课程到store
+    ...mapActions(["updateTeachCourses"]),
+
+    //删除教练课程
+    ...mapActions(["deleteTeachCourse"]),
+    removeCourse(courseId) {
+      this.deleteTeachCourse(courseId);
+    },
+
+    //添加
+    ...mapActions(["addTeachCourse"]),
+    openModal() {
+      console.log("Opening modal");
+      this.showModal = true;
+    },
+    submitForm() {
+      this.addTeachCourse(this.newCourse);
+      this.newCourse = {
+        coursePhotoUrl: "",
+        courseName: "",
+        courseDescription: "",
+        courseStartTime: "",
+        courseEndTime: "",
+        courseGrade: "",
+        coursePrice: "",
+        courseProgress: "",
+        features: "",
+        instructorImage: "",
+        instructorName: "",
+        instructorHonors: "",
+        classTime: "17:00 - 18:30",
+      };
+      this.showModal = false;
+    },
+
+    //回退<-back
+    onBack() {
+      this.$router.go(-1);
+    },
+
     // 随机生成一首诗
     selectRandomPoem() {
       const index = Math.floor(Math.random() * this.poems.length);
@@ -346,23 +436,6 @@ export default {
       chart.setOption(option);
     },
 
-    saveCourse() {
-      // 将用户输入的课程信息保存到 teachCourses 数组中
-      this.teachcourses.push({
-        name: this.form.name,
-        progress: this.form.progress,
-        time: this.form.time,
-      });
-
-      // 清空表单
-      this.form.name = "";
-      this.form.progress = "";
-      this.form.time = "";
-
-      // 关闭弹窗
-      this.showModal = false;
-    },
-
     //鼓励话语生成函数
     generateEncouragementMessage() {
       this.totalWorkoutHours = this.courseData.reduce(
@@ -380,22 +453,17 @@ export default {
       }
     },
 
-    // 继续学习按钮的点击事件处理函数
-    handleContinue() {
-      // 点击时执行的操作，例如跳转
-      console.log("继续学习按钮被点击");
-    },
-
+    //获取今日课程状态
     getStatusText(course) {
       const currentTime = new Date();
-      const [startHour, startMinute] = course.time
+      const [startHour, startMinute] = course.classTime
         .split(" - ")[0]
         .split(":")
         .map(Number);
       const startTime = new Date();
       startTime.setHours(startHour, startMinute);
 
-      const [endHour, endMinute] = course.time
+      const [endHour, endMinute] = course.classTime
         .split(" - ")[1]
         .split(":")
         .map(Number);
@@ -405,17 +473,19 @@ export default {
       if (currentTime < startTime) {
         return "提醒我";
       } else if (currentTime > endTime && course.attended) {
-        return "已完课";
+        return "已打卡";
       } else if (currentTime > endTime && !course.attended) {
-        return "补课";
+        return "未打卡";
       } else {
         return "进行中";
       }
       return "";
     },
+
+    //获取状态的字体样式
     getStatusType(course) {
       const currentTime = new Date();
-      const [startHour, startMinute] = course.time
+      const [startHour, startMinute] = course.classTime
         .split(" - ")[0]
         .split(":")
         .map(Number);
@@ -428,23 +498,24 @@ export default {
         return "success";
       }
     },
-
-    removeCourse(index) {
-      this.cartCourses.splice(index, 1);
-    },
-
-    onBack() {
-      this.$router.go(-1); // 或者使用 window.history.back() 如果没有 Vue Router
-    },
   },
 
   computed: {
+    // 从store获取教练课程数组
+    teachcourses() {
+      return this.getTeachCourses;
+    },
+    ...mapGetters(["getTeachCourses"]),
+
+    // 用户当前教练阶段
     currentStage() {
       return this.stages
         .slice()
         .reverse()
         .find((stage) => this.totalWorkoutHours >= stage.unlockHours);
     },
+
+    //用户当前阶段称号与描述
     currentStageName() {
       return this.currentStage?.name || "";
     },
@@ -465,38 +536,29 @@ export default {
 </script>
 
 <style scoped>
-.cart-sidebarr {
+.aaa {
   position: absolute;
-  top: 10%;
-  right: 5%;
-  height: 4%;
-  background-color: #fff;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  top: 5%;
+  left: 8%;
 }
 
 .el-page-header {
-  width: 1300px;
-  margin-top: -380px;
-  margin-right: -1150px;
+  width: 110%;
+  margin-left: -5%;
 }
 
 .poem-entry {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
 }
 
 .poem-content {
   flex: 1;
-  margin-left: -780px;
-  margin-right: 10px;
-  margin-top: 20px;
-  margin-bottom: 30px;
+  margin-left: -65%;
 }
 
 .poem-text {
-  margin: 0;
   font-weight: bold;
 }
 
@@ -512,31 +574,26 @@ export default {
 }
 
 .empty-row {
-  margin-top: 20px; /* 空行的高度 */
-  height: 0;
-  overflow: hidden;
+  margin-top: 20px;
 }
 
 .my-course-title {
-  margin-left: -150px;
+  margin-left: -5%;
   color: #79bbff;
   font-weight: bold;
   font-size: 15px;
-  margin-bottom: 10px;
 }
 
 .course-calender {
-  margin-top: 600px;
+  margin-top: 3%;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* 保证两个模块从同一高度开始 */
-  padding: 20px;
+  align-items: flex-start;
 }
 
 .coursee-list,
 .course-list {
   flex: 1;
-  margin: 0 20px;
 }
 
 .coursee-list {
@@ -573,7 +630,6 @@ export default {
   font-size: larger;
 }
 
-/* 控制“今日课程列表”模块的宽度 */
 .course-list {
   max-width: 35%;
   padding: 40px;
@@ -601,20 +657,25 @@ h2 {
 
 .course-name {
   flex: 1;
-  margin-right: 20px; /* 控制名称与时间的间隔 */
+  margin-right: 20px;
   font-size: 1rem;
-  width: 60px;
+  width: 100px;
 }
 
 .course-time {
   flex: 2;
-  margin-right: 20px; /* 控制时间与状态框的间隔 */
+  margin-right: 20px;
 }
 
 .status-box {
   flex: 1;
 }
-/* 定义不同颜色的圆形样式 */
+
+.square {
+  margin-left: 5px;
+  font-size: 1.5rem;
+}
+
 .blue {
   background-color: #79bbff;
 }
@@ -637,12 +698,11 @@ h2 {
 
 .chart-container {
   max-width: 1200px;
-  margin-top: 20px;
-  margin-left: -70px;
+  margin-top: 30px;
 }
 
 .chart-container h2 {
-  margin-left: -50px;
+  margin-left: -5%;
   color: #79bbff;
   font-weight: bold;
   font-size: 16px;
@@ -665,7 +725,6 @@ h2 {
 
 .stage-info {
   font-family: "Noto Serif SC", serif;
-
   margin-top: 50px;
   width: 300px;
   margin-left: -50px;
@@ -674,7 +733,7 @@ h2 {
 }
 
 .stage-info p {
-  line-height: 1.8; /* 或者使用 margin-bottom 调整 */
+  line-height: 1.8;
   margin-bottom: 10px;
   color: #337ecc;
   font-weight: bond;
@@ -682,7 +741,7 @@ h2 {
 
 .stage-info h3 {
   color: blueviolet;
-  line-height: 1.8; /* 或者使用 margin-bottom 调整 */
+  line-height: 1.8;
   margin-bottom: 10px;
   font-weight: bold;
 }

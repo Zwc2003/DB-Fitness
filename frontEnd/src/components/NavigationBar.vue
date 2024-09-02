@@ -14,15 +14,16 @@
                 <input type="radio" name="tab" id="course" :checked="$route.path === '/course'">
                 <input type="radio" name="tab" id="plan" :checked="$route.path === '/fitnessplan'">
                 <input type="radio" name="tab" id="chat" :checked="$route.path === '/chat'">
-                <input type="radio" name="tab" id="healthyDiet" :checked="$route.path === '/healthyDiet' || $route.path === '/MealPlanner' || $route.path === '/MealRecord'">
+                <input type="radio" name="tab" id="healthyDiet"
+                    :checked="$route.path === '/healthyDiet' || $route.path === '/MealPlanner' || $route.path === '/MealRecord'">
 
 
                 <label for="home" class="home" @click="delayedNavigation('/home')">
                     <router-link to="/home">
-                      <el-icon>
-                          <House />
-                      </el-icon>
-                      首页
+                        <el-icon>
+                            <House />
+                        </el-icon>
+                        首页
                     </router-link>
                 </label>
                 <label for="equipment" class="equipment" @click="delayedNavigation('/equipment')">
@@ -106,14 +107,20 @@
                                 <el-icon>
                                     <Setting />
                                 </el-icon>
-                                账号设置
+                                个人资料
+                            </el-dropdown-item>
+                            <el-dropdown-item v-if="currentUser === 'admin'" @click="navigateToAdminPanel">
+                                <el-icon>
+                                    <Tools />
+                                </el-icon>
+                                管理界面
                             </el-dropdown-item>
                             <el-dropdown-item @click="navigateToLoginOut">
                                 <el-icon>
                                     <Switch />
                                 </el-icon>
-                                切换账号
-                            </el-dropdown-item>    
+                                退出登录
+                            </el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -128,16 +135,19 @@
 <script>
 import router from "../router/index.js";
 import axios from "axios";
-import {ElNotification} from "element-plus";
 
+import {ElNotification} from "element-plus";
+import { commonMixin } from '../mixins/checkLoginState';
 export default {
     name: "NavigationBar",
+    mixins: [commonMixin],
     data() {
         return {
             navBarFixed: false,
             token: localStorage.getItem('token'),  // 从 localStorage 获取 token
             iconUrl: this.$store.state.iconUrl,
             checkLoginInterval: null,  // 定时器ID
+            currentUser: localStorage.getItem('role')
         };
     },
     props: {
@@ -147,6 +157,9 @@ export default {
         }
     },
     methods: {
+        navigateToAdminPanel() {
+            this.router().push('/admin');
+        },
         router() {
             return router;
         },
@@ -156,12 +169,12 @@ export default {
             }, 500);
         },
         navigateToUserProfile() {
-            const userID = this.$store.state.userID; 
+            const userID = this.$store.state.userID;
             this.router().push(`/user/${userID}`);
         },
-        navigateToLoginOut(){
-          this.router().push(`/login`);
-          localStorage.removeItem('token')
+        navigateToLoginOut() {
+            this.router().push(`/login`);
+            localStorage.removeItem('token')
         },
         watchScroll() {
             var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
@@ -175,23 +188,11 @@ export default {
         checkLoginStatus() {
             // 获取当前路径
             const currentPath = this.$route.path;
-
             // // 如果当前路径是 '/home' 或 '/'，则不进行检查
             if (currentPath === '/home' || currentPath === '/') {
                 return;
             }
-
-            // 检查 token 是否存在
-            let token = localStorage.getItem('token');
-            if (token == null) {
-                ElNotification({
-                    title: '提示',
-                    message: '请先登录',
-                    type: 'warning',
-                    duration: 2000
-                });
-                this.router().push('/login');
-            }
+            this.checkAvailable()
         }
     },
     mounted() {
@@ -412,12 +413,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 16px ; /* 根据需要调整字体大小 */
+    font-size: 16px;
+    /* 根据需要调整字体大小 */
     color: #fff;
-    border: none; /* 去除默认边框 */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加轻微的阴影效果 */
+    border: none;
+    /* 去除默认边框 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* 添加轻微的阴影效果 */
     cursor: pointer;
 }
-
-
 </style>
