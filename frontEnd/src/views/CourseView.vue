@@ -106,7 +106,7 @@ export default {
     selectOption(option) {
       this.selectedOption = option;
       this.showInput = ["fitness", "price", "category"].includes(option);
-      this.inputValue = ""; // 清空输入框内容
+      this.inputValue = "";
     },
     showRecommendation() {
       // 弹出推荐课程的模态框逻辑
