@@ -444,41 +444,89 @@ export default {
           this.screenshotsCurrent.createTime = new Date(response.data.createTime)
           this.screenshotsCurrent.screenshotUrl = response.data.screenshotUrl
           console.log(response.data.message)
-          setTimeout(() => {
-            this.getAISuggestions(response.data.screenshotID)
-          }, 15000)
+          this.getAISuggestions(response.data.screenshotID)
         }).catch(error => {
           console.error('创建失败：', error)
         })
     },
+    // getAISuggestions(screenshotID) {
+    //   console.log('获取AI建议:', screenshotID)
+    //   axios.get(`http://localhost:8080/api/AIGuide/GetAISuggestion/`, {
+    //     params: {
+    //       screenshotID: screenshotID
+    //     }
+    //   })
+    //     .then(response => {
+    //       this.markdownText = response.data.message
+    //       this.analysisPercentage = 100
+    //       this.successAnalyze = true
+    //       this.analysisStatue = 0
+    //       console.log('AI建议:', response.data)
+    //       this.screenshotsCurrent.AIsuggestion = response.data.message
+    //       const screenshot = {
+    //         exerciseName: this.screenshotsCurrent.exerciseName,
+    //         screenshotID: this.screenshotsCurrent.screenshotID,
+    //         screenshotUrl: this.screenshotsCurrent.screenshotUrl,
+    //         AIsuggestion: this.screenshotsCurrent.AIsuggestion,
+    //         createTime: this.screenshotsCurrent.createTime
+    //       }
+    //       console.log('imgUrl:', this.screenshotsCurrent.screenshotUrl)
+    //       this.uploadedScreenshots.push(screenshot)
+    //       this.getVigorTokenBalance()
+    //     })
+    //     .catch(error => {
+    //       console.error('Error getting AI suggestions:', error)
+    //     })
+    // },
     getAISuggestions(screenshotID) {
-      console.log('获取AI建议:', screenshotID)
-      axios.get(`http://localhost:8080/api/AIGuide/GetAISuggestion/`, {
-        params: {
-          screenshotID: screenshotID
+      console.log('获取AI建议:', screenshotID);
+      let attempts = 0;
+      const maxAttempts = 15;
+      const interval = 1000; // 1秒
+
+      const poll = () => {
+        if (attempts >= maxAttempts) {
+          console.error('最大请求次数已达，请求终止。');
+          return;
         }
-      })
-        .then(response => {
-          this.markdownText = response.data.message
-          this.analysisPercentage = 100
-          this.successAnalyze = true
-          this.analysisStatue = 0
-          console.log('AI建议:', response.data)
-          this.screenshotsCurrent.AIsuggestion = response.data.message
-          const screenshot = {
-            exerciseName: this.screenshotsCurrent.exerciseName,
-            screenshotID: this.screenshotsCurrent.screenshotID,
-            screenshotUrl: this.screenshotsCurrent.screenshotUrl,
-            AIsuggestion: this.screenshotsCurrent.AIsuggestion,
-            createTime: this.screenshotsCurrent.createTime
+
+        axios.get(`http://localhost:8080/api/AIGuide/GetAISuggestion/`, {
+          params: {
+            screenshotID: screenshotID
           }
-          console.log('imgUrl:', this.screenshotsCurrent.screenshotUrl)
-          this.uploadedScreenshots.push(screenshot)
-          this.getVigorTokenBalance()
         })
-        .catch(error => {
-          console.error('Error getting AI suggestions:', error)
-        })
+          .then(response => {
+            if (response.data.message !== "") {
+              console.log('AI建议:', response.data.message)
+              this.markdownText = response.data.message;
+              this.analysisPercentage = 100;
+              this.successAnalyze = true;
+              this.analysisStatue = 0;
+              console.log('AI建议:', response.data);
+              this.screenshotsCurrent.AIsuggestion = response.data.message;
+              const screenshot = {
+                exerciseName: this.screenshotsCurrent.exerciseName,
+                screenshotID: this.screenshotsCurrent.screenshotID,
+                screenshotUrl: this.screenshotsCurrent.screenshotUrl,
+                AIsuggestion: this.screenshotsCurrent.AIsuggestion,
+                createTime: this.screenshotsCurrent.createTime
+              };
+              console.log('imgUrl:', this.screenshotsCurrent.screenshotUrl);
+              this.uploadedScreenshots.push(screenshot);
+              this.getVigorTokenBalance();
+              this.screenshotsCurrent.exerciseName = "";
+              clearInterval(pollingInterval); // 停止轮询
+            } else {
+              attempts++;
+            }
+          })
+          .catch(error => {
+            console.error('Error getting AI suggestions:', error);
+            attempts++;
+          });
+      };
+
+      const pollingInterval = setInterval(poll, interval);
     },
     getScreenshotFromDB() {
       const token = localStorage.getItem('token');
@@ -880,6 +928,7 @@ export default {
 
 .markdown-content-container {
   max-height: 40vh;
+  min-height: 40vh;
   /* 设置容器的最大高度 */
   overflow-y: auto;
   /* 启用垂直滚动条 */
@@ -946,10 +995,6 @@ export default {
   background-color: #929191;
 }
 
-.upload-title
-{
-  font-size: 30px!important;
-}
 
 .type-form
 {
@@ -1013,7 +1058,7 @@ export default {
 }
 
 .upload-title {
-    font-size: 40px !important;
+    font-size: 30px !important;
   font-weight: bold !important; /* 也可以使用数值如 600 或 700 */
 }
 
