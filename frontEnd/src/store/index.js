@@ -29,6 +29,8 @@ export default createStore({
       "活动赛事",
       "初学指南",
     ],
+    unreadIDs:[],//未读ID
+
     targetInfomation: {
       id: "",
       img: "",
