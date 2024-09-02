@@ -205,6 +205,7 @@ export default {
             reportDialogVisible: false,
             shareLink: "",
             isContainerVisible: true, // 容器初始显示状态
+            hasCommentsNotification: false,  // 添加标志位
         };
     },
     mounted() {
@@ -334,16 +335,20 @@ export default {
                             replies: [] // 确保replies数组存在
                         };
                     });
+                    this.hasCommentsNotification = false; // 重置标志位
                     console.log("获取评论成功")
                 })
                 .catch(error => {
                     if (error.response && error.response.status === 404) {
-                        // 处理404错误，假设表示没有回复
-                        ElNotification({
-                            title: '提示',
-                            message: '该帖子暂无评论',
-                            type: 'info',
-                        });
+                        this.comments = []; // 评论列表为空
+                        if (!this.hasCommentsNotification) {  // 检查是否已经提示过
+                            ElNotification({
+                                title: '提示',
+                                message: '该帖子暂无评论',
+                                type: 'info',
+                            });
+                            this.hasCommentsNotification = true;  // 设置标志位为已提示
+                        }
                     } else {
                         ElNotification({
                             title: '错误',
@@ -849,8 +854,11 @@ export default {
                 });
         },
         goToPost(postID) {
-            console.log(this.post.postID);
-            this.$router.push(`/post/${postID}`);
+            // 更新路由参数，跳转到新帖子
+            this.$router.push(`/post/${postID}`).then(() => {
+                // 重新获取帖子详情和评论
+                this.fetchPostDetail();
+            });
         },
         toggleEmojiPicker() {
             document.body.style.overflow = this.emojiPicker.isOpen ? '' : 'hidden';
