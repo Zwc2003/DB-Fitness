@@ -308,11 +308,6 @@ export default {
                     console.log(response.data);
                     this.post = response.data;
                     this.fetchComments(postID);
-                    ElNotification({
-                        title: '成功',
-                        message: '帖子详情获取成功',
-                        type: 'success',
-                    });
                 })
                 .catch(error => {
                     ElNotification({
@@ -339,11 +334,7 @@ export default {
                             replies: [] // 确保replies数组存在
                         };
                     });
-                    ElNotification({
-                        title: '成功',
-                        message: '评论获取成功',
-                        type: 'success',
-                    });
+                    console.log("获取评论成功")
                 })
                 .catch(error => {
                     if (error.response && error.response.status === 404) {
@@ -829,11 +820,7 @@ export default {
                 .then(response => {
                     const allPosts = response.data;
                     this.relatedPosts = allPosts.sort(() => 0.5 - Math.random()).slice(0, 5);
-                    ElNotification({
-                        title: '成功',
-                        message: '相关帖子获取成功',
-                        type: 'success',
-                    });
+                    console.log("获取相关帖子成功")
                 })
                 .catch(error => {
                     ElNotification({
@@ -851,11 +838,7 @@ export default {
                     this.hotPosts = allPosts
                         .sort((a, b) => (b.likesCount + b.commentsCount) - (a.likesCount + a.commentsCount))
                         .slice(0, 5);
-                    ElNotification({
-                        title: '成功',
-                        message: '热帖获取成功',
-                        type: 'success',
-                    });
+                    console.log("获取热帖成功");
                 })
                 .catch(error => {
                     ElNotification({
