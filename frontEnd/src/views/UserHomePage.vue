@@ -452,7 +452,7 @@ export default {
     updateUserCourses(newCourses) {
       this.$store.commit("ADD_COURSES_TO_USER", newCourses);
     },
-    
+
 
     //更新活力币
     UPDATE_VITALITY_COINS(amount) {
@@ -469,7 +469,7 @@ export default {
       // 检查余额是否足够
       if (this.vitalityCoins >= totalPrice) {
         const token= localStorage.getItem('token');
-        const bookIDList =[];
+        var bookIDList =[];
         //调用预约接口
         axios.get('http://localhost:8080/api/Course/ReserveCourse',{params:{
           token:token,
