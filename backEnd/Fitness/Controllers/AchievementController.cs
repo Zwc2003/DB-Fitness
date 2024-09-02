@@ -30,7 +30,7 @@ namespace Fitness.Controllers
             return userAchievementBll.GetAchievementRank(userId, achievementId);
         }
 
-        [HttpPost]
+        [HttpGet]
         public string UpdateFitnessPlanAchievement(string token)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
