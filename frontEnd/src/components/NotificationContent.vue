@@ -234,7 +234,6 @@ onBeforeUnmount(() => {
   text-align: left;
   padding: 20px;
   width: 800px;
-
 }
 
 .notification-image {

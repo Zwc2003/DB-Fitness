@@ -67,9 +67,9 @@
                     <!-- 第四行：类型、体重 -->
                     <section class="profile-info">
                         <div class="info-row uniform-row">
-                            <EditableField label="类型" :value="profile.goalType" type="input"
+                            <EditableField label="健身目标类型" :value="profile.goalType" type="input"
                                 @save="profile.goalType = $event" />
-                            <EditableField label="体重" :value="profile.goalWeight" type="input"
+                            <EditableField label="体重(kg)" :value="profile.goalWeight" type="input"
                                 @save="profile.goalWeight = $event" />
 
                         </div>
