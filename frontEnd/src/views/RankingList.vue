@@ -40,6 +40,7 @@ export default {
       activeName: '0', // 默认展开第一个项
       myRanking: null, // 我的名次
       myProgress: null, // 我的进度
+      totRanking: null, // 在榜人数
       leaderboard: [], // 排行榜用户
     };
   },
@@ -48,23 +49,17 @@ export default {
   },
   methods: {
     async fetchAchievementRanking() {
-      const { achievementId } = this.$route.query;
-    const userId = localStorage.getItem('userId'); // 从localStorage获取userId
-    const token = localStorage.getItem('token'); // 从localStorage获取token
+      const { achievementId, userId } = this.$route.query; // 获取传入的 achievementId 和 userId
+      const token = localStorage.getItem('token'); // 从localStorage获取token
       try {
-        const response = await axios.get('/api/Achievement/GetAchievementRanking', {
-        params: {
-          userId, // 添加 userId 参数
-          achievementId, // 添加 achievementId 参数
-        },
-        headers: {
-          Authorization: `Bearer ${token}`, // 使用 Bearer token 进行身份验证
-        },
+        const response = await axios.get('http://localhost:8080/api/Achievement/GetAchievementRanking', {
+          params: { token: localStorage.getItem('token') }
         });
 
         const data = response.data;
         this.myRanking = data.myRanking;
         this.myProgress = data.progress;
+        this.totRanking = data.totRanking;
         this.leaderboard = data.rankingUsers.map(user => ({
           name: user.userName,
           score: user.progress,
