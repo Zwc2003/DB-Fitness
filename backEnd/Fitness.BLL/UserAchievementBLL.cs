@@ -63,7 +63,7 @@ namespace Fitness.BLL
                 }
                 else
                 {
-                    vigorTokenBLL.UpdateBalance(userId, "刷新成就进度，获得100活力币", 100);
+                    //vigorTokenBLL.UpdateBalance(userId, "刷新成就进度，获得100活力币", 100);
                     UserAchievementDAL.Update(userId, achievementId, goal, false);
                 }
             }
@@ -76,7 +76,7 @@ namespace Fitness.BLL
                 }
                 else
                 {
-                    vigorTokenBLL.UpdateBalance(userId, "刷新成就进度，获得100活力币", 100);
+                    //vigorTokenBLL.UpdateBalance(userId, "刷新成就进度，获得100活力币", 100);
                     UserAchievementDAL.Update(userId, achievementId, nowprogress + goal, false);
                 }
                     
@@ -203,7 +203,10 @@ namespace Fitness.BLL
             try
             {
                 int goal = UserAchievementDAL.GetPersonInfoProgress(userId);
+                bool isAchieved = UserAchievementDAL.GetIsAchieved(userId, 1);
                 UpdateUserAchievement(userId, 1, goal);
+                if(isAchieved == false)
+                    vigorTokenBLL.UpdateBalance(userId, "完善个人信息，获得50活力币", 50);
                 return true;
             }
             catch (Exception ex)
@@ -216,6 +219,7 @@ namespace Fitness.BLL
         {
             try
             {
+                vigorTokenBLL.UpdateBalance(userId, "每日登录，获得188活力币", 188);
                 UpdateUserAchievement(userId, 2);
                 return true;
             }
@@ -230,6 +234,9 @@ namespace Fitness.BLL
         {
             try
             {
+                bool isAchieved = UserAchievementDAL.GetIsAchieved(userId, 3);
+                if (isAchieved == false)
+                    vigorTokenBLL.UpdateBalance(userId, "完成课程，获得100活力币", 100);
                 UpdateUserAchievement(userId, 3);
                 return true;
             }
@@ -243,6 +250,9 @@ namespace Fitness.BLL
         {
             try
             {
+                bool isAchieved = UserAchievementDAL.GetIsAchieved(userId, 4);
+                if (isAchieved == false)
+                    vigorTokenBLL.UpdateBalance(userId, "被点赞，获得18活力币", 18);
                 UpdateUserAchievement(userId, 4, goal);
                 return true;
             }
@@ -257,6 +267,9 @@ namespace Fitness.BLL
         {
             try
             {
+                bool isAchieved = UserAchievementDAL.GetIsAchieved(userId, 5);
+                if (isAchieved == false)
+                    vigorTokenBLL.UpdateBalance(userId, "被评论，获得50活力币", 50);
                 UpdateUserAchievement(userId, 5, goal);
                 return true;
             }
@@ -271,6 +284,9 @@ namespace Fitness.BLL
         {
             try
             {
+                bool isAchieved = UserAchievementDAL.GetIsAchieved(userId, 6);
+                if (isAchieved == false)
+                    vigorTokenBLL.UpdateBalance(userId, "成功发帖，获得100活力币", 100);
                 UpdateUserAchievement(userId, 6, goal);
                 return true;
             }
@@ -285,6 +301,9 @@ namespace Fitness.BLL
         {
             try
             {
+                bool isAchieved = UserAchievementDAL.GetIsAchieved(userId, 7);
+                if (isAchieved == false)
+                    vigorTokenBLL.UpdateBalance(userId, "完成饮食计划，获得100活力币", 100);
                 UpdateUserAchievement(userId, 7);
                 return true;
             }
@@ -298,6 +317,9 @@ namespace Fitness.BLL
         public string UpdateFitnessPlanAchievement(int userId)
         {
             UpdateUserAchievement(userId, 8);
+            bool isAchieved = UserAchievementDAL.GetIsAchieved(userId, 8);
+            if (isAchieved == false)
+                vigorTokenBLL.UpdateBalance(userId, "完成健身计划，获得100活力币", 100);
             return JsonConvert.SerializeObject(new
             {
                 message = "successful"
