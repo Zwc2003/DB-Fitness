@@ -2,7 +2,7 @@
 import {ElNotification} from "element-plus";
 import {useRouter} from "vue-router";
 import axios from "axios";
-
+import router from "../router/index.js";
 export const commonMixin = {
   methods: {
     checkAvailable(){
@@ -14,8 +14,8 @@ export const commonMixin = {
             type: 'warning',
             duration: 2000
           })
-          const router = useRouter()
-          router.push('/login')
+
+          this.router().push(`/login`);
           return;
         };
         axios.get(`http://localhost:8080/api/User/GetTokenInvalidateRes`, {
@@ -32,7 +32,7 @@ export const commonMixin = {
                               duration: 2000
                             });
                             localStorage.removeItem('token');
-                            this.router().push('/login');
+                            this.router().push(`/login`);
                           }
                       }).catch(error => {
                           ElNotification({

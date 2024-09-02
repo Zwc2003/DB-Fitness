@@ -268,7 +268,6 @@ export default {
         },
 
         addPost() {
-
             // 检查用户是否被禁言
             if (this.$store.state.isPost === 0) {
                 ElNotification({
@@ -304,9 +303,17 @@ export default {
                         console.log(response.data);
                         console.log(response.data.postID);
                         newPost.postID = response.data.postID;
+
+                        // 将新帖子添加到所有帖子列表中
                         this.allPosts.unshift(newPost);
+
+                        // 重新过滤并更新热门帖子
+                        this.filterPosts();
                         this.updateHotPosts();
+
+                        // 重置表单
                         this.resetNewPostForm();
+
                         ElNotification({
                             title: '成功',
                             message: '帖子发布成功！',
@@ -329,6 +336,7 @@ export default {
             }
         },
 
+
         cleanHtml(content) {
             // 将 <br> 标签替换为换行符
             let cleanedContent = content.replace(/<br\s*\/?>/gi, '<br/>');
@@ -346,7 +354,8 @@ export default {
 
         renderContent(content) {
             // 这里可以进一步处理内容，例如对其他 HTML 标签的处理
-            return content;
+            const plainText = content.replace(/<[^>]+>/g, ''); // 移除所有HTML标签
+            return plainText.length > 40 ? plainText.slice(0, 40) + '...' : plainText;
         },
 
         resetNewPostForm() {

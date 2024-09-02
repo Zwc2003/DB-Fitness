@@ -20,7 +20,7 @@
     <div v-if="showMask" class="mask"></div>
     <div class="card_1">
         <el-card class="custom-card" style="max-width: 1000px; flex: 65;" shadow="hover"
-            @click="showNotification(equipmentList)">
+            @click="showNotification(equipmentList,1)">
             <img :src="equipmentList.value[0].imgUrl" class="hover-zoom"
                 style="width: 100%; height: 300px; object-fit: cover;" />
             <div class="footer-content" style="background-color: #ffffff; text-align: left;">
@@ -34,7 +34,7 @@
             </div>
         </el-card>
         <el-card class="custom-card" style="max-width: 1000px; flex: 35;" shadow="hover"
-            @click="showNotification2(equipmentList)">
+            @click="showNotification(equipmentList,2)">
             <img :src="equipmentList.value[1].imgUrl" class="hover-zoom"
                 style="width: 100%; height: 200px; object-fit: cover;" />
             <div class="footer-content" style="background-color: #33aee3; text-align: left;">
@@ -50,7 +50,7 @@
     </div>
     <div class="card_2">
         <el-card class="custom-card" style="max-width: 1000px; flex: 32;" shadow="hover"
-            @click="showNotification3(equipmentList)">
+            @click="showNotification(equipmentList,3)">
             <img :src="equipmentList.value[2].imgUrl" class="hover-zoom"
                 style="width: 100%; height: 250px; object-fit: cover;" />
             <div class="footer-content" style="background-color: #3453dd; text-align: left;">
@@ -64,7 +64,7 @@
             </div>
         </el-card>
         <el-card class="custom-card" style="max-width: 1000px; flex: 32;" shadow="hover"
-            @click="showNotification4(equipmentList)">
+            @click="showNotification(equipmentList,4)">
             <img :src="equipmentList.value[3].imgUrl" class="hover-zoom"
                 style="width: 100%; height: 250px; object-fit: cover;" />
             <div class="footer-content" style="background-color: #ffffff; text-align: left;">
@@ -78,7 +78,7 @@
             </div>
         </el-card>
         <el-card class="custom-card" style="max-width: 1000px; flex: 35;" shadow="hover"
-            @click="showNotification5(equipmentList)">
+            @click="showNotification(equipmentList,5)">
             <img :src="equipmentList.value[4].imgUrl" class="hover-zoom"
                 style="width: 100%; height: 250px; object-fit: cover;" />
             <div class="footer-content" style="background-color: #ededed; text-align: left;">
@@ -96,7 +96,7 @@
     </div>
     <div class="card_3">
         <el-card class="custom-card" style="max-width: 1000px; flex: 65;" shadow="hover"
-            @click="showNotification6(equipmentList)">
+            @click="showNotification(equipmentList,6)">
             <img :src="equipmentList.value[5].imgUrl" class="hover-zoom"
                 style="width: 100%; height: 300px; object-fit: cover;" />
             <div class="footer-content" style="background-color: #ffffff; text-align: left;">
@@ -110,7 +110,7 @@
             </div>
         </el-card>
         <el-card class="custom-card" style="max-width: 1000px; flex: 35;" shadow="hover"
-            @click="showNotification7(equipmentList)">
+            @click="showNotification(equipmentList,7)">
             <img :src="equipmentList.value[6].imgUrl" class="hover-zoom"
                 style="width: 100%; height: 250px; object-fit: cover;" />
             <div class="footer-content" style="background-color: #3453dd; text-align: left;">
@@ -133,12 +133,6 @@ import { onMounted, onBeforeMount } from 'vue'
 import axios from 'axios'
 import { ElNotification, ElMessageBox, ElMessage } from 'element-plus'
 import NotificationContent from '../components/NotificationContent.vue'
-import NotificationContent2 from '../components/NotificationContent2.vue'
-import NotificationContent3 from '../components/NotificationContent3.vue'
-import NotificationContent4 from '../components/NotificationContent4.vue'
-import NotificationContent5 from '../components/NotificationContent5.vue'
-import NotificationContent6 from '../components/NotificationContent6.vue'
-import NotificationContent7 from '../components/NotificationContent7.vue'
 import CommonLayout from "../components/CommonLayout.vue";
 import {useRouter} from 'vue-router'
 
@@ -194,14 +188,16 @@ onMounted(() => {
 
 const showMask = ref(false)
 
-function showNotification(equipmentList) {
+
+
+function showNotification(equipmentList,i) {
     showMask.value = true; // 显示遮罩层
     document.documentElement.classList.add('blur-active'); // 添加 blur-active 类
-    //console.log(equipmentList.value[0])
+
     // 使用 Vue 组件作为通知内容
-    ElNotification({
-        title: equipmentList.value[0].equipmentName,
-        message: h(NotificationContent, { equipmentName: equipmentList.value[0].equipmentName }), // 传递 equipmentName
+    const notificationInstance = ElNotification({
+        title: equipmentList.value[i-1].equipmentName,
+        message: h(NotificationContent, { equipmentName: equipmentList.value[i-1].equipmentName }), // 传递 equipmentName
         duration: 0,
         position: 'top-left',
         customClass: 'custom-notification',
@@ -209,122 +205,22 @@ function showNotification(equipmentList) {
         onClose: () => {
             showMask.value = false; // 通知关闭时隐藏遮罩层
             document.documentElement.classList.remove('blur-active'); // 移除 blur-active 类
+            document.removeEventListener('click', handleClickOutside); // 移除点击事件监听器
         }
-    })
-}
+    });
 
-function showNotification2(equipmentList) {
-    showMask.value = true; // 显示遮罩层
-    document.documentElement.classList.add('blur-active'); // 添加 blur-active 类
+    // 确保通知显示后才添加点击事件监听器
+    setTimeout(() => {
+        document.addEventListener('click', handleClickOutside);
+    }, 0);
 
-    // 使用 Vue 组件作为通知内容
-    ElNotification({
-        title: equipmentList.value[1].equipmentName,
-        message: h(NotificationContent2, { equipmentName: equipmentList.value[1].equipmentName }), // 传递 equipmentName
-        duration: 0,
-        position: 'top-right',
-        customClass: 'custom-notification',
-        dangerouslyUseHTMLString: true,
-        onClose: () => {
-            showMask.value = false; // 通知关闭时隐藏遮罩层
-            document.documentElement.classList.remove('blur-active'); // 移除 blur-active 类
+    // 添加点击事件监听器，点击空白处关闭通知
+    const handleClickOutside = (event) => {
+        const notificationElement = document.querySelector('.custom-notification');
+        if (notificationElement && !notificationElement.contains(event.target)) {
+            notificationInstance.close(); // 关闭通知
         }
-    })
-}
-
-function showNotification3(equipmentList) {
-    showMask.value = true; // 显示遮罩层
-    document.documentElement.classList.add('blur-active'); // 添加 blur-active 类
-
-    // 使用 Vue 组件作为通知内容
-    ElNotification({
-        title: equipmentList.value[2].equipmentName,
-        message: h(NotificationContent3, { equipmentName: equipmentList.value[2].equipmentName }), // 传递 equipmentName
-        duration: 0,
-        position: 'top-left',
-        customClass: 'custom-notification',
-        dangerouslyUseHTMLString: true,
-        onClose: () => {
-            showMask.value = false; // 通知关闭时隐藏遮罩层
-            document.documentElement.classList.remove('blur-active'); // 移除 blur-active 类
-        }
-    })
-}
-
-function showNotification4(equipmentList) {
-    showMask.value = true; // 显示遮罩层
-    document.documentElement.classList.add('blur-active'); // 添加 blur-active 类
-
-    // 使用 Vue 组件作为通知内容
-    ElNotification({
-        title: equipmentList.value[3].equipmentName,
-        message: h(NotificationContent4, { equipmentName: equipmentList.value[3].equipmentName }), // 传递 equipmentName
-        duration: 0,
-        position: 'top-left',
-        customClass: 'custom-notification',
-        dangerouslyUseHTMLString: true,
-        onClose: () => {
-            showMask.value = false; // 通知关闭时隐藏遮罩层
-            document.documentElement.classList.remove('blur-active'); // 移除 blur-active 类
-        }
-    })
-}
-
-function showNotification5(equipmentList) {
-    showMask.value = true; // 显示遮罩层
-    document.documentElement.classList.add('blur-active'); // 添加 blur-active 类
-
-    // 使用 Vue 组件作为通知内容
-    ElNotification({
-        title: equipmentList.value[4].equipmentName,
-        message: h(NotificationContent5, { equipmentName: equipmentList.value[4].equipmentName }), // 传递 equipmentName
-        duration: 0,
-        position: 'top-right',
-        customClass: 'custom-notification',
-        dangerouslyUseHTMLString: true,
-        onClose: () => {
-            showMask.value = false; // 通知关闭时隐藏遮罩层
-            document.documentElement.classList.remove('blur-active'); // 移除 blur-active 类
-        }
-    })
-}
-
-function showNotification6(equipmentList) {
-    showMask.value = true; // 显示遮罩层
-    document.documentElement.classList.add('blur-active'); // 添加 blur-active 类
-
-    // 使用 Vue 组件作为通知内容
-    ElNotification({
-        title: equipmentList.value[5].equipmentName,
-        message: h(NotificationContent6, { equipmentName: equipmentList.value[5].equipmentName }), // 传递 equipmentName
-        duration: 0,
-        position: 'top-left',
-        customClass: 'custom-notification',
-        dangerouslyUseHTMLString: true,
-        onClose: () => {
-            showMask.value = false; // 通知关闭时隐藏遮罩层
-            document.documentElement.classList.remove('blur-active'); // 移除 blur-active 类
-        }
-    })
-}
-
-function showNotification7(equipmentList) {
-    showMask.value = true; // 显示遮罩层
-    document.documentElement.classList.add('blur-active'); // 添加 blur-active 类
-
-    // 使用 Vue 组件作为通知内容
-    ElNotification({
-        title: equipmentList.value[6].equipmentName,
-        message: h(NotificationContent7, { equipmentName: equipmentList.value[6].equipmentName }), // 传递 equipmentName
-        duration: 0,
-        position: 'top-right',
-        customClass: 'custom-notification',
-        dangerouslyUseHTMLString: true,
-        onClose: () => {
-            showMask.value = false; // 通知关闭时隐藏遮罩层
-            document.documentElement.classList.remove('blur-active'); // 移除 blur-active 类
-        }
-    })
+    };
 }
 
 function openInNewTab(url) {
@@ -481,8 +377,8 @@ onMounted(() => {
     border-radius: 10px !important;
     padding: 20px !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
-    width: 75% !important;
-    max-height: calc(100vh - 100px) !important;
+    width: 65% !important;
+    max-height: calc(100vh - 120px) !important;
     /* 设置最大高度 */
     overflow-y: auto !important;
     /* 添加垂直滚动条 */
@@ -495,12 +391,16 @@ onMounted(() => {
     font-family: Arial, sans-serif;
     margin-top: 5%;
     margin-bottom: 5%;
-    /* 设置字体 */
 }
+
+
+
+
+
 
 .custom-notification .el-notification__title {
     font-weight: bold !important;
-    font-size: 24px !important;
+    font-size: 30px !important;
     margin-bottom: 10px !important;
     color: #333333;
     margin-top: 20px;
