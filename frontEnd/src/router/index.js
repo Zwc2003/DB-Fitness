@@ -184,6 +184,12 @@ const router = createRouter({
       component: AdminView,
       props: true,
     },
+    // 排行榜界面
+    {
+      path: '/ranking-list',
+      name: 'RankingList',
+      component: RankingList,
+    },
   ],
 });
 
