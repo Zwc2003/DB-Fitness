@@ -27,6 +27,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
+            Console.WriteLine($"收到用户：{userId} 的获取排行榜请求");
             return userAchievementBll.GetAchievementRank(userId, achievementId);
         }
 

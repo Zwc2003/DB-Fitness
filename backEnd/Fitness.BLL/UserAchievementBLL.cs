@@ -188,7 +188,8 @@ namespace Fitness.BLL
                     totRanking = totRanking.ToString(),
                     rankingUsers = rankingUsers
                 };
-                Console.WriteLine("获取排行榜");
+                Console.WriteLine("返回排行榜信息如下");
+                Console.WriteLine(JsonConvert.SerializeObject(response, Formatting.Indented));
                 return JsonConvert.SerializeObject(response, Formatting.Indented);
             }
             catch (Exception ex)
