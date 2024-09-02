@@ -98,6 +98,10 @@
                     <img :src="iconUrl" alt="User" class="dropdownlink">
                     <template #dropdown>
                         <el-dropdown-menu>
+                            <!-- <el-dropdown-item @click="navigateToMessageBox">
+                                <el-icon><MessageBox /></el-icon>
+                                账号消息
+                            </el-dropdown-item> -->
                             <el-dropdown-item @click="navigateToUserProfile">
                                 <el-icon>
                                     <Setting />
@@ -109,7 +113,7 @@
                                     <Switch />
                                 </el-icon>
                                 切换账号
-                            </el-dropdown-item>
+                            </el-dropdown-item>    
                         </el-dropdown-menu>
                     </template>
                 </el-dropdown>

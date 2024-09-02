@@ -14,6 +14,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Fitness.BLL
@@ -214,7 +215,21 @@ namespace Fitness.BLL
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             if (PostDAL.Like(postID))
             {
+                //通知被点赞方，接入成就系统
                 _userAchievement.UpdateBeLiked(postUserID,1);
+                var post = PostDAL.GetPostByPostID(postID);
+                Message message = new Message()
+                {
+                    messageID = -1,
+                    senderID = tokenRes.userID,
+                    receiverID = postUserID,
+                    messageType = "点赞帖子",
+                    Content = $"{post.postTitle}",
+                    sendTime = DateTime.Now,
+                    isRead = 0
+                };
+                MessageDAL.Insert(message);
+
                 return JsonConvert.SerializeObject(new
                 {
                     message = "成功点赞帖子"
@@ -227,7 +242,6 @@ namespace Fitness.BLL
                     message = "点赞帖子失败"
                 });
             }
-            //通知被点赞方，接入成就系统
         }
 
         public string CancleLike(string token, int postID, int postUserID)
@@ -268,6 +282,18 @@ namespace Fitness.BLL
                 imgUrl = post.imgUrl
             };
             Post(token,post1);
+            //通知
+            Message message = new Message()
+            {
+                messageID = -1,
+                senderID = userId,
+                receiverID = post.userID,
+                messageType = "转发",
+                Content = $"{post.postTitle}",
+                sendTime = DateTime.Now,
+                isRead = 0
+            };
+            MessageDAL.Insert(message);
             return JsonConvert.SerializeObject(new
             {
                 message = "成功转发"

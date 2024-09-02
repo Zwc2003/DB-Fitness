@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Fitness.BLL;
+using Microsoft.AspNet.SignalR.Messaging;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Fitness.Models
@@ -17,12 +18,14 @@ namespace Fitness.Models
         {
             _logger = logger;
         }
-        public async Task SendMessage(Message message)
+        //int messageID, int senderID, int receiverID,string messageType, string Content, string sendTime
+        public async Task Send(int messageID, int senderID, int receiverID, string messageType, string Content, string sendTime)
         {
             try
             {
-                Console.WriteLine(message);
-                await Clients.All.SendAsync("ReceiveMessage", message);
+                Console.WriteLine("11111");
+                await Clients.All.SendAsync("ReceiveMessage", messageID, senderID, receiverID, messageType, Content, sendTime);
+               // await Clients.All.SendAsync("ReceiveMessage", messageID, senderID,receiverID,messageType,Content,sendTime);
             }
             catch (Exception ex)
             {

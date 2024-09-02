@@ -20,7 +20,7 @@ namespace Fitness.DAL
                 messageID = Convert.ToInt32(row["messageID"]),
                 senderID = Convert.ToInt32(row["senderID"]),
                 receiverID = Convert.ToInt32(row["receiverID"]),
-                messageType = Convert.ToChar(row["messageType"]),
+                messageType = Convert.ToString(row["messageType"]),
                 Content = row["Content"].ToString(),
                 sendTime = Convert.ToDateTime(row["sendTime"])
             };
@@ -40,15 +40,14 @@ namespace Fitness.DAL
         // 插入新的消息记录
         public static bool Insert(Message message, OracleTransaction transaction = null)
         {
-            string cmdText = "INSERT INTO \"Messages\" (\"messageID\", \"senderID\", \"receiverID\", \"messageType\", \"Content\", \"sendTime\",\"isRead\") " +
-                             "VALUES (:messageID, :senderID, :receiverID, :messageType, :Content, :sendTime,:isRead)";
+            string cmdText = "INSERT INTO \"Messages\" (\"senderID\", \"receiverID\", \"messageType\", \"Content\", \"sendTime\",\"isRead\") " +
+                             "VALUES ( :senderID, :receiverID, :messageType, :Content, :sendTime,:isRead)";
 
             OracleParameter[] parameters = {
-            new OracleParameter("messageID", OracleDbType.Int32) { Value = message.messageID },
             new OracleParameter("senderID", OracleDbType.Int32) { Value = message.senderID },
             new OracleParameter("receiverID", OracleDbType.Int32) { Value = message.receiverID },
-            new OracleParameter("messageType", OracleDbType.Char) { Value = message.messageType },
-            new OracleParameter("Content", OracleDbType.Varchar2) { Value = message.Content },
+            new OracleParameter("messageType", OracleDbType.NVarchar2) { Value = message.messageType },
+            new OracleParameter("Content", OracleDbType.NVarchar2) { Value = message.Content },
             new OracleParameter("sendTime", OracleDbType.Date) { Value = message.sendTime },
             new OracleParameter("isRead",OracleDbType.Int32){ Value =message.isRead}
         };

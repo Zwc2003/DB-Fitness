@@ -27,6 +27,7 @@ namespace Fitness.Controllers
 
             while (true)
             {
+                Console.WriteLine("Subcribe");
                 var messages = GetUnreadMessages(userId);
                 if (messages != null && messages.Count > 0)
                 {
