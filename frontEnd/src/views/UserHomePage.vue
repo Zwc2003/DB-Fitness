@@ -41,12 +41,12 @@
               :size="32"
               src="https://ts3.cn.mm.bing.net/th?id=OIP-C.9khWcYup3srhgw3V1fi7-QHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
             />
-            <span>{{userName}}</span>
+            <span>{{ userName }}</span>
             <span
               class="text-sm mr-2"
               style="color: var(--el-text-color-regular)"
             >
-              {{email}}
+              {{ email }}
             </span>
             <el-tag>欢迎您~</el-tag>
           </div>
@@ -71,29 +71,36 @@
     <div class="course-calender">
       <div class="my-course-title">我的课程</div>
       <div class="coursee-list">
-        <CourseCard
-          v-for="(usercourse, index) in usercourses"
-          :key="index"
-          :coursePhotoUrl="usercourse.coursePhotoUrl"
-          :courseName="usercourse.courseName"
-          :courseDescription="usercourse.courseDescription"
-          :courseStartTime="usercourse.courseStartTime"
-          :courseEndTime="usercourse.courseEndTime"
-          :courseGrade="usercourse.courseGrade"
-          :coursePrice="usercourse.coursePrice"
-          :courseProgress="usercourse.courseProgress"
-          :features="usercourse.features"
-          :instructorImage="usercourse.instructorImage"
-          :instructorName="usercourse.instructorName"
-          :instructorHonors="usercourse.instructorHonors"
-          :classTime="usercourse.classTime"
-          :isbooked="1"
-        />
+        <template v-if="usercourses.length > 0">
+          <CourseCard
+            v-for="(usercourse, index) in usercourses"
+            :key="index"
+            :coursePhotoUrl="usercourse.coursePhotoUrl"
+            :courseName="usercourse.courseName"
+            :courseDescription="usercourse.courseDescription"
+            :courseStartTime="usercourse.courseStartTime"
+            :courseEndTime="usercourse.courseEndTime"
+            :courseGrade="usercourse.courseGrade"
+            :coursePrice="usercourse.coursePrice"
+            :courseProgress="usercourse.courseProgress"
+            :features="usercourse.features"
+            :instructorImage="usercourse.instructorImage"
+            :instructorName="usercourse.instructorName"
+            :instructorHonors="usercourse.instructorHonors"
+            :classTime="usercourse.classTime"
+            :isbooked="1"
+          />
+        </template>
+        <template v-else>
+          <div class="empty-course-message">
+            您还没有课程哟，快去课程大厅预约后，点击我的购物车下单吧
+          </div>
+        </template>
       </div>
       <div class="course-list">
         <h2>您今日的课程列表</h2>
         <el-row
-          v-for="(course, index) in usercourses"
+          v-for="(course, index) in sortedCourses"
           :key="index"
           class="course-item"
         >
@@ -264,17 +271,21 @@ export default {
     }
     this.userName = localStorage.getItem("name");
     this.getVigorTokenBalance();
-    this.email =localStorage.getItem("email");
+    this.email = localStorage.getItem("email");
   },
 
   methods: {
     // 获取活力币余额
     getVigorTokenBalance() {
-      const token = localStorage.getItem('token');
-      axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`)
-        .then(response => {
+      const token = localStorage.getItem("token");
+      axios
+        .get(
+          `http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`
+        )
+        .then((response) => {
           this.vitalityCoins = response.data.balance;
-        }).catch(error => {
+        })
+        .catch((error) => {
           this.vigorTokenBalance = 0;
           console.error("Error fetching vigorTokenBalance:", error);
         });
@@ -433,7 +444,7 @@ export default {
       // 检查余额是否足够
       if (this.vitalityCoins >= totalPrice) {
         // 如果足够，扣除金额
-        this.UPDATE_VITALITY_COINS (totalPrice);
+        this.UPDATE_VITALITY_COINS(totalPrice);
 
         // 将选中的课程添加到 Vuex 的 usercourses 数组中
         this.$store.commit("ADD_COURSES_TO_USER", selectedCourses);
@@ -481,6 +492,18 @@ export default {
     ...mapState({
       cartCourses: (state) => state.cartCourses,
     }),
+
+    //课程排序
+    sortedCourses() {
+      return this.usercourses.slice().sort((a, b) => {
+        const getTime = (timeRange) => {
+          const [startTime] = timeRange.split("-");
+          return new Date(`1970/01/01 ${startTime.trim()}`).getTime();
+        };
+
+        return getTime(a.classTime) - getTime(b.classTime);
+      });
+    },
 
     // 用户当前健身阶段
     currentStage() {
@@ -604,6 +627,17 @@ export default {
   flex-direction: column;
   gap: 50px;
   padding: 10px;
+}
+
+.empty-course-message {
+  width: 100%;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+  color: #555;
+  background-color: #f9f9f9;
 }
 
 .course-card {
