@@ -20,7 +20,7 @@
                   <el-input v-model="input" placeholder="请输入内容" @keyup.enter="sendMessage">
                     <template #suffix>
                       <div class="input-suffix">
-                        <img src="@/assets/emoji.jpg" class="emoji-image" ref="emojiButton" @click="toggleEmojiPicker"/>
+                        <img src="../assets/emoji.jpg" class="emoji-image" ref="emojiButton" @click="toggleEmojiPicker"/>
                         <image-upload />
                       </div>
                     </template>
