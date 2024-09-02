@@ -41,12 +41,12 @@
               :size="32"
               src="https://ts3.cn.mm.bing.net/th?id=OIP-C.9khWcYup3srhgw3V1fi7-QHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
             />
-            <span>李华</span>
+            <span>{{userName}}</span>
             <span
               class="text-sm mr-2"
               style="color: var(--el-text-color-regular)"
             >
-              2033458
+              {{email}}
             </span>
             <el-tag>欢迎您~</el-tag>
           </div>
@@ -148,6 +148,7 @@ import CartSidebar from "../components/CartSidebar.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { mapGetters, mapActions } from "vuex";
 import { mapState } from "vuex";
+import axios from "axios";
 
 export default {
   components: {
@@ -157,6 +158,9 @@ export default {
 
   data() {
     return {
+      userName: "",
+      email: "",
+      vitalityCoins: 0,
       courseData: [
         { date: "2024-08-01", duration: 1.5 },
         { date: "2024-08-02", duration: 2 },
@@ -258,9 +262,23 @@ export default {
       ];
       this.updateUserCourses(initialCourses);
     }
+    this.userName = localStorage.getItem("name");
+    this.getVigorTokenBalance();
+    this.email =localStorage.getItem("email");
   },
 
   methods: {
+    // 获取活力币余额
+    getVigorTokenBalance() {
+      const token = localStorage.getItem('token');
+      axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`)
+        .then(response => {
+          this.vitalityCoins = response.data.balance;
+        }).catch(error => {
+          this.vigorTokenBalance = 0;
+          console.error("Error fetching vigorTokenBalance:", error);
+        });
+    },
     //每日课程列表的名字长度问题
     truncateCourseName(name) {
       if (name.length > 5) {
@@ -401,6 +419,10 @@ export default {
       this.$store.commit("ADD_COURSES_TO_USER", newCourses);
     },
 
+    //更新活力币
+    UPDATE_VITALITY_COINS(amount) {
+      this.vitalityCoins -= amount;
+    },
     // 计算所选课程的总价格
     handleCheckout(selectedCourses) {
       const totalPrice = selectedCourses.reduce(
@@ -409,9 +431,9 @@ export default {
       );
 
       // 检查余额是否足够
-      if (this.$store.state.vitalityCoins >= totalPrice) {
+      if (this.vitalityCoins >= totalPrice) {
         // 如果足够，扣除金额
-        this.$store.commit("UPDATE_VITALITY_COINS", totalPrice);
+        this.UPDATE_VITALITY_COINS (totalPrice);
 
         // 将选中的课程添加到 Vuex 的 usercourses 数组中
         this.$store.commit("ADD_COURSES_TO_USER", selectedCourses);
@@ -426,7 +448,7 @@ export default {
 
         // 弹出成功提示
         ElMessageBox.alert(
-          `下单成功！您剩余的活力币余额为：${this.$store.state.vitalityCoins}`,
+          `下单成功！您剩余的活力币余额为：${this.vitalityCoins}`,
           "订单确认",
           {
             confirmButtonText: "确定",
@@ -457,7 +479,6 @@ export default {
 
     // 获取用户购物车数组
     ...mapState({
-      vitalityCoins: (state) => state.vitalityCoins,
       cartCourses: (state) => state.cartCourses,
     }),
 

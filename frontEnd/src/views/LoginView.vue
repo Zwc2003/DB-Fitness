@@ -143,7 +143,7 @@ export default
                         store.commit('setUserID', response1.data.userID);
                         store.commit('setName', response1.data.userName);
                         store.commit('setIconUrl',response1.data.iconURL)
-
+                        store.commit('setEmail', response1.data.email);
                         // 存储当前用户发帖权限
                         store.commit('setIsPost', response1.data.isPost);
 

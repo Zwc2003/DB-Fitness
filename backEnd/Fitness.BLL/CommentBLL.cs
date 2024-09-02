@@ -26,8 +26,8 @@ namespace Fitness.BLL
         public string PublishComment(string token, Comment comment)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
-
-            comment.userID = tokenRes.userID;
+            int senderId = tokenRes.userID;
+            comment.userID = senderId;
             comment.commentTime = DateTime.Now;
             comment.likesCount = 0;
             comment.parentCommentID = -1;
@@ -40,7 +40,16 @@ namespace Fitness.BLL
             int achieveUserID = postbll.GetPostByPostID(token, comment.postID).userID;
             _userAchievement.UpdateBeComment(achieveUserID, 1);
             //调用通知接口
-
+            Message message = new Message() {
+                messageID = -1,
+                senderID = senderId,
+                receiverID = achieveUserID,
+                messageType = "评论",
+                Content = $"{comment.Content}",
+                sendTime = DateTime.Now,
+                isRead=0
+            };
+            MessageDAL.Insert(message);
             return JsonConvert.SerializeObject(new
             {
                 commentID = result,
@@ -51,8 +60,8 @@ namespace Fitness.BLL
         public string ReplyComment(string token, Comment replyComment)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
-
-            replyComment.userID = tokenRes.userID;
+            int senderId = tokenRes.userID;
+            replyComment.userID = senderId;
             replyComment.commentTime = DateTime.Now;
             replyComment.likesCount = 0;
             int st;
@@ -64,7 +73,17 @@ namespace Fitness.BLL
             int achieveUserID = postbll.GetPostByPostID(token, replyComment.postID).userID;
             _userAchievement.UpdateBeComment(achieveUserID, 1);
             //调用通知接口
-
+            Message message = new Message()
+            {
+                messageID = -1,
+                senderID = senderId,
+                receiverID = achieveUserID,
+                messageType = "回复",
+                Content = $"{replyComment.Content}",
+                sendTime = DateTime.Now,
+                isRead = 0
+            };
+            MessageDAL.Insert(message);
             return JsonConvert.SerializeObject(new
             {
                 commentID = result,
@@ -116,8 +135,19 @@ namespace Fitness.BLL
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             bool result = CommentDAL.LikeCountsAddOne(commentID);
+            var comment = CommentDAL.GetByCommentID(commentID);
             //调用通知接口
-
+            Message message = new Message()
+            {
+                messageID = -1,
+                senderID = tokenRes.userID,
+                receiverID = comment.userID,
+                messageType = "点赞评论",
+                Content = $"{comment.Content}",
+                sendTime = DateTime.Now,
+                isRead = 0
+            };
+            MessageDAL.Insert(message);
             return result ? "点赞成功" : "点赞失败";
         }
 

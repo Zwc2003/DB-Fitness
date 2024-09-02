@@ -323,11 +323,7 @@ export default {
                 this.imagePreview = this.profile.iconURL; // 设置头像预览
                 this.originalImagePreview = this.profile.iconURL; // 保存初始状态的头像
                 console.log("用户资料：", this.profile);
-                ElNotification({
-                    title: '成功',
-                    message: '用户资料获取成功',
-                    type: 'success',
-                });
+                console.log("获取用户资料成功");
             } catch (error) {
                 ElNotification({
                     title: '错误',
@@ -341,11 +337,7 @@ export default {
             try {
                 const response = await axios.get(`http://localhost:8080/api/Post/GetPersonalPost?token=${token}`);
                 this.posts = response.data;
-                ElNotification({
-                    title: '成功',
-                    message: '用户帖子获取成功',
-                    type: 'success',
-                });
+                console.log("获取用户帖子成功：", this.posts);
             } catch (error) {
                 ElNotification({
                     title: '错误',
@@ -395,11 +387,7 @@ export default {
                     isAchieved: achievement.isAchieved === "true"
                 }));
 
-                ElNotification({
-                    title: '成功',
-                    message: '成就表获取成功',
-                    type: 'success',
-                });
+                console.log("获取成就表成功：", this.achievements);
             } catch (error) {
                 ElNotification({
                     title: '错误',
@@ -499,11 +487,7 @@ export default {
             try {
                 const response = await axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`);
                 this.vigorTokenBalance = response.data.balance;
-                ElNotification({
-                    title: '成功',
-                    message: '活力币余额获取成功',
-                    type: 'success',
-                });
+                console.log("获取活力币余额成功：", this.vigorTokenBalance);
             } catch (error) {
                 ElNotification({
                     title: '错误',
@@ -525,11 +509,7 @@ export default {
                 }));
 
                 this.vigorTokenRecords.sort((a, b) => b.recordID - a.recordID);
-                ElNotification({
-                    title: '成功',
-                    message: '活力币变动记录获取成功',
-                    type: 'success',
-                });
+                console.log("获取活力币变动记录成功：", this.vigorTokenRecords);
             } catch (error) {
                 ElNotification({
                     title: '错误',
@@ -941,6 +921,7 @@ select {
     text-align: left;
     /* 确保按钮靠左对齐 */
 }
+
 .toggle-button {
     background-color: #43b984;
     /* 按钮背景颜色 */

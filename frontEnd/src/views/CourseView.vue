@@ -1,10 +1,10 @@
 <template>
   <navigation-bar />
   <div class="trans">
-    <router-link v-if="userRole === '普通用户'" to="/userhome">
+    <router-link v-if="userRole === 'user'" to="/userhome">
       <el-button type="primary">我的主页</el-button>
     </router-link>
-    <router-link v-else-if="userRole === '教练'" to="/publishcourse">
+    <router-link v-else-if="userRole ==='coach'" to="/publishcourse">
       <el-button type="primary">我的主页</el-button>
     </router-link>
   </div>
@@ -56,9 +56,9 @@
         :coursePrice="course.coursePrice"
         :courseFeatures="course.courseFeatures"
         :courseDescription="course.courseDescription"
-        :instructorName="course.instructorName"
+        :instructorName="course.coachName"
         :instructorHonors="course.instructorHonors"
-        :instructorImage="course.instructorImage"
+        :instructorImage="course.iconURL"
         :classTime="course.classTime"
         :features="course.features"
         :width="300"
@@ -78,6 +78,7 @@
 
 <script>
 import CourseHome from "../components/CourseHome.vue";
+import axios from "axios";
 
 export default {
   components: {
@@ -101,7 +102,7 @@ export default {
   },
   methods: {
     toggleRole() {
-      this.userRole = this.userRole === "普通用户" ? "教练" : "普通用户";
+      this.userRole = this.userRole === "user" ? "coach" : "user";
     },
     selectOption(option) {
       this.selectedOption = option;
@@ -132,118 +133,35 @@ export default {
       }
       this.isDialogVisible = true;
     },
-
+    //axios
     //大厅获取课程API
     async fetchCourses() {
-      try {
-        const response = await fetch("/api/Course/GetAllCourse", {
-          method: "GET",
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch courses");
-        }
-
-        const coursesData = await response.json();
-
-        this.courses = coursesData.map((course) => ({
-          coursePhotoUrl: course.coursePhotoUrl || "",
-          courseName: course.courseName || "Unnamed Course",
-          courseDescription:
-            course.courseDescription || "No description available",
-          courseStartTime: course.courseStartTime || "",
-          courseEndTime: course.courseEndTime || "",
-          courseGrade: course.courseGrade || 0,
-          coursePrice: course.coursePrice || 0,
-          instructorName: course.instructorName || "Unknown Instructor",
-          instructorHonors: course.instructorHonors || "No honors available",
-          instructorImage: course.instructorImage || "",
-          features: course.features || [],
-        }));
-      } catch (error) {
-        console.error("Error:", error);
-      }
+      const token = localStorage.getItem("token");
+      return axios.get(`http://localhost:8080/api/Course/GetAllCourse?token=${token}`)
+                .then(response => {
+                      this.courses = response.data.map(item => {
+                        if (item.features) {
+                          item.features = item.features.split('#');
+                        }
+                        return item;
+                      });
+                      console.log(this.courses);
+                      this.filteredCourses = this.courses; // 默认展示所有课程
+                })
+                .catch(error => {
+                  console.error("Error fetching courses:", error);
+                    ElNotification({
+                        title: '错误',
+                        message: '获取所有课程时发生错误，请稍后再试。',
+                        type: 'error',
+                    });
+                    throw error;
+                });
     },
   },
   mounted() {
     this.fetchCourses();
-    // 假设这是从后端获取的课程数据
-    (this.courses = [
-      {
-        coursePhotoUrl:
-          "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-        courseName: "举重阻尼训练",
-        courseDescription:
-          "举重阻尼训练是一种结合了力量训练与控制力训练的高效健身课程。提高肌肉力量和爆发力，增强肌肉控制和稳定性，本课程适合各种健身水平的人士，无论是初学者还是经验丰富的运动员，都可以在教练的指导下找到适合自己的训练强度。",
-        courseStartTime: "2022-08-08",
-        courseEndTime: "2024-08-08",
-        courseGrade: "4",
-        coursePrice: 50,
-        instructorName: "朴男",
-        instructorHonors:
-          "男Krisun，极限运动员，世界纪录保持者，抖音创作者，其抖音号“朴男Krisun”，拥有粉丝169.3万",
-        instructorImage: "/images/pn.jpg",
-        features: ["感受力量涌现", "增强肌肉控制", "训练全身各处"],
-        classTime: "10:00-11:00",
-        isbooked: 0,
-        courseType: "塑形训练",
-      },
-      {
-        coursePhotoUrl:
-          "https://www.lesmills.com.cn/uploads/20211207/d5d8d0860359243eee20bc507bf2c231.jpg",
-        courseName: "平衡与专注、持久与柔软",
-        courseDescription:
-          "持久与柔软瑜伽课程旨在帮助学员通过瑜伽的练习，提升身心的平衡，增强专注力，同时提高身体的持久力和柔软度。本课程适合所有级别的瑜伽爱好者，无论是初学者还是有经验的练习者，都可以在这个课程中找到适合自己的挑战和放松",
-        courseStartTime: "2022-08-08",
-        courseEndTime: "2024-08-09",
-        courseGrade: "2",
-        coursePrice: 10,
-        instructorName: "帕梅拉",
-        instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
-        instructorImage: "/images/p.jpg",
-        features: ["提升身心平衡", "助力有氧健身", "维护心理健康"],
-        classTime: "10:00-11:00",
-        isbooked: 0,
-        courseType: "瑜伽",
-      },
-      {
-        coursePhotoUrl:
-          "https://www.lesmills.com.cn/uploads/20211207/30c00cdf6752eeda8356ecd01893dabd.jpg",
-        courseName: "30到45分钟核心训练",
-        courseDescription:
-          "核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。这门30到45分钟的核心训练课程专为忙碌的现代人设计，旨在通过高强度、集中的训练，快速有效地加强你的核心力量和稳定性。",
-        courseStartTime: "2022-08-08",
-        courseEndTime: "2024-08-09",
-        courseGrade: "3",
-        coursePrice: 30,
-        instructorName: "鹿晨辉",
-        instructorHonors: "鹿晨辉，国家级健美一级裁判和国家职业健身培训师。",
-        instructorImage: "/images/l.jpg",
-        features: ["感受力量涌现", "增强肌肉控制", "减少受伤风险"],
-        classTime: "10:00-11:00",
-        isbooked: 0,
-        courseType: "塑形训练",
-      },
-      {
-        coursePhotoUrl:
-          "https://www.lesmills.com.cn/uploads/20211207/e4466eb6aace56fdaff24fc4c3c318af.jpg",
-        courseName: "瘦身、紧致、有型",
-        courseDescription:
-          "这门课程专为追求健康、紧致身材的学员设计。通过结合有氧运动、力量训练和功能性练习，本课程旨在帮助学员减少体脂、塑造肌肉线条，同时提升整体的身体力量和灵活性，让身体更加有型。",
-        courseStartTime: "2022-08-08",
-        courseEndTime: "2024-08-09",
-        courseGrade: "2",
-        coursePrice: 20,
-        instructorName: "帕梅拉",
-        instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
-        instructorImage: "/images/p.jpg",
-        features: ["增强心肺功能", "助力有氧健身", "塑造紧致线条"],
-        classTime: "10:00-11:00",
-        isbooked: 0,
-        courseType: "有氧训练",
-      },
-    ]),
-      (this.filteredCourses = this.courses); // 默认展示所有课程
+    this.userRole = localStorage.getItem("role");
   },
 };
 </script>

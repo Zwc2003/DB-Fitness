@@ -18,7 +18,7 @@ namespace Fitness.Models
         public int receiverID { get; set; }
 
         // 消息类型（如：通知、私信等）
-        public char messageType { get; set; }
+        public string messageType { get; set; }
 
         // 消息内容
         public string Content { get; set; }

@@ -7,6 +7,7 @@ export default createStore({
   state: {
     role: localStorage.getItem("role") || "unAuthenticated",
     username: localStorage.getItem("username") || "",
+    email: localStorage.getItem("email") || "",
     token: localStorage.getItem("token") || "",
     recipe: localStorage.getItem("recipe") || "",
     userID: localStorage.getItem("userID") || "",
@@ -37,61 +38,61 @@ export default createStore({
     userList: [], //只返回好友的ID，无其他字段，使用其他字段从userListInformation中获取
     //购物车数据
     cartCourses: [
-      {
-        coursePhotoUrl:
-          "https://tse2-mm.cn.bing.net/th/id/OIP-C.GIvUZUnbp2xh7xKqzV5CPgHaE7?w=268&h=180&c=7&r=0&o=5&pid=1.7",
-        courseName: "运动健身",
-        courseDescription:
-          "这是一门综合性的运动健身课程，旨在通过多样化的训练方法，全面提升学员的身体素质、力量、耐力和灵活性。课程结合了有氧运动、力量训练、核心锻炼和柔韧性训练，适合各种健身水平的学员。",
-        courseStartTime: "2022.06.07",
-        courseEndTime: "2024.08.09",
-        courseGrade: "3",
-        coursePrice: 50,
-        instructorName: "朴男",
-        instructorHonors:
-          "男Krisun，极限运动员，世界纪录保持者，抖音创作者，其抖音号“朴男Krisun”，拥有粉丝169.3万",
-        instructorImage: "/images/pn.jpg",
-        features: ["增强心肺功能", "提升肌肉力量", "塑造紧致线条"],
-        selected: true,
-        classTime: "17:00 - 18:00",
-        isbooked: 0,
-      },
-      {
-        coursePhotoUrl:
-          "https://tse3-mm.cn.bing.net/th/id/OIP-C.VqoEEkEfYw9eANM7GUlz3AHaEo?w=276&h=180&c=7&r=0&o=5&pid=1.7",
-        courseName: "普拉提",
-        courseDescription:
-          "这门课程专为追求健康、紧致身材的学员设计。通过结合有氧运动、力量训练和功能性练习，本课程旨在帮助学员减少体脂、塑造肌肉线条，同时提升整体的身体力量和灵活性，让身体更加有型。",
-        courseStartTime: "2022.08.08",
-        courseEndTime: "2024.08.09",
-        courseGrade: "2",
-        coursePrice: 20,
-        instructorName: "帕梅拉",
-        instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
-        instructorImage: "/images/p.jpg",
-        features: ["增强心肺功能", "助力有氧健身", "塑造紧致线条"],
-        selected: false,
-        classTime: "10:00 - 11:00",
-        isbooked: 0,
-      },
-      {
-        coursePhotoUrl:
-          "https://tse3-mm.cn.bing.net/th/id/OIP-C.oXrQec5a4Au63MDb2vLCRwHaE8?w=246&h=180&c=7&r=0&o=5&pid=1.7",
-        courseName: "长跑",
-        courseDescription:
-          "核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。这门30到45分钟的核心训练课程专为忙碌的现代人设计，旨在通过高强度、集中的训练，快速有效地加强你的核心力量和稳定性。",
-        courseStartTime: "2022.08.08",
-        courseEndTime: "2024.08.09",
-        courseGrade: "2",
-        coursePrice: 20,
-        instructorName: "鹿晨辉",
-        instructorHonors: "鹿晨辉，国家级健美一级裁判和国家职业健身培训师。",
-        instructorImage: "/images/l.jpg",
-        features: ["感受力量涌现", "增强肌肉控制", "减少受伤风险"],
-        selected: true,
-        classTime: "10:00 - 11:00",
-        isbooked: 0,
-      },
+      // {
+      //   coursePhotoUrl:
+      //     "https://tse2-mm.cn.bing.net/th/id/OIP-C.GIvUZUnbp2xh7xKqzV5CPgHaE7?w=268&h=180&c=7&r=0&o=5&pid=1.7",
+      //   courseName: "运动健身",
+      //   courseDescription:
+      //     "这是一门综合性的运动健身课程，旨在通过多样化的训练方法，全面提升学员的身体素质、力量、耐力和灵活性。课程结合了有氧运动、力量训练、核心锻炼和柔韧性训练，适合各种健身水平的学员。",
+      //   courseStartTime: "2022.06.07",
+      //   courseEndTime: "2024.08.09",
+      //   courseGrade: "3",
+      //   coursePrice: 50,
+      //   instructorName: "朴男",
+      //   instructorHonors:
+      //     "男Krisun，极限运动员，世界纪录保持者，抖音创作者，其抖音号“朴男Krisun”，拥有粉丝169.3万",
+      //   instructorImage: "/images/pn.jpg",
+      //   features: ["增强心肺功能", "提升肌肉力量", "塑造紧致线条"],
+      //   selected: true,
+      //   classTime: "17:00 - 18:00",
+      //   isbooked: 0,
+      // },
+      // {
+      //   coursePhotoUrl:
+      //     "https://tse3-mm.cn.bing.net/th/id/OIP-C.VqoEEkEfYw9eANM7GUlz3AHaEo?w=276&h=180&c=7&r=0&o=5&pid=1.7",
+      //   courseName: "普拉提",
+      //   courseDescription:
+      //     "这门课程专为追求健康、紧致身材的学员设计。通过结合有氧运动、力量训练和功能性练习，本课程旨在帮助学员减少体脂、塑造肌肉线条，同时提升整体的身体力量和灵活性，让身体更加有型。",
+      //   courseStartTime: "2022.08.08",
+      //   courseEndTime: "2024.08.09",
+      //   courseGrade: "2",
+      //   coursePrice: 20,
+      //   instructorName: "帕梅拉",
+      //   instructorHonors: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
+      //   instructorImage: "/images/p.jpg",
+      //   features: ["增强心肺功能", "助力有氧健身", "塑造紧致线条"],
+      //   selected: false,
+      //   classTime: "10:00 - 11:00",
+      //   isbooked: 0,
+      // },
+      // {
+      //   coursePhotoUrl:
+      //     "https://tse3-mm.cn.bing.net/th/id/OIP-C.oXrQec5a4Au63MDb2vLCRwHaE8?w=246&h=180&c=7&r=0&o=5&pid=1.7",
+      //   courseName: "长跑",
+      //   courseDescription:
+      //     "核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。这门30到45分钟的核心训练课程专为忙碌的现代人设计，旨在通过高强度、集中的训练，快速有效地加强你的核心力量和稳定性。",
+      //   courseStartTime: "2022.08.08",
+      //   courseEndTime: "2024.08.09",
+      //   courseGrade: "2",
+      //   coursePrice: 20,
+      //   instructorName: "鹿晨辉",
+      //   instructorHonors: "鹿晨辉，国家级健美一级裁判和国家职业健身培训师。",
+      //   instructorImage: "/images/l.jpg",
+      //   features: ["感受力量涌现", "增强肌肉控制", "减少受伤风险"],
+      //   selected: true,
+      //   classTime: "10:00 - 11:00",
+      //   isbooked: 0,
+      // },
     ],
     //活力币
     vitalityCoins: 100,
@@ -253,10 +254,6 @@ export default createStore({
     REMOVE_COURSE_FROM_CART(state, index) {
       state.cartCourses.splice(index, 1);
     },
-    //更新活力币
-    UPDATE_VITALITY_COINS(state, amount) {
-      state.vitalityCoins -= amount;
-    },
     //更新用户课程表
     updateUserCourses(state, courses) {
       state.usercourses = courses;
@@ -296,6 +293,10 @@ export default createStore({
       state.role = role;
       // 将数据保存到 LocalStorage
       localStorage.setItem("role", role);
+    },
+    setEmail(state, email) {
+      state.email = email;
+      localStorage.setItem("email", email);
     },
     setUsername(state, username) {
       state.username = username;
