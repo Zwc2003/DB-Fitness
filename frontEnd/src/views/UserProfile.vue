@@ -43,7 +43,7 @@
                             </div>
                             <div class="profile-viewer">
                                 <label>注册时间</label>
-                                <p>{{ profile.registrationTime }}</p>
+                                <p>{{ formatDate(profile.registrationTime) }}</p>
                             </div>
                         </div>
                     </section>
@@ -69,7 +69,7 @@
                         <div class="info-row uniform-row">
                             <EditableField label="健身目标类型" :value="profile.goalType" type="input"
                                 @save="profile.goalType = $event" />
-                            <EditableField label="体重(kg)" :value="profile.goalWeight" type="input"
+                            <EditableField label="体重 / kg" :value="profile.goalWeight" type="input"
                                 @save="profile.goalWeight = $event" />
 
                         </div>
@@ -310,13 +310,32 @@ export default {
         getImagePath(achievementId) {
             return this.achievementImages[achievementId] || '';
         },
+        // 得到格式化的注册时间
+        formatDate(date) {
+            //profile.registrationTime
+            if (!(date instanceof Date)) {
+                console.log("格式错误");
+                return '';
+            }
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            const seconds = date.getSeconds().toString().padStart(2, '0');
+            return `${year}-${month}-${day}  ${hours}:${minutes}:${seconds}`; // 格式化为 yyyy-mm-dd
+        },
+
         async fetchUserProfile(userID) {
             const token = localStorage.getItem('token');
             try {
                 const response = await axios.get(`http://localhost:8080/api/User/GetProfile`, {
                     params: { token, userID }
                 });
+                const date = new Date(response.data.registrationTime);
+                console.log(date);
                 this.profile = response.data;
+                this.profile.registrationTime=date;
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
                 this.tags = this.profile.tags ? this.profile.tags.split('#').filter(Boolean) : [];
                 this.originalTags = [...this.tags]; // 保存初始状态的标签

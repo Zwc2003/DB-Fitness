@@ -50,14 +50,14 @@
                         健身论坛
                     </router-link>
                 </label>
-                <label for="achievement" class="achievement" @click="delayedNavigation('/achievements')">
+            <!--<label for="achievement" class="achievement" @click="delayedNavigation('/achievements')">
                     <router-link to="/achievements">
                         <el-icon>
                             <Medal />
                         </el-icon>
                         健身成就
                     </router-link>
-                </label>
+                </label>-->
                 <label for="course" class="course" @click="delayedNavigation('/course')">
                     <router-link to="/course">
                         <el-icon>
@@ -74,14 +74,14 @@
                         健身计划
                     </router-link>
                 </label>
-                <label for="chat" class="chat" @click="delayedNavigation('/chat')">
+                <!--<label for="chat" class="chat" @click="delayedNavigation('/chat')">
                     <router-link to="/chat">
                         <el-icon>
                             <ChatLineRound />
                         </el-icon>
                         聊天室
                     </router-link>
-                </label>
+                </label>-->
                 <label for="healthyDiet" class="healthyDiet" @click="delayedNavigation('/healthyDiet')">
                     <router-link to="/healthyDiet">
                         <el-icon>
@@ -280,7 +280,7 @@ body {
     position: relative;
     z-index: -1;
     color: #333;
-    font-size: 16px;
+    font-size: 1vw;
     font-weight: 500;
     text-decoration: none;
 }
@@ -292,7 +292,7 @@ body {
 .wrapper nav .tab {
     position: absolute;
     height: 100%;
-    width: 11%;
+    width: 14.3%;
     left: 0px;
     bottom: 0px;
     background: linear-gradient(to right, #f09819, #ff5858);
@@ -304,30 +304,30 @@ body {
 .wrapper nav #equipment:checked~label.equipment a,
 .wrapper nav #aifit:checked~label.aifit a,
 .wrapper nav #forum:checked~label.forum a,
-.wrapper nav #achievement:checked~label.achievement a,
+/*.wrapper nav #achievement:checked~label.achievement a,
 /* .wrapper nav #rank:checked~label.rank a, */
 .wrapper nav #course:checked~label.course a,
 .wrapper nav #plan:checked~label.plan a,
-.wrapper nav #chat:checked~label.chat a,
+/*.wrapper nav #chat:checked~label.chat a,*/
 .wrapper nav #healthyDiet:checked~label.healthyDiet a {
     color: #fff;
     transition: 0.6s;
 }
 
 .wrapper nav #equipment:checked~.tab {
-    left: 11%;
+    left: 14.3%;
 }
 
 .wrapper nav #aifit:checked~.tab {
-    left: 22%;
+    left: 28.5%;
 }
 
 .wrapper nav #forum:checked~.tab {
-    left: 33.5%;
+    left: 42.9%;
 }
 
-.wrapper nav #achievement:checked~.tab {
-    left: 44.5%;
+/*.wrapper nav #achievement:checked~.tab {
+    left: 57.1%;
 }
 
 /* .wrapper nav #rank:checked~.tab {
@@ -335,27 +335,27 @@ body {
 } */
 
 .wrapper nav #course:checked~.tab {
-    left: 55.5%;
+    left: 57.1%;
 }
 
 .wrapper nav #plan:checked~.tab {
-    left: 66.5%;
+    left:71.4%;
 }
 
-.wrapper nav #chat:checked~.tab {
+/*.wrapper nav #chat:checked~.tab {
     left: 78%;
-}
+}*/
 
 .wrapper nav #healthyDiet:checked~.tab {
-    left: 89%;
+    left: 85.7%;
 }
 
 .wrapper nav #mealPlanner:checked~.tab {
-    left: 89%;
+    left: 85.7%;
 }
 
 .wrapper nav #mealRecord:checked~.tab {
-    left: 89%;
+    left: 85.7%;
 }
 
 .avatar-container {
