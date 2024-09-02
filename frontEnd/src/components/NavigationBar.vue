@@ -174,6 +174,7 @@ export default {
         },
         navigateToLoginOut() {
             this.router().push(`/login`);
+            localStorage.removeItem('iconUrl');
             localStorage.removeItem('token')
         },
         watchScroll() {

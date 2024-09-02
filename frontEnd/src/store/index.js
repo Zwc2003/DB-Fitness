@@ -13,7 +13,7 @@ export default createStore({
     userID: localStorage.getItem("userID") || "",
     name: localStorage.getItem("name") || "",
     isPost: localStorage.getItem("isPost") || "",
-    iconUrl: localStorage.getItem("iconUrl") || "",
+    iconUrl: localStorage.getItem("iconUrl") || "../assets/images/default-avatar.png",
     // role: 'unAuthenticated',
     // username: '',
     // token: '',

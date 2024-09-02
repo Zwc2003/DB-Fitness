@@ -159,9 +159,10 @@ import { postMixin } from '../mixins/postMixin.js';
 import { LikeOutlined, MessageOutlined, ShareAltOutlined } from '@ant-design/icons-vue';
 import store from '../store/index.js';
 import { Search } from '@element-plus/icons-vue'; // 导入放大镜图标
+import { commonMixin } from '../mixins/checkLoginState';
 
 export default {
-    mixins: [postMixin],
+    mixins: [postMixin, commonMixin],
     components: {
         EditArticle,
         IconHome,
@@ -207,6 +208,7 @@ export default {
         },
     },
     created() {
+        this.checkAvailable();
         this.fetchAllPosts();
         store.dispatch('pollIsPost');  // 开启轮询，更新发帖权限
 
@@ -390,7 +392,7 @@ export default {
     margin-top: 20px;
     margin-bottom: 20px;
     width: 100%;
-    font-size: 20;
+    font-size: 15px;
 }
 
 /* 其他样式保持不变 */
@@ -432,7 +434,7 @@ body {
     background-color: rgba(255, 255, 255, 0.6);
     padding: 10px 0;
     position: absolute;
-    width: 880px;
+    width: 780px;
     /*z-index: 100;*/
     top: 0;
     transition: background-color 0.3s ease;
@@ -448,7 +450,7 @@ body {
 .navbar-list {
     list-style: none;
     display: flex;
-    gap: 30px;
+    gap: 10px;
     margin: 0;
     padding: 0;
     align-items: center;
@@ -689,7 +691,7 @@ body {
     display: block;
     margin-bottom: 8px;
     display: flex;
-    align-items: center;
+    text-align: left;
 }
 
 .hot-post-title:hover {
