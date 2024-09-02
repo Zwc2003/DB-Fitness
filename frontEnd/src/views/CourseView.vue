@@ -117,7 +117,9 @@ export default {
   data() {
     return {
       searchKey: "", // 搜索关键词
-      selectedPriceRange: null, // 选中的价格区间
+      minPrice: 0, // 最小价格
+      maxPrice: 10000, // 最大价格
+      searchType: "", // 课程类型
       userRole: "普通用户",
       courses: [],
       isDialogVisible: false,
@@ -139,16 +141,51 @@ export default {
       this.maxPrice = value.max;
       this.searchCourses();
     },
+    getCourseValue(courseName) {
+    switch (courseName) {
+      case "高强度间歇":
+        return 1;
+      case "低强度塑形":
+        return 2;
+      case "儿童趣味课":
+        return 3;
+      case "有氧训练":
+        return 4;
+      default:
+        return 0; // 如果输入的课程名称不在列表中，返回0或其他默认值
+    }
+  },
     // 搜索课程
     searchCourses() {
-      const params = {
-        key: this.searchKey,
-        minprice: this.minPrice,
-        maxprice: this.maxPrice,
-      };
       // 调用后端API进行课程筛选
-      console.log("筛选参数:", params);
-      // this.fetchCourses(params); // 这里调用实际的API方法
+      axios
+        .get(`http://localhost:8080/api/Course/SearchCourse?`,{params:{
+          token:localStorage.getItem("token"),
+          keyword: this.searchKey,
+          typeID: this.getCourseValue(this.searchType),
+          minPrice: this.minPrice,
+          maxPrice: this.maxPrice
+        }})
+        .then((response) => {
+          this.courses =[];
+          this.courses = response.data.map((item) => {
+            if (item.features) {
+              item.features = item.features.split("#");
+            }
+            return item;
+          });
+          console.log(this.courses);
+          //this.filteredCourses = this.courses; // 默认展示所有课程
+        })
+        .catch((error) => {
+          console.error("Error fetching courses:", error);
+          ElNotification({
+            title: "错误",
+            message: "获取所有课程时发生错误，请稍后再试。",
+            type: "error",
+          });
+          throw error;
+        });
     },
 
     //关键词搜索函数
@@ -195,7 +232,7 @@ export default {
             return item;
           });
           console.log(this.courses);
-          this.filteredCourses = this.courses; // 默认展示所有课程
+          //this.filteredCourses = this.courses; // 默认展示所有课程
         })
         .catch((error) => {
           console.error("Error fetching courses:", error);

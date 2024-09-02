@@ -14,6 +14,7 @@ export default createStore({
     name: localStorage.getItem("name") || "",
     isPost: localStorage.getItem("isPost") || "",
     iconUrl: localStorage.getItem("iconUrl") || "",
+    introduction: localStorage.getItem("introduction") || "",
     // role: 'unAuthenticated',
     // username: '',
     // token: '',
@@ -109,6 +110,10 @@ export default createStore({
     setIconUrl(state, iconUrl) {
       state.iconUrl = iconUrl;
       localStorage.setItem("iconUrl", iconUrl);
+    },
+    setIntroduction(state, introduction) {
+      state.introduction = introduction;
+      localStorage.setItem("introduction", introduction);
     },
     setToken(state, token) {
       state.token = token;

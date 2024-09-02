@@ -18,14 +18,14 @@
             <el-avatar
               class="mr-3"
               :size="32"
-              src="https://tse2-mm.cn.bing.net/th/id/OIP-C.xWtwoLeZd-P4SoSZOMGyogHaHZ?w=206&h=205&c=7&r=0&o=5&pid=1.7"
+              :src="userIcon"
             />
-            <span>王教练</span>
+            <span>{{userName}}</span>
             <span
               class="text-sm mr-2"
               style="color: var(--el-text-color-regular)"
             >
-              2033458
+              {{email}}
             </span>
             <el-tag>欢迎您~</el-tag>
           </div>
@@ -83,14 +83,29 @@
             <el-form-item label="课程名称">
               <el-input
                 v-model="newCourse.courseName"
-                placeholder="30到45分钟核心训练"
+                placeholder="例如:30到45分钟核心训练"
               ></el-input>
             </el-form-item>
             <el-form-item label="课程图片">
-              <el-input
-                v-model="newCourse.coursePhotoUrl"
-                placeholder="复制图片连接至此处"
-              ></el-input>
+                <el-upload
+                  class="upload-demo"
+                  :file-list="fileList"
+                  :on-change="handleFileUpload"
+                  :before-upload="beforeUpload"
+                  :show-file-list="false"
+                >
+                  <div class="image-upload-container">
+                    <el-image
+                      v-if="newCourse.coursePhotoUrl"
+                      :src="newCourse.coursePhotoUrl"
+                      fit="cover"
+                    ></el-image>
+                    <div v-else class="upload-placeholder">
+                      <el-icon><plus /></el-icon>
+                      <span>点击上传</span>
+                    </div>
+                  </div>
+                </el-upload>
             </el-form-item>
             <el-form-item label="课程描述">
               <el-input
@@ -98,35 +113,43 @@
                 placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
               ></el-input>
             </el-form-item>
-            <el-form-item label="课程开始时间">
+            <el-form-item label="课程容量">
               <el-input
-                v-model="newCourse.courseStartTime"
-                placeholder="2024-8-8"
+                v-model="newCourse.capacity"
+                placeholder="请填入课程容量"
               ></el-input>
+            </el-form-item>
+            <el-form-item label="课程开始时间">
+              <el-date-picker
+                v-model="newCourse.courseStartTime"
+                type="date"
+                placeholder="选择日期"
+              />
             </el-form-item>
             <el-form-item label="课程结束时间">
-              <el-input
+              <el-date-picker
                 v-model="newCourse.courseEndTime"
-                placeholder="2022-9-8"
-              ></el-input>
+                type="date"
+                placeholder="选择日期"
+              />
             </el-form-item>
-            <el-form-item label="课程等级">
-              <el-input
-                v-model="newCourse.courseGrade"
-                placeholder="2"
-              ></el-input>
+            <el-form-item label="课程难度">
+            <el-radio-group v-model="newCourse.courseGrade">
+              <el-radio :label="1">1</el-radio>
+              <el-radio :label="2">2</el-radio>
+              <el-radio :label="3">3</el-radio>
+              <el-radio :label="4">4</el-radio>
+              <el-radio :label="5">5</el-radio>
+            </el-radio-group>
             </el-form-item>
             <el-form-item label="课程价格">
-              <el-input
+              <el-input-number
                 v-model="newCourse.coursePrice"
-                placeholder="30"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="课程进度">
-              <el-input
-                v-model="newCourse.courseProgress"
-                placeholder="0节课/30节课"
-              ></el-input>
+                :min="0"
+                :max="3000"
+                :step="1"
+                placeholder="请填入一个数字"
+              />
             </el-form-item>
             <el-form-item label="课程特征">
               <div>
@@ -148,28 +171,12 @@
               </div>
             </el-form-item>
             <el-form-item label="课程分类">
-              <el-input
-                v-model="newCourse.courseType"
-                placeholder="高强度间歇/儿童趣味课/低强度塑形/有氧……"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="教练图片">
-              <el-input
-                v-model="newCourse.instructorImage"
-                placeholder="复制图片链接至此处"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="教练名称">
-              <el-input
-                v-model="newCourse.instructorName"
-                placeholder="鹿晨辉"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="教练荣誉">
-              <el-input
-                v-model="newCourse.instructorHonors"
-                placeholder="国家级健美一级裁判和国家职业健身培训师"
-              ></el-input>
+              <el-select v-model="newCourse.courseType" placeholder="请选择课程分类">
+                <el-option label="高强度间歇" value= "高强度间歇" ></el-option>
+                <el-option label="儿童趣味课" value= "儿童趣味课" ></el-option>
+                <el-option label="低强度塑形" value= "低强度塑形"></el-option>
+                <el-option label="有氧训练" value= "有氧训练"></el-option>
+              </el-select>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm">提交</el-button>
@@ -185,7 +192,7 @@
       <div class="course-list">
         <h2>您今日的教学任务</h2>
         <el-row
-          v-for="(course, index) in teachcourses"
+          v-for="(course, index) in personalCourseList"
           :key="index"
           class="course-item"
         >
@@ -237,6 +244,7 @@
 import * as echarts from "echarts";
 import TeachCard from "../components/TeachCard.vue";
 import { mapGetters, mapActions } from "vuex";
+import axios from "axios";
 
 export default {
   components: {
@@ -245,14 +253,20 @@ export default {
 
   data() {
     return {
+      userName: "",
+      userIcon: "",
+      introduction:"",
+      email: "",
+      vitalityCoins: 0,
       showModal: false,
       newCourse: {
         coursePhotoUrl: "",
+        capacity: 0,
         courseName: "",
         courseDescription: "",
         courseStartTime: "",
         courseEndTime: "",
-        courseGrade: "",
+        courseGrade: 0, 
         coursePrice: "",
         courseProgress: "",
         features: [],
@@ -260,7 +274,7 @@ export default {
         instructorImage: "",
         instructorName: "",
         instructorHonors: "",
-        classTime: "17:00 - 18:30",
+        classTime: "",
       },
       inputFeature: "",
       courseData: [
@@ -346,17 +360,85 @@ export default {
     //生成鼓励的话
     this.generateEncouragementMessage();
 
-    // 检查并加载全局存储的 teachcourses
-    if (!this.getTeachCourses.length) {
-      // 初始化 teachcourses 数据
-      const initialCourses = [
-        // 初始数据...
-      ];
-      this.updateTeachCourses(initialCourses);
-    }
+    //初始化课程
+    this.fetchTodayCourseList();
+    this.fetchTodayCourseList();
+
+    this.userName = localStorage.getItem("name");
+    this.getVigorTokenBalance();
+    this.email = localStorage.getItem("email");
+    this.userIcon = localStorage.getItem("iconUrl");
+    this.introduction = localStorage.getItem("introduction");
   },
 
   methods: {
+    handleFileUpload(file) {
+      this.newCourse.coursePhotoUrl = URL.createObjectURL(file.raw);
+    },
+    beforeUpload(file) {
+      this.imagePreview = "";
+      const isJPGorPNG =
+        file.type === "image/jpeg" || file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPGorPNG) {
+        this.$message.error("上传头像图片只能是 JPG 或 PNG 格式!");
+        return false;
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+        return false;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+        this.newCourse.coursePhotoUrl = this.imagePreview;
+      };
+      return false;
+    },
+
+    //获取所有教授的课程
+    fetchUserCourse(){
+      const token = localStorage.getItem("token");
+      axios
+     .get(`http://localhost:8080/api/Course/GetTeachCourseByUserID?token=${token}`)
+     .then((response) => {
+        const initialCourses = response.data;
+        this.addTeachCourses(initialCourses);
+      })
+     .catch((error) => {
+        console.error("Error fetching course list:", error);
+      });
+    },
+    //获取每日教课课程列表
+    fetchTodayCourseList() {
+      const token = localStorage.getItem("token");
+      axios
+       .get(`http://localhost:8080/api/Course/GetTodayTeachCourseListByUserID?token=${token}`)
+       .then((response) => {
+          this.personalCourseList = response.data;
+        })
+       .catch((error) => {
+          console.error("Error fetching course list:", error);
+        });
+    },
+     // 获取活力币余额
+     getVigorTokenBalance() {
+      const token = localStorage.getItem("token");
+      axios
+        .get(
+          `http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`
+        )
+        .then((response) => {
+          this.vitalityCoins = response.data.balance;
+        })
+        .catch((error) => {
+          this.vigorTokenBalance = 0;
+          console.error("Error fetching vigorTokenBalance:", error);
+        });
+    },
     //每日教学列表的名字长度问题
     truncateCourseName(name) {
       if (name.length > 5) {
@@ -396,9 +478,54 @@ export default {
     removeFeature(index) {
       this.newCourse.features.splice(index, 1);
     },
+    getCourseValue(courseName) {
+    switch (courseName) {
+      case "高强度间歇":
+        return 1;
+      case "低强度塑形":
+        return 2;
+      case "儿童趣味课":
+        return 3;
+      case "有氧训练":
+        return 4;
+      default:
+        return 0; // 如果输入的课程名称不在列表中，返回0或其他默认值
+    }
+  },
     submitForm() {
+      this.newCourse.instructorHonors = this.intoduction;
+      this.newCourse.instructorName = this.username;
+      this.newCourse.instructorImage = this.userIcon;
       this.addTeachCourse(this.newCourse);
-      this.newCourse = {
+      // 转换日期字符串为 Date 对象
+      var startDate = new Date(this.newCourse.courseStartTime);
+      var endDate = new Date(this.newCourse.courseEndTime);
+      // 计算时间差（以毫秒为单位）
+      var timeDiff = endDate - startDate;
+      // 将时间差转换为天数
+      var daysDiff = timeDiff / (1000 * 3600 * 24); 
+      const postData ={
+        classID:-1,
+        typeID: getCourseValue(this.newCourse.courseType),
+        courseName: this.newCourse.courseName,
+        capacity: this.newCourse.capacity,
+        courseDescription: this.newCourse.courseDescription,
+        coursePrice: this.newCourse.coursePrice,
+        courseStartTime: this.newCourse.courseStartTime,
+        courseEndTime:this.newCourse.courseEndTime,
+        courseLastDays: daysDiff,
+        courseGrade:this.newCourse.courseGrade,
+        coursePhotoUrl: this.newCourse.coursePhotoUrl,
+        courseVideoUrl: "null",
+        features: this.newCourse.features.join('#') + '#',
+        classTime: this.newCourse.classTime
+      }
+      axios.post(`http://localhost:8080/api/Course/PublishCourse?token=${token}`,postData)
+      .then(
+      (response) => {
+        console.log("Course added successfully:", response.data);
+        this.showModal = false;
+        this.newCourse = {
         coursePhotoUrl: "",
         courseName: "",
         courseDescription: "",
@@ -412,9 +539,23 @@ export default {
         instructorImage: "",
         instructorName: "",
         instructorHonors: "",
-        classTime: "17:00 - 18:30",
+        classTime: "",
       };
-      this.showModal = false;
+      ElNotification({
+                            title: '成功',
+                            message: '课程发布成功！',
+                            type: 'success',
+                        });
+    }
+      )
+    .catch(error => {
+      console.log("Error adding course:", error)
+      ElNotification({
+                            title: '错误',
+                            message: '发布课程时发生错误，请稍后再试。',
+                            type: 'error',
+                  });
+      });
     },
 
     //回退<-back
@@ -565,6 +706,45 @@ export default {
 </script>
 
 <style scoped>
+.upload-demo {
+  width: 150px;
+  height: 150px;
+  border: 1px dashed #d9d9d9;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.image-upload-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #909399;
+}
+
+.upload-placeholder span {
+  margin-top: 8px;
+}
+
+.el-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .aaa {
   position: absolute;
   display: flex;
