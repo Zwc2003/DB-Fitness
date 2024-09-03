@@ -10,14 +10,14 @@
           {{target.name}}
         </el-header>
         <el-container >
-          <el-aside width="200px">
+          <el-aside width="200px" >
             <MyAside/>
           </el-aside>
           <el-container style="height: 80vh;">
             <el-main><MyMain/></el-main>
             <el-footer>
                 <div>
-                  <el-input v-model="input" placeholder="请输入内容" @keyup.enter="sendMessage">
+                  <el-input v-model="input" placeholder="请输入内容"   @keyup.enter="sendMessage"  >
                     <template #suffix>
                       <div class="input-suffix">
                         <img src="../assets/images/emoji.jpg" class="emoji-image" ref="emojiButton" @click="toggleEmojiPicker"/>
@@ -65,19 +65,18 @@
           content:'',
           sendTime: null
           },
-  
         };
       },
       mounted() {
         this.emojiPicker = new EmojiButton({
             position: 'bottom-start',
-            zIndex: 100000001,
+            zIndex: 10000002,
         });
         this.emojiPicker.on('emoji', selection => {
             this.input += selection.emoji;
         });
         
-    },
+      },
       computed: {
         target(){
           console.log("计算属性target被调用");
@@ -100,6 +99,7 @@
     },
   
     methods: {
+      
       toggleChatWindow() {
         const chatButton = document.querySelector('.chat-button');
         const chatWindow = document.querySelector('.custom-common-layout');
@@ -131,7 +131,7 @@
             this.emojiPicker.togglePicker(this.$refs.emojiButton);
         },
   
-        async setupSignalRConnection() {
+      async setupSignalRConnection() {
         // 创建SignalR连接，并强制使用WebSocket传输
         this.connection = new signalR.HubConnectionBuilder()
             .withAutomaticReconnect() // 自动重连
@@ -153,14 +153,15 @@
                 list: {
                     is_me: false, // 判断是聊天对象发送的消息还是我发送的消息
                     time: sendTime, // 发送信息的时间
-                    message:Content,
-                    messageType: messageType
+                    message: Content,
+                    messageType: messageType 
                 }
             };
             ElNotification({
                 title: '信息：',
                 message: '你收到了新的信息',
                 type: 'info',
+                zIndex:10000003
               });
             store.commit('addUnreadID',senderID);
             store.commit('addMessage', msg);
@@ -183,7 +184,16 @@
   
         // 获取当前时间
         const currentTime = new Date().toLocaleString();
-  
+        if (!store.state.targetInfomation.id) {
+          ElNotification({
+            title: '提示',
+            message: '请选择好友后进行发送',
+            type: 'info',
+            position: 'bottom-right', // 将通知显示在右下角
+            zIndex:10000003
+          });
+          return ;
+        }
         if(this.input){
           // 构建消息对象并提交到 store
           var msg={
@@ -230,6 +240,7 @@
             message: '输入不能为空',
             type: 'info',
             position: 'bottom-right', // 将通知显示在右下角
+            zIndex:10000003
           });
         }
       },
@@ -332,8 +343,8 @@
       }   
     }
   </script>
-  
-  <style>
+
+<style scoped>
   .overlay {
       position: fixed;
       top: 0;
@@ -425,6 +436,7 @@
     border-bottom: 1px solid #ccc; /* 下边框 */
     border-left: 1px solid #ccc;  /* 左边框 */
   }
+
   .custom-header {
     
     line-height: 60px;  /* 使文本垂直居中，对应你的header高度 */
@@ -474,4 +486,5 @@
           transform: translateY(-5px);
       }
   }
+
   </style>
