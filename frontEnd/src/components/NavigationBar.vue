@@ -19,7 +19,7 @@
 
 
                 <label for="home" class="home" @click="delayedNavigation('/home')">
-                    <router-link to="/home">
+                    <router-link to="/home" style="font-weight: bold;">
                         <el-icon>
                             <House />
                         </el-icon>
@@ -27,7 +27,7 @@
                     </router-link>
                 </label>
                 <label for="equipment" class="equipment" @click="delayedNavigation('/equipment')">
-                    <router-link to="/equipment">
+                    <router-link to="/equipment" style="font-weight: bold;">
                         <el-icon>
                             <ChatLineRound />
                         </el-icon>
@@ -35,31 +35,31 @@
                     </router-link>
                 </label>
                 <label for="aifit" class="aifit" @click="delayedNavigation('/aifit')">
-                    <router-link to="/aifit">
+                    <router-link to="/aifit" style="font-weight: bold;">
                         <el-icon>
                             <Picture />
                         </el-icon>
-                        AI健身
+                        健身指导
                     </router-link>
                 </label>
                 <label for="forum" class="forum" @click="delayedNavigation('/forum')">
-                    <router-link to="/forum">
+                    <router-link to="/forum" style="font-weight: bold;">
                         <el-icon>
                             <Edit />
                         </el-icon>
                         健身论坛
                     </router-link>
                 </label>
-            <label for="achievement" class="achievement" @click="delayedNavigation('/achievements')">
-                    <router-link to="/achievements">
-                        <el-icon>
-                            <Medal />
-                        </el-icon>
-                        健身成就
-                    </router-link>
-                </label>
+                <!--            <label for="achievement" class="achievement" @click="delayedNavigation('/achievements')">-->
+                <!--                    <router-link to="/achievements">-->
+                <!--                        <el-icon>-->
+                <!--                            <Medal />-->
+                <!--                        </el-icon>-->
+                <!--                        健身成就-->
+                <!--                    </router-link>-->
+                <!--                </label>-->
                 <label for="course" class="course" @click="delayedNavigation('/course')">
-                    <router-link to="/course">
+                    <router-link to="/course" style="font-weight: bold;">
                         <el-icon>
                             <Notebook />
                         </el-icon>
@@ -67,7 +67,7 @@
                     </router-link>
                 </label>
                 <label for="plan" class="plan" @click="delayedNavigation('/fitnessplan')">
-                    <router-link to="/fitnessplan">
+                    <router-link to="/fitnessplan" style="font-weight: bold;">
                         <el-icon>
                             <Finished />
                         </el-icon>
@@ -83,7 +83,7 @@
                     </router-link>
                 </label>-->
                 <label for="healthyDiet" class="healthyDiet" @click="delayedNavigation('/healthyDiet')">
-                    <router-link to="/healthyDiet">
+                    <router-link to="/healthyDiet" style="font-weight: bold;">
                         <el-icon>
                             <Food />
                         </el-icon>
@@ -136,7 +136,7 @@
 import router from "../router/index.js";
 import axios from "axios";
 
-import {ElNotification} from "element-plus";
+import { ElNotification } from "element-plus";
 import { commonMixin } from '../mixins/checkLoginState';
 export default {
     name: "NavigationBar",
@@ -340,7 +340,7 @@ body {
 }
 
 .wrapper nav #plan:checked~.tab {
-    left:71.4%;
+    left: 71.4%;
 }
 
 /*.wrapper nav #chat:checked~.tab {

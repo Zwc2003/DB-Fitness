@@ -823,7 +823,7 @@ export default {
             const token = localStorage.getItem('token');
             axios.get(`http://localhost:8080/api/Post/GetAllPost?token=${token}`)
                 .then(response => {
-                    const numberOfPosts = Math.floor(Math.random() * 6) + 10;
+                    const numberOfPosts = Math.floor(Math.random() * 6) + 6;
                     const allPosts = response.data;
                     this.relatedPosts = allPosts.sort(() => 0.5 - Math.random()).slice(0, numberOfPosts);
                     console.log("获取相关帖子成功")

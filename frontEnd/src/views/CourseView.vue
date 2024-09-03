@@ -17,62 +17,101 @@
             src="https://tse4-mm.cn.bing.net/th/id/OIP-C.sfCxPFaiDHtJbebl8q6mOAHaHa?w=192&h=193&c=7&r=0&o=5&pid=1.7"
             alt="左侧图片"
           />
-          <div class="filter-options">
-            <span
-              v-for="option in filterOptions"
-              :key="option.key"
-              @mouseover="hoveredOption = option.key"
-              @mouseleave="hoveredOption = null"
-              @click="selectOption(option.key)"
-              :class="{ active: selectedOption === option.key }"
+          <span
+            class="all-courses"
+            :class="{ active: isActive }"
+            @click="handleAllCoursesClick"
+          >
+            全部课程
+          </span>
+          <div class="search-container">
+            <!-- <span
+      :class="{ active: isAllCoursesActive }"
+      @click="onAllCoursesClick"
+      class="all-courses"
+      >全部课程</span
+    > -->
+            <!-- 搜索框 -->
+            <el-input
+              v-model="searchKeyword"
+              placeholder="请输入关键词"
+              @input="onSearch"
+              class="search-input"
+              clearable
             >
-              <b class="boldd">{{ option.label }}</b>
-              <div
-                v-if="
-                  hoveredOption === option.key || selectedOption === option.key
-                "
-                class="underline"
-              ></div>
-            </span>
-          </div>
+              <template #prefix>
+                <el-icon><Search /></el-icon>
+              </template>
+            </el-input>
 
+            <!-- 筛选区域 -->
+            <div class="filters">
+              <!-- 课程类别 -->
+              <el-dropdown
+                @command="onCourseTypeChange"
+                v-model:visible="courseTypeVisible"
+                class="dropdown"
+                hide-on-click="false"
+              >
+                <span class="el-dropdown-link">
+                  课程类别
+                  <el-icon><CaretBottom /></el-icon>
+                  <el-icon v-if="selectedCourseType"><SuccessFilled /></el-icon>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item
+                      v-for="type in courseTypes"
+                      :key="type"
+                      :command="type"
+                      :class="{ selected: selectedCourseType === type }"
+                    >
+                      {{ type }}
+                      <el-icon v-if="selectedCourseType === type"
+                        ><Check
+                      /></el-icon>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+
+              <!-- 价格区间 -->
+              <el-dropdown
+                @command="onPriceRangeChange"
+                v-model:visible="priceRangeVisible"
+                class="dropdown"
+                hide-on-click="false"
+              >
+                <span class="el-dropdown-link">
+                  价格区间
+                  <el-icon><CaretBottom /></el-icon>
+                  <el-icon v-if="selectedPriceRange"><SuccessFilled /></el-icon>
+                </span>
+                <template #dropdown>
+                  <el-dropdown-menu>
+                    <el-dropdown-item
+                      v-for="range in priceRanges"
+                      :key="range.label"
+                      :command="range.label"
+                      :class="{ selected: selectedPriceRange === range.label }"
+                    >
+                      {{ range.label }}
+                      <el-icon v-if="selectedPriceRange === range.label"
+                        ><Check
+                      /></el-icon>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </template>
+              </el-dropdown>
+            </div>
+          </div>
           <div class="red-box" @click="showRecommendation">
             想知道什么课程适合我
           </div>
         </div>
       </div>
     </div>
-    <div class="search-bar">
-      <!-- 搜索框 -->
-      <el-input
-        v-model="searchKey"
-        placeholder="搜索健身课程"
-        style="width: 300px"
-        @keyup.enter="searchCourses"
-      >
-        <template #append>
-          <el-button @click="searchCourses">搜索</el-button>
-        </template>
-      </el-input>
 
-      <!-- 价格区间选择器 -->
-      <el-select
-        v-model="selectedPriceRange"
-        placeholder="选择价格区间"
-        style="margin-left: 16px; width: 180px"
-        @change="updatePriceRange"
-      >
-        <el-option label="0-30活力币" :value="{ min: 0, max: 30 }"></el-option>
-        <el-option
-          label="30-60活力币"
-          :value="{ min: 30, max: 60 }"
-        ></el-option>
-        <el-option
-          label="60-100活力币"
-          :value="{ min: 60, max: 100 }"
-        ></el-option>
-      </el-select>
-    </div>
     <!-- 课程内容展示区域 -->
     <div class="course-grid">
       <CourseHome
@@ -109,65 +148,94 @@
 <script>
 import CourseHome from "../components/CourseHome.vue";
 import axios from "axios";
+import {
+  Search,
+  CaretBottom,
+  Check,
+  SuccessFilled,
+} from "@element-plus/icons-vue";
 
 export default {
   components: {
     CourseHome,
+    [Search.name]: Search,
+    [CaretBottom.name]: CaretBottom,
+    [Check.name]: Check,
+    [SuccessFilled.name]: SuccessFilled,
   },
   data() {
     return {
-      searchKey: "", // 搜索关键词
-      minPrice: 0, // 最小价格
-      maxPrice: 10000, // 最大价格
-      searchType: "", // 课程类型
+      searchKeyword: "",
+      selectedCourseType: "",
+      selectedPriceRange: "",
+      isActive: false,
+      courseTypes: ["高强度间歇", "低强度塑形", "儿童趣味课", "有氧训练"],
+      priceRanges: [
+        { label: "0-40 活力币", min: 0, max: 40 },
+        { label: "40-80 活力币", min: 40, max: 80 },
+        { label: "80 以上 活力币", min: 80, max: null },
+      ],
       userRole: "普通用户",
       courses: [],
       isDialogVisible: false,
       dialogMessage: "",
       hoveredOption: null,
       selectedOption: null,
-      filterOptions: [
-        { key: "全部", label: "全部课程" },
-        { key: "塑身", label: "塑身课程" },
-        { key: "高强度", label: "高强度间歇课程" },
-        { key: "青少年", label: "青少年趣味课程" },
-      ],
     };
   },
   methods: {
-    // 更新价格区间参数
-    updatePriceRange(value) {
-      this.minPrice = value.min;
-      this.maxPrice = value.max;
-      this.searchCourses();
+    handleAllCoursesClick() {
+      this.isActive = !this.isActive;
+      this.selectedCourseType = "";
+      this.selectedPriceRange = "";
+      console.log("全部课程按钮被点击了！");
+      // 在这里添加你想要触发的其他逻辑
     },
+    onSearch() {
+      this.isActive = false;
+      console.log("搜索关键词:", this.searchKeyword);
+    },
+    onCourseTypeChange(courseType) {
+      this.isActive = false;
+      this.selectedCourseType = courseType;
+      console.log("选中的课程类别:", courseType);
+    },
+    onPriceRangeChange(priceRange) {
+      this.isActive = false;
+      this.selectedPriceRange = priceRange;
+      const range = this.priceRanges.find((r) => r.label === priceRange);
+      console.log("选中的价格区间:", range.min, range.max);
+    },
+
     getCourseValue(courseName) {
-    switch (courseName) {
-      case "高强度间歇":
-        return 1;
-      case "低强度塑形":
-        return 2;
-      case "儿童趣味课":
-        return 3;
-      case "有氧训练":
-        return 4;
-      default:
-        return 0; // 如果输入的课程名称不在列表中，返回0或其他默认值
-    }
-  },
+      switch (courseName) {
+        case "高强度间歇":
+          return 1;
+        case "低强度塑形":
+          return 2;
+        case "儿童趣味课":
+          return 3;
+        case "有氧训练":
+          return 4;
+        default:
+          return 0; // 如果输入的课程名称不在列表中，返回0或其他默认值
+      }
+    },
     // 搜索课程
     searchCourses() {
       // 调用后端API进行课程筛选
       axios
-        .get(`http://localhost:8080/api/Course/SearchCourse?`,{params:{
-          token:localStorage.getItem("token"),
-          keyword: this.searchKey,
-          typeID: this.getCourseValue(this.searchType),
-          minPrice: this.minPrice,
-          maxPrice: this.maxPrice
-        }})
+        .get(`http://localhost:8080/api/Course/SearchCourse?`, {
+          params: {
+            token: localStorage.getItem("token"),
+            keyword: this.searchKey,
+            typeID: this.getCourseValue(this.searchType),
+            minPrice: this.minPrice,
+            maxPrice: this.maxPrice,
+          },
+        })
         .then((response) => {
-          this.courses =[];
+          this.courses = [];
           this.courses = response.data.map((item) => {
             if (item.features) {
               item.features = item.features.split("#");
@@ -188,12 +256,6 @@ export default {
         });
     },
 
-    //关键词搜索函数
-    selectOption(option) {
-      this.selectedOption = option;
-      this.showInput = ["fitness", "price", "category"].includes(option);
-      this.inputValue = "";
-    },
     showRecommendation() {
       // 弹出推荐课程的模态框逻辑
       console.log("显示推荐课程模态框");
@@ -310,29 +372,75 @@ export default {
   height: auto;
 }
 
-.filter-options {
-  display: flex;
-  gap: 50px;
-  font-size: 1rem;
-}
-
-.filter-options span {
-  position: relative;
+.all-courses {
   cursor: pointer;
+  color: black;
+  text-decoration: none;
+  margin-right: 100px;
+  font-size: 1.2rem;
 }
 
-.filter-options .underline {
+.all-courses.active {
+  font-weight: bolder;
+  color: red;
+  position: relative;
+}
+
+.all-courses.active::after {
+  content: "";
   position: absolute;
-  bottom: -2px;
   left: 0;
+  bottom: -5px;
   width: 100%;
   height: 2px;
   background-color: red;
 }
 
-.filter-options .active {
-  font-weight: bold;
+.search-container span.active {
   color: red;
+  border-bottom: 2px solid red;
+}
+
+.filters .el-dropdown-link {
+  color: initial;
+}
+
+.filters .el-dropdown-menu .el-dropdown-item.selected {
+  background-color: initial;
+  color: initial;
+}
+
+.search-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.search-input {
+  width: 300px;
+}
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.dropdown {
+  display: flex;
+  align-items: center;
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.selected {
+  background-color: #f0f9eb;
+  color: #67c23a;
 }
 
 .red-box {
@@ -356,14 +464,6 @@ export default {
   background-color: blue;
   color: white;
   cursor: pointer;
-}
-
-.search-bar {
-  position: absolute;
-  right: 5%;
-  top: calc(100% + 10px);
-  display: flex;
-  align-items: center;
 }
 
 .course-grid {
