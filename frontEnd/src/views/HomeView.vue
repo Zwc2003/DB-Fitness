@@ -1,6 +1,6 @@
 <template>
   <navigation-bar />
-  <div>
+  <div class="home-page">
     <video ref="videoPlayer" class="background-image" autoplay loop muted>
       <source src="../assets/videos/HomeVideo.mp4" type="video/mp4">
       Your browser does not support the video tag.
@@ -8,27 +8,28 @@
     <div class="contant">
       <!--<h2 style="margin-top: 3%;margin-bottom: 3%;margin-left: 15%;text-align: left;"><el-image :src="contact" :style="{ width: '15%' ,verticalAlign: 'middle' }"></el-image>联系我们:</h2>-->
       <el-button circle>
-      <el-link :underline="false" :href="githubUrl" target="_blank" class="custom-link">
-        <span class="github-icon"></span>
-      </el-link>
-    </el-button>
+        <el-link :underline="false" :href="githubUrl" target="_blank" class="custom-link">
+          <span class="github-icon"></span>
+        </el-link>
+      </el-button>
       <el-tooltip content="QQ号: 2465973463" placement="bottom-end" effect="light">
         <el-button circle>
           <span class="QQ-icon"></span>
         </el-button>
       </el-tooltip>
       <el-tooltip content="微信号: zwc2465973463" placement="bottom" effect="light">
-      <el-button circle>
-        <span class="Wechat-icon"></span>
-      </el-button>
+        <el-button circle>
+          <span class="Wechat-icon"></span>
+        </el-button>
       </el-tooltip>
-      <el-tooltip content="电话号码: 13959638918" placement="bottom-start" effect="light">
-      <el-button circle>
-        <span class="Telephone-icon"></span>
-      </el-button>
+      <el-tooltip content="邮箱：2154286@tongji.edu.cn" placement="bottom-start" effect="light">
+        <el-button circle>
+          <span class="Telephone-icon"></span>
+        </el-button>
       </el-tooltip>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -47,6 +48,9 @@ export default {
 </script>
 
 <style scoped>
+#app {
+  overflow: hidden;
+}
 
 .avatar {
   width: 100%;
@@ -60,10 +64,12 @@ export default {
   width: auto;
   height: auto;
   padding: 5px;
-  position: absolute;
-  bottom: 1vh; 
-  right: 1vw;  
+  position: fixed;
+  bottom: 1vw;
+  right: 1vw;
+  /* 将元素固定在页面右侧 */
 }
+
 
 .github-icon {
   display: inline-block;
@@ -102,7 +108,7 @@ export default {
   display: inline-block;
   width: 40px;
   height: 39px;
-  background-image: url('../assets/images/电话.png');
+  background-image: url('../assets/images/邮箱.png');
   background-size: contain;
   background-repeat: no-repeat;
   vertical-align: middle;
@@ -130,13 +136,14 @@ export default {
 }
 
 .background-image {
+  overflow-y: hidden;
   position: absolute;
-  top: -20px;
+  top: 0px;
   left: 0;
   width: 100%;
-  height: 103%;
-  object-fit: cover;
+  max-height: 100%;
   /* 使图片覆盖整个背景区域 */
+  object-fit: fill;
   z-index: -1;
   /* 使背景图片位于最底层 */
 }
