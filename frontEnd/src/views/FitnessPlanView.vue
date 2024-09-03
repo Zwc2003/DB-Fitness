@@ -1,7 +1,8 @@
 <template>
   <navigation-bar/>
+  <body class="container">
   <div>
-    <el-button plain @click="dialogFormVisible = true" class="bot">
+    <el-button @click="dialogFormVisible = true" class="bot" type="primary">
       填写你的体测表
     </el-button>
   </div>
@@ -58,7 +59,7 @@
 
 
   <TimeThread></TimeThread>
-
+  </body>
 </template>
 
 <script setup lang="ts">
@@ -67,12 +68,13 @@ import { reactive, ref, onMounted } from 'vue'
 import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
 import type { Action } from 'element-plus'
 import TimeThread from "../components/TimeThread.vue";
+import img from 'src/assets/images/background.jpg';
 import {useRouter} from 'vue-router'
 import axios from "axios";
 import {ElNotification} from "element-plus";
 const dialogFormVisible = ref(false)
 const formLabelWidth = '110px'
-
+const imagePath = 'src/assets/images/background.jpg';
 interface RuleForm {
   height: number,
   weight: number,
@@ -140,6 +142,10 @@ const rules = reactive<FormRules<RuleForm>>({
   ],
 
 })
+const backgroundStyle = {
+  'background': `${imagePath} no-repeat center/cover`,
+  'height': '100vh' // 设置高度为视窗高度
+};
 const loading = ref(true);
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
@@ -235,13 +241,25 @@ onMounted(() => {
 
 
 
-<style>
+<style scoped>
+/* 未解决的背景问题 */
+.container {
+  background-image: url();
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  position: absolute;
+  background-attachment: fixed;
+  top: 10vh;
+  min-height: 100vh;
+  left: 0;
+}
 .bot{
   position:absolute;
-  left: 320px;
-  top: 100px;
+  left: 480px;
+  top: 12px;
   width: 150px;
-  height: 100px;
+  height: 40px;
 }
 
 .title {
@@ -252,7 +270,7 @@ onMounted(() => {
   padding-top: 17px;
 }
 /* 自定义 el-collapse-item 的样式 */
-.custom-collapse-item .el-collapse-item__header {
+>>>.custom-collapse-item .el-collapse-item__header {
   font-size: 18px;
   font-weight: bold;
   color: #1f2d3d;
@@ -266,13 +284,13 @@ onMounted(() => {
 }
 
 /* 为标题添加图标 */
-.custom-collapse-item .el-collapse-item__header::before {
+>>>.custom-collapse-item .el-collapse-item__header::before {
   content: '📅';
   margin-right: 10px;
 }
 
 /* 鼠标悬停时标题的样式 */
-.custom-collapse-item .el-collapse-item__header:hover {
+>>>.custom-collapse-item .el-collapse-item__header:hover {
   background-color: #e6f7ff;
   color: #409eff;
 }

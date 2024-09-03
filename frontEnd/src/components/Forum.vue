@@ -6,7 +6,8 @@
             <el-card class="card">
                 <!-- 站内公告 -->
                 <div class="announcement-section">
-                    <el-row class="row">
+
+                    <el-row class=" row">
                         <el-col :span="4">
                             <icon-home />
                         </el-col>
@@ -119,6 +120,10 @@
                                 <ShareAltOutlined />
                                 <span>{{ post.forwardCount }}</span>
                             </span>
+                            <span v-if="isCurrentUser(post.userName)" class="icon-with-text-delete"
+                                @click="deletePost(post.postID, post.userID)">
+                                <DeleteOutlined />
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -156,7 +161,7 @@ import EditArticle from '../components/EditArticle.vue';
 import { ElNotification } from 'element-plus';
 import { IconCalendar, IconTrophy, IconArrowRight, IconFire, IconHome } from '@arco-design/web-vue/es/icon';
 import { postMixin } from '../mixins/postMixin.js';
-import { LikeOutlined, MessageOutlined, ShareAltOutlined } from '@ant-design/icons-vue';
+import { LikeOutlined, MessageOutlined, ShareAltOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 import store from '../store/index.js';
 import { Search } from '@element-plus/icons-vue'; // 导入放大镜图标
 import { commonMixin } from '../mixins/checkLoginState';
@@ -173,6 +178,7 @@ export default {
         LikeOutlined,
         MessageOutlined,
         ShareAltOutlined,
+        DeleteOutlined,
         Search,
     },
     data() {
@@ -192,6 +198,7 @@ export default {
                 refrencePostID: null,
                 imgUrl: 'null'
             },
+            currentUser: localStorage.getItem('name'),
             allPosts: [],
             filteredPosts: [],
             hotPosts: [],
@@ -214,6 +221,43 @@ export default {
 
     },
     methods: {
+        deletePost(postID, userID) {
+            const token = localStorage.getItem('token');
+            axios.delete(`http://localhost:8080/api/Post/DeletePostByPostID`, {
+                params: {
+                    token: token,
+                    postID: postID,
+                    postOwnerID: userID
+                }
+            })
+                .then(response => {
+                    console.log(response.data);
+                    if (response.data.message === '删除帖子成功') {
+                        ElNotification({
+                            title: '成功',
+                            message: '帖子删除成功',
+                            type: 'success',
+                        });
+                        this.fetchAllPosts();
+                    } else {
+                        ElNotification({
+                            title: '错误',
+                            message: '删除帖子失败',
+                            type: 'error',
+                        });
+                    }
+                })
+                .catch(error => {
+                    ElNotification({
+                        title: '错误',
+                        message: '删除帖子时发生错误',
+                        type: 'error',
+                    });
+                });
+        },
+        isCurrentUser(userName) {
+            return this.currentUser === userName || this.$store.state.role === 'admin';
+        },
         scrollRight() {
             this.currentIndex = (this.currentIndex + 1) % this.categories.length;
         },
@@ -416,6 +460,10 @@ body {
     justify-content: center;
 }
 
+.announcement-section {
+    margin-top: 30px;
+}
+
 .announcement-content,
 .activity-content,
 .contest-content {
@@ -519,7 +567,7 @@ body {
     display: flex;
     justify-content: space-between;
     padding-top: 60px;
-    padding-right: 50px;
+    padding-right: 30px;
     max-width: 100%;
     margin-top: 5vh;
     /* 在顶部留出导航栏的空间 */
@@ -529,7 +577,7 @@ body {
 
 .card {
     margin-left: 1%;
-    width: 400px;
+    width: 30%;
     height: fit-content;
     background-color: rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
@@ -642,6 +690,12 @@ body {
     cursor: default;
 }
 
+.icon-with-text-delete {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
 
 .post-author {
     font-weight: bold;
@@ -658,14 +712,12 @@ body {
 }
 
 .right-sidebar {
-    margin-right: 1%;
     margin-left: 20px;
-    width: 400px;
+    width: 30%;
     height: fit-content;
     background-color: rgba(255, 255, 255, 0.6);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     margin-bottom: 10px;
-    width: 25%;
     padding-left: 0;
     display: flex;
     flex-direction: column;

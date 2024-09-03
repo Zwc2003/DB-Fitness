@@ -6,7 +6,7 @@
       <div v-if="list.targetName === target.name">
         <!-- 循环显示聊天记录 -->
         <div v-for="(message, index) in list.list" :key="index" :class="{'message-item': true, 'right-aligned': message.is_me}">
-          <el-avatar v-if="!message.is_me" :src="user.img" class="avatar" @click="showUserInfo(user)"></el-avatar>
+          <el-avatar v-if="!message.is_me" :src="target.img" class="avatar" @click="showUserInfo(target)"></el-avatar>
 
           <!-- 弹出框 -->
           <el-dialog
@@ -18,17 +18,26 @@
             <div class="user-info">
               <!-- 用户头像 -->
               <el-avatar :src="selectedUser.img" class="user-info-avatar" size="large"></el-avatar>
-              
-              <!-- 用户详细信息 -->
+
               <el-row :gutter="20" class="user-info-details">
-                <el-col :span="12"><p>昵称: {{ selectedUser.name }}</p></el-col>
-                <el-col :span="12"><p>年龄: {{ selectedUser.age }}</p></el-col>
-                <el-col :span="12"><p>性别: {{ selectedUser.gender }}</p></el-col>
-                <el-col :span="12"><p>标签: {{ selectedUser.tags }}</p></el-col>
-                <el-col :span="24"><p>简介: {{ selectedUser.introduction || '暂无简介' }}</p></el-col>
-                <el-col :span="12"><p>目标类型: {{ selectedUser.goalType || '未设置' }}</p></el-col>
-                <el-col :span="12"><p>目标体重: {{ selectedUser.goalWeight || '未设置' }}</p></el-col>
+                <el-col :span="24" class="info-item">
+                  <p> {{ selectedUser.name }}</p>
+                </el-col>
+              
+                <el-col :span="24" class="info-item">
+                  <p><strong>标签:</strong> {{ selectedUser.tags }}</p>
+                </el-col>
+                <el-col :span="24" class="info-item">
+                  <p><strong>简介:</strong> {{ selectedUser.introduction || '暂无简介' }}</p>
+                </el-col>
+                <el-col :span="24" class="info-item">
+                  <p><strong>目标类型:</strong> {{ selectedUser.goalType || '未设置' }}</p>
+                </el-col>
+                <el-col :span="24" class="info-item">
+                  <p><strong>目标体重:</strong> {{ selectedUser.goalWeight || '未设置' }}</p>
+                </el-col>
               </el-row>
+              
             </div>
             
             <span slot="footer" class="dialog-footer">
@@ -54,7 +63,7 @@
           </template>
         
           <div v-if="shouldShowTime(index,list.list)&&!message.is_me" class="message-time">{{ message.time }}</div>
-          <el-avatar v-if="message.is_me" :src="target.img" class="avatar right-avatar"></el-avatar>
+          <el-avatar v-if="message.is_me" :src="iconUrl" class="avatar right-avatar"></el-avatar>
         </div>
       </div>
     </div>
@@ -91,8 +100,8 @@ computed: {
     MessageList(){
       return store.state.MessageList;
     },
-    user(){
-      return store.state.targetInfomation;
+    iconUrl(){
+      return store.state.iconUrl;
     },
   },
 methods: {
@@ -144,6 +153,7 @@ justify-content: flex-end;
 .avatar {
 width: 40px;
 height: 40px;
+margin-right:0px;
 }
 
 .right-avatar {
@@ -151,7 +161,7 @@ margin-left: 10px;
 }
 
 .content {
-background-color: greenyellow;
+background-color: rgb(170, 232, 78);
 padding: 10px;
 border-radius: 10px;
 font-weight: bold;
@@ -159,6 +169,8 @@ margin-left: 10px;
 margin-right: 10px;
 max-width: 60%;
 line-height: 1.2; /* 调整行高 */
+font-family: "Microsoft YaHei";
+
 }
 
 .user-info {
@@ -168,16 +180,36 @@ align-items: center;
 }
 
 .user-info-avatar {
+  width: 100px;   /* 通过 CSS 增加宽度 */
+  height: 100px;  /* 通过 CSS 增加高度 */
 margin-bottom: 20px;
 }
 
-.user-info-details {
+/* .user-info-details {
 width: 100%;
 margin-top: 20px;
 }
 
 .user-info-details p {
 margin: 5px 0;
+} */
+
+.user-info-details {
+  font-family: 'Arial', sans-serif;
+}
+
+.info-item {
+  margin-bottom: 15px;
+}
+
+p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+strong {
+  color: #555;
 }
 
 </style>

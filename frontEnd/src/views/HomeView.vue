@@ -1,53 +1,124 @@
 <template>
   <navigation-bar />
-  <div>
+  <div class="home-page">
     <video ref="videoPlayer" class="background-image" autoplay loop muted>
       <source src="../assets/videos/HomeVideo.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-<!--    <div class="overlay-content">-->
-<!--      <img src="../assets/logo.png" alt="Overlay Image" class="overlay-image">-->
-<!--      &lt;!&ndash; 你可以在这里添加更多内容 &ndash;&gt;-->
-<!--      <h1 class="text">你的健身最终选择</h1>-->
-<!--    </div>-->
+    <div class="contant">
+      <!--<h2 style="margin-top: 3%;margin-bottom: 3%;margin-left: 15%;text-align: left;"><el-image :src="contact" :style="{ width: '15%' ,verticalAlign: 'middle' }"></el-image>联系我们:</h2>-->
+      <el-button circle>
+        <el-link :underline="false" :href="githubUrl" target="_blank" class="custom-link">
+          <span class="github-icon"></span>
+        </el-link>
+      </el-button>
+      <el-tooltip content="QQ号: 2465973463" placement="bottom-end" effect="light">
+        <el-button circle>
+          <span class="QQ-icon"></span>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip content="微信号: zwc2465973463" placement="bottom" effect="light">
+        <el-button circle>
+          <span class="Wechat-icon"></span>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip content="邮箱：2154286@tongji.edu.cn" placement="bottom-start" effect="light">
+        <el-button circle>
+          <span class="Telephone-icon"></span>
+        </el-button>
+      </el-tooltip>
+    </div>
   </div>
 
-<!--  <div class="member-list">-->
-<!--    <el-row>-->
-<!--      <el-space :size="20">-->
-<!--        <el-col v-for="member in memberList" :key="member.name" :span="4">-->
-<!--          <el-card style="width: 360px;height:400px">-->
-<!--            <img :src="member.avatar" class="avatar" alt="avatar" />-->
-<!--            <div class="info">-->
-<!--              <h2 style="font-weight: bold">{{ member.name }}</h2>-->
-<!--              <h3 style="margin-top: 10px">{{ member.position }}</h3>-->
-<!--            </div>-->
-<!--          </el-card>-->
-<!--        </el-col>-->
-<!--      </el-space>-->
-<!--    </el-row>-->
-<!--  </div>-->
 </template>
 
 <script>
-
+import { ref } from 'vue'
+import contact from '../assets/images/contact.png';
 
 export default {
-  components: {  },
+  components: {},
   data() {
     return {
-
+      githubUrl: ref('https://github.com/Zwc2003/DB-Fitness'),
+      contact
     }
   }
 };
 </script>
 
 <style scoped>
-
+#app {
+  overflow: hidden;
+}
 
 .avatar {
   width: 100%;
   height: auto;
+}
+
+.contant {
+  background-color: rgba(255, 255, 255, 0.7);
+  vertical-align: middle;
+  border-radius: 20px;
+  width: auto;
+  height: auto;
+  padding: 5px;
+  position: fixed;
+  bottom: 1vw;
+  right: 1vw;
+  /* 将元素固定在页面右侧 */
+}
+
+
+.github-icon {
+  display: inline-block;
+  width: 33px;
+  height: 34px;
+  background-image: url('../assets/images/github.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  margin: 1vw;
+}
+
+.QQ-icon {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  background-image: url('../assets/images/QQ.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  margin: 1vw;
+}
+
+.Wechat-icon {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  background-image: url('../assets/images/微信.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  margin: 1vw;
+}
+
+.Telephone-icon {
+  display: inline-block;
+  width: 40px;
+  height: 39px;
+  background-image: url('../assets/images/邮箱.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  margin: 1vw;
+}
+
+.custom-link {
+  width: 33px;
+  height: 34px;
+  border-radius: 15px;
 }
 
 .member-list {
@@ -65,13 +136,14 @@ export default {
 }
 
 .background-image {
+  overflow-y: hidden;
   position: absolute;
-  top: -20px;
+  top: 0px;
   left: 0;
   width: 100%;
-  height: 103%;
-  object-fit: cover;
+  max-height: 100%;
   /* 使图片覆盖整个背景区域 */
+  object-fit: fill;
   z-index: -1;
   /* 使背景图片位于最底层 */
 }

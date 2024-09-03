@@ -4,8 +4,8 @@
         <div class="login-container">
             <div class="content">
                 <div class="title-img"></div>
-<!--                <h1 class="title">FitFit</h1>-->
-<!--                <h3 class="sub-title">你的智能健身管家</h3>-->
+                <!--                <h1 class="title">FitFit</h1>-->
+                <!--                <h3 class="sub-title">你的智能健身管家</h3>-->
                 <el-card class="login-card">
                     <h2 class="login-title">登录</h2>
                     <el-tabs v-model="activeName" class="tabs">
@@ -129,7 +129,7 @@ export default
                     const message = response.data.message;
                     let notificationType = 'info';  // 默认类型为 'info'
 
-                    if(message ==='身份权限不符'){
+                    if (message === '身份权限不符') {
                         notificationType = 'error';
                     }
 
@@ -142,9 +142,9 @@ export default
                         // 存储用户信息
                         store.commit('setUserID', response1.data.userID);
                         store.commit('setName', response1.data.userName);
-                        store.commit('setIconUrl',response1.data.iconURL)
+                        store.commit('setIconUrl', response1.data.iconURL)
                         store.commit('setEmail', response1.data.email);
-                        store.commit('setIntroduction',response1.data.introduction)
+                        store.commit('setIntroduction', response1.data.introduction)
                         // 存储当前用户发帖权限
                         store.commit('setIsPost', response1.data.isPost);
 
@@ -275,34 +275,48 @@ export default
 
 .background-image {
     background-image: url('../assets/images/background.jpg');
-    background-size: cover; /* 确保背景图片填充整个容器 */
+    background-size: cover;
+    /* 确保背景图片填充整个容器 */
     background-position: center;
-    width: 70%; /* 背景图片区域占左边 80% */
+    width: 70%;
+    /* 背景图片区域占左边 80% */
     height: 100%;
 }
+
 .title-img {
-  background-image: url('../assets/images/login_signup.jpg');
-  background-size: contain; /* 使图片在容器内保持比例 */
-  background-repeat: no-repeat; /* 防止图片重复 */
-  background-position: center; /* 将图片居中显示 */
-  width: 100%; /* 设置容器宽度 */
-  height: auto; /* 高度自动，取决于容器内容 */
-  aspect-ratio: 16 / 9; /* 或者你可以设置一个固定的宽高比 */
+    background-image: url('../assets/images/login_signup.jpg');
+    background-size: contain;
+    /* 使图片在容器内保持比例 */
+    background-repeat: no-repeat;
+    /* 防止图片重复 */
+    background-position: center;
+    /* 将图片居中显示 */
+    width: 100%;
+    /* 设置容器宽度 */
+    height: auto;
+    /* 高度自动，取决于容器内容 */
+    aspect-ratio: 16 / 9;
+    /* 或者你可以设置一个固定的宽高比 */
 }
 
 
 
 .login-container {
-    width: 40%; /* 登录容器占右边 20% */
-    height: 100%; /* 使容器占满整个视口高度 */
+    width: 40%;
+    /* 登录容器占右边 20% */
+    height: 100%;
+    /* 使容器占满整个视口高度 */
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: white; /* 设置背景颜色或保持透明 */
+    background-color: white;
+    /* 设置背景颜色或保持透明 */
+    ;
 }
 
 .content {
-    width: 70%; /* 设置内容区域的宽度，可以根据需求调整 */
+    width: 70%;
+    /* 设置内容区域的宽度，可以根据需求调整 */
     border-radius: 8px;
     /* 圆角 */
 }
@@ -317,8 +331,8 @@ export default
     color: rgb(68, 177, 25);
     /* 标题颜色 */
 }
-.sub-title
-{
+
+.sub-title {
     margin-top: 0px;
     margin-bottom: 20px;
     text-align: center;
@@ -335,6 +349,7 @@ export default
     /* 去除边框 */
     box-shadow: none;
     /* 去除阴影 */
+    border-radius: 30px;
 }
 
 .login-title {
@@ -360,5 +375,4 @@ export default
     background-color: #66b1ff;
     /* 悬停效果 */
 }
-
 </style>

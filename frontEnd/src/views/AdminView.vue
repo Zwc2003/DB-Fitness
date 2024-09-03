@@ -244,43 +244,43 @@ async function fetchPosts() {
     }
 }
 
-function checkAvailable(){
-        let token = localStorage.getItem('token');
-        if (token == null) {
-          ElNotification({
+function checkAvailable() {
+    let token = localStorage.getItem('token');
+    if (token == null) {
+        ElNotification({
             title: '提示',
             message: '请先登录',
             type: 'warning',
             duration: 2000
-          })
-          const router = useRouter()
-          router.push('/login')
-          return;
-        };
-        axios.get(`http://localhost:8080/api/User/GetTokenInvalidateRes`, {
-                      params: {
-                          token: token,
-                      }
-                  }).then(response => {
-                          console.log("登录状态:",response.data);
-                          if(!response.data) {
-                            ElNotification({
-                              title: '提示',
-                              message: '登录已过期，请重新登录',
-                              type: 'warning',
-                              duration: 2000
-                            });
-                            localStorage.removeItem('token');
-                            this.router().push('/login');
-                          }
-                      }).catch(error => {
-                          ElNotification({
-                              title: '错误',
-                              message: '获取用户信息失败',
-                              type: 'error',
-                          });
-                      });
+        })
+        const router = useRouter()
+        router.push('/login')
+        return;
+    };
+    axios.get(`http://localhost:8080/api/User/GetTokenInvalidateRes`, {
+        params: {
+            token: token,
         }
+    }).then(response => {
+        console.log("登录状态:", response.data);
+        if (!response.data) {
+            ElNotification({
+                title: '提示',
+                message: '登录已过期，请重新登录',
+                type: 'warning',
+                duration: 2000
+            });
+            localStorage.removeItem('token');
+            this.router().push('/login');
+        }
+    }).catch(error => {
+        ElNotification({
+            title: '错误',
+            message: '获取用户信息失败',
+            type: 'error',
+        });
+    });
+}
 
 // 页面加载时获取数据
 onMounted(() => {
@@ -483,7 +483,7 @@ const goPage = (path) => {
 }
 
 .background {
-    background-image: url('../components/icons/forum-bg.jpg');
+    background-image: url('../assets/images/forum-bg.jpg');
     background-size: cover;
     background-position: center;
     width: 100%;

@@ -29,8 +29,9 @@ export default createStore({
       "健身分享",
       "活动赛事",
       "初学指南",
+      "其他",
     ],
-    unreadIDs:[],//未读ID
+    unreadIDs: [],//未读ID
 
     targetInfomation: {
       id: "",
@@ -53,6 +54,12 @@ export default createStore({
     MessageList: [],
   },
   mutations: {
+    //增加未读ID
+    addUnreadID(state, id) {
+      if (!state.unreadIDs.includes(id)) {
+        state.unreadIDs.push(id);
+      }
+    },
     //购物车下单后添加课程到我的
     ADD_COURSES_TO_USER(state, newCourses) {
       state.usercourses = [...state.usercourses, ...newCourses];
