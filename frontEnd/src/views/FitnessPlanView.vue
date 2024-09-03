@@ -242,7 +242,8 @@ onMounted(() => {
 
 
 <style scoped>
-.container {//未解决的背景问题
+/* 未解决的背景问题 */
+.container {
   background-image: url();
   background-size: cover;
   background-position: center;
