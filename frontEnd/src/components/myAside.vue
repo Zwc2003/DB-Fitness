@@ -11,7 +11,7 @@
         </template>
       </el-input>
     </el-row>
-
+    
     <!-- 搜索弹窗 -->
     <el-dialog
       v-model="dialogVisible"
@@ -55,7 +55,7 @@
     </el-dialog>
 
     <el-row >
-      <el-table @row-click="handleClick" :data="filteredtest" :show-header="false"  style="width: 100%;">
+      <el-table @row-click="handleClick" :data="filteredtest" :show-header="false"   highlight-current-row  style="width: 100%;">
         <el-table-column > 
           <template v-slot="scope">
             <div style="display: flex; align-items: center;">                
@@ -242,7 +242,8 @@ export default {
             title: '成功',
             message: '好友添加成功！',
             type: 'success',
-            position:'top-left'
+            position:'top-left',
+            zIndex:10000003
           });
         } else {
           // 处理其他状态码
@@ -250,7 +251,8 @@ export default {
             title: '失败',
             message: `添加好友失败`,
             type: 'error',
-            position:'top-left'
+            position:'top-left',
+            zIndex:10000003
           });
         }
         // 处理返回的搜索结果,重新调用API进行渲染好友列表
@@ -262,7 +264,8 @@ export default {
           title: '失败',
           message: `添加好友失败`,
           type: 'error',
-          position:'top-left'
+          position:'top-left',
+          zIndex:10000003
         });
       }
     },
@@ -292,7 +295,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+
 .custom-content {
 width: 150px; /* 设置固定宽度 */
 max-width: 200px; /* 设置最大宽度 */
@@ -323,4 +328,5 @@ transform: translate(-50%, -50%);
 white-space: nowrap; 
 font-size: 10px; /* 设置字体大小 */
 }
+
 </style>
