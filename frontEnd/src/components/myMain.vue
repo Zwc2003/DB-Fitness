@@ -6,7 +6,7 @@
       <div v-if="list.targetName === target.name">
         <!-- 循环显示聊天记录 -->
         <div v-for="(message, index) in list.list" :key="index" :class="{'message-item': true, 'right-aligned': message.is_me}">
-          <el-avatar v-if="!message.is_me" :src="user.img" class="avatar" @click="showUserInfo(user)"></el-avatar>
+          <el-avatar v-if="!message.is_me" :src="target.img" class="avatar" @click="showUserInfo(user)"></el-avatar>
 
           <!-- 弹出框 -->
           <el-dialog
@@ -54,7 +54,7 @@
           </template>
         
           <div v-if="shouldShowTime(index,list.list)&&!message.is_me" class="message-time">{{ message.time }}</div>
-          <el-avatar v-if="message.is_me" :src="target.img" class="avatar right-avatar"></el-avatar>
+          <el-avatar v-if="message.is_me" :src="iconUrl" class="avatar right-avatar"></el-avatar>
         </div>
       </div>
     </div>
@@ -91,8 +91,8 @@ computed: {
     MessageList(){
       return store.state.MessageList;
     },
-    user(){
-      return store.state.targetInfomation;
+    iconUrl(){
+      return store.state.iconUrl;
     },
   },
 methods: {

@@ -5,22 +5,22 @@
       </div>
       <div class="overlay" @click="toggleChatWindow"></div> <!-- 遮罩层 -->
         <div class="custom-common-layout">
-          <el-container>
+        <el-container style="height: 100vh; "   >
         <el-header class="custom-header">
           {{target.name}}
         </el-header>
-        <el-container>
+        <el-container >
           <el-aside width="200px">
             <MyAside/>
           </el-aside>
-          <el-container>
+          <el-container style="height: 80vh;">
             <el-main><MyMain/></el-main>
             <el-footer>
                 <div>
                   <el-input v-model="input" placeholder="请输入内容" @keyup.enter="sendMessage">
                     <template #suffix>
                       <div class="input-suffix">
-                        <img src="../assets/emoji.jpg" class="emoji-image" ref="emojiButton" @click="toggleEmojiPicker"/>
+                        <img src="../assets/images/emoji.jpg" class="emoji-image" ref="emojiButton" @click="toggleEmojiPicker"/>
                         <image-upload />
                       </div>
                     </template>
@@ -71,11 +71,12 @@
       mounted() {
         this.emojiPicker = new EmojiButton({
             position: 'bottom-start',
-            zIndex: 9999,
+            zIndex: 100000001,
         });
         this.emojiPicker.on('emoji', selection => {
             this.input += selection.emoji;
         });
+        
     },
       computed: {
         target(){
@@ -143,8 +144,8 @@
         //定义接收消息的方法并监听接收消息的事件
         this.connection.on('ReceiveMessage', (messageID,senderID,receiverID,messageType,Content,sendTime) => {
           console.log(parseInt(localStorage.getItem('userID')));
-            if(recieverID === parseInt(localStorage.getItem('userID'))){
-              console.log('Received message:', messageID,senderID,receiverID,messageType,Content,sendTime);
+          if(receiverID === parseInt(localStorage.getItem('userID'))){
+            console.log('Received message:', messageID,senderID,receiverID,messageType,Content,sendTime);
             const target = store.state.userListInformation.find(user => user.id === senderID);
             var msg = {
                 targetName: target.name,
@@ -163,7 +164,7 @@
               });
             store.commit('addUnreadID',senderID);
             store.commit('addMessage', msg);
-            }
+          }
         });
         
         // 开始连接
@@ -204,7 +205,7 @@
           Content: this.input, 
           sendTime: currentTime,
           };
-          console.log(message);
+          console.log(localStorage.getItem('userID'));
         
         // this.connection.invoke("Sgn")
         //       .then(() => {
@@ -379,16 +380,18 @@
       height: 16px;
     }
     .common-layout {
+      
       height: 550px;
       width: 958.4px;
     }
   
     .el-container {
-      height: 80vh;
+      height: 592px;
     }
   
     .el-header{
-    border-bottom: 1px solid #ccc; /* 下边框 */
+      border-bottom: 1px solid #ccc; /* 下边框 */
+
     }
     .el-footer {
     /* background-color:white; */
@@ -416,14 +419,14 @@
   .el-main {
     /* background-color: white; */
     color: #333;
-    height: 280px;
+    height: 532px;
     border-top: 1px solid #ccc;    /* 上边框 */
     border-right: 1px solid #ccc;  /* 右边框 */
     border-bottom: 1px solid #ccc; /* 下边框 */
     border-left: 1px solid #ccc;  /* 左边框 */
   }
   .custom-header {
-    text-align: center; /* 水平居中 */
+    
     line-height: 60px;  /* 使文本垂直居中，对应你的header高度 */
     font-size: 24px;    /* 可选：调整字体大小 */
   }
@@ -434,7 +437,7 @@
       right: 20px;
       width: 60px;
       height: 60px;
-      background-color: #1E90FF; /* 基本蓝色背景 */
+      background-color: #3686d7; /* 基本蓝色背景 */
       border-radius: 50%;
       color: white;
       font-size: 24px;
@@ -472,4 +475,3 @@
       }
   }
   </style>
-    
