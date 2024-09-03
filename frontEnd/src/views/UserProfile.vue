@@ -852,6 +852,7 @@ select {
 
 .balance-amount {
     font-size: 24px;
+    font-weight: bold;
     color: #333;
     margin-bottom: 10px;
     /* 移除默认的外边距 */
