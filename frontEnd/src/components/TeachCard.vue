@@ -82,65 +82,99 @@
   <!-- 编辑课程模态框 -->
   <el-dialog v-model="showModal" title="编辑课程" width="50%">
     <el-form :model="editForm">
-      <el-form-item label="模态框背景" prop="modalBackground">
-        <el-input
-          v-model="editForm.modalBackground"
-          placeholder="复制图片链接至此处，如：https://www.les.com.cn/123.jpg"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="课程标题" prop="courseTitle">
-        <el-input
-          v-model="editForm.courseTitle"
-          placeholder="30到45分钟核心训练"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="课程开始时间" prop="startTime">
-        <el-input
-          v-model="editForm.startTime"
-          placeholder="2024-9-2"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="课程结束时间" prop="endTime">
-        <el-input v-model="editForm.endTime" placeholder="2024-10-2"></el-input>
-      </el-form-item>
-      <el-form-item label="每周几开课" prop="classTime">
-        <el-input
-          v-model="editForm.classTime"
-          placeholder="请输入课程时间"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="课程标签" prop="features">
-        <el-input
-          v-model="editForm.features"
-          placeholder="请输入课程标签"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="上传教练头像" prop="instructorImage">
-        <el-input
-          v-model="editForm.instructorImage"
-          placeholder="请上传教练头像"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="昵称" prop="instructorName">
-        <el-input
-          v-model="editForm.instructorName"
-          placeholder="请输入昵称"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="荣誉" prop="instructorHonors">
-        <el-input
-          v-model="editForm.instructorHonors"
-          placeholder="请输入您取得的荣誉"
-        ></el-input>
-      </el-form-item>
-      <el-form-item label="课程描述" prop="courseDescription">
-        <el-input
-          type="textarea"
-          v-model="editForm.courseDescription"
-          placeholder="请输入课程描述"
-        ></el-input>
-      </el-form-item>
-    </el-form>
+            <el-form-item label="课程名称">
+              <el-input
+                v-model="editForm.courseName"
+                placeholder="例如:30到45分钟核心训练"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程图片">
+                <el-upload
+                  name="file"
+                  action="/your-upload-api" 
+                  :on-success="handleImageUploadSuccess" 
+                  :on-change="handleImageChange"
+                  :auto-upload="false"
+                >
+                <el-button size="small" type="primary">点击上传</el-button>
+                </el-upload>
+            </el-form-item>
+            <el-form-item label="课程描述">
+              <el-input
+                v-model="editForm.courseDescription"
+                placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程容量">
+              <el-input
+                v-model="editForm.capacity"
+                placeholder="请填入课程容量"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="课程开始时间">
+              <el-date-picker
+                v-model="editForm.courseStartTime"
+                type="date"
+                placeholder="选择日期"
+              />
+            </el-form-item>
+            <el-form-item label="课程结束时间">
+              <el-date-picker
+                v-model="editForm.courseEndTime"
+                type="date"
+                placeholder="选择日期"
+              />
+            </el-form-item>
+            <el-form-item label="课程难度">
+            <el-radio-group v-model="editForm.courseGrade">
+              <el-radio :label="1">1</el-radio>
+              <el-radio :label="2">2</el-radio>
+              <el-radio :label="3">3</el-radio>
+              <el-radio :label="4">4</el-radio>
+              <el-radio :label="5">5</el-radio>
+            </el-radio-group>
+            </el-form-item>
+            <el-form-item label="课程价格">
+              <el-input-number
+                v-model="editForm.coursePrice"
+                :min="0"
+                :max="3000"
+                :step="1"
+                placeholder="请填入一个数字"
+              />
+            </el-form-item>
+            <el-form-item label="课程特征">
+              <div>
+                <el-tag
+                  v-for="(feature, index) in editForm.features"
+                  :key="index"
+                  closable
+                  @close="removeFeature(index)"
+                  style="margin-right: 8px"
+                >
+                  {{ feature }}
+                </el-tag>
+                <el-input
+                  v-model="inputFeature"
+                  placeholder="输入并按回车,如 [力量, 增肌]"
+                  @keyup.enter.native="addFeature"
+                  style="width: 200px"
+                ></el-input>
+              </div>
+            </el-form-item>
+            <el-form-item label="课程分类">
+              <el-select v-model="editForm.courseType" placeholder="请选择课程分类">
+                <el-option label="高强度间歇" value= "高强度间歇" ></el-option>
+                <el-option label="儿童趣味课" value= "儿童趣味课" ></el-option>
+                <el-option label="低强度塑形" value= "低强度塑形"></el-option>
+                <el-option label="有氧训练" value= "有氧训练"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submitForm">提交</el-button>
+              <el-button @click="showModal = false">取消</el-button>
+            </el-form-item>
+          </el-form>
     <template #footer>
       <el-button @click="showModal = false">取消</el-button>
       <el-button type="primary" @click="submitEdit">保存修改</el-button>
@@ -167,74 +201,7 @@ export default {
     CourseModal,
   },
   name: "TeachCard",
-  props: {
-    coursePhotoUrl: {
-      type: String,
-      required: true,
-      default:
-        "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-    },
-    courseName: {
-      type: String,
-      required: true,
-      default: "举重阻尼训练",
-    },
-    courseDescription: {
-      type: String,
-      required: true,
-      default:
-        "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-    },
-    courseStartTime: {
-      type: String,
-      required: true,
-      default: "2024-08-08T17:42:16.103Z",
-    },
-    courseEndTime: {
-      type: String,
-      required: true,
-      default: "2024-08-08T17:42:16.103Z",
-    },
-    courseGrade: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    coursePrice: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    instructorName: {
-      type: String,
-      required: true,
-      default: "王教练",
-    },
-    instructorHonors: {
-      type: String,
-      required: true,
-      default: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
-    },
-    instructorImage: {
-      type: String,
-      required: true,
-      default:
-        "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
-    },
-    features: {
-      type: Array,
-      required: true,
-      default: ["感受力量涌现", "助力有氧健身", "训练全身各处"],
-    },
-    courseProgress: {
-      type: String,
-      default: "0节课/0节课",
-    },
-    classTime: {
-      type: String,
-      default: "17:00-18:30",
-    },
-  },
+  props: ['editForm'],
   data() {
     return {
       showModal: false,
@@ -255,18 +222,6 @@ export default {
         instructorHonors: this.instructorHonors,
       },
       showCommentsModal: false,
-      editForm: {
-        modalBackground: "",
-        courseTitle: "",
-        startTime: "",
-        endTime: "",
-        classTime: "",
-        features: "",
-        instructorImage: "",
-        instructorName: "",
-        instructorHonors: "",
-        courseDescription: "",
-      },
       comments: [
         {
           avatar: "user1.jpg",
@@ -289,44 +244,15 @@ export default {
   },
 
   watch: {
-    coursePhotoUrl(newVal) {
-      this.thecourse.coursePhotoUrl = newVal;
-    },
-    courseName(newVal) {
-      this.thecourse.courseName = newVal;
-    },
-    courseDescription(newVal) {
-      this.thecourse.courseDescription = newVal;
-    },
-    courseStartTime(newVal) {
-      this.thecourse.courseStartTime = newVal;
-    },
-    courseEndTime(newVal) {
-      this.thecourse.courseEndTime = newVal;
-    },
-    courseGrade(newVal) {
-      this.thecourse.courseGrade = newVal;
-    },
-    coursePrice(newVal) {
-      this.thecourse.coursePrice = newVal;
-    },
-    instructorName(newVal) {
-      this.thecourse.instructorName = newVal;
-    },
-    instructorHonors(newVal) {
-      this.thecourse.instructorHonors = newVal;
-    },
-    instructorImage(newVal) {
-      this.thecourse.instructorImage = newVal;
-    },
-    features(newVal) {
-      this.thecourse.features = newVal;
-    },
-    courseProgress(newVal) {
-      this.thecourse.courseProgress = newVal;
-    },
-    classTime(newVal) {
-      this.thecourse.classTime = newVal;
+    editForm(newVal) {
+      this.thecourse.coursePhotoUrl = newVal.coursePhotoUrl;
+      this.thecourse.courseName = newVal.courseName;
+      this.thecourse.courseDescription = newVal.courseDescription;
+      this.thecourse.courseStartTime = newVal.courseStartTime;
+      this.thecourse.courseEndTime = newVal.courseEndTime;
+      this.thecourse.coursePrice = newVal.coursePrice;
+      this.thecourse.features = newVal.features;
+      this.thecourse.classTime = newVal.classTime;
     },
   },
 
@@ -379,6 +305,8 @@ export default {
     submitEdit() {
       this.showModal = false;
       console.log("提交表单数据:", this.editForm);
+      axios.post(`http://localhost:8080/api/Course/ModifyCourse?token=${token}`,this.editform);
+
     },
 
     //查看评论

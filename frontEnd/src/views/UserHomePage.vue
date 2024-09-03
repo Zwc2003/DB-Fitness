@@ -39,7 +39,7 @@
             <el-avatar
               class="mr-3"
               :size="32"
-              src="https://ts3.cn.mm.bing.net/th?id=OIP-C.9khWcYup3srhgw3V1fi7-QHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&pid=3.1&rm=2"
+              :src="userIcon"
             />
             <span>{{ userName }}</span>
             <span
@@ -165,7 +165,9 @@ export default {
 
   data() {
     return {
+      personalCourseList:[],
       userName: "",
+      userIcon: "",
       email: "",
       vitalityCoins: 0,
       courseData: [
@@ -260,21 +262,42 @@ export default {
     this.initChart();
     //初始化鼓励词
     this.generateEncouragementMessage();
-
-    // 检查并加载全局存储的 usercourses
-    if (!this.getUserCourses.length) {
-      // 初始化 usercourses 数据
-      const initialCourses = [
-        // 初始数据...
-      ];
-      this.updateUserCourses(initialCourses);
-    }
+    //所有参与课程
+    this.fetchUserCourse();
+    //今日课程列表
+    this.fetchTodayCourseList();
     this.userName = localStorage.getItem("name");
     this.getVigorTokenBalance();
     this.email = localStorage.getItem("email");
+    this.userIcon = localStorage.getItem("iconUrl");
   },
 
   methods: {
+    //获取所有参与的课程
+    fetchUserCourse(){
+      const token = localStorage.getItem("token");
+      axios
+     .get(`http://localhost:8080/api/Course/GetCourseByUserID?token=${token}`)
+     .then((response) => {
+        const initialCourses = response.data;
+        this.updateUserCourses(initialCourses);
+      })
+     .catch((error) => {
+        console.error("Error fetching course list:", error);
+      });
+    },
+    //获取每日课程列表
+    fetchTodayCourseList() {
+      const token = localStorage.getItem("token");
+      axios
+       .get(`http://localhost:8080/api/Course/GetTodayCourseListByUserID?token=${token}`)
+       .then((response) => {
+          this.personalCourseList = response.data;
+        })
+       .catch((error) => {
+          console.error("Error fetching course list:", error);
+        });
+    },
     // 获取活力币余额
     getVigorTokenBalance() {
       const token = localStorage.getItem("token");
@@ -430,6 +453,7 @@ export default {
       this.$store.commit("ADD_COURSES_TO_USER", newCourses);
     },
 
+
     //更新活力币
     UPDATE_VITALITY_COINS(amount) {
       this.vitalityCoins -= amount;
@@ -440,15 +464,35 @@ export default {
         (total, course) => total + course.coursePrice,
         0
       );
-
+      //待检查属性名是否正确
+      const classIDList = selectedCourses.map(course => course.classID);
       // 检查余额是否足够
       if (this.vitalityCoins >= totalPrice) {
+        const token= localStorage.getItem('token');
+        var bookIDList =[];
+        //调用预约接口
+        axios.get('http://localhost:8080/api/Course/ReserveCourse',{params:{
+          token:token,
+          classIDList:classIDList,
+          payMethod: "活力币"
+        }})
+        .then(
+        (response) => {
+          bookIDList = response.data.bookIDList;
+        }
+        )
+        //调用支付接口
+        axios.get('http://localhost:8080/api/Course/PayCourseFare',{params:{
+            token: token,
+            bookIDList: bookIDList,
+            amount: totalPrice,
+            PayMethod:"活力币"
+        }})
+        .then((response) => {
         // 如果足够，扣除金额
         this.UPDATE_VITALITY_COINS(totalPrice);
-
         // 将选中的课程添加到 Vuex 的 usercourses 数组中
         this.$store.commit("ADD_COURSES_TO_USER", selectedCourses);
-
         // 从购物车中移除选中的课程
         selectedCourses.forEach((course) => {
           const index = this.$store.state.cartCourses.indexOf(course);
@@ -456,7 +500,6 @@ export default {
             this.removeCourseFromCart(index);
           }
         });
-
         // 弹出成功提示
         ElMessageBox.alert(
           `下单成功！您剩余的活力币余额为：${this.vitalityCoins}`,
@@ -466,6 +509,7 @@ export default {
             type: "success",
           }
         );
+        })
       } else {
         // 如果余额不足，弹出错误提示
         ElMessage({
@@ -492,18 +536,6 @@ export default {
     ...mapState({
       cartCourses: (state) => state.cartCourses,
     }),
-
-    //课程排序
-    sortedCourses() {
-      return this.usercourses.slice().sort((a, b) => {
-        const getTime = (timeRange) => {
-          const [startTime] = timeRange.split("-");
-          return new Date(`1970/01/01 ${startTime.trim()}`).getTime();
-        };
-
-        return getTime(a.classTime) - getTime(b.classTime);
-      });
-    },
 
     // 用户当前健身阶段
     currentStage() {

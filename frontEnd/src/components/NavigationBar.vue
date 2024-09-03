@@ -50,14 +50,14 @@
                         健身论坛
                     </router-link>
                 </label>
-            <!--<label for="achievement" class="achievement" @click="delayedNavigation('/achievements')">
+            <label for="achievement" class="achievement" @click="delayedNavigation('/achievements')">
                     <router-link to="/achievements">
                         <el-icon>
                             <Medal />
                         </el-icon>
                         健身成就
                     </router-link>
-                </label>-->
+                </label>
                 <label for="course" class="course" @click="delayedNavigation('/course')">
                     <router-link to="/course">
                         <el-icon>

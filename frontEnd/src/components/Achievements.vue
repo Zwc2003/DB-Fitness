@@ -9,34 +9,37 @@
     </div>
     <!-- 动态箭头 -->
     <div class="scroll-arrow" @click="scrollToBottom"></div>
-    <!-- 已获得的勋章展示 -->
-    <div class="achieved-badges">
-      <h2>我的勋章墙</h2>
-      <div class="badge-container">
-        <!-- 循环展示已获得的勋章 -->
-        <div
-          v-for="badge in achievedBadges"
-          :key="badge.achievementId"
-          @click="navigateToRankingList(badge.achievementId)"
-          class="badge"
-        >
-          <img :src="badge.imgSrc" alt="Achieved Badge" class="badge-icon achieved" />
+    
+    <div class="badge-wall">
+      <!-- 已获得的勋章展示 -->
+      <div class="achieved-badges">
+        <h2>我的勋章墙</h2>
+        <div class="badge-container">
+          <!-- 循环展示已获得的勋章 -->
+          <div
+            v-for="badge in achievedBadges"
+            :key="badge.achievementId"
+            @click="navigateToRankingList(badge.achievementId)"
+            class="badge"
+          >
+            <img :src="badge.imgSrc" alt="Achieved Badge" class="badge-icon achieved" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- 未获得的勋章展示 -->
-    <div class="unachieved-badges">
-      <h2>未获得的勋章</h2>
-      <div class="badge-container">
-        <!-- 循环展示未获得的勋章 -->
-        <div
-          v-for="badge in unachievedBadges"
-          :key="badge.achievementId"
-          @click="navigateToRankingList(badge.achievementId)"
-          class="badge"
-        >
-          <img :src="badge.imgSrc" alt="Unachieved Badge" class="badge-icon unachieved" />
+      <!-- 未获得的勋章展示 -->
+      <div class="unachieved-badges">
+        <h2>未获得的勋章</h2>
+        <div class="badge-container">
+          <!-- 循环展示未获得的勋章 -->
+          <div
+            v-for="badge in unachievedBadges"
+            :key="badge.achievementId"
+            @click="navigateToRankingList(badge.achievementId)"
+            class="badge"
+          >
+            <img :src="badge.imgSrc" alt="Unachieved Badge" class="badge-icon unachieved" />
+          </div>
         </div>
       </div>
     </div>
@@ -132,7 +135,8 @@ export default {
 }
 
 .scroll-arrow {
-  position: absolute; /* 绝对定位 */
+  top: 180px;
+  position: relative; /* 绝对定位 */
   bottom: -5px; /* 距离底部的距离 */
   left: 50%; /* 水平居中 */
   transform: translateX(-50%); /* 水平居中调整 */
@@ -146,11 +150,11 @@ export default {
 
 .video-container {
   justify-content: center;
-  position: absolute; /* 绝对定位 */
-  top: 0; /* 视频紧贴网页顶部 */
+  position: relative; 
+  top: 400px; /* 使视频从导航栏下方开始 */
   left: 0; /* 视频紧贴网页左侧 */
   width: 100vw; /* 视频宽度覆盖整个视口宽度 */
-  height: 100vh; /* 视频高度覆盖整个视口高度 */
+  height: 100vh; /* 高度减去导航栏的高度 */; /* 视频高度覆盖整个视口高度 */
   z-index: -1; /* 确保视频在其他内容的下方 */
   overflow: hidden; /* 防止视频内容超出容器 */
   margin-bottom: 80px; /* 调整底部间距 */
@@ -201,7 +205,18 @@ export default {
   align-items: center;
   justify-content: center;
 }
-
+.badge-wall {
+  top: 250px;
+  position: relative; /* 相对定位 */
+  background: url('../assets/images/bg5.jpg') no-repeat center center; /* 背景图标 */
+  background-size: cover; /* 背景图标覆盖容器 */
+  border: 2px solid #ddd; /* 边框 */
+  border-radius: 15px; /* 圆角边框 */
+  padding: 20px;
+  width: 50vw; /* 宽度 */
+  max-width: 1200px; /* 最大宽度 */
+  margin: 20px auto; /* 自动水平居中 */
+}
 .badge-icon {
   width: 10vw; /* 根据视口宽度自适应 */
   height: 10vw; /* 根据视口宽度自适应 */

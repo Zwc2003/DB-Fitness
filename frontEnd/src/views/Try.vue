@@ -1,69 +1,89 @@
 <template>
-  <div class="search-bar">
-    <!-- 搜索框 -->
-    <el-input
-      v-model="searchKey"
-      placeholder="搜索健身课程"
-      style="width: 300px"
-      @keyup.enter="searchCourses"
-    >
-      <template #append>
-        <el-button @click="searchCourses">搜索</el-button>
-      </template>
-    </el-input>
-
-    <!-- 价格区间选择器 -->
-    <el-select
-      v-model="selectedPriceRange"
-      placeholder="选择价格区间"
-      style="margin-left: 16px; width: 180px"
-      @change="updatePriceRange"
-    >
-      <el-option label="0-30活力币" :value="{ min: 0, max: 30 }"></el-option>
-      <el-option label="30-60活力币" :value="{ min: 30, max: 60 }"></el-option>
-      <el-option
-        label="60-100活力币"
-        :value="{ min: 60, max: 100 }"
-      ></el-option>
-    </el-select>
+  <div>
+    <Comment :myName="myName" :myHeader="myHeader" :comments="comments" />
   </div>
 </template>
 
 <script>
+import Comment from "../components/Comment.vue";
 export default {
+  components: {
+    Comment,
+  },
   data() {
     return {
-      searchKey: "", // 搜索关键词
-      selectedPriceRange: null, // 选中的价格区间
+      myName: "Lana Del Rey",
+      myHeader:
+        "https://ts1.cn.mm.bing.net/th/id/R-C.6de01afd0e169978aef940229ee2c1de?rik=nsSMkJyKNH2gXQ&riu=http%3a%2f%2fimg.touxiangwu.com%2fuploads%2fallimg%2f2022053119%2foygfaqbppgi.jpg&ehk=4cacxrzeaJv8mVIwBB3pMz17MHUdwML%2fHNn%2bl%2bmyPxQ%3d&risl=&pid=ImgRaw&r=0",
+      comments: [
+        {
+          name: "Lana Del Rey",
+          headImg:
+            "https://tse2-mm.cn.bing.net/th/id/OIP-C.Erum9yreLBLbYTOMWWzGIwAAAA?rs=1&pid=ImgDetMain",
+          comment: "我发布一张新专辑Norman Fucking Rockwell,大家快来听啊",
+          time: "2019年9月16日 18:43",
+          commentNum: 2,
+          like: 15,
+          inputShow: false,
+          reply: [
+            {
+              from: "Taylor Swift",
+              fromHeadImg:
+                "https://ae01.alicdn.com/kf/H94c78935ffa64e7e977544d19ecebf06L.jpg",
+              comment: "我很喜欢你的新专辑！！",
+              time: "2019年9月16日 18:43",
+              commentNum: 1,
+              like: 15,
+              inputShow: false,
+            },
+            {
+              from: "Ariana Grande",
+              fromHeadImg:
+                "https://ae01.alicdn.com/kf/Hf6c0b4a7428b4edf866a9fbab75568e6U.jpg",
+              comment: "别忘记宣传我们的合作单曲啊",
+              time: "2019年9月16日 18:43",
+              commentNum: 0,
+              like: 5,
+              inputShow: false,
+            },
+          ],
+        },
+        {
+          name: "Taylor Swift",
+          headImg:
+            "https://ae01.alicdn.com/kf/H94c78935ffa64e7e977544d19ecebf06L.jpg",
+          comment: "我发行了我的新专辑Lover",
+          time: "2019年9月16日 18:43",
+          commentNum: 1,
+          like: 5,
+          inputShow: false,
+          reply: [
+            {
+              from: "Lana Del Rey",
+              fromHeadImg:
+                "https://tse2-mm.cn.bing.net/th/id/OIP-C.O1dw-_dDk7WZCI1XK7lXiQAAAA?w=210&h=210&c=7&r=0&o=5&pid=1.7",
+              to: "Taylor Swift",
+              comment: "新专辑和speak now 一样棒！",
+              time: "2019年9月16日 18:43",
+              commentNum: 25,
+              like: 5,
+              inputShow: false,
+            },
+          ],
+        },
+        {
+          name: "Norman Fucking Rockwell",
+          headImg:
+            "https://tse2-mm.cn.bing.net/th/id/OIP-C.O1dw-_dDk7WZCI1XK7lXiQAAAA?w=210&h=210&c=7&r=0&o=5&pid=1.7",
+          comment: "Plz buy Norman Fucking Rockwell on everywhere",
+          time: "2019年9月16日 18:43",
+          commentNum: 0,
+          like: 5,
+          inputShow: false,
+          reply: [],
+        },
+      ],
     };
-  },
-  methods: {
-    // 更新价格区间参数
-    updatePriceRange(value) {
-      this.minPrice = value.min;
-      this.maxPrice = value.max;
-      this.searchCourses();
-    },
-    // 搜索课程
-    searchCourses() {
-      const params = {
-        key: this.searchKey,
-        minprice: this.minPrice,
-        maxprice: this.maxPrice,
-      };
-      // 调用后端API进行课程筛选
-      console.log("筛选参数:", params);
-      // this.fetchCourses(params); // 这里调用实际的API方法
-    },
   },
 };
 </script>
-
-<style scoped>
-.search-bar {
-  position: absolute;
-  right: 5%;
-  display: flex;
-  align-items: center;
-}
-</style>
