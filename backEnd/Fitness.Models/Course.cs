@@ -6,9 +6,38 @@ using System.Threading.Tasks;
 
 namespace Fitness.Models
 {
-    //Course CourseType Coach Traniee
-    //Participate Update Teaches Advise
-    //Payment Book
+    public class CourseRequest
+    {
+        public Course Course { get; set; }
+        public List<CourseSchedule> CourseSchedules { get; set; }
+    }
+
+
+    public class ReserveCourseRequest
+    {
+        public string token { get; set; }
+        public int[] classID { get; set; }
+        public string payMethod { get; set; }
+    }
+
+    public class PayFareRequest {
+       public string token{get; set; }
+       public int[] bookID { get; set; }
+       public int amount { get; set; }
+       public string payMethod { get; set; }
+    }
+
+    public class feedback {
+        public string comment { get; set; }
+        public int grade { get; set; }
+    }
+
+    public class CourseSchedule { 
+        public int classID { get; set; }
+        public int dayOfWeek { get; set; }
+        public string classTime { get; set;}
+
+    }
 
 
     public class Course
@@ -37,7 +66,6 @@ namespace Fitness.Models
         public string coursePhotoUrl { get; set; }
         public string courseVideoUrl { get; set; }
         public string features { get; set; }
-        public string classTime { get; set; }
     }
 
     public class BookCourseInfo
@@ -103,7 +131,7 @@ namespace Fitness.Models
     public class Book
     {
         // 预订账单的标识
-        public int bookID { get; set; }
+        public int bookID { get; set; } = -1;
 
         public int classID { get; set; }
 

@@ -17,25 +17,53 @@ namespace Fitness.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> PublishCourse([FromHeader] string token, [FromBody] Course course)
+        public IActionResult PublishCourse(string token, [FromBody] CourseRequest request)
         {
-            return _courseBLL.PublishCourse(token, course);
+            if (string.IsNullOrEmpty(token) || request == null || request.Course == null || request.CourseSchedules == null)
+            {
+                return BadRequest("Invalid input");
+            }
+
+            try
+            {
+                string result = _courseBLL.PublishCourse(token, request.Course, request.CourseSchedules);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error publishing course: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
-        [HttpPut]
-        public ActionResult<string> ModifyCourse([FromHeader] string token, [FromBody] Course course)
+        [HttpPost]
+        public IActionResult ModifyCourse(string token, [FromBody] CourseRequest request)
         {
-            return _courseBLL.ModifyCourse(token, course);
+            if (string.IsNullOrEmpty(token) || request == null || request.Course == null || request.CourseSchedules == null)
+            {
+                return BadRequest("Invalid input");
+            }
+
+            try
+            {
+                string result = _courseBLL.ModifyCourse(token, request.Course, request.CourseSchedules);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error modifying course: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpDelete]
-        public ActionResult<string> DeleteCourseByClassID([FromHeader] string token, int classID)
+        public ActionResult<string> DeleteCourseByClassID(string token, int classID)
         {
             return _courseBLL.DeleteCourseByClassID(token, classID);
         }
 
         [HttpGet]
-        public ActionResult<Course> GetCourseByClassID([FromHeader] string token, int classID)
+        public ActionResult<Course> GetCourseByClassID(string token, int classID)
         {
             return _courseBLL.GetCourseByClassID(token, classID);
         }
@@ -46,58 +74,74 @@ namespace Fitness.Controllers
             return _courseBLL.GetAllCourse();
         }
 
-        // public string BeTrainee(string token,Trainee trainee) 
         [HttpPost]
-        public ActionResult<string> BeTrainee(string token, Trainee trainee)
+        public ActionResult<string> ReserveCourse([FromBody] ReserveCourseRequest request)
         {
-            return _courseBLL.BeTrainee(token,trainee);
-        }
-
-
-        [HttpPost]
-        public ActionResult<string> ReserveCourse([FromHeader] string token, int classID, [FromQuery] string payMethod)
-        {
-            return _courseBLL.ReserveCourse(token, classID, payMethod);
+            return _courseBLL.ReserveCourse(request.token, request.classID, request.payMethod);
         }
 
         [HttpPost]
-        public ActionResult<string> PayCourseFare([FromHeader] string token, [FromQuery] int bookID, [FromQuery] int amount, [FromQuery] string payMethod)
+        public ActionResult<string> PayCourseFare([FromBody] PayFareRequest request)
         {
-            return _courseBLL.PayCourseFare(token, bookID, amount, payMethod);
+            return _courseBLL.PayCourseFare(request.token, request.bookID, request.amount, request.payMethod);
         }
 
         [HttpPost]
-        public ActionResult<string> CancelCourse([FromHeader] string token, int bookID)
+        public ActionResult<string> CancelCourse(string token, int bookID)
         {
             return _courseBLL.CancelCourse(token, bookID);
         }
 
         [HttpGet]
-        public ActionResult<List<BookCourseInfo>> GetCourseByUserID([FromHeader] string token)
+        public ActionResult<List<BookCourseInfo>> GetReservedCourseByUserID(string token)
         {
-            return _courseBLL.GetCourseByUserID(token);
+            return _courseBLL.GetReservedCourseByUserID(token);
+        }
+        
+        [HttpGet]
+        public ActionResult<string> GetParticipatedCourseByUserID(string token)
+        {
+            return _courseBLL.GetParticipatedCourseByUserID(token);
+        }
+        
+        [HttpGet]
+        public ActionResult<string> GetCoachParticipatedCourseByUserID(string token)
+        {
+            return _courseBLL.GetPublishedCourseByUserID(token);
         }
 
         [HttpGet]
-        public ActionResult<List<Course>> SearchCourse([FromHeader] string token, [FromQuery] string keyword, [FromQuery] int typeID = -1, [FromQuery] int minPrice = 0, [FromQuery] int maxPrice = int.MaxValue)
+        public ActionResult<string> GetTodayCoursesByUserID(string token)
+        {
+            return _courseBLL.GetTodayCoursesByUserID(token);
+        }
+
+        [HttpGet]
+        public ActionResult<string> GetCoachTodayCoursesByUserID(string token)
+        {
+            return _courseBLL.GetCoachTodayCoursesByUserID(token);
+        }
+
+        [HttpGet]
+        public ActionResult<List<Course>> SearchCourse(string token, [FromQuery] string keyword, [FromQuery] int typeID = -1, [FromQuery] int minPrice = 0, [FromQuery] int maxPrice = int.MaxValue)
         {
             return _courseBLL.SearchCourse(token, keyword, typeID, minPrice, maxPrice);
         }
 
         [HttpPost]
-        public ActionResult<string> GradeCourse([FromHeader] string token, int classID, [FromQuery] int grade)
+        public ActionResult<string> GradeCourse(string token, int classID, int grade)
         {
             return _courseBLL.GradeCourse(token, classID, grade);
         }
 
         [HttpPost]
-        public ActionResult<string> PublishComment([FromHeader] string token, int classID, [FromQuery] string comment)
+        public ActionResult<string> PublishComment(string token, int classID, string comment)
         {
             return _courseBLL.PublishComment(token, classID, comment);
         }
 
         [HttpGet]
-        public ActionResult<List<string>> GetCourseCommentByClassID([FromHeader] string token, int classID)
+        public ActionResult<List<feedback>> GetCourseCommentByClassID(string token, int classID)
         {
             return _courseBLL.GetCourseCommentByClassID(token, classID);
         }

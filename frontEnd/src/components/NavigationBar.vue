@@ -39,7 +39,7 @@
                         <el-icon>
                             <Picture />
                         </el-icon>
-                        AI健身
+                        健身指导
                     </router-link>
                 </label>
                 <label for="forum" class="forum" @click="delayedNavigation('/forum')">
@@ -50,14 +50,14 @@
                         健身论坛
                     </router-link>
                 </label>
-<!--            <label for="achievement" class="achievement" @click="delayedNavigation('/achievements')">-->
-<!--                    <router-link to="/achievements">-->
-<!--                        <el-icon>-->
-<!--                            <Medal />-->
-<!--                        </el-icon>-->
-<!--                        健身成就-->
-<!--                    </router-link>-->
-<!--                </label>-->
+                <!--            <label for="achievement" class="achievement" @click="delayedNavigation('/achievements')">-->
+                <!--                    <router-link to="/achievements">-->
+                <!--                        <el-icon>-->
+                <!--                            <Medal />-->
+                <!--                        </el-icon>-->
+                <!--                        健身成就-->
+                <!--                    </router-link>-->
+                <!--                </label>-->
                 <label for="course" class="course" @click="delayedNavigation('/course')">
                     <router-link to="/course" style="font-weight: bold;">
                         <el-icon>
@@ -136,7 +136,7 @@
 import router from "../router/index.js";
 import axios from "axios";
 
-import {ElNotification} from "element-plus";
+import { ElNotification } from "element-plus";
 import { commonMixin } from '../mixins/checkLoginState';
 export default {
     name: "NavigationBar",
@@ -340,7 +340,7 @@ body {
 }
 
 .wrapper nav #plan:checked~.tab {
-    left:71.4%;
+    left: 71.4%;
 }
 
 /*.wrapper nav #chat:checked~.tab {
