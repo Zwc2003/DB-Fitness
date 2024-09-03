@@ -23,7 +23,7 @@ import UserProfile from "../views/UserProfile.vue";
 import AdminView from "../views/AdminView.vue";
 import UserHomePage from "../views/UserHomePage.vue";
 import PublishCourse from "../views/PublishCourse.vue";
-import RankingList from "../views/RankingList.vue";
+import RankingList from "../components/RankingList.vue";
 
 import Try from "../views/Try.vue";
 
