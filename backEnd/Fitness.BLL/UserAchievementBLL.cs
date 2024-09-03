@@ -140,7 +140,7 @@ namespace Fitness.BLL
         {
             try
             {
-                DataTable result = UserAchievementDAL.GetRankTable(achievementId);
+                DataTable result = UserAchievementDAL.GetRankTable(achievementId=1);
                 if (result == null || result.Rows.Count == 0)
                 {
                     return JsonConvert.SerializeObject(new
