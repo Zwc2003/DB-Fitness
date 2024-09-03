@@ -475,7 +475,7 @@ const goPage = (path) => {
 };
 </script>
 
-<style scoped>
+<style>
 #app {
     max-width: 100% !important;
     margin: 0;
