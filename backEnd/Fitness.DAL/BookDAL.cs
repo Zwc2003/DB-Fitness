@@ -55,23 +55,24 @@ namespace Fitness.DAL
             try
             {
                 string sql = "INSERT INTO \"Book\"(\"classID\", \"traineeID\", \"paymentID\", \"payMethod\", \"bookStatus\", \"bookTime\") " +
-                             "VALUES(:classID, :traineeID, :paymentID, :payMethod, :bookStatus, :bookTime)" +
+                             "VALUES(:classID, :traineeID, :paymentID, :payMethod, :bookStatus, :bookTime) " +
                              "RETURNING \"bookID\" INTO :bookID";
 
-
+                Console.WriteLine(book.classID);
+                Console.WriteLine(book.payMethod);
+                Console.WriteLine(book.traineeID);
                 OracleParameter[] parameters = new OracleParameter[]
                 {
                 new OracleParameter("classID", OracleDbType.Int32) { Value = book.classID },
                 new OracleParameter("traineeID", OracleDbType.Int32) { Value = book.traineeID },
-                new OracleParameter("paymentID", OracleDbType.Int32) { Value = book.paymentID },
-                new OracleParameter("payMethod", OracleDbType.Char) { Value = book.payMethod },
-                new OracleParameter("bookStatus", OracleDbType.Int32) { Value = book.bookStatus},
-                new OracleParameter("bookTime", OracleDbType.TimeStamp) { Value = book.bookTime },
+                new OracleParameter("paymentID", OracleDbType.Int32) { Value = -1 },
+                new OracleParameter("payMethod", OracleDbType.Varchar2) { Value = book.payMethod },
+                new OracleParameter("bookStatus", OracleDbType.Int32) { Value = 1},
+                new OracleParameter("bookTime", OracleDbType.TimeStamp) { Value = DateTime.Now },
                 new OracleParameter("bookID", OracleDbType.Int32, ParameterDirection.Output)
             };
-
                 OracleHelper.ExecuteNonQuery(sql,null,parameters);
-                OracleDecimal oracleInt = (OracleDecimal)parameters[10].Value;
+                OracleDecimal oracleInt = (OracleDecimal)parameters[6].Value;
                 return oracleInt.ToInt32();
             }
             catch (Exception ex)

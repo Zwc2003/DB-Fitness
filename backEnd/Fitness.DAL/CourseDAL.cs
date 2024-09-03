@@ -1,5 +1,6 @@
 ﻿using Fitness.DAL.Core;
 using Fitness.Models;
+using Newtonsoft.Json;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 using System;
@@ -31,7 +32,6 @@ namespace Fitness.DAL
                 coursePhotoUrl = row["coursePhotoUrl"].ToString(),
                 courseVideoUrl = row["courseVideoUrl"].ToString(),
                 features = row["features"].ToString(),
-                classTime = row["classTime"].ToString()
             };
             return course;
         }
@@ -91,8 +91,8 @@ namespace Fitness.DAL
             }
         }
 
-        // 根据 userID 获取课程:该用户所参与的课程
-        public static List<BookCourseInfo> GetCourseByUserID(int userID)
+        // 根据 userID 获取所有已预约但未付款的课程
+        public static List<BookCourseInfo> GetReservedCourseByUserID(int userID)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace Fitness.DAL
                             "WHERE \"traineeID\" = :userID";
                 DataTable dt = OracleHelper.ExecuteTable(sql,new OracleParameter("userID", OracleDbType.Int32) { Value = userID });
 
-                if (dt.Rows.Count == 1)
+                if (dt.Rows.Count != 0)
                 {
                     return BookCourseInfoToModelList(dt);
                 }
@@ -113,6 +113,191 @@ namespace Fitness.DAL
                 Console.WriteLine(ex.Message);
                 return null;
             }
+        }
+
+        //根据userID 获取个人所有已付款（即已参与的课程）
+        public static List<Course> GetParticipateddCourseByUserID(int userID)
+        {
+            try
+            {
+                string sql = "SELECT * FROM \"Course\" NATURAL JOIN \"Participate\" " +
+                            "WHERE \"traineeID\" = :userID";
+                DataTable dt = OracleHelper.ExecuteTable(sql, new OracleParameter("userID", OracleDbType.Int32) { Value = userID });
+
+                if (dt.Rows.Count != 0)
+                {
+                    return ToModelList(dt);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        //获取教练本人所教的所有课程
+        public static List<Course> GetPublishedCourseByUserID(int userID)
+        {
+            try
+            {
+                string sql = "SELECT * FROM \"Course\" NATURAL JOIN \"Teaches\" " +
+                             "WHERE \"coachID\" = :userID";
+                DataTable dt = OracleHelper.ExecuteTable(sql, new OracleParameter("userID", OracleDbType.Int32) { Value = userID });
+                if (dt.Rows.Count != 0)
+                {
+                    return ToModelList(dt);
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+        //学员获取今日课程列表
+        public static string GetTodayCoursesByUserID(int userID)
+        {
+            List<Dictionary<string, string>> todayCourses = new List<Dictionary<string, string>>();
+            try
+            {
+                // 获取今天的日期
+                DateTime today = DateTime.Now.Date;
+                int todayDayOfWeek = (int)today.DayOfWeek; // 星期日为0, 星期一为1, ..., 星期六为6
+
+                // 1. 获取用户今天参与的课程ID和时间
+                string participateQuery = "SELECT p.\"classID\", cs.\"classTime\" " +
+                                          "FROM \"Participate\" p " +
+                                          "JOIN \"CourseSchedule\" cs ON p.\"classID\" = cs.\"classID\" " +
+                                          "WHERE p.\"traineeID\" = :userID AND cs.\"dayOfWeek\" = :todayDayOfWeek";
+
+                OracleParameter[] participateParams = new OracleParameter[]
+                {
+                new OracleParameter("userID", userID),
+                new OracleParameter("todayDayOfWeek", todayDayOfWeek)
+                };
+
+                DataTable participateDt = OracleHelper.ExecuteTable(participateQuery, participateParams);
+
+                if (participateDt.Rows.Count > 0)
+                {
+                    // 2. 获取今日的课程安排和课程详细信息
+                    foreach (DataRow row in participateDt.Rows)
+                    {
+                        int classID = Convert.ToInt32(row["classID"]);
+                        string classTime = row["classTime"].ToString();
+
+                        // 获取课程详细信息
+                        string courseQuery = "SELECT * FROM \"Course\" WHERE \"classID\" = :classID";
+                        OracleParameter[] courseParams = new OracleParameter[]
+                        {
+                        new OracleParameter("classID", classID)
+                        };
+
+                        DataTable courseDt = OracleHelper.ExecuteTable(courseQuery, courseParams);
+
+                        if (courseDt.Rows.Count > 0)
+                        {
+                            foreach (DataRow courseRow in courseDt.Rows)
+                            {
+                                var courseInfo = new Dictionary<string, string>
+                            {
+                                { "classID", courseRow["classID"].ToString() },
+                                { "courseName", courseRow["courseName"].ToString() },
+                                { "courseDescription", courseRow["courseDescription"].ToString() },
+                                { "courseStartTime", Convert.ToDateTime(courseRow["courseStartTime"]).ToString("yyyy-MM-dd") },
+                                { "courseEndTime", Convert.ToDateTime(courseRow["courseEndTime"]).ToString("yyyy-MM-dd") },
+                                { "courseGrade", Convert.ToInt32(courseRow["courseGrade"]).ToString() },
+                                { "coursePrice", Convert.ToInt32(courseRow["coursePrice"]).ToString() },
+                                { "coursePhotoUrl", courseRow["coursePhotoUrl"].ToString() },
+                                { "classTime", classTime }
+                            };
+
+                                todayCourses.Add(courseInfo);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"获取用户今日课程失败: {ex.Message}");
+            }
+
+            return JsonConvert.SerializeObject(todayCourses);
+        }
+
+        //教练获取今日课程列表
+        public static string GetCoachTodayCoursesByUserID(int userID)
+        {
+            List<Dictionary<string, string>> todayCourses = new List<Dictionary<string, string>>();
+            try
+            {
+                // 获取今天的日期
+                DateTime today = DateTime.Now.Date;
+                int todayDayOfWeek = (int)today.DayOfWeek; // 星期日为0, 星期一为1, ..., 星期六为6
+
+                // 1. 获取用户今天参与的课程ID和时间
+                string participateQuery = "SELECT p.\"classID\", cs.\"classTime\" " +
+                                          "FROM \"Teaches\" p " +
+                                          "JOIN \"CourseSchedule\" cs ON p.\"classID\" = cs.\"classID\" " +
+                                          "WHERE p.\"coachID\" = :userID AND cs.\"dayOfWeek\" = :todayDayOfWeek";
+
+                OracleParameter[] participateParams = new OracleParameter[]
+                {
+                new OracleParameter("userID", userID),
+                new OracleParameter("todayDayOfWeek", todayDayOfWeek)
+                };
+
+                DataTable participateDt = OracleHelper.ExecuteTable(participateQuery, participateParams);
+
+                if (participateDt.Rows.Count > 0)
+                {
+                    // 2. 获取今日的课程安排和课程详细信息
+                    foreach (DataRow row in participateDt.Rows)
+                    {
+                        int classID = Convert.ToInt32(row["classID"]);
+                        string classTime = row["classTime"].ToString();
+
+                        // 获取课程详细信息
+                        string courseQuery = "SELECT * FROM \"Course\" WHERE \"classID\" = :classID";
+                        OracleParameter[] courseParams = new OracleParameter[]
+                        {
+                        new OracleParameter("classID", classID)
+                        };
+
+                        DataTable courseDt = OracleHelper.ExecuteTable(courseQuery, courseParams);
+
+                        if (courseDt.Rows.Count > 0)
+                        {
+                            foreach (DataRow courseRow in courseDt.Rows)
+                            {
+                                var courseInfo = new Dictionary<string, string>
+                            {
+                                { "classID", courseRow["classID"].ToString() },
+                                { "courseName", courseRow["courseName"].ToString() },
+                                { "courseDescription", courseRow["courseDescription"].ToString() },
+                                { "courseStartTime", Convert.ToDateTime(courseRow["courseStartTime"]).ToString("yyyy-MM-dd") },
+                                { "courseEndTime", Convert.ToDateTime(courseRow["courseEndTime"]).ToString("yyyy-MM-dd") },
+                                { "courseGrade", Convert.ToInt32(courseRow["courseGrade"]).ToString() },
+                                { "coursePrice", Convert.ToInt32(courseRow["coursePrice"]).ToString() },
+                                { "coursePhotoUrl", courseRow["coursePhotoUrl"].ToString() },
+                                { "classTime", classTime }
+                            };
+
+                                todayCourses.Add(courseInfo);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"获取教练今日课程失败: {ex.Message}");
+            }
+            return JsonConvert.SerializeObject(todayCourses);
         }
 
         // 随机获取所有课程
@@ -145,8 +330,8 @@ namespace Fitness.DAL
                 //上传视频的方法加入
                 string videoUrl = course.courseVideoUrl;
 
-                string sql = $"INSERT INTO \"Course\"( \"typeID\", \"courseName\", \"Capacity\", \"courseDescription\", \"coursePrice\", \"courseStartTime\", \"courseEndTime\", \"courseLastDays\", \"courseGrade\", \"coursePhotoUrl\",\"courseVideoUrl\",\"features\",\"classTime\") " +
-                             $"VALUES(:typeID, :courseName, :Capacity, :courseDescription, :coursePrice, :courseStartTime, :courseEndTime, :courseLastDays, :courseGrade, :coursePhotoUrl, :courseVideoUrl, :features, :classTime) " +
+                string sql = $"INSERT INTO \"Course\"( \"typeID\", \"courseName\", \"Capacity\", \"courseDescription\", \"coursePrice\", \"courseStartTime\", \"courseEndTime\", \"courseLastDays\", \"courseGrade\", \"coursePhotoUrl\",\"courseVideoUrl\",\"features\") " +
+                             $"VALUES(:typeID, :courseName, :Capacity, :courseDescription, :coursePrice, :courseStartTime, :courseEndTime, :courseLastDays, :courseGrade, :coursePhotoUrl, :courseVideoUrl, :features) " +
                              $"RETURNING \"classID\" INTO :classID";
 
                 OracleParameter[] parameters = new OracleParameter[]
@@ -163,13 +348,12 @@ namespace Fitness.DAL
                     new OracleParameter("coursePhotoUrl", OracleDbType.Varchar2) { Value = photoUrl },
                     new OracleParameter("courseVideoUrl", OracleDbType.Varchar2) { Value = videoUrl },
                     new OracleParameter("features", OracleDbType.NVarchar2) { Value = course.features },
-                    new OracleParameter("classTime", OracleDbType.Varchar2) { Value = course.classTime },
                     new OracleParameter("classID", OracleDbType.Int32, ParameterDirection.Output)
                 };
 
                 OracleHelper.ExecuteNonQuery(sql, null, parameters);
                 // 读取 classID 参数的值
-                var classIDParam = parameters[10];
+                var classIDParam = parameters[12];
                 int classID = classIDParam.Value is OracleDecimal oracleDecimal
                     ? oracleDecimal.ToInt32()
                     : Convert.ToInt32(classIDParam.Value);
@@ -211,18 +395,18 @@ namespace Fitness.DAL
 
                 OracleParameter[] parameters = new OracleParameter[]
                 {
-                new OracleParameter("typeID", OracleDbType.Int32) { Value = course.typeID },
-                new OracleParameter("courseName", OracleDbType.Varchar2) { Value = course.courseName },
-                new OracleParameter("Capacity", OracleDbType.Int32) { Value = course.Capacity },
-                new OracleParameter("courseDescription", OracleDbType.Varchar2) { Value = course.courseDescription },
-                new OracleParameter("coursePrice", OracleDbType.Int32) { Value = course.coursePrice },
-                new OracleParameter("courseStartTime", OracleDbType.Date) { Value = course.courseStartTime },
-                new OracleParameter("courseEndTime", OracleDbType.Date) { Value = course.courseEndTime },
-                new OracleParameter("courseLastDays", OracleDbType.Int32) { Value = course.courseLastDays },
-                new OracleParameter("courseGrade", OracleDbType.BinaryFloat) { Value = course.courseGrade },
-                new OracleParameter("coursePhotoUrl", OracleDbType.Varchar2) { Value = course.coursePhotoUrl },
-                new OracleParameter("courseVideoUrl", OracleDbType.Varchar2) { Value = course.courseVideoUrl },
-                new OracleParameter("classID", OracleDbType.Int32) { Value = course.classID }
+                    new OracleParameter("typeID", OracleDbType.Int32) { Value = course.typeID },
+                    new OracleParameter("courseName", OracleDbType.Varchar2) { Value = course.courseName },
+                    new OracleParameter("Capacity", OracleDbType.Int32) { Value = course.Capacity },
+                    new OracleParameter("courseDescription", OracleDbType.Varchar2) { Value = course.courseDescription },
+                    new OracleParameter("coursePrice", OracleDbType.Int32) { Value = course.coursePrice },
+                    new OracleParameter("courseStartTime", OracleDbType.Date) { Value = course.courseStartTime },
+                    new OracleParameter("courseEndTime", OracleDbType.Date) { Value = course.courseEndTime },
+                    new OracleParameter("courseLastDays", OracleDbType.Int32) { Value = course.courseLastDays },
+                    new OracleParameter("courseGrade", OracleDbType.BinaryFloat) { Value = course.courseGrade },
+                    new OracleParameter("coursePhotoUrl", OracleDbType.Varchar2) { Value = course.coursePhotoUrl },
+                    new OracleParameter("courseVideoUrl", OracleDbType.Varchar2) { Value = course.courseVideoUrl },
+                    new OracleParameter("classID", OracleDbType.Int32) { Value = course.classID }
                 };
                 OracleHelper.ExecuteNonQuery(sql,null,parameters);
                 return true;
