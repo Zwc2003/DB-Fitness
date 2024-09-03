@@ -25,12 +25,6 @@
             全部课程
           </span>
           <div class="search-container">
-            <!-- <span
-      :class="{ active: isAllCoursesActive }"
-      @click="onAllCoursesClick"
-      class="all-courses"
-      >全部课程</span
-    > -->
             <!-- 搜索框 -->
             <el-input
               v-model="searchKeyword"
@@ -112,24 +106,14 @@
       </div>
     </div>
 
-    <!-- 课程内容展示区域 -->
+    <!-- 课程内容展示区域,无论如何是需要isbooked的,而且注意到courses是包含教练信息的-->
+    <!-- 搜索功能与全部课程功能的操作对象都是courses -->
     <div class="course-grid">
       <CourseHome
         v-for="(course, index) in courses"
         :key="index"
-        :coursePhotoUrl="course.coursePhotoUrl"
-        :courseName="course.courseName"
-        :courseStartTime="course.courseStartTime"
-        :courseEndTime="course.courseEndTime"
-        :courseGrade="course.courseGrade"
-        :coursePrice="course.coursePrice"
-        :courseFeatures="course.courseFeatures"
-        :courseDescription="course.courseDescription"
-        :instructorName="course.coachName"
-        :instructorHonors="course.instructorHonors"
-        :instructorImage="course.iconURL"
-        :classTime="course.classTime"
-        :features="course.features"
+        :homecourse="course"
+        :isbooked="courses.isbooked"
         :width="300"
         :height="400"
       />
@@ -184,6 +168,7 @@ export default {
     };
   },
   methods: {
+    //点击全部课程触发
     handleAllCoursesClick() {
       this.isActive = !this.isActive;
       this.selectedCourseType = "";
@@ -191,15 +176,21 @@ export default {
       console.log("全部课程按钮被点击了！");
       // 在这里添加你想要触发的其他逻辑
     },
+
+    //提交搜索词
     onSearch() {
       this.isActive = false;
       console.log("搜索关键词:", this.searchKeyword);
     },
+
+    //提交课程类型
     onCourseTypeChange(courseType) {
       this.isActive = false;
       this.selectedCourseType = courseType;
       console.log("选中的课程类别:", courseType);
     },
+
+    //提交价格区间
     onPriceRangeChange(priceRange) {
       this.isActive = false;
       this.selectedPriceRange = priceRange;
@@ -221,40 +212,6 @@ export default {
           return 0; // 如果输入的课程名称不在列表中，返回0或其他默认值
       }
     },
-    // 搜索课程
-    searchCourses() {
-      // 调用后端API进行课程筛选
-      axios
-        .get(`http://localhost:8080/api/Course/SearchCourse?`, {
-          params: {
-            token: localStorage.getItem("token"),
-            keyword: this.searchKey,
-            typeID: this.getCourseValue(this.searchType),
-            minPrice: this.minPrice,
-            maxPrice: this.maxPrice,
-          },
-        })
-        .then((response) => {
-          this.courses = [];
-          this.courses = response.data.map((item) => {
-            if (item.features) {
-              item.features = item.features.split("#");
-            }
-            return item;
-          });
-          console.log(this.courses);
-          //this.filteredCourses = this.courses; // 默认展示所有课程
-        })
-        .catch((error) => {
-          console.error("Error fetching courses:", error);
-          ElNotification({
-            title: "错误",
-            message: "获取所有课程时发生错误，请稍后再试。",
-            type: "error",
-          });
-          throw error;
-        });
-    },
 
     showRecommendation() {
       // 弹出推荐课程的模态框逻辑
@@ -269,6 +226,7 @@ export default {
       //     // 处理后端返回的筛选结果
       //   });
     },
+
     showRecommendation() {
       // 判断用户是否有上过课程
       if (this.courses.length === 0) {
@@ -280,7 +238,8 @@ export default {
       }
       this.isDialogVisible = true;
     },
-    //axios
+
+    //-------------------------------------- API接口------------------------------------------------------
     //大厅获取课程API
     async fetchCourses() {
       const token = localStorage.getItem("token");
@@ -294,7 +253,39 @@ export default {
             return item;
           });
           console.log(this.courses);
-          //this.filteredCourses = this.courses; // 默认展示所有课程
+        })
+        .catch((error) => {
+          console.error("Error fetching courses:", error);
+          ElNotification({
+            title: "错误",
+            message: "获取所有课程时发生错误，请稍后再试。",
+            type: "error",
+          });
+          throw error;
+        });
+    },
+
+    // 搜索课程(已完结)
+    searchCourses() {
+      axios
+        .get(`http://localhost:8080/api/Course/SearchCourse?`, {
+          params: {
+            token: localStorage.getItem("token"),
+            keyword: this.searchKeyword,
+            typeID: this.getCourseValue(this.selectedCourseType),
+            minPrice: range.min,
+            maxPrice: range.max,
+          },
+        })
+        .then((response) => {
+          this.courses = [];
+          this.courses = response.data.map((item) => {
+            if (item.features) {
+              item.features = item.features.split("#");
+            }
+            return item;
+          });
+          console.log(this.courses);
         })
         .catch((error) => {
           console.error("Error fetching courses:", error);

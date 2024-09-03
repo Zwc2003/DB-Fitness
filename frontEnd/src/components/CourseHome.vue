@@ -23,23 +23,11 @@
     </div>
   </div>
 
-  <!-- 课程模态框 -->
+  <!-- 课程模态框 ,1.有没有isbooked影响很大,2.homecourse的来源是getallcourse的API,有教练信息-->
   <CourseModal
     v-if="showModal"
     :isVisible="showModal"
-    :courseName="thecourse.courseName"
-    :courseStartTime="thecourse.courseStartTime"
-    :courseEndTime="thecourse.courseEndTime"
-    :courseGrade="thecourse.courseGrade"
-    :coursePrice="thecourse.coursePrice"
-    :courseDescription="thecourse.courseDescription"
-    :classTime="thecourse.classTime"
-    :features="thecourse.features"
-    :instructorImage="thecourse.instructorImage"
-    :instructorName="thecourse.instructorName"
-    :instructorHonors="thecourse.instructorHonors"
-    :coursePhotoUrl="thecourse.coursePhotoUrl"
-    :isbooked="thecourse.isbooked"
+    :thecourse="homecourse"
     @close="showModal = false"
   />
 </template>
@@ -55,23 +43,8 @@ export default {
   },
 
   props: {
-    coursePhotoUrl: {
-      type: String,
-      required: true,
-      default:
-        "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-    },
-    courseName: {
-      type: String,
-      required: true,
-      default: "举重阻尼训练",
-    },
-    courseDescription: {
-      type: String,
-      required: true,
-      default:
-        "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-    },
+    //homecourse包含教练相关信息
+    homecourse: Object,
     width: {
       type: Number,
       default: 300,
@@ -79,52 +52,6 @@ export default {
     height: {
       type: Number,
       default: 400,
-    },
-    courseStartTime: {
-      type: String,
-      required: true,
-      default: "2024-08-08T17:42:16.103Z",
-    },
-    courseEndTime: {
-      type: String,
-      required: true,
-      default: "2024-08-08T17:42:16.103Z",
-    },
-    courseGrade: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    coursePrice: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    instructorName: {
-      type: String,
-      required: true,
-      default: "王教练",
-    },
-    instructorHonors: {
-      type: String,
-      required: true,
-      default: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
-    },
-    instructorImage: {
-      type: String,
-      required: true,
-      default:
-        "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
-    },
-    features: {
-      type: Array,
-      required: true,
-      default: ["感受力量涌现", "助力有氧健身", "训练全身各处"],
-    },
-    classTime: {
-      type: String,
-      required: true,
-      default: "17:00-18:30",
     },
     isbooked: {
       type: Boolean,
@@ -135,78 +62,14 @@ export default {
   data() {
     return {
       showModal: false,
-      thecourse: {
-        coursePhotoUrl: this.coursePhotoUrl,
-        courseName: this.courseName,
-        courseDescription: this.courseDescription,
-        courseStartTime: this.courseStartTime,
-        courseEndTime: this.courseEndTime,
-        courseGrade: this.courseGrade,
-        coursePrice: this.coursePrice,
-        isVisible: false,
-        classTime: this.classTime,
-        features: this.features,
-        instructorImage: this.instructorImage,
-        instructorName: this.instructorName,
-        instructorHonors: this.instructorHonors,
-        isbooked: this.isbooked,
-      },
     };
   },
 
-  watch: {
-    coursePhotoUrl(newVal) {
-      this.thecourse.coursePhotoUrl = newVal;
-    },
-    courseName(newVal) {
-      this.thecourse.courseName = newVal;
-    },
-    courseDescription(newVal) {
-      this.thecourse.courseDescription = newVal;
-    },
-    courseStartTime(newVal) {
-      this.thecourse.courseStartTime = newVal;
-    },
-    courseEndTime(newVal) {
-      this.thecourse.courseEndTime = newVal;
-    },
-    courseGrade(newVal) {
-      this.thecourse.courseGrade = newVal;
-    },
-    coursePrice(newVal) {
-      this.thecourse.coursePrice = newVal;
-    },
-    instructorName(newVal) {
-      this.thecourse.instructorName = newVal;
-    },
-    instructorHonors(newVal) {
-      this.thecourse.instructorHonors = newVal;
-    },
-    instructorImage(newVal) {
-      this.thecourse.instructorImage = newVal;
-    },
-    features(newVal) {
-      this.thecourse.features = newVal;
-    },
-    classTime(newVal) {
-      this.thecourse.classTime = newVal;
-    },
-    isbook(newVal) {
-      this.thecourse.isbooked = newVal;
-    },
-  },
   setup(props, { emit }) {
     const hovered = ref(false);
 
-    const enterCourse = () => {
-      // 这里可以添加点击按钮后的逻辑，比如跳转到课程页面
-      console.log("进入课程");
-      // 例如: emit('courseEntered', courseId);
-    };
-
     return {
       hovered,
-      enterCourse,
     };
   },
 };
