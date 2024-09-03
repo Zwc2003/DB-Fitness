@@ -54,7 +54,7 @@ export default {
 }
 
 .contant {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.7);
   vertical-align: middle;
   border-radius: 20px;
   width: auto;

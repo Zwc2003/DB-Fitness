@@ -246,6 +246,16 @@ export default {
     border-left: 1px solid blue;
     border-bottom: none;
 }
+.avatar{
+    margin-right: 0px;
+    width: 200px;
+    height: 180px;
+    background-color: white;
+    border-left: 1px solid blue;
+    border-bottom: none;
+    border-radius: 0px; 
+    padding: 1px;
+}
 
 .editor-container {
     flex-grow: 1;
