@@ -258,6 +258,7 @@ export default {
     border: none;
     box-shadow: none;
     padding: 20px;
+    border-radius: 30px;
 }
 
 .login-title {

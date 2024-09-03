@@ -823,8 +823,9 @@ export default {
             const token = localStorage.getItem('token');
             axios.get(`http://localhost:8080/api/Post/GetAllPost?token=${token}`)
                 .then(response => {
+                    const numberOfPosts = Math.floor(Math.random() * 6) + 10;
                     const allPosts = response.data;
-                    this.relatedPosts = allPosts.sort(() => 0.5 - Math.random()).slice(0, 5);
+                    this.relatedPosts = allPosts.sort(() => 0.5 - Math.random()).slice(0, numberOfPosts);
                     console.log("获取相关帖子成功")
                 })
                 .catch(error => {
@@ -882,7 +883,7 @@ export default {
 <style scoped>
 .forum-bg {
     display: flex;
-    background-image: url('../components/icons/forum-bg.jpg');
+    background-image: url('../assets/images/forum-bg.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -906,10 +907,11 @@ export default {
 }
 
 .post-title {
+    margin-top: 20px;
     text-align: center;
     font-weight: bold;
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 30px;
+    margin-bottom: 20px;
     color: #333;
 }
 
@@ -920,6 +922,8 @@ export default {
     gap: 50px;
     font-size: 14px;
     color: #777;
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 .post-info span {
@@ -1050,14 +1054,14 @@ textarea {
 }
 
 .card {
-    border-radius: 10px;
     margin-top: 65px;
+    margin-right: 1%;
     width: 300px;
-    margin-left: 1%;
-    height: max-content;
     background-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 4px 10px rgba(243, 243, 243, 0.5);
-    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    height: max-content;
 }
 
 .related-posts-section .title {
@@ -1108,8 +1112,11 @@ textarea {
 .hot-post-title {
     font-size: 14px;
     color: #007bff;
-    cursor: pointer;
-    padding-left: 16px;
+    margin-left: 8px;
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-align: left;
 }
 
