@@ -1,5 +1,5 @@
 <template>
-  <el-button plain @click="loadWeeksData" class="button">
+  <el-button  @click="loadWeeksData" class="button" type="primary">
     生成健身计划
   </el-button>
 
@@ -8,6 +8,7 @@
       v-for="(week, index) in weeks.plan"
       :key="index"
       :title="titles[index]"
+      :name="index"
       class="custom-collapse-item"
     >
       <el-timeline class="line">
@@ -52,15 +53,16 @@
 <style scoped>
 .button{
   position: absolute;
-  left: 480px;
-  top: 100px;
+  left: 640px;
+  top: 12px;
   width: 100px;
+  height: 40px;
 }
 .list{
   position:absolute;
-  left: 320px;
-  top: 150px;
-  width: 800px;
+  left: 480px;
+  top: 60px;
+  width: 1000px;
 }
 .line{
   position: relative;
@@ -141,7 +143,7 @@ import axios from 'axios';
 const weeks = ref([]);
 const titles = ["第一周", "第二周", "第三周", "第四周"];
 const loading = ref(true);
-
+const activeName = ref([0]);
 function loadWeeksData() {
   loading.value = true;
   axios.get('http://localhost:8080/api/FitnessPlan/GetPlan', {
@@ -175,8 +177,8 @@ const open = (row) => {
       dangerouslyUseHTMLString: true,
       confirmButtonText: 'OK',
       customStyle: {
-        'max-width': '55%',
-        height: '100%'
+        'max-width': '38%',
+        height: '85%'
       }
     }
   );
