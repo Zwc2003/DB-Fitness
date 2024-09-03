@@ -103,14 +103,50 @@
                     </div>
                     <section class="post-list">
                         <div v-if="postListVisible">
-                            <h3>用户的帖子</h3>
                             <div v-if="posts.length === 0">该用户尚未发布任何帖子。</div>
                             <ul v-else>
-                                <li v-for="post in posts" :key="post.postID" class="post-item">
+                                <!--li v-for="post in posts" :key="post.postID" class="post-item">
+                                    <small>{{ new Date(post.postTime).toLocaleString() }}</small>
                                     <h4>{{ post.postTitle }}</h4>
                                     <p>{{ post.postContent }}</p>
+                                </li-->
+                                <!-- 帖子列表部分 -->
+                                <div v-for="post in posts" :key="post.postID">
                                     <small>{{ new Date(post.postTime).toLocaleString() }}</small>
-                                </li>
+                                    <div class="post-item">
+                                        <div class="post-content">
+                                            <h3 class="post-title" @click="viewPost(post.postID)">
+                                                {{ post.postTitle }}
+                                                <span class="category-tag">{{ post.postCategory }}</span>
+                                            </h3>
+                                            <!-- 图片展示 -->
+                                            <div v-if="post.imgUrl != `null`" class="post-image">
+                                                <img :src="post.imgUrl" alt="Post Image" class="image" />
+                                            </div>
+                                            <!-- 使用 v-html 直接渲染保存的内容 -->
+                                            <p class="post-snippet" v-html="renderContent(post.postContent)"></p>
+                                        </div>
+                                        <div class="post-footer">
+                                            <span class="post-actions">
+                                                <span class="icon-with-text no-click">
+                                                    <LikeOutlined />
+                                                    <span>{{ post.likesCount }}</span>
+                                                </span>
+                                                <span class="icon-with-text no-click">
+                                                    <MessageOutlined />
+                                                    <span>{{ post.commentsCount }}</span>
+                                                </span>
+                                                <span class="icon-with-text no-click">
+                                                    <ShareAltOutlined />
+                                                    <span>{{ post.forwardCount }}</span>
+                                                </span>
+                                                <span class="icon-with-text-delete" @click="deletePost(post.postID)">
+                                                    <DeleteOutlined />
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </ul>
                         </div>
                     </section>
@@ -216,10 +252,16 @@ import Achievement_7 from '../assets/badges/Achievement_7.png';
 import Achievement_8 from '../assets/badges/Achievement_8.png';
 import { commonMixin } from '../mixins/checkLoginState';
 import store from "../store";
+import { LikeOutlined, MessageOutlined, ShareAltOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+
 export default {
     mixins: [commonMixin],
     components: {
         EditableField,
+        LikeOutlined,
+        MessageOutlined,
+        ShareAltOutlined,
+        DeleteOutlined,
     },
     data() {
         return {
@@ -284,6 +326,15 @@ export default {
         this.fetchAchievements();
     },
     methods: {
+
+        viewPost(postID) {
+            this.$router.push({ name: 'PostDetail', params: { postID: postID } });
+        },
+        renderContent(content) {
+            // 这里可以进一步处理内容，例如对其他 HTML 标签的处理
+            const plainText = content.replace(/<[^>]+>/g, ''); // 移除所有HTML标签
+            return plainText.length > 40 ? plainText.slice(0, 50) + '...' : plainText;
+        },
         goBack() {
             this.$router.back();
         },
@@ -336,7 +387,7 @@ export default {
                 const date = new Date(response.data.registrationTime);
                 console.log(date);
                 this.profile = response.data;
-                this.profile.registrationTime=date;
+                this.profile.registrationTime = date;
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
                 this.tags = this.profile.tags ? this.profile.tags.split('#').filter(Boolean) : [];
                 this.originalTags = [...this.tags]; // 保存初始状态的标签
@@ -487,13 +538,13 @@ export default {
                 this.originalProfile = JSON.parse(JSON.stringify(this.profile));
                 this.originalTags = [...this.tags]; // 保存更新后的标签
                 this.originalImagePreview = this.imagePreview; // 保存更新后的头像
-                if (response.data === '更新成功'){
-                  ElNotification({
+                if (response.data === '更新成功') {
+                    ElNotification({
                         title: '成功',
                         message: '保存成功！',
                         type: 'success',
                     });
-                  store.commit('setIconUrl',this.profile.iconURL)
+                    store.commit('setIconUrl', this.profile.iconURL)
 
 
                 }
@@ -542,7 +593,42 @@ export default {
                     type: 'error',
                 });
             }
-        }
+        },
+        deletePost(postID) {
+            const token = localStorage.getItem('token');
+            axios.delete(`http://localhost:8080/api/Post/DeletePostByPostID`, {
+                params: {
+                    token: token,
+                    postID: postID,
+                    postOwnerID: this.profile.userID
+                }
+            })
+                .then(response => {
+                    console.log(response.data);
+                    if (response.data.message === '删除帖子成功') {
+                        ElNotification({
+                            title: '成功',
+                            message: '帖子删除成功',
+                            type: 'success',
+                        });
+                        this.fetchUserPosts();
+                    } else {
+                        ElNotification({
+                            title: '错误',
+                            message: '删除帖子失败',
+                            type: 'error',
+                        });
+                    }
+                })
+                .catch(error => {
+                    ElNotification({
+                        title: '错误',
+                        message: '删除帖子时发生错误',
+                        type: 'error',
+                    });
+                });
+        },
+
     }
 };
 </script>
@@ -817,7 +903,7 @@ select {
     color: white;
 }
 
-/* 新增的帖子列表样式 */
+/* 新增的帖子列表样式 
 .post-list {
     max-height: 60vh;
     overflow: auto;
@@ -842,7 +928,9 @@ select {
 
 .post-item small {
     color: #999;
-}
+}*/
+
+
 
 .balance-display {
     display: flex;
@@ -979,6 +1067,8 @@ select {
 .achievement-section {
     margin-bottom: 20px;
     /* 为两个部分添加一些下边距 */
+    max-height: 500px;
+    overflow-y: auto;
 }
 
 
@@ -1077,5 +1167,88 @@ select {
     background-color: transparent;
     text-align: left;
     overflow: auto;
+}
+
+.post-item {
+    background-color: rgba(255, 255, 255, 0.6);
+    color: #000;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 2px solid #ddd;
+}
+
+.post-content {
+    text-align: left;
+}
+
+.post-title {
+    font-size: 18px;
+    color: #007bff;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+.post-title .category-tag {
+    background-color: #f0f0f0;
+    border-radius: 50px;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: #555;
+    margin-left: 10px;
+}
+
+.post-snippet {
+    font-size: 16px;
+    color: #666;
+}
+
+.post-footer {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #888;
+    gap: 20px;
+}
+
+.post-actions {
+    color: blue;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.icon-with-text {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.icon-with-text.no-click {
+    pointer-events: none;
+    cursor: default;
+}
+
+.icon-with-text-delete {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.post-image {
+    text-align: left;
+    margin: 10px 0;
+}
+
+.post-image .image {
+    width: 100px;
+    /* 固定宽度 */
+    height: auto;
+    /* 高度自动调整以保持比例 */
+    border-radius: 5px;
+    display: inline-block;
 }
 </style>

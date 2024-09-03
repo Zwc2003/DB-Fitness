@@ -15,7 +15,7 @@
         <div class="editor-upload-container">
             <!-- 上传图片组件 -->
             <el-upload class="avatar-uploader" :show-file-list="false" :before-upload="beforeAvatarUpload">
-                <img v-if="localImgUrl!=`null`" :src="localImgUrl" class="avatar" />
+                <img v-if="localImgUrl != `null`" :src="localImgUrl" class="avatar" />
                 <el-icon v-else class="avatar-uploader-icon">
                     <Plus />
                 </el-icon>
@@ -25,13 +25,15 @@
             <div class="editor-container">
                 <Editor class="editor" v-model="localContent" :defaultConfig="editorConfig" :mode="mode"
                     @onCreated="handleCreated" />
-                <!-- 发布按钮 -->
-                <button @click="emitAddPost" class="btn-primary">发布帖子</button>
             </div>
         </div>
+        <!-- 发布按钮，单独占一行 -->
+        <div class="submit-container">
+            <button @click="emitAddPost" class="btn-primary">发布帖子</button>
+        </div>
     </div>
-
 </template>
+
 
 <script>
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
@@ -204,8 +206,9 @@ export default {
 .post-container {
     border: 1px solid #ccc;
     padding: 0;
-    position: relative;
-    /* 添加此行以相对定位容器 */
+    display: flex;
+    flex-direction: column;
+    /* 使得容器内元素垂直排列 */
 }
 
 .title-input {
@@ -227,27 +230,49 @@ export default {
     font-size: 16px;
     line-height: 1.5;
     color: #999;
-    /* 默认文本颜色为灰色 */
+}
+
+.editor-upload-container {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 0px;
+}
+
+.avatar-uploader {
+    margin-right: 0px;
+    width: 200px;
+    height: 180px;
+    background-color: white;
+    border-left: 1px solid blue;
+    border-bottom: none;
+}
+.avatar{
+    margin-right: 0px;
+    width: 200px;
+    height: 180px;
+    background-color: white;
+    border-left: 1px solid blue;
+    border-bottom: none;
+    border-radius: 0px; 
+    padding: 1px;
 }
 
 .editor-container {
+    flex-grow: 1;
     padding: 0;
-
     border-right: 1px solid blue;
-    border-bottom: 1px solid blue;
+    border-bottom: none;
     height: 180px;
     position: relative;
-    /* 添加此行以相对定位编辑器容器 */
 }
 
 .editor {
-    height: 180px;
+    height: 100%;
     border: none;
     font-size: 16px;
     line-height: 1.5;
     padding: 0;
     color: #999;
-    /* 编辑器默认文本颜色为灰色 */
     text-align: left;
 }
 
@@ -260,13 +285,19 @@ export default {
     border-right: 1px solid blue;
 }
 
-/* 新增的按钮样式 */
+.submit-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    border-top: none;
+    /* 添加顶部边框与其他内容分隔 */
+    background-color: #fff;
+    border-left: 1px solid blue;
+    border-right: 1px solid blue;
+    border-bottom: 1px solid blue;
+}
+
 .btn-primary {
-    position: absolute;
-    bottom: 10px;
-    /* 距离底部10px */
-    right: 10px;
-    /* 距离右侧10px */
     background-color: #007bff;
     color: #fff;
     padding: 8px 16px;
@@ -274,35 +305,5 @@ export default {
     border: none;
     cursor: pointer;
     font-size: 14px;
-}
-
-.post-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.editor-upload-container {
-    display: flex;
-    align-items: flex-start;
-    /* 顶部对齐 */
-    margin-top: 0px;
-    /* 调整与工具栏的间距 */
-}
-
-.avatar-uploader {
-    margin-right: 0px;
-    /* 与编辑器的间距 */
-    width: 200px;
-    /* 设置上传组件的宽度 */
-    height: 180px;
-    /* 设置上传组件的高度 */
-    background-color: white;
-    border-left: 1px solid blue;
-    border-bottom: 1px solid blue;
-}
-
-.editor-container {
-    flex-grow: 1;
-    /* 占满剩余空间 */
 }
 </style>
