@@ -54,10 +54,10 @@ namespace Fitness.DAL
             return OracleHelper.ExecuteNonQuery(cmdText, transaction, parameters) > 0;
         }
 
-        public static List<Message> GetUnreadMessages(int userId)
+        public static List<Message> GetMessages(int userId)
         {
             string query = @"SELECT * FROM Messages
-                         WHERE receiverID = :receiverID AND isRead = 0
+                         WHERE receiverID = :receiverID
                          ORDER BY sendTime DESC";
 
             OracleParameter[] parameters = {

@@ -218,7 +218,7 @@ namespace Fitness.BLL
                         { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
                         { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
                         { "courseGrade", course.courseGrade.ToString() },
-                        { "coursePrice", course.coursePrice.ToString() },
+                        { "coursePrice", course.coursePrice },
                         { "coachName", coachName },
                         { "instructorHonors", instructorHonors },
                         { "iconURL", iconURL },
@@ -246,7 +246,8 @@ namespace Fitness.BLL
             try
             {
                 TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
-                if (tokenRes.Role == "trainee" ) {
+                string role = UserDAL.GetRole(tokenRes.userID);
+                if (role == "trainee" ) {
                     return "您已是学员身份！";
                 }
 
@@ -338,6 +339,11 @@ namespace Fitness.BLL
                     return traineeCheckResult; // 如果插入Trainee表失败，返回错误信息
                 }
 
+                int fare = -amount;
+                // 调用支付接口
+                var vigorTokenBLL = new VigorTokenBLL();
+                vigorTokenBLL.UpdateBalance(traineeID, $"购买课程, 耗费 {amount} 活力币", fare);
+
                 // 遍历每个 bookID 进行支付处理
                 foreach (int bookID in bookIDs)
                 {
@@ -354,12 +360,7 @@ namespace Fitness.BLL
                         return $"支付课程费用失败: 预订账单号 {bookID} 更新 Payment 表异常！";
                     }
 
-                    int fare = -amount;
-                    // 调用支付接口
-                    var vigorTokenBLL = new VigorTokenBLL();
-                    vigorTokenBLL.UpdateBalance(traineeID, $"购买课程，预订账单号 {bookID}, 耗费 {amount} 活力币", fare);
-
-                    int bookstatus = 1;
+                    int bookstatus = 2;//2代表已支付，1代表已预订，初始代表为0
                     // 更新 Book 表的支付状态和支付ID
                     bool bookResult = BookDAL.UpdateBookStatusAndPaymentID(bookID, bookstatus, PaymentDAL.GetByBookID(bookID).paymentID);
                     if (!bookResult)
@@ -414,15 +415,16 @@ namespace Fitness.BLL
         }
 
         // 取消课程预订
-        public string CancelCourse(string token,int bookID)
+        public string CancelCourse(string token,int classID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             OracleConnection conn = null;
             OracleTransaction transaction = null;
             try
             {
+                int bookID = BookDAL.GetBookByClassIDAndUserID(classID, tokenRes.userID).bookID;
                 // 删除Participate记录
-                bool participateResult = ParticipateDAL.DeleteByClassIDAndTraineeID(BookDAL.GetBookByID(bookID).classID, tokenRes.userID);
+                bool participateResult = ParticipateDAL.DeleteByClassIDAndTraineeID(classID, tokenRes.userID);
                 if (!participateResult)
                 {
                     return "取消课程预订失败：删除Participate记录异常！";
@@ -436,7 +438,7 @@ namespace Fitness.BLL
                 vigorTokenBLL.UpdateBalance(tokenRes.userID, $"退出课程，预订账单号{bookID},退还{amount}活力币", fare);
 
                 // 更改Book记录
-                bool bookResult = BookDAL.UpdateBookStatusAndPaymentID(bookID,2,-1);
+                bool bookResult = BookDAL.UpdateBookStatusAndPaymentID(bookID,3,-1);
                 if (!bookResult)
                 {
                     return "取消课程预订失败：更改Book记录异常！";
