@@ -58,7 +58,7 @@
                       <!-- 显示实际内容 -->
                       <div v-else class="content-container">
                         <p v-html="record.diningAdvice" class="left-align"
-                          :style="{ height: '200px', overflowY: 'auto', fontSize: '18px !important' }"></p>
+                          :style="{ height: '200px', overflowY: 'auto', fontSize: '16px !important' }"></p>
                       </div>
                     </div>
                   </div>
@@ -146,8 +146,8 @@
             <h4>注意：输入自定义食物可能会导致热量计算不准确噢！</h4>
             <br>
             <el-upload class="avatar-uploader" :show-file-list="false" :before-upload="beforeAvatarUpload">
-              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-              <el-icon v-else class="avatar-uploader-icon">
+              <img v-if="imageUrl" :src="imageUrl" class="meal-avatar" />
+              <el-icon v-else class="meal-avatar-uploader-icon">
                 <Plus />
               </el-icon>
             </el-upload>
@@ -184,8 +184,8 @@
         <el-dialog v-model="modiVisible">
           <el-form ref="form">
             <el-upload class="avatar-uploader" :show-file-list="false" :before-upload="beforeAvatarUpload">
-              <img v-if="currentRecord.mealPhoto" :src="currentRecord.mealPhoto" class="avatar" />
-              <el-icon v-else class="avatar-uploader-icon">
+              <img v-if="currentRecord.mealPhoto" :src="currentRecord.mealPhoto" class="meal-avatar" />
+              <el-icon v-else class="meal-avatar-uploader-icon">
                 <Plus />
               </el-icon>
             </el-upload>
@@ -648,7 +648,7 @@ export default {
           for (let i = 0; i < this.oneDayRecord[check].length; i++) {
             if (this.oneDayRecord[check][i].mealTime === requestData.mealTime) {
               this.oneDayRecord[check][i].recordID = response.data.recordID;
-              this.oneDayRecord[check][i].calorie = response.data.totalCalorie;
+              this.oneDayRecord[check][i].totalcalorie = response.data.totalCalorie;
               //setTimeout(() => {
               this.getAISuggestions(this.oneDayRecord[check][i].recordID);
               //}, 10000);
@@ -883,7 +883,7 @@ export default {
   margin-bottom: 20px;
 }
 
-.avatar-uploader .avatar {
+.avatar-uploader .meal-avatar {
   width: 178px;
   height: 178px;
   display: block;
@@ -902,7 +902,7 @@ export default {
   border-color: var(--el-color-primary);
 }
 
-.el-icon.avatar-uploader-icon {
+.el-icon.meal-avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
   width: 178px;
@@ -978,7 +978,7 @@ export default {
   height: 65vh;
   width: 20vw;
   overflow-y: auto;
-  font-size: 18px;
+  font-size: 14px;
   color: rgb(30, 29, 29);
   padding: 30px !important;
 }
