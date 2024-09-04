@@ -36,9 +36,9 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public ActionResult<Post> GetPostByPostID(string token,int postID)
+        public ActionResult<PostInfo> GetPostByPostID(string token,int postID)
         {
-            Post post = _postBLL.GetPostByPostID(token, postID);
+            PostInfo post = _postBLL.GetPostByPostID(token, postID);
             return post;
         }
 

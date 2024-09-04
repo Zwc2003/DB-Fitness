@@ -345,7 +345,7 @@ namespace Fitness.DAL
 
         }
 
-        public static Post GetPostByPostID(int postId)
+        public static PostInfo GetPostByPostID(int postId)
         {
             string selectCommand = "SELECT * FROM \"Posts\" WHERE \"postID\" = :postID";
 
@@ -357,7 +357,7 @@ namespace Fitness.DAL
             // 执行查询
             DataTable postTable = OracleHelper.ExecuteTable(selectCommand, parameters);
             DataRow row = postTable.Rows[0];
-            Post post = new Post
+            PostInfo postInfo = new()
             {
                 postID = Convert.ToInt32(row["postID"]),
                 userID = Convert.ToInt32(row["userID"]),
@@ -369,9 +369,13 @@ namespace Fitness.DAL
                 forwardCount = Convert.ToInt32(row["forwardCount"]),
                 commentsCount = Convert.ToInt32(row["commentsCount"]),
                 userName = row["userName"].ToString(),
-                imgUrl = row["imgUrl"].ToString()
+                imgUrl = row["userName"].ToString(),
+                isPinned = Convert.ToInt32(row["isPinned"]),
+                isReported = Convert.ToInt32(row["isReported"])
             };
-            return post;
+            
+
+            return postInfo;
         }
     }
 }
