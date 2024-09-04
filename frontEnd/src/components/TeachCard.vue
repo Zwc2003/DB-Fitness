@@ -272,8 +272,12 @@ export default {
       const classID = this.editForm.course.classID;
       axios
         .delete(
-          `http://localhost:8080/api/Course/DeleteCourseByClassID?token=${token}`,
-          classID
+          `http://localhost:8080/api/Course/DeleteCourseByClassID`,{
+            params:{
+              token:token,
+              classID: classID
+            }
+          }
         )
         .then((response) => {
           console.log("教练删除课程成功:", response.data);

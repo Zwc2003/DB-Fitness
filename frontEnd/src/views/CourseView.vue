@@ -268,14 +268,14 @@ export default {
     // 搜索课程(已完结)
     searchCourses() {
       axios
-        .get(`http://localhost:8080/api/Course/SearchCourse?`, {
+        .get(`http://localhost:8080/api/Course/SearchCourse`, {
           params: {
             token: localStorage.getItem("token"),
             keyword: this.searchKeyword,
             typeID: this.getCourseValue(this.selectedCourseType),
             minPrice: range.min,
             maxPrice: range.max,
-          },
+          }
         })
         .then((response) => {
           this.courses = [];

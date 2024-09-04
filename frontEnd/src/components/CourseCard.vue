@@ -163,12 +163,14 @@ export default {
     gradeCourse() {
       const token = localStorage.getItem("token");
       const classID = thecourse.course.classID;
-
       axios
         .post(
-          `http://localhost:8080//api/Course/GradeCourse?token=${token}`,
-          classID,
-          this.ratingValue
+          `http://localhost:8080//api/Course/GradeCourse`,
+          {params:{
+              token: token,
+              classID : classID,
+              grade:this.ratingValue
+          }}
         )
         .then((response) => {
           console.log("评分成功:", response.data);
@@ -177,8 +179,8 @@ export default {
           console.error("评分失败:", error);
         });
     },
-
     //用户取消课程(等待完成)
+    //接口名为CancelCourse
   },
 };
 </script>
