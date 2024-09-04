@@ -45,9 +45,9 @@ namespace Fitness.DAL
         public static int Post(Post post)
         {
             string query = "INSERT INTO \"Posts\" " +
-                             "(\"userID\", \"postTitle\", \"postContent\", \"postCategory\", \"postTime\", \"likesCount\", \"forwardCount\", \"commentsCount\",\"refrencePostID\",\"userName\",\"imgUrl\") " +
+                             "(\"userID\", \"postTitle\", \"postContent\", \"postCategory\", \"postTime\", \"likesCount\", \"forwardCount\", \"commentsCount\",\"refrencePostID\",\"userName\",\"imgUrl\",\"isPinned\",\"isReported\") " +
                              "VALUES "+
-                             "(:userID, :postTitle, :postContent, :postCategory, :postTime, :likesCount, :forwardCount, :commentsCount,:refrencePostID, :userName, :imgUrl) "+
+                             "(:userID, :postTitle, :postContent, :postCategory, :postTime, :likesCount, :forwardCount, :commentsCount,:refrencePostID, :userName, :imgUrl, :isPinned,:isReported) " +
                              "RETURNING \"postID\" INTO :postID";
 
             OracleParameter[] parameters = new OracleParameter[]

@@ -163,7 +163,6 @@ import { LikeOutlined, MessageOutlined, ShareAltOutlined, DeleteOutlined, Vertic
 import store from '../store/index.js';
 import { Search } from '@element-plus/icons-vue';
 import { commonMixin } from '../mixins/checkLoginState';
-import Icon from '@ant-design/icons-vue/lib/components/Icon';
 
 export default {
     mixins: [postMixin, commonMixin],
@@ -269,8 +268,8 @@ export default {
             const token = localStorage.getItem('token');
             this.getAllPosts(token)
                 .then(response => {
-                    // 添加 isPinned 属性，默认为 false
-                    this.allPosts = response.data.map(post => ({ ...post, isPinned: false }));
+                    console.log(response.data);
+                    this.allPosts = response.data;
                     this.filteredPosts = this.allPosts;
                     this.updateHotPosts();
                 })
@@ -288,6 +287,7 @@ export default {
                 .then(response => {
                     this.allPosts = response.data.sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
                     this.filteredPosts = this.allPosts;
+                    console.log(this.allPosts);
                     this.updateHotPosts();
                     return response;
                 })
@@ -302,30 +302,89 @@ export default {
         },
 
         putTop(postID) {
-            const postIndex = this.allPosts.findIndex(post => post.postID === postID);
-            if (postIndex !== -1) {
-                const post = this.allPosts[postIndex];
-
-                if (post.isPinned) {
-                    // 取消置顶，设置 isPinned 为 false
-                    post.isPinned = false;
-                    // 将帖子移动到未置顶帖子的部分，并按照时间排序
-                    const originalPosts = this.allPosts
-                        .filter(p => !p.isPinned)
-                        .sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
-                    // 更新 allPosts 和 filteredPosts
-                    this.allPosts = [...this.allPosts.filter(p => p.isPinned), ...originalPosts];
-                } else {
-                    // 置顶帖子，设置 isPinned 为 true
-                    post.isPinned = true;
-                    // 过滤掉帖子列表中的此帖子，并将其置顶到 allPosts 列表最前面
-                    this.allPosts = [post, ...this.allPosts.filter(p => p.postID !== postID)];
-                }
-
-                // 更新显示的帖子列表
-                this.filteredPosts = [...this.allPosts];
+        const token = localStorage.getItem('token');
+        const postIndex = this.allPosts.findIndex(post => post.postID === postID);
+        if (postIndex !== -1) {
+            const post = this.allPosts[postIndex];
+            
+            if (!post.isPinned) {
+                // 调用置顶接口
+                axios.get('http://localhost:8080/api/Post/PinPost', {
+                    params: {
+                    token: token,
+                    postID: postID
+                    }
+                })
+                .then(response => {
+                    if (response.data.message === '成功置顶') {
+                        post.isPinned = true;
+                        this.updatePostsOrder();
+                        ElNotification({
+                            title: '成功',
+                            message: '帖子已置顶',
+                            type: 'success',
+                        });
+                    } else {
+                        ElNotification({
+                            title: '错误',
+                            message: '置顶帖子失败',
+                            type: 'error',
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    ElNotification({
+                        title: '错误',
+                        message: '置顶帖子时发生错误',
+                        type: 'error',
+                    });
+                });
+            } else {
+                // 调用取消置顶接口
+                axios.get('http://localhost:8080/api/Post/CanclePinPost', {
+                    params: {
+                    token: token,
+                    postID: postID
+                    }
+                })
+                .then(response => {
+                    if (response.data.message === '成功取消置顶') {
+                        post.isPinned = false;
+                        this.updatePostsOrder();
+                        ElNotification({
+                            title: '成功',
+                            message: '帖子已取消置顶',
+                            type: 'success',
+                        });
+                    } else {
+                        ElNotification({
+                            title: '错误',
+                            message: '取消置顶失败',
+                            type: 'error',
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                    ElNotification({
+                        title: '错误',
+                        message: '取消置顶时发生错误',
+                        type: 'error',
+                    });
+                });
             }
-        },
+        }
+    },
+
+    // 更新帖子顺序，将置顶的帖子放在最前面
+    updatePostsOrder() {
+        const pinnedPosts = this.allPosts.filter(post => post.isPinned);
+        const unpinnedPosts = this.allPosts.filter(post => !post.isPinned)
+                                           .sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
+        this.allPosts = [...pinnedPosts, ...unpinnedPosts];
+        this.filteredPosts = [...this.allPosts];
+    },
 
         filterByCategory(category) {
             this.selectedCategory = category;
@@ -374,6 +433,7 @@ export default {
                 };
                 axios.post(`http://localhost:8080/api/Post/PublishPost?token=${token}`, newPost)
                     .then(response => {
+                        console.log(newPost);
                         newPost.postID = response.data.postID;
                         this.allPosts.unshift(newPost);
                         this.filterPosts();
@@ -502,7 +562,7 @@ body {
     background-color: rgba(255, 255, 255, 0.6);
     padding: 10px 0;
     position: absolute;
-    width: 780px;
+    width: 53%;
     /*z-index: 100;*/
     top: 0;
     transition: background-color 0.3s ease;
@@ -518,7 +578,7 @@ body {
 .navbar-list {
     list-style: none;
     display: flex;
-    gap: 10px;
+    gap: 20px;
     margin: 0;
     padding: 0;
     align-items: center;
