@@ -67,7 +67,6 @@ export default {
   position: fixed;
   bottom: 1vw;
   right: 1vw;
-  /* 将元素固定在页面右侧 */
 }
 
 
@@ -141,7 +140,7 @@ export default {
   top: 0px;
   left: 0;
   width: 100%;
-  max-height: 100%;
+  height: 100%;
   /* 使图片覆盖整个背景区域 */
   object-fit: fill;
   z-index: -1;
