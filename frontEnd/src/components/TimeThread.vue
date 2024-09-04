@@ -53,16 +53,16 @@
 <style scoped>
 .button{
   position: absolute;
-  left: 640px;
+  left: 32%;
   top: 12px;
   width: 100px;
   height: 40px;
 }
 .list{
   position:absolute;
-  left: 480px;
+  left: 20%;
   top: 60px;
-  width: 1000px;
+  width: 60%;
 }
 .line{
   position: relative;
@@ -126,8 +126,7 @@
   content: url(../assets/images/strength.png); /* 鼠标悬停时显示的图片路径 */
 }
 .dialog-video{
-  width:600px;
-  height:600px;
+  height:65%;
 }
 .el-container {
   width: 300px; /* 与卡片宽度一致 */
@@ -171,14 +170,14 @@ function loadSavedPlan() {
 
 const open = (row) => {
   ElMessageBox.alert(
-    '<div class="video-div"><video controls autoplay src="' + row.gifUrl + '" class="dialog-video"></video></div>',
+    '<div class="video-div"><video controls autoplay width="90%" src="' + row.gifUrl + '" ></video></div>',
     row.explanation,
     {
       dangerouslyUseHTMLString: true,
       confirmButtonText: 'OK',
       customStyle: {
-        'max-width': '38%',
-        height: '85%'
+        'max-width': '45%',
+        height: '90%'
       }
     }
   );
