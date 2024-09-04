@@ -26,12 +26,12 @@
                         首页
                     </router-link>
                 </label>
-                <label for="equipment" class="equipment" @click="delayedNavigation('/equipment')">
-                    <router-link to="/equipment" style="font-weight: bold;">
+                <label for="plan" class="plan" @click="delayedNavigation('/fitnessplan')">
+                    <router-link to="/fitnessplan" style="font-weight: bold;">
                         <el-icon>
-                            <ChatLineRound />
+                            <Finished />
                         </el-icon>
-                        健身器材
+                        健身计划
                     </router-link>
                 </label>
                 <label for="aifit" class="aifit" @click="delayedNavigation('/aifit')">
@@ -40,6 +40,30 @@
                             <Picture />
                         </el-icon>
                         健身指导
+                    </router-link>
+                </label>
+                <label for="course" class="course" @click="delayedNavigation('/course')">
+                    <router-link to="/course" style="font-weight: bold;">
+                        <el-icon>
+                            <Notebook />
+                        </el-icon>
+                        健身课程
+                    </router-link>
+                </label>
+                <label for="equipment" class="equipment" @click="delayedNavigation('/equipment')">
+                    <router-link to="/equipment" style="font-weight: bold;">
+                        <el-icon>
+                            <ChatLineRound />
+                        </el-icon>
+                        健身器材
+                    </router-link>
+                </label>
+                <label for="healthyDiet" class="healthyDiet" @click="delayedNavigation('/healthyDiet')">
+                    <router-link to="/healthyDiet" style="font-weight: bold;">
+                        <el-icon>
+                            <Food />
+                        </el-icon>
+                        健康饮食
                     </router-link>
                 </label>
                 <label for="forum" class="forum" @click="delayedNavigation('/forum')">
@@ -58,22 +82,7 @@
                 <!--                        健身成就-->
                 <!--                    </router-link>-->
                 <!--                </label>-->
-                <label for="course" class="course" @click="delayedNavigation('/course')">
-                    <router-link to="/course" style="font-weight: bold;">
-                        <el-icon>
-                            <Notebook />
-                        </el-icon>
-                        健身课程
-                    </router-link>
-                </label>
-                <label for="plan" class="plan" @click="delayedNavigation('/fitnessplan')">
-                    <router-link to="/fitnessplan" style="font-weight: bold;">
-                        <el-icon>
-                            <Finished />
-                        </el-icon>
-                        健身计划
-                    </router-link>
-                </label>
+
                 <!--<label for="chat" class="chat" @click="delayedNavigation('/chat')">
                     <router-link to="/chat">
                         <el-icon>
@@ -82,14 +91,7 @@
                         聊天室
                     </router-link>
                 </label>-->
-                <label for="healthyDiet" class="healthyDiet" @click="delayedNavigation('/healthyDiet')">
-                    <router-link to="/healthyDiet" style="font-weight: bold;">
-                        <el-icon>
-                            <Food />
-                        </el-icon>
-                        健康饮食
-                    </router-link>
-                </label>
+
                 <div class="tab"></div>
             </nav>
         </div>
@@ -316,7 +318,7 @@ body {
 }
 
 .wrapper nav #equipment:checked~.tab {
-    left: 14.3%;
+    left: 57.5%;
 }
 
 .wrapper nav #aifit:checked~.tab {
@@ -324,39 +326,28 @@ body {
 }
 
 .wrapper nav #forum:checked~.tab {
+    left: 85.7%;
+}
+
+.wrapper nav #course:checked~.tab {
     left: 42.9%;
 }
 
-/*.wrapper nav #achievement:checked~.tab {
-    left: 57.1%;
-}
-
-/* .wrapper nav #rank:checked~.tab {
-    left: 50%;
-} */
-
-.wrapper nav #course:checked~.tab {
-    left: 57.1%;
-}
-
 .wrapper nav #plan:checked~.tab {
-    left: 71.4%;
+    left: 14.3%;
 }
 
-/*.wrapper nav #chat:checked~.tab {
-    left: 78%;
-}*/
 
 .wrapper nav #healthyDiet:checked~.tab {
-    left: 85.7%;
+    left: 71.6%;
 }
 
 .wrapper nav #mealPlanner:checked~.tab {
-    left: 85.7%;
+    left: 71.6%;
 }
 
 .wrapper nav #mealRecord:checked~.tab {
-    left: 85.7%;
+    left: 71.6%;
 }
 
 .avatar-container {

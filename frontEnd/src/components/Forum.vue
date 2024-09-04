@@ -616,7 +616,7 @@ body {
 
 .main-content {
     width: 1200px;
-    padding-left: 60px;
+    padding-left: 20px;
     padding-right: 0;
 }
 

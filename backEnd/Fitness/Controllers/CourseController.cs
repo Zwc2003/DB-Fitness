@@ -74,6 +74,11 @@ namespace Fitness.Controllers
             return _courseBLL.GetAllCourse(token);
         }
 
+        [HttpGet]
+        public ActionResult<List<Trainee>> GetAllTraineesByClassID(string token, int classID) {
+            return _courseBLL.GetAllTraineesByClassID(token, classID);
+        }
+
         [HttpPost]
         public ActionResult<string> ReserveCourse([FromBody] ReserveCourseRequest request)
         {
