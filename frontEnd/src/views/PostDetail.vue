@@ -1,5 +1,5 @@
 <template>
-    <common-layout />
+    <notification-box />
     <div class="forum-bg">
         <el-backtop class="backtop-button" />
         <div class="back-button-container">
@@ -174,7 +174,7 @@ import store from '../store/index.js';
 
 import { commonMixin } from '../mixins/checkLoginState';
 import CommentItem from '../components/CommentItem.vue';
-
+import NotificationBox from '../components/NotificationBox.vue';
 
 export default {
     mixins: [commonMixin],
@@ -184,6 +184,7 @@ export default {
         IconLink,
         EmojiButton,
         CommentItem,
+        NotificationBox
     },
     data() {
         return {
