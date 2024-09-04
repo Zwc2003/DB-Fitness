@@ -413,7 +413,7 @@ export default {
         });
     },
 
-    //获取用户所有参与的课程(完结版)
+    //获取用户所有参与的课程(完结版)  待修改：接收数据对象有问题，调用接口错误
     fetchUserCourse() {
       const token = localStorage.getItem("token");
       axios

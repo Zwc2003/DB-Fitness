@@ -87,6 +87,13 @@ namespace Fitness.DAL
             else
             {
                 DataRow row = goalData.Rows[0];
+                if(String.IsNullOrEmpty(row["planType"]?.ToString()) || String.IsNullOrEmpty(row["duration"]?.ToString()))
+                    return JsonConvert.SerializeObject(new
+                    {
+                        message = "fail",
+                        goal = (string)null,
+                        duration = (string)null
+                    });
                 return JsonConvert.SerializeObject(new
                 {
                     message = "successful",

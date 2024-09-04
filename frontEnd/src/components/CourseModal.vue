@@ -181,6 +181,7 @@ export default {
       this.$store.commit("ADD_COURSE_TO_CART", course);
       // 可选：添加成功后的提示
       this.$message.success("课程已成功加入购物车！");
+      //补充调用后端的接口：ReserveCourse
     },
 
     //-------------------------------------- API接口------------------------------------------------------

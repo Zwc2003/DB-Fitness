@@ -343,6 +343,8 @@ export default {
 
     //进入页面就要调用的接口
     this.fetchTodayCourseList();
+    //补充获取教练所有的教授的课程接口的方法
+    this.fetchUserCourse();
 
     //进入页面就要获取的个人信息
     this.userName = localStorage.getItem("name");
@@ -556,7 +558,7 @@ export default {
       const token = localStorage.getItem("token");
       axios
         .get(
-          `http://localhost:8080/api/Course/GetTeachCourseByUserID?token=${token}`
+          `http://localhost:8080/api/Course/GetCoachParticipatedCourseByUserID?token=${token}`
         )
         .then((response) => {
           const initialCourses = response.data;
@@ -599,7 +601,7 @@ export default {
         });
     },
 
-    //发布新课程的接口(完结版)
+    //发布新课程的接口(完结版)  ：  ！！！！请看postData中的备注！！！！！
     submitForm() {
       this.newCourse.instructorHonors = this.intoduction;
       this.newCourse.instructorName = this.username;
@@ -628,13 +630,14 @@ export default {
           courseVideoUrl: "null",
           features: this.newCourse.features.join("#") + "#",
         },
-        courseSchedules: [
-          {
-            classID: -1,
-            dayOfWeek: this.Schedules.coursePhotoUrl,
-            classTime: this.Schedules.classTime,
-          },
-        ],
+        //！！！！：这里一定要动态加入（使用一个循环），因为这里是一个数组，可能不只有一个时间段，不能直接赋值单个！！！！！
+        // courseSchedules: [
+        //   {
+        //     classID: -1,
+        //     dayOfWeek: this.Schedules.coursePhotoUrl,
+        //     classTime: this.Schedules.classTime,
+        //   },
+        // ],
       };
       axios
         .post(

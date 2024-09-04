@@ -119,10 +119,10 @@ namespace Fitness.BLL
 
         public static string GetPlan(int userId)
         {
-            Console.WriteLine("收到获取计划请求\n");
+            Console.WriteLine($"收到user:{userId}获取计划请求\n");
             string goal = UserFitnessPlanGoalDAL.Get(userId);
             Dictionary<string, object> data = JsonConvert.DeserializeObject<Dictionary<string, object>>(goal);
-            if (data["message"] == "fail" || data["message"] == null)
+            if (data["message"].ToString() == "fail" || data["message"] == null)
             {
                 return JsonConvert.SerializeObject(new
                 {
@@ -134,7 +134,7 @@ namespace Fitness.BLL
             string physicalTest = PhysicalTestDAL.Get(userId);
             Dictionary<string, object> fitnessTable = JsonConvert.DeserializeObject<Dictionary<string, object>>(fitness);
             Dictionary<string, object> physicalTestTable = JsonConvert.DeserializeObject<Dictionary<string, object>>(physicalTest);
-            if (fitnessTable["message"] == "empty" || physicalTestTable["message"] == "empty")
+            if (fitnessTable["message"].ToString() == "empty" || physicalTestTable["message"].ToString() == "empty")
             {
                 return JsonConvert.SerializeObject(new
                 {
