@@ -53,22 +53,11 @@
     </el-card>
   </div>
 
-  <!-- 课程模态框 -->
+  <!-- 课程模态框,你这里isbooked就必须是1 -->
   <CourseModal
     v-if="showModal"
     :isVisible="showModal"
-    :courseName="thecourse.courseName"
-    :courseStartTime="thecourse.courseStartTime"
-    :courseEndTime="thecourse.courseEndTime"
-    :courseGrade="thecourse.courseGrade"
-    :coursePrice="thecourse.coursePrice"
-    :courseDescription="thecourse.courseDescription"
-    :classTime="thecourse.classTime"
-    :features="thecourse.features"
-    :instructorImage="thecourse.instructorImage"
-    :instructorName="thecourse.instructorName"
-    :instructorHonors="thecourse.instructorHonors"
-    :coursePhotoUrl="thecourse.coursePhotoUrl"
+    :thecourse="thecourse"
     :isbooked="1"
     @close="showModal = false"
   />
@@ -117,141 +106,20 @@ export default {
   },
   name: "CourseCard",
 
+  //传入的是GetParticipatedCourseByUserID API的数据
   props: {
-    coursePhotoUrl: {
-      type: String,
-      required: true,
-      default:
-        "https://www.lesmills.com.cn/static/index_news/images/temp/courseimg.jpg",
-    },
-    courseName: {
-      type: String,
-      required: true,
-      default: "举重阻尼训练",
-    },
-    courseDescription: {
-      type: String,
-      required: true,
-      default:
-        "适合希望迅速实现瘦身、紧致和健美效果的人士。 通过重复多次举起轻量级到中量级的重量",
-    },
-    courseStartTime: {
-      type: String,
-      required: true,
-      default: "2024-08-08T17:42:16.103Z",
-    },
-    courseEndTime: {
-      type: String,
-      required: true,
-      default: "2024-08-08T17:42:16.103Z",
-    },
-    courseGrade: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    coursePrice: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    instructorName: {
-      type: String,
-      required: true,
-      default: "王教练",
-    },
-    instructorHonors: {
-      type: String,
-      required: true,
-      default: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
-    },
-    instructorImage: {
-      type: String,
-      required: true,
-      default:
-        "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
-    },
-    features: {
-      type: Array,
-      required: true,
-      default: ["感受力量涌现", "助力有氧健身", "训练全身各处"],
-    },
-    courseProgress: {
-      type: String,
-      default: "0节课/0节课",
-    },
-    classTime: {
-      type: String,
-      default: "17:00-18:30",
-    },
+    thecourse: Object,
   },
 
   data() {
     return {
-      showModal: false,
-      thecourse: {
-        coursePhotoUrl: this.coursePhotoUrl,
-        courseName: this.courseName,
-        courseDescription: this.courseDescription,
-        courseStartTime: this.courseStartTime,
-        courseEndTime: this.courseEndTime,
-        courseGrade: this.courseGrade,
-        coursePrice: this.coursePrice,
-        classTime: this.classTime,
-        courseProgress: this.courseProgress,
-        features: this.features,
-        instructorImage: this.instructorImage,
-        instructorName: this.instructorName,
-        instructorHonors: this.instructorHonors,
-      },
-      showDialog: false,
+      showModal: false, //课程视窗
+      showDialog: false, //message弹窗
       showRateDialog: false,
       showInputDialog: false,
       ratingValue: 0,
       inputText: "",
     };
-  },
-
-  watch: {
-    coursePhotoUrl(newVal) {
-      this.thecourse.coursePhotoUrl = newVal;
-    },
-    courseName(newVal) {
-      this.thecourse.courseName = newVal;
-    },
-    courseDescription(newVal) {
-      this.thecourse.courseDescription = newVal;
-    },
-    courseStartTime(newVal) {
-      this.thecourse.courseStartTime = newVal;
-    },
-    courseEndTime(newVal) {
-      this.thecourse.courseEndTime = newVal;
-    },
-    courseGrade(newVal) {
-      this.thecourse.courseGrade = newVal;
-    },
-    coursePrice(newVal) {
-      this.thecourse.coursePrice = newVal;
-    },
-    instructorName(newVal) {
-      this.thecourse.instructorName = newVal;
-    },
-    instructorHonors(newVal) {
-      this.thecourse.instructorHonors = newVal;
-    },
-    instructorImage(newVal) {
-      this.thecourse.instructorImage = newVal;
-    },
-    features(newVal) {
-      this.thecourse.features = newVal;
-    },
-    courseProgress(newVal) {
-      this.thecourse.courseProgress = newVal;
-    },
-    classTime(newVal) {
-      this.thecourse.classTime = newVal;
-    },
   },
 
   computed: {
@@ -272,6 +140,7 @@ export default {
   },
 
   methods: {
+    //评分
     handleStarClick() {
       const currentTime = new Date();
       const courseEndTime = new Date(this.endTime);
@@ -279,25 +148,37 @@ export default {
         // 如果课程未结束，显示提示弹窗
         this.showDialog = true;
       } else {
-        // 如果课程已结束，显示评分弹窗
         this.showRateDialog = true;
       }
     },
-    //显示评论的框
-    handleChatClick() {
-      this.showInputDialog = true;
-    },
+
     //提交评分
     submitRating() {
-      // 在此处理评分提交的逻辑，例如发送到后端
-      console.log("提交评分:", this.ratingValue);
+      gradeCourse(), console.log("提交评分:", this.ratingValue);
       this.showRateDialog = false;
     },
-    //提交评论
-    submitComment() {
-      console.log("提交评论:", this.inputText);
-      this.showInputDialog = false;
+
+    //-------------------------------------- API接口函数-----------------------------------------------------
+    //用户上传对课程的评分(完结版)
+    gradeCourse() {
+      const token = localStorage.getItem("token");
+      const classID = thecourse.course.classID;
+
+      axios
+        .post(
+          `http://localhost:8080//api/Course/GradeCourse?token=${token}`,
+          classID,
+          this.ratingValue
+        )
+        .then((response) => {
+          console.log("评分成功:", response.data);
+        })
+        .catch((error) => {
+          console.error("评分失败:", error);
+        });
     },
+
+    //用户取消课程(等待完成)
   },
 };
 </script>

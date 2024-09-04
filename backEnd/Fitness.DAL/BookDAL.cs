@@ -1,5 +1,6 @@
 ﻿using Fitness.DAL.Core;
 using Fitness.Models;
+using Microsoft.AspNetCore.Http;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 using System;
@@ -8,6 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Fitness.DAL
 {
@@ -55,29 +57,52 @@ namespace Fitness.DAL
             try
             {
                 string sql = "INSERT INTO \"Book\"(\"classID\", \"traineeID\", \"paymentID\", \"payMethod\", \"bookStatus\", \"bookTime\") " +
-                             "VALUES(:classID, :traineeID, :paymentID, :payMethod, :bookStatus, :bookTime)" +
+                             "VALUES(:classID, :traineeID, :paymentID, :payMethod, :bookStatus, :bookTime) " +
                              "RETURNING \"bookID\" INTO :bookID";
 
-
+                Console.WriteLine(book.classID);
+                Console.WriteLine(book.payMethod);
+                Console.WriteLine(book.traineeID);
                 OracleParameter[] parameters = new OracleParameter[]
                 {
                 new OracleParameter("classID", OracleDbType.Int32) { Value = book.classID },
                 new OracleParameter("traineeID", OracleDbType.Int32) { Value = book.traineeID },
-                new OracleParameter("paymentID", OracleDbType.Int32) { Value = book.paymentID },
-                new OracleParameter("payMethod", OracleDbType.Char) { Value = book.payMethod },
-                new OracleParameter("bookStatus", OracleDbType.Int32) { Value = book.bookStatus},
-                new OracleParameter("bookTime", OracleDbType.TimeStamp) { Value = book.bookTime },
+                new OracleParameter("paymentID", OracleDbType.Int32) { Value = -1 },
+                new OracleParameter("payMethod", OracleDbType.Varchar2) { Value = book.payMethod },
+                new OracleParameter("bookStatus", OracleDbType.Int32) { Value = 1},
+                new OracleParameter("bookTime", OracleDbType.TimeStamp) { Value = DateTime.Now },
                 new OracleParameter("bookID", OracleDbType.Int32, ParameterDirection.Output)
             };
-
                 OracleHelper.ExecuteNonQuery(sql,null,parameters);
-                OracleDecimal oracleInt = (OracleDecimal)parameters[10].Value;
+                OracleDecimal oracleInt = (OracleDecimal)parameters[6].Value;
                 return oracleInt.ToInt32();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"插入失败: {ex.Message}");
                 return -1;
+            }
+        }
+
+        public static bool IsInBooked(int classID, int userID) {
+            try
+            {
+                string sql = "SELECT * FROM \"Book\" WHERE \"classID\" :classID AND \"traineeID\"= :userID";
+                OracleParameter[] parameters = new OracleParameter[]
+               {
+                new OracleParameter("classID", OracleDbType.Int32) { Value = classID },
+                new OracleParameter("traineeID", OracleDbType.Int32) { Value = userID }
+           };
+                DataTable dt = OracleHelper.ExecuteTable(sql,parameters);
+                if (dt.Rows.Count != 0)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"获取所有记录失败: {ex.Message}");
+                return false;
             }
         }
 
@@ -107,15 +132,10 @@ namespace Fitness.DAL
         // 更新Book记录的状态和支付ID
         public static bool UpdateBookStatusAndPaymentID(int bookID, int bookStatus, int paymentID)
         {
-           // OracleConnection conn = null;
             OracleTransaction transaction = null;
 
             try
             {
-/*              conn = OracleHelper.GetConnection();
-                conn.Open();
-                transaction = conn.BeginTransaction();*/
-
                 string sql = "UPDATE \"Book\" SET \"bookStatus\" = :bookStatus, \"paymentID\" = :paymentID WHERE \"bookID\" = :bookID";
 
                 OracleParameter[] parameters = new OracleParameter[]
@@ -126,7 +146,7 @@ namespace Fitness.DAL
                 };
 
                 OracleHelper.ExecuteNonQuery(sql, transaction, parameters);
-                //transaction.Commit();
+
                 return true;
             }
             catch (Exception ex)
@@ -138,13 +158,6 @@ namespace Fitness.DAL
                 Console.WriteLine($"更新失败: {ex.Message}");
                 return false;
             }
-/*            finally
-            {
-                if (conn != null && conn.State != ConnectionState.Closed)
-                {
-                    conn.Close();
-                }
-            }*/
         }
 
     }

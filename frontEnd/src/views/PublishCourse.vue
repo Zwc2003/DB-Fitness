@@ -15,17 +15,13 @@
         </template>
         <template #content>
           <div class="flexitems-center">
-            <el-avatar
-              class="mr-3"
-              :size="32"
-              :src="userIcon"
-            />
-            <span>{{userName}}</span>
+            <el-avatar class="mr-3" :size="32" :src="userIcon" />
+            <span>{{ userName }}</span>
             <span
               class="text-sm mr-2"
               style="color: var(--el-text-color-regular)"
             >
-              {{email}}
+              {{ email }}
             </span>
             <el-tag>欢迎您~</el-tag>
           </div>
@@ -47,28 +43,17 @@
     </div>
     <div class="empty-row"></div>
 
+    <!-- teachcourses代表这个教师的所有课程,他的全局定义在store,变量的来源是每次页面初始的时候fetch这个API传进来的,之后用户的操作会通过对全局变量进行操作,来使得这里的展示发生变化 -->
     <div class="course-calender">
       <div class="my-course-title">我的课堂</div>
       <div class="coursee-list">
         <TeachCard
           v-for="(teachcourse, index) in teachcourses"
           :key="index"
-          :coursePhotoUrl="teachcourse.coursePhotoUrl"
-          :courseName="teachcourse.courseName"
-          :courseDescription="teachcourse.courseDescription"
-          :courseStartTime="teachcourse.courseStartTime"
-          :courseEndTime="teachcourse.courseEndTime"
-          :courseGrade="teachcourse.courseGrade"
-          :coursePrice="teachcourse.coursePrice"
-          :courseProgress="teachcourse.courseProgress"
-          :features="teachcourse.features"
-          :instructorImage="teachcourse.instructorImage"
-          :instructorName="teachcourse.instructorName"
-          :instructorHonors="teachcourse.instructorHonors"
-          :classTime="teachcourse.classTime"
+          :editForm="teachcourse"
           @delete-teachcourse="removeCourse"
         />
-        <!-- 橙色按钮，带有白色粗加号 -->
+        <!-- 发布课程的按钮 -->
         <el-button type="primary" @click="showModal = true" class="plus-button">
           <i class="el-icon-plus">
             <el-icon class="el-icon-my-circle-plus">
@@ -77,7 +62,7 @@
           </i>
         </el-button>
 
-        <!-- 弹出的表单 -->
+        <!-- 弹出的表单 newCourse代表发布的新课程-->
         <el-dialog v-model="showModal" title="发布新课程" width="50%">
           <el-form :model="form">
             <el-form-item label="课程名称">
@@ -87,25 +72,25 @@
               ></el-input>
             </el-form-item>
             <el-form-item label="课程图片">
-                <el-upload
-                  class="upload-demo"
-                  :file-list="fileList"
-                  :on-change="handleFileUpload"
-                  :before-upload="beforeUpload"
-                  :show-file-list="false"
-                >
-                  <div class="image-upload-container">
-                    <el-image
-                      v-if="newCourse.coursePhotoUrl"
-                      :src="newCourse.coursePhotoUrl"
-                      fit="cover"
-                    ></el-image>
-                    <div v-else class="upload-placeholder">
-                      <el-icon><plus /></el-icon>
-                      <span>点击上传</span>
-                    </div>
+              <el-upload
+                class="upload-demo"
+                :file-list="fileList"
+                :on-change="handleFileUpload"
+                :before-upload="beforeUpload"
+                :show-file-list="false"
+              >
+                <div class="image-upload-container">
+                  <el-image
+                    v-if="newCourse.coursePhotoUrl"
+                    :src="newCourse.coursePhotoUrl"
+                    fit="cover"
+                  ></el-image>
+                  <div v-else class="upload-placeholder">
+                    <el-icon><plus /></el-icon>
+                    <span>点击上传</span>
                   </div>
-                </el-upload>
+                </div>
+              </el-upload>
             </el-form-item>
             <el-form-item label="课程描述">
               <el-input
@@ -134,13 +119,13 @@
               />
             </el-form-item>
             <el-form-item label="课程难度">
-            <el-radio-group v-model="newCourse.courseGrade">
-              <el-radio :label="1">1</el-radio>
-              <el-radio :label="2">2</el-radio>
-              <el-radio :label="3">3</el-radio>
-              <el-radio :label="4">4</el-radio>
-              <el-radio :label="5">5</el-radio>
-            </el-radio-group>
+              <el-radio-group v-model="newCourse.courseGrade">
+                <el-radio :label="1">1</el-radio>
+                <el-radio :label="2">2</el-radio>
+                <el-radio :label="3">3</el-radio>
+                <el-radio :label="4">4</el-radio>
+                <el-radio :label="5">5</el-radio>
+              </el-radio-group>
             </el-form-item>
             <el-form-item label="课程价格">
               <el-input-number
@@ -171,11 +156,14 @@
               </div>
             </el-form-item>
             <el-form-item label="课程分类">
-              <el-select v-model="newCourse.courseType" placeholder="请选择课程分类">
-                <el-option label="高强度间歇" value= "高强度间歇" ></el-option>
-                <el-option label="儿童趣味课" value= "儿童趣味课" ></el-option>
-                <el-option label="低强度塑形" value= "低强度塑形"></el-option>
-                <el-option label="有氧训练" value= "有氧训练"></el-option>
+              <el-select
+                v-model="newCourse.courseType"
+                placeholder="请选择课程分类"
+              >
+                <el-option label="高强度间歇" value="高强度间歇"></el-option>
+                <el-option label="儿童趣味课" value="儿童趣味课"></el-option>
+                <el-option label="低强度塑形" value="低强度塑形"></el-option>
+                <el-option label="有氧训练" value="有氧训练"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item>
@@ -189,6 +177,8 @@
           </template>
         </el-dialog>
       </div>
+
+      <!-- 每日教学任务列表 -->
       <div class="course-list">
         <h2>您今日的教学任务</h2>
         <el-row
@@ -197,23 +187,18 @@
           class="course-item"
         >
           <div class="course-item">
-            <!-- 圆形 -->
             <div
               :class="['circle', circleColors[index % circleColors.length]]"
             ></div>
-            <!-- 课程名称 -->
             <div class="course-name">
               {{ truncateCourseName(course.courseName) }}
             </div>
-            <!-- 上课时间 -->
             <div class="course-time">{{ course.classTime }}</div>
-            <!-- 状态框 -->
             <div class="status-box">
               <el-tag :type="getStatusType(course)">
                 {{ getStatusText(course) }}
               </el-tag>
             </div>
-            <!-- 添加的正方形框和图标 -->
             <div class="square" @click="handleClick(course)">
               <el-icon v-if="course.attended">
                 <Select />
@@ -224,6 +209,7 @@
       </div>
     </div>
 
+    <!-- 报名的学生可视化 -->
     <div class="chart-container">
       <h2>我的课程报名人数</h2>
       <div class="chart-content">
@@ -255,26 +241,24 @@ export default {
     return {
       userName: "",
       userIcon: "",
-      introduction:"",
+      introduction: "",
       email: "",
       vitalityCoins: 0,
       showModal: false,
       newCourse: {
-        coursePhotoUrl: "",
-        capacity: 0,
+        classID: "",
+        typeID: "",
         courseName: "",
+        capacity: "",
         courseDescription: "",
+        coursePrice: 0,
         courseStartTime: "",
         courseEndTime: "",
-        courseGrade: 0, 
-        coursePrice: "",
-        courseProgress: "",
+        courseLastDays: "",
+        courseGrade: 0,
+        coursePhotoUrl: "",
+        courseVideoUrl: "",
         features: [],
-        courseType: "",
-        instructorImage: "",
-        instructorName: "",
-        instructorHonors: "",
-        classTime: "",
       },
       inputFeature: "",
       courseData: [
@@ -353,17 +337,14 @@ export default {
   },
 
   mounted() {
-    // 初始化诗句
     this.selectRandomPoem();
-    // 初始化图表
     this.initChart();
-    //生成鼓励的话
     this.generateEncouragementMessage();
 
-    //初始化课程
-    this.fetchTodayCourseList();
+    //进入页面就要调用的接口
     this.fetchTodayCourseList();
 
+    //进入页面就要获取的个人信息
     this.userName = localStorage.getItem("name");
     this.getVigorTokenBalance();
     this.email = localStorage.getItem("email");
@@ -372,192 +353,7 @@ export default {
   },
 
   methods: {
-    handleFileUpload(file) {
-      this.newCourse.coursePhotoUrl = URL.createObjectURL(file.raw);
-    },
-    beforeUpload(file) {
-      this.imagePreview = "";
-      const isJPGorPNG =
-        file.type === "image/jpeg" || file.type === "image/png";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isJPGorPNG) {
-        this.$message.error("上传头像图片只能是 JPG 或 PNG 格式!");
-        return false;
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-        return false;
-      }
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        this.imagePreview = reader.result;
-        this.newCourse.coursePhotoUrl = this.imagePreview;
-      };
-      return false;
-    },
-
-    //获取所有教授的课程
-    fetchUserCourse(){
-      const token = localStorage.getItem("token");
-      axios
-     .get(`http://localhost:8080/api/Course/GetTeachCourseByUserID?token=${token}`)
-     .then((response) => {
-        const initialCourses = response.data;
-        this.addTeachCourses(initialCourses);
-      })
-     .catch((error) => {
-        console.error("Error fetching course list:", error);
-      });
-    },
-    //获取每日教课课程列表
-    fetchTodayCourseList() {
-      const token = localStorage.getItem("token");
-      axios
-       .get(`http://localhost:8080/api/Course/GetTodayTeachCourseListByUserID?token=${token}`)
-       .then((response) => {
-          this.personalCourseList = response.data;
-        })
-       .catch((error) => {
-          console.error("Error fetching course list:", error);
-        });
-    },
-     // 获取活力币余额
-     getVigorTokenBalance() {
-      const token = localStorage.getItem("token");
-      axios
-        .get(
-          `http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`
-        )
-        .then((response) => {
-          this.vitalityCoins = response.data.balance;
-        })
-        .catch((error) => {
-          this.vigorTokenBalance = 0;
-          console.error("Error fetching vigorTokenBalance:", error);
-        });
-    },
-    //每日教学列表的名字长度问题
-    truncateCourseName(name) {
-      if (name.length > 5) {
-        return name.slice(0, 5) + "...";
-      } else {
-        return name;
-      }
-    },
-
-    //决定今日课程状态
-    handleClick(course) {
-      course.attended = course.attended ? 0 : 1;
-    },
-
-    //更新我的课程到store
-    ...mapActions(["updateTeachCourses"]),
-
-    //删除教练课程
-    ...mapActions(["deleteTeachCourse"]),
-    removeCourse(courseId) {
-      this.deleteTeachCourse(courseId);
-    },
-
-    //添加
-    ...mapActions(["addTeachCourse"]),
-    openModal() {
-      console.log("Opening modal");
-      this.showModal = true;
-    },
-    addFeature() {
-      const feature = this.inputFeature.trim();
-      if (feature && !this.newCourse.features.includes(feature)) {
-        this.newCourse.features.push(feature);
-      }
-      this.inputFeature = ""; // 清空输入框
-    },
-    removeFeature(index) {
-      this.newCourse.features.splice(index, 1);
-    },
-    getCourseValue(courseName) {
-    switch (courseName) {
-      case "高强度间歇":
-        return 1;
-      case "低强度塑形":
-        return 2;
-      case "儿童趣味课":
-        return 3;
-      case "有氧训练":
-        return 4;
-      default:
-        return 0; // 如果输入的课程名称不在列表中，返回0或其他默认值
-    }
-  },
-    submitForm() {
-      this.newCourse.instructorHonors = this.intoduction;
-      this.newCourse.instructorName = this.username;
-      this.newCourse.instructorImage = this.userIcon;
-      this.addTeachCourse(this.newCourse);
-      // 转换日期字符串为 Date 对象
-      var startDate = new Date(this.newCourse.courseStartTime);
-      var endDate = new Date(this.newCourse.courseEndTime);
-      // 计算时间差（以毫秒为单位）
-      var timeDiff = endDate - startDate;
-      // 将时间差转换为天数
-      var daysDiff = timeDiff / (1000 * 3600 * 24); 
-      const postData ={
-        classID:-1,
-        typeID: getCourseValue(this.newCourse.courseType),
-        courseName: this.newCourse.courseName,
-        capacity: this.newCourse.capacity,
-        courseDescription: this.newCourse.courseDescription,
-        coursePrice: this.newCourse.coursePrice,
-        courseStartTime: this.newCourse.courseStartTime,
-        courseEndTime:this.newCourse.courseEndTime,
-        courseLastDays: daysDiff,
-        courseGrade:this.newCourse.courseGrade,
-        coursePhotoUrl: this.newCourse.coursePhotoUrl,
-        courseVideoUrl: "null",
-        features: this.newCourse.features.join('#') + '#',
-        classTime: this.newCourse.classTime
-      }
-      axios.post(`http://localhost:8080/api/Course/PublishCourse?token=${token}`,postData)
-      .then(
-      (response) => {
-        console.log("Course added successfully:", response.data);
-        this.showModal = false;
-        this.newCourse = {
-        coursePhotoUrl: "",
-        courseName: "",
-        courseDescription: "",
-        courseStartTime: "",
-        courseEndTime: "",
-        courseGrade: "",
-        coursePrice: "",
-        courseProgress: "",
-        features: [],
-        courseType: "",
-        instructorImage: "",
-        instructorName: "",
-        instructorHonors: "",
-        classTime: "",
-      };
-      ElNotification({
-                            title: '成功',
-                            message: '课程发布成功！',
-                            type: 'success',
-                        });
-    }
-      )
-    .catch(error => {
-      console.log("Error adding course:", error)
-      ElNotification({
-                            title: '错误',
-                            message: '发布课程时发生错误，请稍后再试。',
-                            type: 'error',
-                  });
-      });
-    },
-
+    //----------------------------------------------------所有的静态函数--------------------------------------------
     //回退<-back
     onBack() {
       this.$router.go(-1);
@@ -572,7 +368,6 @@ export default {
     //初始化折线图
     initChart() {
       const chart = echarts.init(this.$refs.lineChart);
-
       const option = {
         title: {
           text: "",
@@ -602,7 +397,6 @@ export default {
           },
         ],
       };
-
       chart.setOption(option);
     },
 
@@ -612,7 +406,6 @@ export default {
         (sum, item) => sum + item.duration,
         0
       );
-
       if (this.totalWorkoutHours > 100) {
         this.encouragementMessage = "心手相应，以武入道！";
       } else if (this.totalWorkoutHours > 50) {
@@ -621,6 +414,94 @@ export default {
         this.encouragementMessage =
           "教学相长，砺志铸魂，开始总是最难的，坚持下去，你会看到改变！";
       }
+    },
+
+    //---------------------------------- 发布课程功能函数-------------------------------------------------
+    //发布课程---上传照片模块函数
+    handleFileUpload(file) {
+      this.newCourse.coursePhotoUrl = URL.createObjectURL(file.raw);
+    },
+    beforeUpload(file) {
+      this.imagePreview = "";
+      const isJPGorPNG =
+        file.type === "image/jpeg" || file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPGorPNG) {
+        this.$message.error("上传头像图片只能是 JPG 或 PNG 格式!");
+        return false;
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+        return false;
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+        this.newCourse.coursePhotoUrl = this.imagePreview;
+      };
+      return false;
+    },
+
+    //发布课程---课程特征模块函数
+    addFeature() {
+      const feature = this.inputFeature.trim();
+      if (feature && !this.newCourse.features.includes(feature)) {
+        this.newCourse.features.push(feature);
+      }
+      this.inputFeature = ""; // 清空输入框
+    },
+    removeFeature(index) {
+      this.newCourse.features.splice(index, 1);
+    },
+
+    //发布课程---课程类别模块函数
+    getCourseValue(courseName) {
+      switch (courseName) {
+        case "高强度间歇":
+          return 1;
+        case "低强度塑形":
+          return 2;
+        case "儿童趣味课":
+          return 3;
+        case "有氧训练":
+          return 4;
+        default:
+          return 0; // 如果输入的课程名称不在列表中，返回0或其他默认值
+      }
+    },
+
+    //发布新课程的前端全局逻辑
+    ...mapActions(["addTeachCourse"]),
+    openModal() {
+      console.log("Opening modal");
+      this.showModal = true;
+    },
+
+    //---------------------------------------更新与删除课程的全局函数,具体实现在TeachCard-----------------------------------------------------
+    //更新我的课程到store
+    ...mapActions(["updateTeachCourses"]),
+
+    //删除教练课程
+    ...mapActions(["deleteTeachCourse"]),
+    removeCourse(courseId) {
+      this.deleteTeachCourse(courseId);
+    },
+
+    //---------------------------------- 每日教学列表功能函数-------------------------------------------------
+    //每日教学列表的名字长度问题
+    truncateCourseName(name) {
+      if (name.length > 5) {
+        return name.slice(0, 5) + "...";
+      } else {
+        return name;
+      }
+    },
+
+    //确定attend的函数
+    handleClick(course) {
+      course.attended = course.attended ? 0 : 1;
     },
 
     //获取今日课程状态
@@ -667,6 +548,139 @@ export default {
       } else {
         return "success";
       }
+    },
+
+    //-------------------------------------- API接口函数-----------------------------------------------------
+    //获取教授的所有课程(完结版)
+    fetchUserCourse() {
+      const token = localStorage.getItem("token");
+      axios
+        .get(
+          `http://localhost:8080/api/Course/GetTeachCourseByUserID?token=${token}`
+        )
+        .then((response) => {
+          const initialCourses = response.data;
+          this.addTeachCourses(initialCourses);
+        })
+        .catch((error) => {
+          console.error("Error fetching course list:", error);
+        });
+    },
+
+    //获取教师教学列表(完结版)
+    fetchTodayCourseList() {
+      const token = localStorage.getItem("token");
+      axios
+        .get(
+          `http://localhost:8080/api/Course/GetCoachTodayCoursesByUserID?token=${token}`
+        )
+        .then((response) => {
+          console.log("教师获取今日教学列表成功:", response.data);
+          this.personalCourseList = response.data;
+        })
+        .catch((error) => {
+          console.error("教师获取今日教学列表失败:", error);
+        });
+    },
+
+    // 获取活力币余额
+    getVigorTokenBalance() {
+      const token = localStorage.getItem("token");
+      axios
+        .get(
+          `http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`
+        )
+        .then((response) => {
+          this.vitalityCoins = response.data.balance;
+        })
+        .catch((error) => {
+          this.vigorTokenBalance = 0;
+          console.error("Error fetching vigorTokenBalance:", error);
+        });
+    },
+
+    //发布新课程的接口(完结版)
+    submitForm() {
+      this.newCourse.instructorHonors = this.intoduction;
+      this.newCourse.instructorName = this.username;
+      this.newCourse.instructorImage = this.userIcon;
+      this.addTeachCourse(this.newCourse);
+      // 转换日期字符串为 Date 对象
+      var startDate = new Date(this.newCourse.courseStartTime);
+      var endDate = new Date(this.newCourse.courseEndTime);
+      // 计算时间差（以毫秒为单位）
+      var timeDiff = endDate - startDate;
+      // 将时间差转换为天数
+      var daysDiff = timeDiff / (1000 * 3600 * 24);
+      const postData = {
+        course: {
+          classID: -1,
+          typeID: getCourseValue(this.newCourse.courseType),
+          courseName: this.newCourse.courseName,
+          capacity: this.newCourse.capacity,
+          courseDescription: this.newCourse.courseDescription,
+          coursePrice: this.newCourse.coursePrice,
+          courseStartTime: this.newCourse.courseStartTime,
+          courseEndTime: this.newCourse.courseEndTime,
+          courseLastDays: daysDiff,
+          courseGrade: this.newCourse.courseGrade,
+          coursePhotoUrl: this.newCourse.coursePhotoUrl,
+          courseVideoUrl: "null",
+          features: this.newCourse.features.join("#") + "#",
+        },
+        courseSchedules: [
+          {
+            classID: -1,
+            dayOfWeek: this.Schedules.coursePhotoUrl,
+            classTime: this.Schedules.classTime,
+          },
+        ],
+      };
+      axios
+        .post(
+          `http://localhost:8080/api/Course/PublishCourse?token=${token}`,
+          postData
+        )
+        .then((response) => {
+          console.log("Course added successfully:", response.data);
+          this.showModal = false;
+          this.newCourse = {
+            classID: "",
+            typeID: "",
+            courseName: "",
+            capacity: "",
+            courseDescription: "",
+            coursePrice: "",
+            courseStartTime: "",
+            courseEndTime: "",
+            courseLastDays: "",
+            courseGrade: "",
+            coursePhotoUrl: "",
+            courseVideoUrl: "",
+            features: [],
+          };
+          this.Schedules = [
+            {
+              classID: "",
+              dayOfWeek: "",
+              classTime: "",
+            },
+          ];
+
+          ElNotification({
+            title: "成功",
+            message: "课程发布成功！",
+            type: "success",
+          });
+        })
+        .catch((error) => {
+          console.log("Error adding course:", error);
+          ElNotification({
+            title: "错误",
+            message: "发布课程时发生错误，请稍后再试。",
+            type: "error",
+          });
+        });
     },
   },
 

@@ -7,10 +7,13 @@
       <div class="modal-content">
         <button class="close-button" @click="closeModal">X</button>
         <div class="course-info">
-          <h1 class="course-title">{{ courseName }}</h1>
+          <h1 class="course-title">{{ this.thecourse.courseName }}</h1>
           <p class="course-details">
-            课程有效时间：<b class="boldd">{{ courseStartTime }}</b> -
-            <b class="boldd">{{ courseEndTime }}</b>
+            课程有效时间：<b class="boldd">{{
+              this.thecourse.courseStartTime
+            }}</b>
+            -
+            <b class="boldd">{{ this.thecourse.courseEndTime }}</b>
           </p>
           <p class="course-details">
             上课时间：<b class="boldd">{{ classDate }}</b
@@ -19,7 +22,7 @@
           <div class="features">
             <div
               class="feature-item"
-              v-for="(feature, index) in features"
+              v-for="(feature, index) in this.thecourse.features"
               :key="index"
             >
               <div class="parallelogram">
@@ -36,40 +39,59 @@
             <div class="duiqi">
               <div class="instructor-info">
                 <h2 class="instructor-name">
-                  <b class="boldd">{{ instructorName }}</b>
+                  <b class="boldd">{{ this.thecourse.coachName }}</b>
                 </h2>
                 <div class="instructor-tag">
                   <span class="tag">职业教练</span>
                   <el-icon class="trophy-icon"><GoldMedal /></el-icon>
                 </div>
               </div>
-              <p class="instructor-honors">{{ instructorHonors }}</p>
+              <p class="instructor-honors">
+                {{ this.thecourse.instructorHonors }}
+              </p>
             </div>
           </div>
           <p class="course-description">
-            <b class="boldd">课程须知</b>：{{ courseDescription }}
+            <b class="boldd">课程须知</b>：{{
+              this.thecourse.courseDescription
+            }}
           </p>
 
           <p class="nandu" :style="iconContainerStyle">
             <b class="boldd">课程难度</b>:
-            <el-icon v-if="courseGrade >= 1" style="margin-right: 10px">
+            <el-icon
+              v-if="this.thecourse.courseGrade >= 1"
+              style="margin-right: 10px"
+            >
               <Flag />
             </el-icon>
-            <el-icon v-if="courseGrade >= 2" style="margin-right: 10px">
+            <el-icon
+              v-if="this.thecourse.courseGrade >= 2"
+              style="margin-right: 10px"
+            >
               <Flag />
             </el-icon>
-            <el-icon v-if="courseGrade >= 3" style="margin-right: 10px">
+            <el-icon
+              v-if="this.thecourse.courseGrade >= 3"
+              style="margin-right: 10px"
+            >
               <Flag />
             </el-icon>
-            <el-icon v-if="courseGrade >= 4" style="margin-right: 10px">
+            <el-icon
+              v-if="this.thecourse.courseGrade >= 4"
+              style="margin-right: 10px"
+            >
               <Flag />
             </el-icon>
-            <el-icon v-if="courseGrade >= 5" style="margin-right: 10px">
+            <el-icon
+              v-if="this.thecourse.courseGrade >= 5"
+              style="margin-right: 10px"
+            >
               <Flag />
             </el-icon>
           </p>
           <p class="nandu">
-            <b class="boldd">课程费用</b>：{{ coursePrice
+            <b class="boldd">课程费用</b>：{{ this.thecourse.coursePrice
             }}<el-icon class="coinn"><Coin /></el-icon>
           </p>
         </div>
@@ -98,6 +120,11 @@
 import { ElMessage } from "element-plus";
 
 export default {
+  //传进来的数据,用于展示UI需要的所有变量
+  //传到这里来的数据,有三个来源,分别是getallcourse的API,GetParticipatedCourseByUserID的API,GetCoachParticipatedCourseByUserID的API
+  //其中,getallcourse包括教练信息,
+  //GetCoachParticipatedCourseByUserID传入的时候不包含教练信息,需要在PublishCourse的view界面增加教练自己的用户信息到thecourse的数组
+  //GetParticipatedCourseByUserID我暂时没看到数据
   props: {
     isbooked: {
       type: Boolean,
@@ -107,16 +134,7 @@ export default {
       type: Boolean,
       default: 1,
     },
-    modalBackground: {
-      type: String,
-      default:
-        "https://www.lesmills.com.cn/uploads/20231104/fbdee91e55d525de27a01e2e0a74040b.png",
-    },
-    coursePhotoUrl: {
-      type: String,
-      default:
-        "https://www.lesmills.com.cn/uploads/20211207/d5d8d0860359243eee20bc507bf2c231.jpg",
-    },
+    thecourse: Object,
     modalWidth: {
       type: String,
       default: "1000px", // 默认宽度
@@ -125,57 +143,10 @@ export default {
       type: String,
       default: "600px", // 默认高度
     },
-    courseName: {
-      type: String,
-      default: "肌肉力量训练",
-    },
-    courseStartTime: {
-      type: String,
-      default: "2022.03.04",
-    },
-    courseEndTime: {
-      type: String,
-      default: "2023.03.04",
-    },
-    classDate: {
-      type: String,
-      default: "每天",
-    },
-    classTime: {
-      type: String,
-      default: "17:00 - 18:30",
-    },
-    features: {
-      type: Array,
-      default: () => {
-        return ["感受力量涌现", "助力有氧健身", "训练全身各处"];
-      },
-    },
-    instructorImage: {
+    modalBackground: {
       type: String,
       default:
-        "https://ts1.cn.mm.bing.net/th?id=OIP-C.FHvYewesyi-IlHOiyjLTLAHaLH&w=204&h=306&c=8&rs=1&qlt=90&r=0&o=6&pid=3.1&rm=2",
-    },
-    instructorName: {
-      type: String,
-      default: "王教练",
-    },
-    instructorHonors: {
-      type: String,
-      default: "拥有国际认证的健身教练资格，包括ACE和NSCA的专业证书",
-    },
-    courseDescription: {
-      type: String,
-      default:
-        "BODYCOMBAT能训练到你的腿部、手臂、背部和肩膀，对核心部位有显著效果。在课程中你能消耗卡路里、提高协调性、敏捷性和速度，感觉自己充满力量。BODYCOMBAT 训练内容进行调整使之符合自身水平和目标。我们的教练将始终提供多重训练强度供你选择。在开始的时候，你可以每周参加1至2节课，很快你就能体会到骁勇精壮的感觉。",
-    },
-    courseGrade: {
-      type: Number,
-      default: 4,
-    },
-    coursePrice: {
-      type: Number,
-      default: 1,
+        "https://www.lesmills.com.cn/uploads/20231104/fbdee91e55d525de27a01e2e0a74040b.png",
     },
   },
   data() {
@@ -205,26 +176,16 @@ export default {
 
     addToCart() {
       // 创建课程对象
-      const course = {
-        coursePhotoUrl: this.coursePhotoUrl,
-        courseName: this.courseName,
-        courseStartTime: this.courseStartTime,
-        courseEndTime: this.courseEndTime,
-        classTime: "17:00 - 18:30",
-        features: this.features,
-        instructorImage: this.instructorImage,
-        instructorName: this.instructorName,
-        instructorHonors: this.instructorHonors,
-        courseDescription: this.courseDescription,
-        courseGrade: this.courseGrade,
-        coursePrice: this.coursePrice,
-      };
+      const course = this.thecourse;
       // 调用 Vuex mutation，将课程添加到购物车中
       this.$store.commit("ADD_COURSE_TO_CART", course);
-
       // 可选：添加成功后的提示
       this.$message.success("课程已成功加入购物车！");
     },
+
+    //-------------------------------------- API接口------------------------------------------------------
+    //1.发布评论
+    //2.查看评论
   },
 
   computed: {
@@ -256,7 +217,7 @@ export default {
         left: 0,
         width: "50%",
         height: "100%",
-        backgroundImage: `url(${this.coursePhotoUrl})`,
+        backgroundImage: `url(${this.thecourse.coursePhotoUrl})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       };
@@ -268,12 +229,14 @@ export default {
     },
     //获取课程的开始时间与结束时间
     timeRange() {
-      const [start, end] = this.classTime.split("-").map((time) => {
-        const [hours, minutes] = time.split(":");
-        const date = new Date();
-        date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-        return date;
-      });
+      const [start, end] = this.thecourse.schedules.classTime
+        .split("-")
+        .map((time) => {
+          const [hours, minutes] = time.split(":");
+          const date = new Date();
+          date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+          return date;
+        });
       return { start, end };
     },
     //判断是否在课程时间之前

@@ -38,6 +38,26 @@ namespace Fitness.DAL
             return trainees;
         }
 
+        public static int CheckTraineeExists(int traineeID)
+        {
+            string query = "SELECT COUNT(*) FROM \"Trainee\" WHERE \"traineeID\" = :traineeID";
+            OracleParameter[] parameters = new OracleParameter[]
+            {
+            new OracleParameter("traineeID", OracleDbType.Int32) { Value = traineeID }
+            };
+
+            try
+            {
+                object result = OracleHelper.ExecuteScalar(query, parameters);
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking trainee existence: {ex.Message}");
+                return -1; // 返回 -1 表示出现异常
+            }
+        }
+
         // 插入新的 Trainee 记录
         public static bool Insert(Trainee trainee)
         {

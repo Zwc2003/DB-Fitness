@@ -6,8 +6,9 @@
         <!-- 发帖类别选择 -->
         <select v-model="localCategory" class="select-category aligned-placeholder">
             <option value=" " disabled>请选择发帖类别</option>
-            <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
+            <option v-for="category in categories.slice(1)" :key="category" :value="category">{{ category }}</option>
         </select>
+
         <!-- 工具栏 -->
         <Toolbar class="toolbar" :editor="editorRef" :defaultConfig="toolbarConfig" :mode="mode" />
 
@@ -246,14 +247,15 @@ export default {
     border-left: 1px solid blue;
     border-bottom: none;
 }
-.avatar{
+
+.avatar {
     margin-right: 0px;
     width: 200px;
     height: 180px;
     background-color: white;
     border-left: 1px solid blue;
     border-bottom: none;
-    border-radius: 0px; 
+    border-radius: 0px;
     padding: 1px;
 }
 

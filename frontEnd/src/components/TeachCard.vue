@@ -24,7 +24,7 @@
             </el-icon>
             <el-icon
               :style="{ fontSize: '24px', marginRight: '20px' }"
-              @click="handleEditClick"
+              @click="showModal = true"
             >
               <Edit />
             </el-icon>
@@ -59,122 +59,111 @@
     </el-card>
   </div>
 
-  <!-- 课程模态框 -->
+  <!-- 课程模态框,你这里isbooked就必须是1 -->
   <CourseModal
     v-if="showModall"
     :isVisible="showModall"
-    :courseName="thecourse.courseName"
-    :courseStartTime="thecourse.courseStartTime"
-    :courseEndTime="thecourse.courseEndTime"
-    :courseGrade="thecourse.courseGrade"
-    :coursePrice="thecourse.coursePrice"
-    :courseDescription="thecourse.courseDescription"
-    :classTime="thecourse.classTime"
-    :features="thecourse.features"
-    :instructorImage="thecourse.instructorImage"
-    :instructorName="thecourse.instructorName"
-    :instructorHonors="thecourse.instructorHonors"
-    :coursePhotoUrl="thecourse.coursePhotoUrl"
+    :thecourse="editForm"
     :isbooked="1"
     @close="showModall = false"
   />
 
   <!-- 编辑课程模态框 -->
   <el-dialog v-model="showModal" title="编辑课程" width="50%">
-    <el-form :model="editForm">
-            <el-form-item label="课程名称">
-              <el-input
-                v-model="editForm.courseName"
-                placeholder="例如:30到45分钟核心训练"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="课程图片">
-                <el-upload
-                  name="file"
-                  action="/your-upload-api" 
-                  :on-success="handleImageUploadSuccess" 
-                  :on-change="handleImageChange"
-                  :auto-upload="false"
-                >
-                <el-button size="small" type="primary">点击上传</el-button>
-                </el-upload>
-            </el-form-item>
-            <el-form-item label="课程描述">
-              <el-input
-                v-model="editForm.courseDescription"
-                placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="课程容量">
-              <el-input
-                v-model="editForm.capacity"
-                placeholder="请填入课程容量"
-              ></el-input>
-            </el-form-item>
-            <el-form-item label="课程开始时间">
-              <el-date-picker
-                v-model="editForm.courseStartTime"
-                type="date"
-                placeholder="选择日期"
-              />
-            </el-form-item>
-            <el-form-item label="课程结束时间">
-              <el-date-picker
-                v-model="editForm.courseEndTime"
-                type="date"
-                placeholder="选择日期"
-              />
-            </el-form-item>
-            <el-form-item label="课程难度">
-            <el-radio-group v-model="editForm.courseGrade">
-              <el-radio :label="1">1</el-radio>
-              <el-radio :label="2">2</el-radio>
-              <el-radio :label="3">3</el-radio>
-              <el-radio :label="4">4</el-radio>
-              <el-radio :label="5">5</el-radio>
-            </el-radio-group>
-            </el-form-item>
-            <el-form-item label="课程价格">
-              <el-input-number
-                v-model="editForm.coursePrice"
-                :min="0"
-                :max="3000"
-                :step="1"
-                placeholder="请填入一个数字"
-              />
-            </el-form-item>
-            <el-form-item label="课程特征">
-              <div>
-                <el-tag
-                  v-for="(feature, index) in editForm.features"
-                  :key="index"
-                  closable
-                  @close="removeFeature(index)"
-                  style="margin-right: 8px"
-                >
-                  {{ feature }}
-                </el-tag>
-                <el-input
-                  v-model="inputFeature"
-                  placeholder="输入并按回车,如 [力量, 增肌]"
-                  @keyup.enter.native="addFeature"
-                  style="width: 200px"
-                ></el-input>
-              </div>
-            </el-form-item>
-            <el-form-item label="课程分类">
-              <el-select v-model="editForm.courseType" placeholder="请选择课程分类">
-                <el-option label="高强度间歇" value= "高强度间歇" ></el-option>
-                <el-option label="儿童趣味课" value= "儿童趣味课" ></el-option>
-                <el-option label="低强度塑形" value= "低强度塑形"></el-option>
-                <el-option label="有氧训练" value= "有氧训练"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="submitForm">提交</el-button>
-              <el-button @click="showModal = false">取消</el-button>
-            </el-form-item>
-          </el-form>
+    <el-form :model="form">
+      <el-form-item label="课程名称">
+        <el-input
+          v-model="editForm.courseName"
+          placeholder="例如:30到45分钟核心训练"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="课程图片">
+        <el-upload
+          name="file"
+          action="/your-upload-api"
+          :on-success="handleImageUploadSuccess"
+          :on-change="handleImageChange"
+          :auto-upload="false"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="课程描述">
+        <el-input
+          v-model="editForm.courseDescription"
+          placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="课程容量">
+        <el-input
+          v-model="editForm.capacity"
+          placeholder="请填入课程容量"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="课程开始时间">
+        <el-date-picker
+          v-model="editForm.courseStartTime"
+          type="date"
+          placeholder="选择日期"
+        />
+      </el-form-item>
+      <el-form-item label="课程结束时间">
+        <el-date-picker
+          v-model="editForm.courseEndTime"
+          type="date"
+          placeholder="选择日期"
+        />
+      </el-form-item>
+      <el-form-item label="课程难度">
+        <el-radio-group v-model="editForm.courseGrade">
+          <el-radio :label="1">1</el-radio>
+          <el-radio :label="2">2</el-radio>
+          <el-radio :label="3">3</el-radio>
+          <el-radio :label="4">4</el-radio>
+          <el-radio :label="5">5</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="课程价格">
+        <el-input-number
+          v-model="editForm.coursePrice"
+          :min="0"
+          :max="3000"
+          :step="1"
+          placeholder="请填入一个数字"
+        />
+      </el-form-item>
+      <el-form-item label="课程特征">
+        <div>
+          <el-tag
+            v-for="(feature, index) in editForm.features"
+            :key="index"
+            closable
+            @close="removeFeature(index)"
+            style="margin-right: 8px"
+          >
+            {{ feature }}
+          </el-tag>
+          <el-input
+            v-model="inputFeature"
+            placeholder="输入并按回车,如 [力量, 增肌]"
+            @keyup.enter.native="addFeature"
+            style="width: 200px"
+          ></el-input>
+        </div>
+      </el-form-item>
+      <el-form-item label="课程分类">
+        <el-select v-model="editForm.courseType" placeholder="请选择课程分类">
+          <el-option label="高强度间歇" value="高强度间歇"></el-option>
+          <el-option label="儿童趣味课" value="儿童趣味课"></el-option>
+          <el-option label="低强度塑形" value="低强度塑形"></el-option>
+          <el-option label="有氧训练" value="有氧训练"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm">提交</el-button>
+        <el-button @click="showModal = false">取消</el-button>
+      </el-form-item>
+    </el-form>
     <template #footer>
       <el-button @click="showModal = false">取消</el-button>
       <el-button type="primary" @click="submitEdit">保存修改</el-button>
@@ -201,27 +190,16 @@ export default {
     CourseModal,
   },
   name: "TeachCard",
-  props: ['editForm'],
+  props: {
+    //作为传入的老师创建的教学课程的相关参数
+    editForm: Object,
+  },
   data() {
     return {
-      showModal: false,
-      showModall: false,
-      thecourse: {
-        coursePhotoUrl: this.coursePhotoUrl,
-        courseName: this.courseName,
-        courseDescription: this.courseDescription,
-        courseStartTime: this.courseStartTime,
-        courseEndTime: this.courseEndTime,
-        courseGrade: this.courseGrade,
-        coursePrice: this.coursePrice,
-        classTime: this.classTime,
-        courseProgress: this.courseProgress,
-        features: this.features,
-        instructorImage: this.instructorImage,
-        instructorName: this.instructorName,
-        instructorHonors: this.instructorHonors,
-      },
-      showCommentsModal: false,
+      showModal: false, //编辑课程的视窗
+      showModall: false, //查看课程的视窗
+      showCommentsModal: false, //查看课程评论的视窗
+      //课程的相关评论
       comments: [
         {
           avatar: "user1.jpg",
@@ -238,25 +216,76 @@ export default {
           rating: 4,
         },
       ],
-
       showDialog: false,
     };
   },
 
-  watch: {
-    editForm(newVal) {
-      this.thecourse.coursePhotoUrl = newVal.coursePhotoUrl;
-      this.thecourse.courseName = newVal.courseName;
-      this.thecourse.courseDescription = newVal.courseDescription;
-      this.thecourse.courseStartTime = newVal.courseStartTime;
-      this.thecourse.courseEndTime = newVal.courseEndTime;
-      this.thecourse.coursePrice = newVal.coursePrice;
-      this.thecourse.features = newVal.features;
-      this.thecourse.classTime = newVal.classTime;
+  mounted() {
+    //获取课程ID
+    classID = this.editForm.course.classID;
+  },
+
+  methods: {
+    //教练查看课程
+    handleDocumentClick() {
+      this.showModall = true;
+    },
+
+    //教练删除课程
+    handleDeleteClick() {
+      this.$emit("delete-teachcourse", this.editForm.course.courseName);
+    },
+
+    //-------------------------------------- API接口------------------------------------------------------
+    //教练修改课程API(完结版)
+    submitEdit() {
+      //!!!!editForm的最早的来源是GetCoachParticipatedCourse.API传入的数据
+      this.showModal = false;
+      axios
+        .post(
+          `http://localhost:8080/api/Course/ModifyCourse?token=${token}`,
+          this.editForm
+        )
+        .then((response) => {
+          console.log("课程修改成功:", response.data);
+          this.showModal = false;
+          //!!!!不要清数据
+          ElNotification({
+            title: "成功",
+            message: "课程修改成功！",
+            type: "success",
+          });
+        })
+        .catch((error) => {
+          console.log("课程修改错误:", error);
+          ElNotification({
+            title: "错误",
+            message: "修改课程时发生错误，请稍后再试。",
+            type: "error",
+          });
+        });
+    },
+
+    //教练删除课程的API(完结版)
+    deleteCourseByClassID() {
+      const token = localStorage.getItem("token");
+      const classID = this.editForm.course.classID;
+      axios
+        .delete(
+          `http://localhost:8080/api/Course/DeleteCourseByClassID?token=${token}`,
+          classID
+        )
+        .then((response) => {
+          console.log("教练删除课程成功:", response.data);
+        })
+        .catch((error) => {
+          console.error("教练删除课程失败:", error);
+        });
     },
   },
 
   computed: {
+    //课程卡片上的静态字体样式
     progressStyle() {
       return {
         color: "#337ecc",
@@ -270,48 +299,6 @@ export default {
         fontWeight: "bold",
         marginLeft: "10px",
       };
-    },
-  },
-
-  methods: {
-    //查看
-    handleDocumentClick() {
-      this.showModall = true;
-    },
-
-    //编辑
-    handleEditClick() {
-      this.editForm = {
-        modalBackground: "当前背景",
-        courseTitle: "当前课程标题",
-        startTime: "10:00 AM",
-        endTime: "11:00 AM",
-        classTime: "1小时",
-        features: "特色",
-        instructorImage: "教练图片路径",
-        instructorName: "教练名称",
-        instructorHonors: "教练荣誉",
-        courseDescription: "当前课程描述",
-      };
-      this.showModal = true;
-    },
-
-    //删除
-    handleDeleteClick() {
-      this.$emit("delete-teachcourse", this.courseName); // 通知父组件删除该课程
-    },
-
-    //保存修改
-    submitEdit() {
-      this.showModal = false;
-      console.log("提交表单数据:", this.editForm);
-      axios.post(`http://localhost:8080/api/Course/ModifyCourse?token=${token}`,this.editform);
-
-    },
-
-    //查看评论
-    showComments() {
-      this.showCommentsModal = true;
     },
   },
 };
