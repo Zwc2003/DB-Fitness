@@ -143,8 +143,8 @@ export default {
 
   data() {
     return {
-      personalCourseList: [],
-      userName: "",
+      personalCourseList: [], //存储今日课程数组
+      userName: "", //用户名
       userIcon: "",
       email: "",
       vitalityCoins: 0,
@@ -241,6 +241,7 @@ export default {
     //页面启动的时候,需要调用的所有API
     this.fetchUserCourse();
     this.fetchTodayCourseList();
+    this.getReserved();
     this.userName = localStorage.getItem("name");
     this.getVigorTokenBalance();
     this.email = localStorage.getItem("email");
@@ -413,14 +414,15 @@ export default {
         });
     },
 
-    //获取用户所有参与的课程(完结版)  待修改：接收数据对象有问题，调用接口错误
+    //获取用户所有参与的课程(完结版)
     fetchUserCourse() {
       const token = localStorage.getItem("token");
       axios
         .get(
-          `http://localhost:8080/api/Course/GetReservedCourseByUserID?token=${token}`
+          `http://localhost:8080/api/Course/GetParticipatedCourseByUserID?token=${token}`
         )
         .then((response) => {
+          console.log("学生获取所有课程列表成功:", response.data);
           const initialCourses = response.data;
           this.updateUserCourses(initialCourses);
         })
@@ -445,30 +447,34 @@ export default {
         });
     },
 
+    //获取预约课程（购物车内）API
+    getReserved() {
+      const token = localStorage.getItem("token");
+      var bookIDList = [];
+      //调用预约接口(完结)
+      axios
+        .get(
+          "http://localhost:8080/api/Course/GetReservedCourseByUserID?token=${token}"
+        )
+        .then((response) => {
+          console.log("学生获取预约课程列表成功:", response.data);
+          bookIDList = response.data;
+        })
+        .catch((error) => {
+          console.error("用户获取预约课程列表错误:", error);
+        });
+    },
+
     // 计算所选课程的总价格
     handleCheckout(selectedCourses) {
       const totalPrice = selectedCourses.reduce(
         (total, course) => total + course.coursePrice,
         0
       );
-      //待检查属性名是否正确
-      const classIDList = selectedCourses.map((course) => course.classID);
+
       // 检查余额是否足够
       if (this.vitalityCoins >= totalPrice) {
         const token = localStorage.getItem("token");
-        var bookIDList = [];
-        //调用预约接口(完结)
-        axios
-          .post("http://localhost:8080/api/Course/GetReservedCourseByUserID", {
-            params: {
-              token: token,
-              classID: classIDList,
-              payMethod: "vigor",
-            },
-          })
-          .then((response) => {
-            bookIDList = response.data.bookIDList;
-          });
         //调用支付接口(完结版)
         axios
           .post("http://localhost:8080/api/Course/PayCourseFare", {
