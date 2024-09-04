@@ -27,12 +27,12 @@ namespace Fitness.BLL
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int senderId = tokenRes.userID;
-            comment.userID = senderId;
+            //comment.userID = senderId;
             comment.commentTime = DateTime.Now;
             comment.likesCount = 0;
             comment.parentCommentID = -1;
             int st;
-            comment.userName = UserDAL.GetUserByUserID(tokenRes.userID,out st).userName;
+            //comment.userName = UserDAL.GetUserByUserID(tokenRes.userID,out st).userName;
             int result = CommentDAL.Insert(comment);
             //帖子评论量+1
             CommentDAL.CommentsCountAddOne(comment.postID);

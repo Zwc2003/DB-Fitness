@@ -161,9 +161,10 @@ const buttonText=ref(['完成计划','完成计划','完成计划','完成计划
 function finish(index){
   buttonDisabled.value[index]=true;
   buttonText.value[index]='今日计划已完成';
-  axios.get('http://localhost:8080/api/Achievement/UpdateFitnessPlanAchievement', {
+  axios.post('http://localhost:8080/api/Achievement/UpdateFitnessPlanAchievement', {
     params: {
-      token: localStorage.getItem('token')
+      token: localStorage.getItem('token'),
+      workoutIndex:index
     }
   })
 }
@@ -176,11 +177,24 @@ function loadWeeksData() {
   }).then(response => {
     weeks.value = response.data; // 假设数据结构中 weeks 在顶层
     if (response.data.message !== "fail") {
+      console.log(weeks.value.plan[1][1].isCompleted);
       ElNotification({
       message: "健身计划成功生成！",
       type: 'success',
       duration: 2000
     });
+      for(let i=0;i<4;i++){
+        for(let j=0;j<7;j++){
+          if(weeks.value.plan[i][j].isCompleted=="true"){
+            buttonDisabled[i*7+j]=true;
+            buttonText[i*7+j]='今日计划已完成';
+          }
+          else{
+            buttonDisabled[i*7+j]=false;
+            buttonText[i*7+j]='完成计划';
+          }
+        }
+      }
     }
     else{
       ElNotification({

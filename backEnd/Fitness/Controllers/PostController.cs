@@ -131,23 +131,24 @@ namespace Fitness.Controllers
 
         // 评论区健身教练AI评论
         [HttpGet] 
-        public ActionResult<MessageRes> GetFitCoachComment(string postType, string postContent)
+        public ActionResult<MessageRes> GetFitCoachComment(string postTitle, string postContent)
         {
-            return _postBLL.FitCoachComment(postType, postContent);
+            Console.WriteLine("健身教练触发");
+            return _postBLL.FitCoachComment(postTitle, postContent);
         }
 
         // 评论区营养顾问AI评论
         [HttpGet]
-        public ActionResult<MessageRes> GetNutriExpertComment(string postContent)
+        public ActionResult<MessageRes> GetNutriExpertComment(string postTitle, string postContent)
         {
-            return _postBLL.NutriExpertComment(postContent);
+            return _postBLL.NutriExpertComment(postTitle,postContent);
         }
 
         // 评论区激励导师AI评论
         [HttpGet]
-        public ActionResult<MessageRes> GetMotivatorComment(string postType, string postContent)
+        public ActionResult<MessageRes> GetMotivatorComment(string postTitle, string postContent)
         {
-            return _postBLL.MotivatorComment(postType, postContent);
+            return _postBLL.MotivatorComment(postTitle, postContent);
         }
     }
 }

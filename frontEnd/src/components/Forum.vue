@@ -457,7 +457,6 @@ export default {
 /* 新增搜索框样式 */
 .search-box {
     height: 50px;
-    margin-top: 20px;
     margin-bottom: 20px;
     width: 100%;
     font-size: 15px;
