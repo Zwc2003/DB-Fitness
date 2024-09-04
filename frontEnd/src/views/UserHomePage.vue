@@ -36,11 +36,7 @@
         </template>
         <template #content>
           <div class="flexitems-center">
-            <el-avatar
-              class="mr-3"
-              :size="32"
-              :src="userIcon"
-            />
+            <el-avatar class="mr-3" :size="32" :src="userIcon" />
             <span>{{ userName }}</span>
             <span
               class="text-sm mr-2"
@@ -75,20 +71,7 @@
           <CourseCard
             v-for="(usercourse, index) in usercourses"
             :key="index"
-            :coursePhotoUrl="usercourse.coursePhotoUrl"
-            :courseName="usercourse.courseName"
-            :courseDescription="usercourse.courseDescription"
-            :courseStartTime="usercourse.courseStartTime"
-            :courseEndTime="usercourse.courseEndTime"
-            :courseGrade="usercourse.courseGrade"
-            :coursePrice="usercourse.coursePrice"
-            :courseProgress="usercourse.courseProgress"
-            :features="usercourse.features"
-            :instructorImage="usercourse.instructorImage"
-            :instructorName="usercourse.instructorName"
-            :instructorHonors="usercourse.instructorHonors"
-            :classTime="usercourse.classTime"
-            :isbooked="1"
+            :thecourse="usercourse"
           />
         </template>
         <template v-else>
@@ -100,28 +83,23 @@
       <div class="course-list">
         <h2>您今日的课程列表</h2>
         <el-row
-          v-for="(course, index) in sortedCourses"
+          v-for="(course, index) in personalCourseList"
           :key="index"
           class="course-item"
         >
           <div class="course-item">
-            <!-- 圆形 -->
             <div
               :class="['circle', circleColors[index % circleColors.length]]"
             ></div>
-            <!-- 课程名称 -->
             <div class="course-name">
               {{ truncateCourseName(course.courseName) }}
             </div>
-            <!-- 上课时间 -->
             <div class="course-time">{{ course.classTime }}</div>
-            <!-- 状态框 -->
             <div class="status-box">
               <el-tag :type="getStatusType(course)">
                 {{ getStatusText(course) }}
               </el-tag>
             </div>
-            <!-- 添加的正方形框和图标 -->
             <div class="square" @click="handleClick(course)">
               <el-icon v-if="course.attended">
                 <Select />
@@ -165,7 +143,7 @@ export default {
 
   data() {
     return {
-      personalCourseList:[],
+      personalCourseList: [],
       userName: "",
       userIcon: "",
       email: "",
@@ -256,15 +234,12 @@ export default {
   },
 
   mounted() {
-    // 初始化诗句
     this.selectRandomPoem();
-    //初始化图表
     this.initChart();
-    //初始化鼓励词
     this.generateEncouragementMessage();
-    //所有参与课程
+
+    //页面启动的时候,需要调用的所有API
     this.fetchUserCourse();
-    //今日课程列表
     this.fetchTodayCourseList();
     this.userName = localStorage.getItem("name");
     this.getVigorTokenBalance();
@@ -273,46 +248,7 @@ export default {
   },
 
   methods: {
-    //获取所有参与的课程
-    fetchUserCourse(){
-      const token = localStorage.getItem("token");
-      axios
-     .get(`http://localhost:8080/api/Course/GetCourseByUserID?token=${token}`)
-     .then((response) => {
-        const initialCourses = response.data;
-        this.updateUserCourses(initialCourses);
-      })
-     .catch((error) => {
-        console.error("Error fetching course list:", error);
-      });
-    },
-    //获取每日课程列表
-    fetchTodayCourseList() {
-      const token = localStorage.getItem("token");
-      axios
-       .get(`http://localhost:8080/api/Course/GetTodayCourseListByUserID?token=${token}`)
-       .then((response) => {
-          this.personalCourseList = response.data;
-        })
-       .catch((error) => {
-          console.error("Error fetching course list:", error);
-        });
-    },
-    // 获取活力币余额
-    getVigorTokenBalance() {
-      const token = localStorage.getItem("token");
-      axios
-        .get(
-          `http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`
-        )
-        .then((response) => {
-          this.vitalityCoins = response.data.balance;
-        })
-        .catch((error) => {
-          this.vigorTokenBalance = 0;
-          console.error("Error fetching vigorTokenBalance:", error);
-        });
-    },
+    //-------------------------------------- 页面静态函数-----------------------------------------------------
     //每日课程列表的名字长度问题
     truncateCourseName(name) {
       if (name.length > 5) {
@@ -322,13 +258,10 @@ export default {
       }
     },
 
-    //决定今日课程状态
+    //attended的确定
     handleClick(course) {
       course.attended = course.attended ? 0 : 1;
     },
-
-    //更新我的课程到store
-    ...mapActions(["updateUserCourses"]),
 
     //回退<-back
     onBack() {
@@ -374,7 +307,6 @@ export default {
           },
         ],
       };
-
       chart.setOption(option);
     },
 
@@ -384,7 +316,6 @@ export default {
         (sum, item) => sum + item.duration,
         0
       );
-
       if (this.totalWorkoutHours > 1000) {
         this.encouragementMessage =
           "太棒拉！你已经是一位业余健身的天花板了，期待你的自律与积极的精神去引领更多的人参与健身，继续加油！";
@@ -406,14 +337,12 @@ export default {
         .map(Number);
       const startTime = new Date();
       startTime.setHours(startHour, startMinute);
-
       const [endHour, endMinute] = course.classTime
         .split(" - ")[1]
         .split(":")
         .map(Number);
       const endTime = new Date();
       endTime.setHours(endHour, endMinute);
-
       if (currentTime < startTime) {
         return "提醒我";
       } else if (currentTime > endTime && course.attended) {
@@ -443,21 +372,79 @@ export default {
       }
     },
 
-    //使用 Vuex mutation 移除购物车中的课程
+    //-------------------------------------- 全局变量处理函数-----------------------------------------------------
+    //更新我的课程到store
+    ...mapActions(["updateUserCourses"]),
+
+    //移除购物车中的课程
     removeCourseFromCart(index) {
       this.$store.commit("REMOVE_COURSE_FROM_CART", index);
     },
 
-    //使用 Vuex mutation 更新 usercourses
+    //更新 usercourses
     updateUserCourses(newCourses) {
       this.$store.commit("ADD_COURSES_TO_USER", newCourses);
     },
-
 
     //更新活力币
     UPDATE_VITALITY_COINS(amount) {
       this.vitalityCoins -= amount;
     },
+
+    //点击之后,右边栏出现
+    handleCartVisibility(isVisible) {
+      this.isCartVisible = isVisible;
+    },
+
+    //-------------------------------------- API接口函数-----------------------------------------------------
+    //获取学生课程列表(完结版)
+    fetchTodayCourseList() {
+      const token = localStorage.getItem("token");
+      axios
+        .get(
+          `http://localhost:8080/api/Course/GetTodayCoursesByUserID?token=${token}`
+        )
+        .then((response) => {
+          console.log("学生获取今日课程列表成功:", response.data);
+          this.personalCourseList = response.data;
+        })
+        .catch((error) => {
+          console.error("学生获取今日课程列表失败:", error);
+        });
+    },
+
+    //获取用户所有参与的课程(完结版)
+    fetchUserCourse() {
+      const token = localStorage.getItem("token");
+      axios
+        .get(
+          `http://localhost:8080/api/Course/GetReservedCourseByUserID?token=${token}`
+        )
+        .then((response) => {
+          const initialCourses = response.data;
+          this.updateUserCourses(initialCourses);
+        })
+        .catch((error) => {
+          console.error("用户获取课程列表错误:", error);
+        });
+    },
+
+    // 获取活力币余额
+    getVigorTokenBalance() {
+      const token = localStorage.getItem("token");
+      axios
+        .get(
+          `http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`
+        )
+        .then((response) => {
+          this.vitalityCoins = response.data.balance;
+        })
+        .catch((error) => {
+          this.vigorTokenBalance = 0;
+          console.error("Error fetching vigorTokenBalance:", error);
+        });
+    },
+
     // 计算所选课程的总价格
     handleCheckout(selectedCourses) {
       const totalPrice = selectedCourses.reduce(
@@ -465,51 +452,55 @@ export default {
         0
       );
       //待检查属性名是否正确
-      const classIDList = selectedCourses.map(course => course.classID);
+      const classIDList = selectedCourses.map((course) => course.classID);
       // 检查余额是否足够
       if (this.vitalityCoins >= totalPrice) {
-        const token= localStorage.getItem('token');
-        var bookIDList =[];
-        //调用预约接口
-        axios.get('http://localhost:8080/api/Course/ReserveCourse',{params:{
-          token:token,
-          classIDList:classIDList,
-          payMethod: "活力币"
-        }})
-        .then(
-        (response) => {
-          bookIDList = response.data.bookIDList;
-        }
-        )
-        //调用支付接口
-        axios.get('http://localhost:8080/api/Course/PayCourseFare',{params:{
-            token: token,
-            bookIDList: bookIDList,
-            amount: totalPrice,
-            PayMethod:"活力币"
-        }})
-        .then((response) => {
-        // 如果足够，扣除金额
-        this.UPDATE_VITALITY_COINS(totalPrice);
-        // 将选中的课程添加到 Vuex 的 usercourses 数组中
-        this.$store.commit("ADD_COURSES_TO_USER", selectedCourses);
-        // 从购物车中移除选中的课程
-        selectedCourses.forEach((course) => {
-          const index = this.$store.state.cartCourses.indexOf(course);
-          if (index !== -1) {
-            this.removeCourseFromCart(index);
-          }
-        });
-        // 弹出成功提示
-        ElMessageBox.alert(
-          `下单成功！您剩余的活力币余额为：${this.vitalityCoins}`,
-          "订单确认",
-          {
-            confirmButtonText: "确定",
-            type: "success",
-          }
-        );
-        })
+        const token = localStorage.getItem("token");
+        var bookIDList = [];
+        //调用预约接口(完结)
+        axios
+          .post("http://localhost:8080/api/Course/GetReservedCourseByUserID", {
+            params: {
+              token: token,
+              classID: classIDList,
+              payMethod: "vigor",
+            },
+          })
+          .then((response) => {
+            bookIDList = response.data.bookIDList;
+          });
+        //调用支付接口(完结版)
+        axios
+          .post("http://localhost:8080/api/Course/PayCourseFare", {
+            params: {
+              token: token,
+              bookID: bookIDList,
+              amount: totalPrice,
+              PayMethod: "vigor",
+            },
+          })
+          .then((response) => {
+            // 如果足够，扣除金额
+            this.UPDATE_VITALITY_COINS(totalPrice);
+            // 将选中的课程添加到 Vuex 的 usercourses 数组中
+            this.$store.commit("ADD_COURSES_TO_USER", selectedCourses);
+            // 从购物车中移除选中的课程
+            selectedCourses.forEach((course) => {
+              const index = this.$store.state.cartCourses.indexOf(course);
+              if (index !== -1) {
+                this.removeCourseFromCart(index);
+              }
+            });
+            // 弹出成功提示
+            ElMessageBox.alert(
+              `下单成功！您剩余的活力币余额为：${this.vitalityCoins}`,
+              "订单确认",
+              {
+                confirmButtonText: "确定",
+                type: "success",
+              }
+            );
+          });
       } else {
         // 如果余额不足，弹出错误提示
         ElMessage({
@@ -517,11 +508,6 @@ export default {
           type: "error",
         });
       }
-    },
-
-    //点击之后,右边栏出现
-    handleCartVisibility(isVisible) {
-      this.isCartVisible = isVisible;
     },
   },
 

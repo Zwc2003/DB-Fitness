@@ -12,6 +12,7 @@ using System.Data;
 using System.Xml.Linq;
 using Fitness.BLL.Interfaces;
 using Newtonsoft.Json;
+using System.Web;
 
 namespace Fitness.BLL
 {
@@ -21,7 +22,7 @@ namespace Fitness.BLL
         private readonly JWTHelper _jwtHelper = new();
         
         // 发布课程
-        public string PublishCourse(string token,Course course)
+        public string PublishCourse(string token,Course course,List<CourseSchedule> courseSchedules)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             if (tokenRes.Role != "coach")
@@ -53,6 +54,18 @@ namespace Fitness.BLL
                     return "课程发布失败：无法插入教练授课信息";
                 }
 
+                //插入授课时间段信息
+                bool allInserted = true;
+                foreach (var schedule in courseSchedules)
+                {
+                    bool result = CourseScheduleDAL.InsertCourseSchedule(res, schedule.dayOfWeek, schedule.classTime);
+                    if (!result)
+                    {
+                        allInserted = false;
+                        // 可根据需求在这里决定是否要中断，或者记录失败的记录
+                        return "课程发布失败: 无法插入授课时间信息";
+                    }
+                }
                 return "课程发布成功";
             }
             catch (Exception ex)
@@ -63,7 +76,7 @@ namespace Fitness.BLL
         }
 
         // 修改课程
-        public string ModifyCourse(string token,Course course)
+        public string ModifyCourse(string token,Course course,List<CourseSchedule> courseSchedules)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             if (tokenRes.Role != "coach")
@@ -76,6 +89,24 @@ namespace Fitness.BLL
                 if (!CourseDAL.UpdateByClassID(course))
                 {
                     return "课程修改失败";
+                }
+                //修改时间段
+                // 删除所有与classID相关的课程时间表
+                bool deleteResult = CourseScheduleDAL.DeleteCourseSchedulesByClassID(course.classID);
+                if (!deleteResult)
+                {
+                    return $"删除课程时间表失败";
+                }
+                // 插入新的课程时间表
+                bool allInserted = true;
+                foreach (var schedule in courseSchedules)
+                {
+                    bool insertResult =CourseScheduleDAL.InsertCourseSchedule(course.classID, schedule.dayOfWeek, schedule.classTime);
+                    if (!insertResult)
+                    {
+                        allInserted = false;
+                        return $"插入课程时间表失败" ;
+                    }
                 }
                 return "课程修改成功";
             }
@@ -103,6 +134,9 @@ namespace Fitness.BLL
                     {
                         return "课程删除失败：无法删除课程信息";
                     }
+                //删除授课信息 删除时间段信息
+                TeachesDAL.Delete(tokenRes.userID, classID, null);
+                CourseScheduleDAL.DeleteCourseSchedulesByClassID(classID);
 
                     return "课程删除成功";
                 }
@@ -129,14 +163,15 @@ namespace Fitness.BLL
         }
 
         // 获取所有课程
-        public string GetAllCourse()
+        public string GetAllCourse(string token)
         {
             try
             {
-                List<Dictionary<string, string>> courseDetails = new List<Dictionary<string, string>>();
-                List<Course> courses = new List<Course>();
-                courses = CourseDAL.GetAllCourseRandomly();
-                //Console.WriteLine(courses);
+                TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+                int userID = tokenRes.userID;
+                List<Dictionary<string, object>> courseDetails = new List<Dictionary<string, object>>();
+                List<Course> courses = CourseDAL.GetAllCourseRandomly();
+
                 foreach (var course in courses)
                 {
                     string typeName = CourseDAL.GetTypeNameByTypeID(course.typeID);
@@ -144,7 +179,14 @@ namespace Fitness.BLL
                     string coachName = string.Empty;
                     string instructorHonors = string.Empty;
                     string iconURL = string.Empty;
+
                     var coach = CoachDAL.GetCoachByCoachID(coachID);
+                    var schedule = CourseScheduleDAL.GetCourseSchedulesByClassID(course.classID);
+
+                    int isBooked = 0;
+                    if(BookDAL.IsInBooked(course.classID,userID))
+                        isBooked = 1;
+
                     if (coach != null)
                     {
                         coachName = coach.coachName;
@@ -152,22 +194,23 @@ namespace Fitness.BLL
                         iconURL = coach.iconURL;
                     }
 
-                    var courseInfo = new Dictionary<string, string>
-        {
-            { "coursePhotoUrl", course.coursePhotoUrl },
-            { "courseName", course.courseName },
-            { "courseDescription", course.courseDescription },
-            { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
-            { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
-            { "courseGrade", course.courseGrade.ToString() },
-            { "coursePrice", course.coursePrice.ToString() },
-            { "coachName", coachName },
-            { "instructorHonors", instructorHonors },
-            { "iconURL", iconURL },
-            { "features", course.features },
-            { "courseType", typeName },
-            { "classTime", course.classTime }
-        };
+                    var courseInfo = new Dictionary<string, object>
+                    {
+                        { "coursePhotoUrl", course.coursePhotoUrl },
+                        { "courseName", course.courseName },
+                        { "courseDescription", course.courseDescription },
+                        { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
+                        { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
+                        { "courseGrade", course.courseGrade.ToString() },
+                        { "coursePrice", course.coursePrice.ToString() },
+                        { "coachName", coachName },
+                        { "instructorHonors", instructorHonors },
+                        { "iconURL", iconURL },
+                        { "features", course.features },
+                        { "courseType", typeName },
+                        { "isBooked",isBooked},
+                        { "schedules", schedule } // Add the schedule information here
+                    };
 
                     courseDetails.Add(courseInfo);
                 }
@@ -181,6 +224,7 @@ namespace Fitness.BLL
             }
         }
 
+
         public string BeTrainee(string token,Trainee trainee) 
         {
             try
@@ -190,9 +234,8 @@ namespace Fitness.BLL
                     return "您已是学员身份！";
                 }
 
-                // 预订课程
                 bool result = TraineeDAL.Insert(trainee);
-
+                UserDAL.SetRole(tokenRes.userID, "trainee");
                 if (result)
                 {
                     return "成功转变为学员身份！";
@@ -209,118 +252,149 @@ namespace Fitness.BLL
         }
 
         // 预订课程
-        public string ReserveCourse(string token ,int classID, string payMethod)
+        public string ReserveCourse(string token, int[] classIDs, string payMethod)
         {
+            var bookIDs = new List<int>(); // 用于存储每次预订的 bookID
+            string message = "课程预订成功"; // 默认成功消息
+
             try
             {
+                // 验证 Token
                 TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
-                // 预订课程
-                int result = BookDAL.Insert(new Book
-                {
-                    classID = classID,
-                    traineeID = tokenRes.userID,
-                    payMethod = payMethod
-                });
 
-                if (result != -1)
+                // 遍历每个 classID 进行预订
+                foreach (int classID in classIDs)
                 {
-                    return JsonConvert.SerializeObject(new
-                    {
-                        bookID = result,
-                        message = "课程预订成功"
-                    });
-                }
-                else
-                {
-                    return JsonConvert.SerializeObject(new
+                    // 预订课程
+                    int result = BookDAL.Insert(new Book
                     {
                         bookID = -1,
-                        message = "课程预订失败"
+                        classID = classID,
+                        traineeID = tokenRes.userID,
+                        payMethod = payMethod
                     });
+
+                    // 将 bookID 添加到列表中
+                    bookIDs.Add(result);
+
+                    // 如果有任何预订失败，则更新消息
+                    if (result == -1)
+                    {
+                        message = "部分课程预订失败";
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+                // 如果出现异常，则为所有 classID 返回失败的 bookID (-1) 和异常消息
                 return JsonConvert.SerializeObject(new
                 {
-                    bookID = -1,
-                    message = "课程预订失败"
-                }) ; 
+                    bookIDs = classIDs.Select(id => -1).ToArray(), // 用 -1 表示所有预订失败
+                    message = "课程预订失败，发生异常"
+                });
             }
+
+            // 返回 bookID 列表和消息的 JSON 字符串
+            return JsonConvert.SerializeObject(new
+            {
+                bookIDs = bookIDs.ToArray(), // 转换为数组以保证一致性
+                message = message
+            });
         }
 
         // 支付课程费用
-        public string PayCourseFare(string token,int bookID, int amount, string payMethod)
+        public string PayCourseFare(string token, int[] bookIDs, int amount, string payMethod)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int traineeID = tokenRes.userID;
-            OracleConnection conn = null;
             OracleTransaction transaction = null;
             try
             {
-                // 更新Payment表
-                bool paymentResult = PaymentDAL.Insert(new Payment
-                {
-                    bookID = bookID,
-                    Amount = amount,
-                    payMethod = payMethod
-                }, transaction);
+                // 检查学员是否已经在Trainee表中
+                int st;
+                User userTrainee = UserDAL.GetUserByUserID(traineeID, out st);
+                Trainee trainee = new Trainee(traineeID, userTrainee.userName, userTrainee.Age, userTrainee.Gender, userTrainee.iconURL, userTrainee.userName);
 
-                if (!paymentResult)
+                string traineeCheckResult = BeTrainee(token, trainee);
+                if (traineeCheckResult != "成功转变为学员身份！" && traineeCheckResult != "您已是学员身份！")
                 {
-                    return "支付课程费用失败:更新Payment表异常！";
-                }
-                int fare = -amount;
-                // !!! 调用支付接口
-                var vigorTokenBLL = new VigorTokenBLL();
-                vigorTokenBLL.UpdateBalance(traineeID, $"购买课程，预订账单号{bookID},耗费{amount}活力币", fare);
-
-                int bookstatus = 1;
-                // 更新Book表的支付状态和支付ID
-                bool bookResult = BookDAL.UpdateBookStatusAndPaymentID(bookID, bookstatus,PaymentDAL.GetByBookID(bookID).paymentID);
-                if (!bookResult)
-                {
-                    return "支付课程费用失败：更新Book表异常！";
+                    return traineeCheckResult; // 如果插入Trainee表失败，返回错误信息
                 }
 
-                //向Traniee表中插入一条信息
-
-
-                // 向Advise表中插入一条信息
-                bool adviseResult = AdviseDAL.Insert(new Advise
+                // 遍历每个 bookID 进行支付处理
+                foreach (int bookID in bookIDs)
                 {
-                    classID = BookDAL.GetBookByID(bookID).classID,
-                    coachID = TeachesDAL.GetByID(BookDAL.GetBookByID(bookID).classID).coachID,
-                    traineeID = traineeID
-                }, transaction);
+                    // 更新 Payment 表
+                    bool paymentResult = PaymentDAL.Insert(new Payment
+                    {
+                        bookID = bookID,
+                        Amount = amount,
+                        payMethod = payMethod
+                    }, transaction);
 
-                if (!adviseResult)
-                {
-                    return "支付课程费用失败:更新Advise表异常！";
+                    if (!paymentResult)
+                    {
+                        return $"支付课程费用失败: 预订账单号 {bookID} 更新 Payment 表异常！";
+                    }
+
+                    int fare = -amount;
+                    // 调用支付接口
+                    var vigorTokenBLL = new VigorTokenBLL();
+                    vigorTokenBLL.UpdateBalance(traineeID, $"购买课程，预订账单号 {bookID}, 耗费 {amount} 活力币", fare);
+
+                    int bookstatus = 1;
+                    // 更新 Book 表的支付状态和支付ID
+                    bool bookResult = BookDAL.UpdateBookStatusAndPaymentID(bookID, bookstatus, PaymentDAL.GetByBookID(bookID).paymentID);
+                    if (!bookResult)
+                    {
+                        return $"支付课程费用失败：预订账单号 {bookID} 更新 Book 表异常！";
+                    }
+
+                    // 向 Advise 表中插入一条信息
+                    bool adviseResult = AdviseDAL.Insert(new Advise
+                    {
+                        classID = BookDAL.GetBookByID(bookID).classID,
+                        coachID = TeachesDAL.GetByID(BookDAL.GetBookByID(bookID).classID).coachID,
+                        traineeID = traineeID
+                    }, transaction);
+
+                    if (!adviseResult)
+                    {
+                        return $"支付课程费用失败: 预订账单号 {bookID} 更新 Advise 表异常！";
+                    }
+
+                    // 向 Participate 表中插入一条信息
+                    bool participateResult = ParticipateDAL.Insert(new Participate
+                    {
+                        classID = BookDAL.GetBookByID(bookID).classID,
+                        traineeID = traineeID,
+                        typeID = CourseDAL.GetCourseByClassID(BookDAL.GetBookByID(bookID).classID).typeID
+                    }, transaction);
+
+                    if (!participateResult)
+                    {
+                        return $"支付课程费用失败: 预订账单号 {bookID} 更新 Participate 表异常！";
+                    }
                 }
 
-                // 向Participate表中插入一条信息
-                bool participateResult = ParticipateDAL.Insert(new Participate
-                {
-                    classID = BookDAL.GetBookByID(bookID).classID,
-                    traineeID = traineeID,
-                    typeID = CourseDAL.GetCourseByClassID(BookDAL.GetBookByID(bookID).classID).typeID
-                }, transaction);
-
-                if (!participateResult)
-                {
-                    return "支付课程费用失败:更新Participate表异常！";
-                }
-
-                // 提交事务
-                //transaction.Commit();
                 return "支付课程费用成功!";
             }
             catch (Exception ex)
             {
                 return $"支付失败: {ex.Message}";
             }
+        }
+
+        public string CancelBook(string token, int bookID) {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            // 更改Book记录
+            bool bookResult = BookDAL.UpdateBookStatusAndPaymentID(bookID, 2, -1);
+            if (!bookResult)
+            {
+                return "取消课程预订失败：更改Book记录异常！";
+            }
+            return "取消预订成功！";
         }
 
         // 取消课程预订
@@ -339,7 +413,7 @@ namespace Fitness.BLL
                 }
 
                 int amount = PaymentDAL.GetByBookID(bookID).Amount;
-                int fare = -amount;
+                int fare = amount;
 
                 //！！！调用退款接口
                 var vigorTokenBLL = new VigorTokenBLL();
@@ -360,19 +434,153 @@ namespace Fitness.BLL
         }
 
         // 根据userID获取课程
-        public List<BookCourseInfo> GetCourseByUserID(string token)
+        public List<BookCourseInfo> GetReservedCourseByUserID(string token)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userID =tokenRes.userID;
-
             try
             {
-                return CourseDAL.GetCourseByUserID(userID);
+                return CourseDAL.GetReservedCourseByUserID(userID);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"获取课程时出错：{ex.Message}");
                 return new List<BookCourseInfo>();
+            }
+        }
+
+        public string GetParticipatedCourseByUserID(string token) {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
+            try
+            {
+                List<Dictionary<string, object>> courseDetails = new List<Dictionary<string, object>>();
+                List<Course> courses = CourseDAL.GetParticipateddCourseByUserID(userID);
+                foreach (Course course in courses)
+                {
+                    string typeName = CourseDAL.GetTypeNameByTypeID(course.typeID);
+                    int coachID = CourseDAL.GetCoachIDByClassID(course.classID);
+                    string coachName = string.Empty;
+                    string instructorHonors = string.Empty;
+                    string iconURL = string.Empty;
+
+                    var coach = CoachDAL.GetCoachByCoachID(coachID);
+                    var schedule = CourseScheduleDAL.GetCourseSchedulesByClassID(course.classID);
+
+                    if (coach != null)
+                    {
+                        coachName = coach.coachName;
+                        instructorHonors = coach.instructorHonors;
+                        iconURL = coach.iconURL;
+                    };
+                    var courseInfo = new Dictionary<string, object>
+                    {
+                        { "coursePhotoUrl", course.coursePhotoUrl },
+                        { "courseName", course.courseName },
+                        { "courseDescription", course.courseDescription },
+                        { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
+                        { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
+                        { "courseGrade", course.courseGrade.ToString() },
+                        { "coursePrice", course.coursePrice.ToString() },
+                        { "coachName", coachName },
+                        { "instructorHonors", instructorHonors },
+                        { "iconURL", iconURL },
+                        { "features", course.features },
+                        { "courseType", typeName },
+                        { "schedules", schedule }
+                    };
+                    courseDetails.Add(courseInfo);
+
+                }
+
+                return JsonConvert.SerializeObject(courseDetails, Formatting.Indented);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"获取课程时出错：{ex.Message}");
+                return null;
+            }
+        }
+        public string GetPublishedCourseByUserID(string token) {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
+            try
+            {
+                List<Dictionary<string, object>> courseDetails = new List<Dictionary<string, object>>();
+                List<Course> courses = CourseDAL.GetPublishedCourseByUserID(userID);
+                foreach (Course course in courses)
+                {
+                    string typeName = CourseDAL.GetTypeNameByTypeID(course.typeID);
+                    int coachID = CourseDAL.GetCoachIDByClassID(course.classID);
+                    string coachName = string.Empty;
+                    string instructorHonors = string.Empty;
+                    string iconURL = string.Empty;
+
+                    var coach = CoachDAL.GetCoachByCoachID(coachID);
+                    var schedule = CourseScheduleDAL.GetCourseSchedulesByClassID(course.classID);
+
+                    if (coach != null)
+                    {
+                        coachName = coach.coachName;
+                        instructorHonors = coach.instructorHonors;
+                        iconURL = coach.iconURL;
+                    };
+                    var courseInfo = new Dictionary<string, object>
+                    {
+                        { "coursePhotoUrl", course.coursePhotoUrl },
+                        { "courseName", course.courseName },
+                        { "courseDescription", course.courseDescription },
+                        { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
+                        { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
+                        { "courseGrade", course.courseGrade.ToString() },
+                        { "coursePrice", course.coursePrice.ToString() },
+                        { "coachName", coachName },
+                        { "instructorHonors", instructorHonors },
+                        { "iconURL", iconURL },
+                        { "features", course.features },
+                        { "courseType", typeName },
+                        { "schedules", schedule } 
+                    };
+                    courseDetails.Add(courseInfo);
+
+                }
+
+                return JsonConvert.SerializeObject(courseDetails, Formatting.Indented);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"获取课程时出错：{ex.Message}");
+                return null;
+            }
+        }
+
+
+        public string GetTodayCoursesByUserID(string token) {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
+            try
+            {
+                return CourseDAL.GetTodayCoursesByUserID(userID);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"获取课程时出错：{ex.Message}");
+                return "获取课程时出错";
+            }
+        }
+
+        public string GetCoachTodayCoursesByUserID(string token)
+        {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
+            try
+            {
+                return CourseDAL.GetCoachTodayCoursesByUserID(userID);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"获取课程时出错：{ex.Message}");
+                return "获取课程时出错";
             }
         }
 
@@ -395,7 +603,7 @@ namespace Fitness.BLL
                     });
         }
 
-        // 评分课程:或者评分教练比较好？
+        // 评分课程
         public string GradeCourse(string token,int classID, int grade)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
@@ -461,13 +669,13 @@ namespace Fitness.BLL
             }
         }
 
-        // 根据课程ID获取评论
-        public List<string> GetCourseCommentByClassID(string token,int classID)
+        // 根据课程ID获取评论+评分
+        public List<feedback> GetCourseCommentByClassID(string token,int classID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             try
             {
-                List<string> comments = ParticipateDAL.GetCommentsByClassID(classID);
+                List<feedback> comments = ParticipateDAL.GetCommentsByClassID(classID);
                 return comments;
             }
             catch (Exception ex)
