@@ -59,7 +59,11 @@ namespace Fitness.Controllers
         {
             return _userBLL.GetProfile(token, "others", userID);
         }
-
+        [HttpGet]
+        public ActionResult<string> GetName(int userID) {
+            return _userBLL.GetName(userID);
+        }
+        
         [HttpPost]
         public ActionResult<string> UpdateProfile(string token, [FromBody] expandUserInfo userinfo)
         {
