@@ -220,12 +220,12 @@
         </el-dialog>
       </div>
     </el-col>
-    <el-col :span="6">
+    <el-col :span="7">
       <div>
         <el-card class="ana-container">
           <template #header>
             <div class="card-header">
-              <h2 :style="{ fontSize: '30px', color: 'white' }">每日饮食情况总结</h2>
+              <h2 :style="{ fontSize: '26px', color: 'white' }">每日饮食情况总结</h2>
             </div>
           </template>
           <div class="center-content">
@@ -362,7 +362,7 @@ export default {
       for (let i = 0; i < this.oneDayRecord[needToCount].length; i++) {
         count += this.oneDayRecord[needToCount][i].totalCalorie;
       }
-      return count/100;
+      return count;
     },
     handleCellClick() {
       this.currentRecord = {
@@ -437,11 +437,19 @@ export default {
       const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (!isJPGorPNG) {
-        this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+        ElNotification({
+                          title: '错误',
+                          message: '上传图片只能是 JPG 或 PNG 格式!',
+                          type: 'error',
+                      });
         return false;
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+        ElNotification({
+                          title: '错误',
+                          message: '上传图片大小不能超过2MB!',
+                          type: 'error',
+                      });
         return false;
       }
 
@@ -964,7 +972,7 @@ export default {
 }
 
 .ana-container {
-  height: 80vh;
+  height: 83vh;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -977,11 +985,11 @@ export default {
 
 .ana-style {
   height: 65vh;
-  width: 20vw;
+  width: 23vw;
   overflow-y: auto;
   font-size: 14px;
   color: rgb(30, 29, 29);
-  padding: 30px !important;
+  padding-left: 30px !important;
 }
 
 .loading-container {
