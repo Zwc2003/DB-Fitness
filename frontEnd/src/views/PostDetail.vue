@@ -556,17 +556,17 @@ export default {
                 console.log('触发AI评论 - 健身教练');
                 apiUrl = 'http://localhost:8080/api/Post/GetFitCoachComment';
                 userID = 43;
-                userName = "FitCoachAI"
+                userName = "健身教练AI"
             } else if (this.newCommentText.includes('@营养顾问')) {
                 console.log('触发AI评论 - 营养顾问');
                 apiUrl = 'http://localhost:8080/api/Post/GetNutriExpertComment';
                 userID = 44;
-                userName = "NutriExpertAI"
+                userName = "营养顾问AI"
             } else if (this.newCommentText.includes('@激励导师')) {
                 console.log('触发AI评论 - 激励导师');
                 apiUrl = 'http://localhost:8080/api/Post/GetMotivatorComment';
                 userID = 45;
-                userName = "MotivatorAI"
+                userName = "激励导师AI"
             }
 
             // 如果找到相应的@内容，调用API
