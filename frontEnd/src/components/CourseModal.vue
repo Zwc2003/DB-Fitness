@@ -16,8 +16,10 @@
             <b class="boldd">{{ this.thecourse.courseEndTime }}</b>
           </p>
           <p class="course-details">
-            上课时间：<b class="boldd">{{ classDate }}</b
-            ><b class="boldd">{{ classTime }}</b>
+            上课时间：<b class="boldd">{{
+              this.thecourse.schedules.dayOfWeek
+            }}</b
+            ><b class="boldd">{{ this.thecourse.schedules.classTime }}</b>
           </p>
           <div class="features">
             <div
@@ -96,7 +98,7 @@
           </p>
         </div>
         <div>
-          <div v-if="isbooked == 0" class="yuyue">
+          <div v-if="this.thecourse.isbooked == 0" class="yuyue">
             <el-icon style="font-size: 35px" class="ic"
               ><ShoppingTrolley
             /></el-icon>
@@ -126,10 +128,6 @@ export default {
   //GetCoachParticipatedCourseByUserID传入的时候不包含教练信息,需要在PublishCourse的view界面增加教练自己的用户信息到thecourse的数组
   //GetParticipatedCourseByUserID我暂时没看到数据
   props: {
-    isbooked: {
-      type: Boolean,
-      default: 1,
-    },
     isVisible: {
       type: Boolean,
       default: 1,
@@ -230,6 +228,7 @@ export default {
     },
     //获取课程的开始时间与结束时间
     timeRange() {
+      this.thecourse.schedules.classTime = "10:00-12:00";
       const [start, end] = this.thecourse.schedules.classTime
         .split("-")
         .map((time) => {

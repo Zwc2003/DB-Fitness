@@ -13,7 +13,7 @@
         <br>
         <el-table ref="foodTable" size="large" :style="{ fontSize: '18px' }" :data="foods" style="width: 100%;" max-height="600" class="table"
             header-row-class-name="table-header" :row-class-name="tableRowClassName">
-            <el-table-column fixed prop="foodName" label="食物名称" width="187">
+            <el-table-column fixed prop="foodName" label="食物名称" width="157">
                 <template #default="scope">
                     <div v-if="scope.row.isEditing">
                         <el-input v-model="scope.row.foodName" @blur="validateFoodName(scope.row)"
@@ -24,7 +24,7 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column prop="calorie" label="食物热量(Cal/100g)" width="auto">
+            <el-table-column prop="calorie" label="食物热量(kCal/100g)" width="auto">
                 <template #default="scope">
                     <div v-if="scope.row.isEditing">
                         <el-input v-model.number="scope.row.calorie" @blur="validateCalorie(scope.row)"

@@ -7,23 +7,23 @@
     @mouseleave="hovered = false"
   >
     <div class="image-section">
-      <img :src="coursePhotoUrl" alt="Course Image" />
+      <img :src="homecourse.coursePhotoUrl" alt="Course Image" />
     </div>
     <div class="content-section">
       <h3 class="bigcoursename">
-        <b>{{ courseName }}</b>
+        <b>{{ homecourse.courseName }}</b>
       </h3>
       <div v-if="hovered" class="description">
         <p class="coursefeature">
-          <b>{{ courseName }}</b>
+          <b>{{ homecourse.courseName }}</b>
         </p>
-        <p>{{ courseDescription }}</p>
+        <p>{{ homecourse.courseDescription }}</p>
         <button @click="showModal = true">进入课程</button>
       </div>
     </div>
   </div>
 
-  <!-- 课程模态框 ,1.有没有isbooked影响很大,2.homecourse的来源是getallcourse的API,有教练信息-->
+  <!-- 课程模态框 ,1.有isbooked,2.有教练信息-->
   <CourseModal
     v-if="showModal"
     :isVisible="showModal"
@@ -43,7 +43,7 @@ export default {
   },
 
   props: {
-    //homecourse包含教练相关信息
+    //homecourse包含教练相关信息，包含isbooked字段
     homecourse: Object,
     width: {
       type: Number,
@@ -52,10 +52,6 @@ export default {
     height: {
       type: Number,
       default: 400,
-    },
-    isbooked: {
-      type: Boolean,
-      default: "0",
     },
   },
 

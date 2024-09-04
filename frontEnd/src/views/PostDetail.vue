@@ -862,9 +862,16 @@ export default {
             });
         },
         toggleEmojiPicker() {
+            // 如果表情选择器已经打开，恢复页面的滚动状态
             document.body.style.overflow = this.emojiPicker.isOpen ? '' : 'hidden';
             this.emojiPicker.togglePicker(this.$refs.emojiButton);
+
+            // 确保当表情选择器关闭时，恢复页面滚动
+            if (!this.emojiPicker.isOpen) {
+                document.body.style.overflow = '';  // 允许页面滚动
+            }
         },
+
         highlightCommentAction(event) {
             event.target.style.backgroundColor = '#f0f0f0';
             event.target.style.cursor = 'pointer';

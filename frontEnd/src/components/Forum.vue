@@ -571,7 +571,7 @@ body {
     max-width: 100%;
     margin-top: 5vh;
     /* 在顶部留出导航栏的空间 */
-    overflow: auto;
+    overflow-y: scroll;
 }
 
 
