@@ -108,7 +108,7 @@ namespace Fitness.BLL
                     var vigorTokenBLL = new VigorTokenBLL();
                     var userAchievementBLL = new UserAchievementBLL();
                     //活力币+1
-                    vigorTokenBLL.UpdateBalance(userID, $"本日{dt_now.Date}首次登录系统,获得50活力币", 50);
+                    vigorTokenBLL.UpdateBalance(userID, $"本日{dt_now}首次登录系统,获得50活力币", 50);
                     //成就更新
                     userAchievementBLL.UpdateLoginAchievement(userID);
                 }
