@@ -69,9 +69,9 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public ActionResult<string> GetAllCourse()
+        public ActionResult<string> GetAllCourse(string token)
         {
-            return _courseBLL.GetAllCourse();
+            return _courseBLL.GetAllCourse(token);
         }
 
         [HttpPost]
@@ -91,6 +91,11 @@ namespace Fitness.Controllers
         {
             return _courseBLL.CancelCourse(token, bookID);
         }
+
+        [HttpPost]
+        public ActionResult<string> CancelBook(string token, int bookID) {
+            return _courseBLL.CancelBook(token, bookID);
+         }
 
         [HttpGet]
         public ActionResult<List<BookCourseInfo>> GetReservedCourseByUserID(string token)

@@ -1,5 +1,6 @@
 ﻿using Fitness.DAL.Core;
 using Fitness.Models;
+using Microsoft.AspNetCore.Http;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
 using System;
@@ -8,6 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Fitness.DAL
 {
@@ -82,6 +84,28 @@ namespace Fitness.DAL
             }
         }
 
+        public static bool IsInBooked(int classID, int userID) {
+            try
+            {
+                string sql = "SELECT * FROM \"Book\" WHERE \"classID\" :classID AND \"traineeID\"= :userID";
+                OracleParameter[] parameters = new OracleParameter[]
+               {
+                new OracleParameter("classID", OracleDbType.Int32) { Value = classID },
+                new OracleParameter("traineeID", OracleDbType.Int32) { Value = userID }
+           };
+                DataTable dt = OracleHelper.ExecuteTable(sql,parameters);
+                if (dt.Rows.Count != 0)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"获取所有记录失败: {ex.Message}");
+                return false;
+            }
+        }
+
         // 获取所有Book记录
         public static List<Book> GetAll()
         {
@@ -108,15 +132,10 @@ namespace Fitness.DAL
         // 更新Book记录的状态和支付ID
         public static bool UpdateBookStatusAndPaymentID(int bookID, int bookStatus, int paymentID)
         {
-           // OracleConnection conn = null;
             OracleTransaction transaction = null;
 
             try
             {
-/*              conn = OracleHelper.GetConnection();
-                conn.Open();
-                transaction = conn.BeginTransaction();*/
-
                 string sql = "UPDATE \"Book\" SET \"bookStatus\" = :bookStatus, \"paymentID\" = :paymentID WHERE \"bookID\" = :bookID";
 
                 OracleParameter[] parameters = new OracleParameter[]
@@ -127,7 +146,7 @@ namespace Fitness.DAL
                 };
 
                 OracleHelper.ExecuteNonQuery(sql, transaction, parameters);
-                //transaction.Commit();
+
                 return true;
             }
             catch (Exception ex)
@@ -139,13 +158,6 @@ namespace Fitness.DAL
                 Console.WriteLine($"更新失败: {ex.Message}");
                 return false;
             }
-/*            finally
-            {
-                if (conn != null && conn.State != ConnectionState.Closed)
-                {
-                    conn.Close();
-                }
-            }*/
         }
 
     }

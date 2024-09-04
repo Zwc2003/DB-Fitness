@@ -12,6 +12,7 @@ using System.Data;
 using System.Xml.Linq;
 using Fitness.BLL.Interfaces;
 using Newtonsoft.Json;
+using System.Web;
 
 namespace Fitness.BLL
 {
@@ -162,10 +163,12 @@ namespace Fitness.BLL
         }
 
         // 获取所有课程
-        public string GetAllCourse()
+        public string GetAllCourse(string token)
         {
             try
             {
+                TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+                int userID = tokenRes.userID;
                 List<Dictionary<string, object>> courseDetails = new List<Dictionary<string, object>>();
                 List<Course> courses = CourseDAL.GetAllCourseRandomly();
 
@@ -179,6 +182,10 @@ namespace Fitness.BLL
 
                     var coach = CoachDAL.GetCoachByCoachID(coachID);
                     var schedule = CourseScheduleDAL.GetCourseSchedulesByClassID(course.classID);
+
+                    int isBooked = 0;
+                    if(BookDAL.IsInBooked(course.classID,userID))
+                        isBooked = 1;
 
                     if (coach != null)
                     {
@@ -201,6 +208,7 @@ namespace Fitness.BLL
                         { "iconURL", iconURL },
                         { "features", course.features },
                         { "courseType", typeName },
+                        { "isBooked",isBooked},
                         { "schedules", schedule } // Add the schedule information here
                     };
 
@@ -378,6 +386,16 @@ namespace Fitness.BLL
             }
         }
 
+        public string CancelBook(string token, int bookID) {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            // 更改Book记录
+            bool bookResult = BookDAL.UpdateBookStatusAndPaymentID(bookID, 2, -1);
+            if (!bookResult)
+            {
+                return "取消课程预订失败：更改Book记录异常！";
+            }
+            return "取消预订成功！";
+        }
 
         // 取消课程预订
         public string CancelCourse(string token,int bookID)
