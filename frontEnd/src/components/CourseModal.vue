@@ -15,12 +15,12 @@
             -
             <b class="boldd">{{ this.thecourse.courseEndTime }}</b>
           </p>
-          <p class="course-details">
+          <!-- <p class="course-details">
             上课时间：<b class="boldd">{{
-              this.thecourse.schedules.dayOfWeek
+               this.thecourse.schedules.dayOfWeek
             }}</b
             ><b class="boldd">{{ this.thecourse.schedules.classTime }}</b>
-          </p>
+          </p> -->
           <div class="features">
             <div
               class="feature-item"
@@ -228,15 +228,13 @@ export default {
     },
     //获取课程的开始时间与结束时间
     timeRange() {
-      this.thecourse.schedules.classTime = "10:00-12:00";
-      const [start, end] = this.thecourse.schedules.classTime
-        .split("-")
-        .map((time) => {
-          const [hours, minutes] = time.split(":");
-          const date = new Date();
-          date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-          return date;
-        });
+      // const [start, end] = this.thecourse.schedules.classTime
+      const [start, end] = "10:00-12:00".split("-").map((time) => {
+        const [hours, minutes] = time.split(":");
+        const date = new Date();
+        date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        return date;
+      });
       return { start, end };
     },
     //判断是否在课程时间之前

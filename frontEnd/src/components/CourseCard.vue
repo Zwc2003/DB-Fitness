@@ -12,7 +12,7 @@
         <div class="card-header">
           <div class="title-left">
             <b class="bolder">继续学习</b>
-            <b class="title-right">{{ courseName }}</b>
+            <b class="title-right">{{ thecourse.courseName }}</b>
             <span class="learning-status">学习中</span>
           </div>
           <div class="icoin-container">
@@ -33,9 +33,7 @@
           <CaretRight />
         </el-icon>
         <b class="bolder">学习进度</b>
-        <div class="course-progress" :style="progressStyle">
-          {{ courseProgress }}
-        </div>
+        <div class="course-progress" :style="progressStyle">5节课/40节课</div>
       </div>
       <div class="card-secondrow">
         <el-icon>
@@ -43,7 +41,7 @@
         </el-icon>
         <b class="bolder">有效日期</b>
         <div class="course-time" :style="timeStyle">
-          {{ courseStartTime }} - {{ courseEndTime }}
+          {{ thecourse.courseStartTime }} - {{ thecourse.courseEndTime }}
         </div>
       </div>
     </el-card>
@@ -58,7 +56,6 @@
     v-if="showModal"
     :isVisible="showModal"
     :thecourse="thecourse"
-    :isbooked="1"
     @close="showModal = false"
   />
 
@@ -164,14 +161,13 @@ export default {
       const token = localStorage.getItem("token");
       const classID = thecourse.course.classID;
       axios
-        .post(
-          `http://localhost:8080//api/Course/GradeCourse`,
-          {params:{
-              token: token,
-              classID : classID,
-              grade:this.ratingValue
-          }}
-        )
+        .post(`http://localhost:8080//api/Course/GradeCourse`, {
+          params: {
+            token: token,
+            classID: classID,
+            grade: this.ratingValue,
+          },
+        })
         .then((response) => {
           console.log("评分成功:", response.data);
         })

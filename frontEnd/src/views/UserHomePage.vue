@@ -332,13 +332,13 @@ export default {
     //获取今日课程状态
     getStatusText(course) {
       const currentTime = new Date();
-      const [startHour, startMinute] = course.classTime
+      const [startHour, startMinute] = "11:00 - 12:00"
         .split(" - ")[0]
         .split(":")
         .map(Number);
       const startTime = new Date();
       startTime.setHours(startHour, startMinute);
-      const [endHour, endMinute] = course.classTime
+      const [endHour, endMinute] = "11:00 - 12:00"
         .split(" - ")[1]
         .split(":")
         .map(Number);
@@ -359,7 +359,7 @@ export default {
     //获取状态的字体样式
     getStatusType(course) {
       const currentTime = new Date();
-      const [startHour, startMinute] = course.classTime
+      const [startHour, startMinute] = "11:00-12:00"
         .split(" - ")[0]
         .split(":")
         .map(Number);
@@ -382,8 +382,12 @@ export default {
       this.$store.commit("REMOVE_COURSE_FROM_CART", index);
     },
 
-    //更新 usercourses
+    //添加 usercourses
     updateUserCourses(newCourses) {
+      this.$store.commit("updateUserCourses", newCourses);
+    },
+
+    addUserCourses(newCourses) {
       this.$store.commit("ADD_COURSES_TO_USER", newCourses);
     },
 
@@ -423,8 +427,9 @@ export default {
         )
         .then((response) => {
           console.log("学生获取所有课程列表成功:", response.data);
+          this.updateUserCourses("");
           const initialCourses = response.data;
-          this.updateUserCourses(initialCourses);
+          this.addUserCourses(initialCourses);
         })
         .catch((error) => {
           console.error("用户获取课程列表错误:", error);
@@ -486,18 +491,14 @@ export default {
             },
           })
           .then((response) => {
-            // 如果足够，扣除金额
             this.UPDATE_VITALITY_COINS(totalPrice);
-            // 将选中的课程添加到 Vuex 的 usercourses 数组中
             this.$store.commit("ADD_COURSES_TO_USER", selectedCourses);
-            // 从购物车中移除选中的课程
             selectedCourses.forEach((course) => {
               const index = this.$store.state.cartCourses.indexOf(course);
               if (index !== -1) {
                 this.removeCourseFromCart(index);
               }
             });
-            // 弹出成功提示
             ElMessageBox.alert(
               `下单成功！您剩余的活力币余额为：${this.vitalityCoins}`,
               "订单确认",
