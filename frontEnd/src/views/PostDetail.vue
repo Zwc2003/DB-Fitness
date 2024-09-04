@@ -596,6 +596,7 @@ export default {
                             if (dbResponse.data.message === '发布评论成功') {
                                 // 插入数据库成功后，将AI评论显示到前端
                                 this.comments.push(aiComment);
+                                this.fetchComments(this.post.postID); // 重新获取评论列表
                                 ElNotification({
                                     title: 'AI评论',
                                     message: 'AI评论已生成并保存',
