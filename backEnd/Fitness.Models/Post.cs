@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace Fitness.Models
 {
+    public class state { 
+    public int isPinned { get;set; }
+    public int isReported { get; set; }    
+    }
+
     public class Post
     {
         public int postID {  get; set; }
