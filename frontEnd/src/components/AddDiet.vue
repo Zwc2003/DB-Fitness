@@ -2,7 +2,7 @@
     <div>
         <el-row class="row-bg" justify="space-between">
             <el-col :span="6">
-                <div :style="{ fontSize: '16px' }">当前共有帖子 {{ allRecipe.length }} 条</div>
+                <div :style="{ fontSize: '21px' }">当前共有帖子 {{ allRecipe.length }} 条</div>
             </el-col>
             <el-col :span="9">
                 <el-button style="width: auto" :style="{ fontSize: '18px' }" size="large" @click="addRecipe"
