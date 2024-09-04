@@ -22,7 +22,8 @@ namespace Fitness.DAL
                 receiverID = Convert.ToInt32(row["receiverID"]),
                 messageType = Convert.ToString(row["messageType"]),
                 Content = row["Content"].ToString(),
-                sendTime = Convert.ToDateTime(row["sendTime"])
+                sendTime = Convert.ToDateTime(row["sendTime"]),
+                isRead = Convert.ToInt32(row["isRead"])
             };
         }
 
@@ -56,9 +57,7 @@ namespace Fitness.DAL
 
         public static List<Message> GetMessages(int userId)
         {
-            string query = @"SELECT * FROM Messages
-                         WHERE receiverID = :receiverID
-                         ORDER BY sendTime DESC";
+            string query ="SELECT * FROM \"Messages\" WHERE \"receiverID\" = :receiverID ORDER BY \"sendTime\" DESC";
 
             OracleParameter[] parameters = {
             new OracleParameter("receiverID", userId)
@@ -68,27 +67,11 @@ namespace Fitness.DAL
             return messages;
         }
 
-        public static void MarkMessagesAsRead(List<int> messageIds)
+        public static void MarkMessagesAsRead(int messageId)
         {
-            if (messageIds == null || messageIds.Count == 0) return;
-
-            string query = "UPDATE \"Messages\" SET \"isRead\" = 1 WHERE \"messageID\" IN (";
-
-            for (int i = 0; i < messageIds.Count; i++)
-            {
-                query += "messageID" + i;
-                if (i < messageIds.Count - 1)
-                    query += ", ";
-            }
-            query += ")";
-
-            List<OracleParameter> parameters = new List<OracleParameter>();
-            for (int i = 0; i < messageIds.Count; i++)
-            {
-                parameters.Add(new OracleParameter("messageID" + i, messageIds[i]));
-            }
-
-            OracleHelper.ExecuteNonQuery(query, null,parameters.ToArray());
+            string query = "UPDATE \"Messages\" SET \"isRead\" = 1 WHERE \"messageID\" = :messageID";
+            OracleParameter[] parameters = { new OracleParameter("messageID",OracleDbType.Int32) { Value = messageId } };
+            OracleHelper.ExecuteNonQuery(query, null,parameters);
         }
 
 

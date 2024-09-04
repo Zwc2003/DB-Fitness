@@ -10,16 +10,14 @@
           <h3>🔔 通知</h3>
           <el-divider></el-divider> <!-- 分割线 -->
         </div>
-
         <ul class="notification-list">
           <li v-for="(notification, index) in notifications" :key="index" class="notification-item" @click="toggleRead(index)">
-            <div class="notification-content">
-              <span v-if="!notification.isRead"
-                style="width: 6px; height: 6px; background-color: red; border-radius: 50%; margin-left: 4px; margin-top: -2px;">
-              </span>
-              <span class="notification-title">{{ notification.title }}</span>
-              <span class="notification-message">{{ notification.message }}</span>
-            </div>
+            <el-badge :value="notification.isRead ? '' : '未读'" :class="{'is-read': notification.isRead}">
+              <div class="notification-content">
+                <span class="notification-title">{{ notification.title }}</span>
+                <span class="notification-message">{{ notification.message }}</span>
+              </div>
+            </el-badge>
           </li>
         </ul>
       </div>
@@ -48,8 +46,12 @@ export default {
         const token = localStorage.getItem('token');
         const response = await axios.get(`http://localhost:8080/api/Message/GetMessages?token=${token}`);
         const data=response.data;
-        data.array.forEach(element => {
-          const userName= axios.get(`http://localhost:8080/api/User/GetName?userID=${element.userID}`);
+        data.forEach(async element => {
+          const response = await axios.get(`http://localhost:8080/api/User/GetName?userID=${element.senderID}`);
+          const userName= response.data;
+          console.log(userName);
+
+          let title;
           switch (element.messageType) {
             case '点赞帖子':
               title = `${userName} 点赞了你的帖子`;
@@ -70,6 +72,7 @@ export default {
               title = `${userName} 有了新的互动`;
               break;
           }
+          console.log(element.isRead);
           this.notifications.push({
             messageID:element.messageID,
             title:title,
@@ -85,7 +88,8 @@ export default {
     async toggleRead(index){
       try {
         const message =  this.notifications[index];
-        const response = await axios.get(`http://localhost:8080/api/Message/MarkedMessagesAsRead?messagesID=${[message.messageID]}`);
+        const response = await axios.get(`http://localhost:8080/api/Message/MarkedMessagesAsRead?messageID=${message.messageID}`);
+        console.log(response.data);
         this.notifications[index].isRead=1;
       } catch (error) {
         console.error('Error transmission of read:', error);
@@ -225,7 +229,7 @@ export default {
 }
 
 .notifications-container {
-  max-height: 400px;
+  max-height: 520px;
   overflow-y: auto;
 }
 
@@ -277,4 +281,10 @@ export default {
   margin-left: 10px;
   white-space: nowrap;
 }
+
+.notification-item.is-read .el-badge__content {
+  background-color: #f0f0f0;
+  color: #999;
+}
+
 </style>
