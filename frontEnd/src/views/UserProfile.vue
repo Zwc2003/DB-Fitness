@@ -152,12 +152,12 @@
                     </section>
 
                     <!-- 活力币余额模块 -->
-                    <section class="vitality-balance">
-                        <div class="button-container">
-                            <button @click="toggleBalanceModule" class="toggle-button">
+                    <div class="button-container">
+                        <button @click="toggleBalanceModule" class="toggle-button">
                                 {{ balanceModuleVisible ? '收起活力币余额' : '查看活力币余额' }}
-                            </button>
-                        </div>
+                        </button>
+                    </div>
+                    <section class="vitality-balance">
                         <div v-if="balanceModuleVisible">
                             <h3>活力币余额</h3>
                             <div class="balance-display">
@@ -191,12 +191,12 @@
                         </div>
                     </section>
                     <!-- 成就模块 -->
-                    <section class="achievement-section">
-                        <div class="button-container">
-                            <button @click="toggleAchievements" class="toggle-button">
+                    <div class="button-container">
+                        <button @click="toggleAchievements" class="toggle-button">
                                 {{ achievementsVisible ? '收起成就进度表' : '查看成就进度表' }}
-                            </button>
-                        </div>
+                        </button>
+                    </div>
+                    <section class="achievement-section">
                         <div v-if="achievementsVisible">
                             <div class="achievement-container">
                                 <!-- 使用 v-for 循环生成成就图片 -->
@@ -1145,9 +1145,9 @@ select {
 
 .tooltip {
     position: absolute;
-    bottom: 100%;
+    bottom: 0%;
     /* 确保 tooltip 在 achievement-item 的上方 */
-    left: 50%;
+    left: 100%;
     transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.8);
     color: #fff;
@@ -1159,14 +1159,14 @@ select {
 }
 
 .achievement-content {
-    height: 50px;
-    margin: 5px 0;
+    height: 40px;
+    margin: 0px 0;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: transparent;
     text-align: left;
-    overflow: auto;
+
 }
 
 .post-item {

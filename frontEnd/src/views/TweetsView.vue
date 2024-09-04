@@ -199,7 +199,7 @@ function showNotification(equipmentList,i) {
         title: equipmentList.value[i-1].equipmentName,
         message: h(NotificationContent, { equipmentName: equipmentList.value[i-1].equipmentName }), // 传递 equipmentName
         duration: 0,
-        position: 'top-left',
+        position: (i<=3) ?'top-left':'top-right',
         customClass: 'custom-notification',
         dangerouslyUseHTMLString: true,
         onClose: () => {
