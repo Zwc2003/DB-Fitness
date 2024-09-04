@@ -84,6 +84,25 @@ namespace Fitness.DAL
             }
         }
 
+        public static Book GetBookByClassIDAndUserID(int classID, int userID) {
+            try
+            {
+                string sql = "SELECT * FROM \"Book\" WHERE \"classID\"= :classID AND \"traineeID\"= :userID";
+                OracleParameter[] parameters = new OracleParameter[]
+               {
+                new OracleParameter("classID", OracleDbType.Int32) { Value = classID },
+                new OracleParameter("traineeID", OracleDbType.Int32) { Value = userID }
+           };
+                DataTable dt = OracleHelper.ExecuteTable(sql, parameters);
+                return ToModel(dt.Rows[0]);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"获取所有记录失败: {ex.Message}");
+                return null;
+            }
+        }
+
         public static bool IsInBooked(int classID, int userID) {
             try
             {

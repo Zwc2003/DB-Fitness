@@ -56,6 +56,7 @@ namespace Fitness.DAL
                 info.Add(new BookCourseInfo
                 {
                     classID = Convert.ToInt32(row["classID"]),
+                    bookID = Convert.ToInt32(row["bookID"]),
                     typeID = Convert.ToInt32(row["typeID"]),
                     courseName = row["courseName"].ToString(),
                     coursePrice = Convert.ToInt32(row["coursePrice"]),
@@ -78,11 +79,7 @@ namespace Fitness.DAL
                 DataTable dt = OracleHelper.ExecuteTable("SELECT * FROM \"Course\" WHERE \"classID\"=:classID",
                    new OracleParameter("classID", OracleDbType.Int32) { Value = classID });
 
-                if (dt.Rows.Count == 1)
-                {
                     return ToModel(dt.Rows[0]);
-                }
-                return null;
             }
             catch (Exception ex)
             {
@@ -96,17 +93,14 @@ namespace Fitness.DAL
         {
             try
             {
-                string sql = "SELECT \"classID\", \"typeID\", \"courseName\", \"coursePrice\", \"courseStartTime\", " +
+                string sql = "SELECT \"classID\", \"bookID\",\"typeID\", \"courseName\", \"coursePrice\", \"courseStartTime\", " +
                             "\"courseEndTime\", \"coursePhotoUrl\", \"payMethod\", \"bookStatus\", \"bookTime\" " +
                             "FROM \"Course\" NATURAL JOIN \"Book\" " +
-                            "WHERE \"traineeID\" = :userID";
+                            "WHERE \"traineeID\" = :userID AND \"bookStatus\" = 1";
                 DataTable dt = OracleHelper.ExecuteTable(sql,new OracleParameter("userID", OracleDbType.Int32) { Value = userID });
 
-                if (dt.Rows.Count != 0)
-                {
-                    return BookCourseInfoToModelList(dt);
-                }
-                return null;
+                 return BookCourseInfoToModelList(dt);
+
             }
             catch (Exception ex)
             {
@@ -124,11 +118,7 @@ namespace Fitness.DAL
                             "WHERE \"traineeID\" = :userID";
                 DataTable dt = OracleHelper.ExecuteTable(sql, new OracleParameter("userID", OracleDbType.Int32) { Value = userID });
 
-                if (dt.Rows.Count != 0)
-                {
-                    return ToModelList(dt);
-                }
-                return null;
+                 return ToModelList(dt);
             }
             catch (Exception ex)
             {
@@ -145,11 +135,7 @@ namespace Fitness.DAL
                 string sql = "SELECT * FROM \"Course\" NATURAL JOIN \"Teaches\" " +
                              "WHERE \"coachID\" = :userID";
                 DataTable dt = OracleHelper.ExecuteTable(sql, new OracleParameter("userID", OracleDbType.Int32) { Value = userID });
-                if (dt.Rows.Count != 0)
-                {
-                    return ToModelList(dt);
-                }
-                return null;
+                return ToModelList(dt);
             }
             catch (Exception ex)
             {

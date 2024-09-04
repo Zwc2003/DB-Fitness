@@ -72,6 +72,7 @@ namespace Fitness.Models
     {
         // 课程ID
         public int classID { get; set; }
+        public int bookID { get; set; }
 
         // 课程类型ID
         public int typeID { get; set; }

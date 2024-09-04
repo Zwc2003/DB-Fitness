@@ -1,9 +1,11 @@
 ﻿using Fitness.BLL;
 using Fitness.DAL;
 using Fitness.Models;
+using Microsoft.AspNet.SignalR.Messaging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Message = Fitness.Models.Message;
 
 namespace Fitness.Controllers
 {
@@ -19,34 +21,23 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public async Task Subscribe(int userID)
+        public ActionResult<List<Message>> GetMessages(int userID)
         {
-            HttpContext.Response.Headers.Add("Content-Type", "text/event-stream");
-
-            int userId = userID; 
-
-            while (true)
-            {
-                Console.WriteLine("Subcribe");
-                var messages = GetUnreadMessages(userId);
-                if (messages != null && messages.Count > 0)
-                {
-                    string jsonMessages = JsonConvert.SerializeObject(messages);
-                    await HttpContext.Response.WriteAsync($"data: {jsonMessages}\n\n");
-                    await HttpContext.Response.Body.FlushAsync();
-
-                    // 标记这些消息为已读
-                    var messageIds = messages.Select(m => m.messageID).ToList();
-                    MessageDAL.MarkMessagesAsRead(messageIds);
-                }
-
-                await Task.Delay(1000); // 检查新消息的间隔时间
-            }
+            List<Message> messages = MessageDAL.GetMessages(userID);
+            return messages;
         }
 
-        private List<Message> GetUnreadMessages(int userId)
+        [HttpGet]
+        public ActionResult<string>  MarkedMessagesAsRead(List<int> messagesID)
         {
-            return MessageDAL.GetUnreadMessages(userId);
+            try {
+                MessageDAL.MarkMessagesAsRead(messagesID);
+                return "标记成功";
+            }
+            catch (Exception ex) { 
+                Console.WriteLine(ex.Message);
+                return "标记失败";
+            }
         }
 
 

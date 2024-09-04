@@ -448,6 +448,25 @@ namespace Fitness.DAL
             }
         }
 
+    public static string GetRole(int userID)
+        {
+            try
+            {
+                OracleParameter[] oracleParameters = new OracleParameter[]
+                {
+                    new OracleParameter("userID", OracleDbType.Int32) { Value = userID }
+                };
+                string sql = "SELECT \"Role\" FROM \"User\" WHERE \"userID\"=:userID";
+                var dt=OracleHelper.ExecuteTable(sql,oracleParameters);
+                return Convert.ToString(dt.Rows[0]["Role"]);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
 
     }
 }
