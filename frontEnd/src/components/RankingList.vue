@@ -83,7 +83,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /* 样式保持不变 */
 .ranking-title {
   text-align: center;

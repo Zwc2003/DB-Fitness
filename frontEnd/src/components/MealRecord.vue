@@ -236,7 +236,7 @@
                 <div class="loading-text">
                   <p class="fade-in" style="color:black">日期：{{ this.formatDate(this.selectedDate) }}</p>
                   <p class="fade-in" style="animation-delay: 1s; color:black;">使用模型：通义千问</p>
-                  <p class="fade-in" style="animation-delay: 2s; color:black;">当日摄取卡路里总量：{{ this.countCarlorie() }}</p>
+                  <p class="fade-in" style="animation-delay: 2s; color:black;">当日摄取卡路里总量：{{ this.countCarlorie() }} kCal</p>
                   <p class="fade-in" style="animation-delay: 3s; color:black;">正在生成总结，请稍等...</p>
                 </div>
               </div>
@@ -362,7 +362,7 @@ export default {
       for (let i = 0; i < this.oneDayRecord[needToCount].length; i++) {
         count += this.oneDayRecord[needToCount][i].totalCalorie;
       }
-      return count;
+      return count/100;
     },
     handleCellClick() {
       this.currentRecord = {
@@ -750,6 +750,7 @@ export default {
         .then(response => {
           this.oneDayRecord[date] = [];
           response.data.records.forEach(item => {
+            console.log(response.data.records);
             const getrecordID = item.recordID;
             const foods = item.foods.map(foodItem => ({
               foodName: foodItem.foodName,
