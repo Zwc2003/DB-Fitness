@@ -80,7 +80,7 @@ namespace Fitness.BLL
         }
 
 
-        public Post GetPostByPostID(string token, int postID)
+        public PostInfo GetPostByPostID(string token, int postID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             try
