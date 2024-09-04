@@ -62,7 +62,7 @@
             <el-divider class="post-divider"
                 style="border-width: 8px; border-color:#E1FFFF; background-color: 	#E1FFFF;"></el-divider>
             <div class="comments-section">
-                <h3>评论</h3>
+                <h3>评论区</h3>
                 <div class="comments-container" ref="commentsContainer">
                     <CommentItem v-for="comment in comments" :key="comment.commentID" :comment="comment"
                         @fetch-replies="fetchReplies" @like-comment="likeComment" @set-reply-target="setReplyTarget"
@@ -327,16 +327,19 @@ export default {
                 }
             })
                 .then(response => {
-                    this.comments = response.data.map(comment => {
-                        return {
-                            ...comment,
-                            likedByCurrentUser: false,
-                            showReplies: false,
-                            replies: [] // 确保replies数组存在
-                        };
-                    });
+                    // 对评论数据按发表时间升序排列
+                    this.comments = response.data
+                        .map(comment => {
+                            return {
+                                ...comment,
+                                likedByCurrentUser: false,
+                                showReplies: false,
+                                replies: [] // 确保replies数组存在
+                            };
+                        })
+                        .sort((a, b) => new Date(a.commentTime) - new Date(b.commentTime));  // 按发表时间升序排列
+
                     this.hasCommentsNotification = false; // 重置标志位
-                    console.log("获取评论成功")
                 })
                 .catch(error => {
                     if (error.response && error.response.status === 404) {
@@ -358,6 +361,7 @@ export default {
                     }
                 });
         },
+
         async fetchReplies(comment) {
             const token = localStorage.getItem('token');
             try {
@@ -371,9 +375,9 @@ export default {
                     return {
                         ...reply,
                         likedByCurrentUser: false,
-                        replies: [] // 确保每个回复都有自己的 replies 数组
+                        replies: []
                     };
-                });
+                }).sort((a, b) => new Date(a.commentTime) - new Date(b.commentTime)); // 按时间排序
                 comment.replies = replies;
             } catch (error) {
                 if (error.response && error.response.status === 404) {
@@ -862,9 +866,16 @@ export default {
             });
         },
         toggleEmojiPicker() {
+            // 如果表情选择器已经打开，恢复页面的滚动状态
             document.body.style.overflow = this.emojiPicker.isOpen ? '' : 'hidden';
             this.emojiPicker.togglePicker(this.$refs.emojiButton);
+
+            // 确保当表情选择器关闭时，恢复页面滚动
+            if (!this.emojiPicker.isOpen) {
+                document.body.style.overflow = '';  // 允许页面滚动
+            }
         },
+
         highlightCommentAction(event) {
             event.target.style.backgroundColor = '#f0f0f0';
             event.target.style.cursor = 'pointer';

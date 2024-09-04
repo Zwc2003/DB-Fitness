@@ -111,7 +111,7 @@ namespace Fitness.BLL
 
                     mealRecordRes.message = "饮食记录插入成功！";
                     mealRecordRes.recordID = recordID;
-                    mealRecordRes.totalCalorie = totalCalorie;
+                    mealRecordRes.totalCalorie = totalCalorie/100;
                     transaction.Commit();
 
                     // 异步任务在后台执行
@@ -197,7 +197,7 @@ namespace Fitness.BLL
                     single.foods.Add(food);
                 }
 
-                single.totalCalorie = totalcalorie;
+                single.totalCalorie = totalcalorie/100;
                 
                 res.records.Add(single);
 

@@ -36,6 +36,16 @@
               <template #prefix>
                 <el-icon><Search /></el-icon>
               </template>
+              <template #suffix>
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click="handleSomeCoursesClick"
+                  style="background-color: blue; color: white"
+                >
+                  搜索
+                </el-button>
+              </template>
             </el-input>
 
             <!-- 筛选区域 -->
@@ -106,14 +116,13 @@
       </div>
     </div>
 
-    <!-- 课程内容展示区域,无论如何是需要isbooked的,而且注意到courses是包含教练信息的-->
+    <!-- 课程内容展示区域,包含isbooked的,而且是包含教练信息的-->
     <!-- 搜索功能与全部课程功能的操作对象都是courses -->
     <div class="course-grid">
       <CourseHome
         v-for="(course, index) in courses"
         :key="index"
         :homecourse="course"
-        :isbooked="courses.isbooked"
         :width="300"
         :height="400"
       />
@@ -149,9 +158,11 @@ export default {
   },
   data() {
     return {
-      searchKeyword: "",
-      selectedCourseType: "",
-      selectedPriceRange: "",
+      searchKeyword: "", //搜索的关键词
+      selectedCourseType: "", //选定的课程类型
+      selectedPriceRange: "", //选定的价格区间
+      min: 0,
+      max: 0,
       isActive: false,
       courseTypes: ["高强度间歇", "低强度塑形", "儿童趣味课", "有氧训练"],
       priceRanges: [
@@ -167,14 +178,25 @@ export default {
       selectedOption: null,
     };
   },
+
+  mounted() {
+    this.fetchCourses();
+    this.userRole = localStorage.getItem("role");
+  },
+
   methods: {
     //点击全部课程触发
     handleAllCoursesClick() {
       this.isActive = !this.isActive;
+      this.searchKeyword = "";
       this.selectedCourseType = "";
       this.selectedPriceRange = "";
-      console.log("全部课程按钮被点击了！");
-      // 在这里添加你想要触发的其他逻辑
+      (this.min = 0), (this.max = 0), console.log("全部课程按钮被点击了！");
+      this.fetchCourses();
+    },
+
+    handleSomeCoursesClick() {
+      this.searchCourses();
     },
 
     //提交搜索词
@@ -241,11 +263,12 @@ export default {
 
     //-------------------------------------- API接口------------------------------------------------------
     //大厅获取课程API
-    async fetchCourses() {
+    fetchCourses() {
       const token = localStorage.getItem("token");
       return axios
         .get(`http://localhost:8080/api/Course/GetAllCourse?token=${token}`)
         .then((response) => {
+          console.log("获取课程成功:", response.data);
           this.courses = response.data.map((item) => {
             if (item.features) {
               item.features = item.features.split("#");
@@ -267,17 +290,19 @@ export default {
 
     // 搜索课程(已完结)
     searchCourses() {
+      const token = localStorage.getItem("token");
       axios
         .get(`http://localhost:8080/api/Course/SearchCourse`, {
           params: {
-            token: localStorage.getItem("token"),
-            keyword: this.searchKeyword,
+            token: token,
+            keyword: this.searchKeyword, //需要注意，keyword不能为空！！
             typeID: this.getCourseValue(this.selectedCourseType),
-            minPrice: range.min,
-            maxPrice: range.max,
-          }
+            minPrice: this.min,
+            maxPrice: this.max,
+          },
         })
         .then((response) => {
+          console.log("筛选课程成功:", response.data);
           this.courses = [];
           this.courses = response.data.map((item) => {
             if (item.features) {
@@ -288,7 +313,7 @@ export default {
           console.log(this.courses);
         })
         .catch((error) => {
-          console.error("Error fetching courses:", error);
+          console.error("筛选课程失败:", error);
           ElNotification({
             title: "错误",
             message: "获取所有课程时发生错误，请稍后再试。",
@@ -297,10 +322,6 @@ export default {
           throw error;
         });
     },
-  },
-  mounted() {
-    this.fetchCourses();
-    this.userRole = localStorage.getItem("role");
   },
 };
 </script>

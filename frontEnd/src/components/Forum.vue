@@ -6,7 +6,6 @@
             <el-card class="card">
                 <!-- 站内公告 -->
                 <div class="announcement-section">
-
                     <el-row class=" row">
                         <el-col :span="4">
                             <icon-home />
@@ -21,9 +20,7 @@
                         <el-divider />
                     </div>
                 </div>
-
                 <el-divider />
-
                 <!-- 打卡活动 -->
                 <div class="activity-section">
                     <el-row class="row">
@@ -36,14 +33,11 @@
                     </el-row>
                     <div class="activity-content">
                         <el-divider />
-                        <el-text>💪 健身达人7天打卡挑战赛：完成7天连续打卡，赢取健身礼包！<br />🏃
-                            每日晨跑打卡：坚持跑步，每日签到赢取健康积分！</el-text>
+                        <el-text>💪 健身达人7天打卡挑战赛：完成7天连续打卡，赢取健身礼包！<br />🏃 每日晨跑打卡：坚持跑步，每日签到赢取健康积分！</el-text>
                         <el-divider />
                     </div>
                 </div>
-
                 <el-divider />
-
                 <!-- 比赛活动通知 -->
                 <div class="contest-section">
                     <el-row class="row">
@@ -72,12 +66,10 @@
                             <span class="underline" v-if="selectedCategory === category"></span>
                         </li>
                     </ul>
-                    <!-- 右箭头按钮 -->
                     <button class="scroll-btn" @click="scrollRight">
                         <icon-arrow-right />
                     </button>
                 </nav>
-                <!-- 搜索框 -->
                 <div>
                     <el-input v-model="searchQuery" placeholder="搜索帖子..." class="search-box" @input="filterPosts"
                         clearable>
@@ -94,15 +86,14 @@
                 <!-- 帖子列表部分 -->
                 <div v-for="post in filteredPosts" :key="post.postID" class="post-item">
                     <div class="post-content">
+                        <img v-if="post.isPinned" src="../assets/images/top-icon.png" alt="置顶" class="top-icon" />
                         <h3 class="post-title" @click="viewPost(post.postID)">
                             {{ post.postTitle }}
                             <span class="category-tag">{{ post.postCategory }}</span>
                         </h3>
-                        <!-- 图片展示 -->
                         <div v-if="post.imgUrl != `null`" class="post-image">
                             <img :src="post.imgUrl" alt="Post Image" class="image" />
                         </div>
-                        <!-- 使用 v-html 直接渲染保存的内容 -->
                         <p class="post-snippet" v-html="renderContent(post.postContent)"></p>
                     </div>
                     <div class="post-footer">
@@ -123,6 +114,12 @@
                             <span v-if="isCurrentUser(post.userName)" class="icon-with-text-delete"
                                 @click="deletePost(post.postID, post.userID)">
                                 <DeleteOutlined />
+                            </span>
+                            <!-- 根据是否置顶显示不同图标 -->
+                            <span v-if="isAdmin(post.userName)" class="icon-with-text-delete"
+                                @click="putTop(post.postID)">
+                                <VerticalAlignTopOutlined v-if="!post.isPinned" />
+                                <VerticalAlignBottomOutlined v-else />
                             </span>
                         </span>
                     </div>
@@ -154,6 +151,7 @@
     </div>
 </template>
 
+
 <script>
 import axios from 'axios';
 import { mapState } from 'vuex';
@@ -161,10 +159,11 @@ import EditArticle from '../components/EditArticle.vue';
 import { ElNotification } from 'element-plus';
 import { IconCalendar, IconTrophy, IconArrowRight, IconFire, IconHome } from '@arco-design/web-vue/es/icon';
 import { postMixin } from '../mixins/postMixin.js';
-import { LikeOutlined, MessageOutlined, ShareAltOutlined, DeleteOutlined } from '@ant-design/icons-vue';
+import { LikeOutlined, MessageOutlined, ShareAltOutlined, DeleteOutlined, VerticalAlignTopOutlined, VerticalAlignBottomOutlined } from '@ant-design/icons-vue';
 import store from '../store/index.js';
-import { Search } from '@element-plus/icons-vue'; // 导入放大镜图标
+import { Search } from '@element-plus/icons-vue';
 import { commonMixin } from '../mixins/checkLoginState';
+import Icon from '@ant-design/icons-vue/lib/components/Icon';
 
 export default {
     mixins: [postMixin, commonMixin],
@@ -179,11 +178,13 @@ export default {
         MessageOutlined,
         ShareAltOutlined,
         DeleteOutlined,
+        VerticalAlignTopOutlined,
+        VerticalAlignBottomOutlined,
         Search,
     },
     data() {
         return {
-            searchQuery: '',  // 新增的搜索查询字段
+            searchQuery: '',
             newPost: {
                 postID: null,
                 userID: null,
@@ -217,10 +218,12 @@ export default {
     created() {
         this.checkAvailable();
         this.fetchAllPosts();
-        store.dispatch('pollIsPost');  // 开启轮询，更新发帖权限
-
+        store.dispatch('pollIsPost');
     },
     methods: {
+        isAdmin(userName) {
+            return this.$store.state.role === 'admin';
+        },
         deletePost(postID, userID) {
             const token = localStorage.getItem('token');
             axios.delete(`http://localhost:8080/api/Post/DeletePostByPostID`, {
@@ -266,6 +269,8 @@ export default {
             const token = localStorage.getItem('token');
             this.getAllPosts(token)
                 .then(response => {
+                    // 添加 isPinned 属性，默认为 false
+                    this.allPosts = response.data.map(post => ({ ...post, isPinned: false }));
                     this.filteredPosts = this.allPosts;
                     this.updateHotPosts();
                 })
@@ -281,7 +286,6 @@ export default {
         getAllPosts(token) {
             return axios.get(`http://localhost:8080/api/Post/GetAllPost?token=${token}`)
                 .then(response => {
-                    // 按时间由近及远排序
                     this.allPosts = response.data.sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
                     this.filteredPosts = this.allPosts;
                     this.updateHotPosts();
@@ -297,9 +301,35 @@ export default {
                 });
         },
 
+        putTop(postID) {
+            const postIndex = this.allPosts.findIndex(post => post.postID === postID);
+            if (postIndex !== -1) {
+                const post = this.allPosts[postIndex];
+
+                if (post.isPinned) {
+                    // 取消置顶，设置 isPinned 为 false
+                    post.isPinned = false;
+                    // 将帖子移动到未置顶帖子的部分，并按照时间排序
+                    const originalPosts = this.allPosts
+                        .filter(p => !p.isPinned)
+                        .sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
+                    // 更新 allPosts 和 filteredPosts
+                    this.allPosts = [...this.allPosts.filter(p => p.isPinned), ...originalPosts];
+                } else {
+                    // 置顶帖子，设置 isPinned 为 true
+                    post.isPinned = true;
+                    // 过滤掉帖子列表中的此帖子，并将其置顶到 allPosts 列表最前面
+                    this.allPosts = [post, ...this.allPosts.filter(p => p.postID !== postID)];
+                }
+
+                // 更新显示的帖子列表
+                this.filteredPosts = [...this.allPosts];
+            }
+        },
+
         filterByCategory(category) {
             this.selectedCategory = category;
-            this.filterPosts(); // 使用搜索过滤方法
+            this.filterPosts();
         },
 
         filterPosts() {
@@ -314,14 +344,13 @@ export default {
         },
 
         addPost() {
-            // 检查用户是否被禁言
             if (this.$store.state.isPost === 0) {
                 ElNotification({
                     title: '警告',
                     message: '您已被禁言，无法发帖。',
                     type: 'warning',
                 });
-                return; // 阻止发帖
+                return;
             }
 
             const token = this.$store.state.token;
@@ -343,21 +372,12 @@ export default {
                     refrencepostID: -1,
                     imgUrl: this.newPost.imgUrl === 'null' ? 'null' : this.newPost.imgUrl
                 };
-                console.log("url", newPost.imgUrl);
                 axios.post(`http://localhost:8080/api/Post/PublishPost?token=${token}`, newPost)
                     .then(response => {
-                        console.log(response.data);
-                        console.log(response.data.postID);
                         newPost.postID = response.data.postID;
-
-                        // 将新帖子添加到所有帖子列表中
                         this.allPosts.unshift(newPost);
-
-                        // 重新过滤并更新热门帖子
                         this.filterPosts();
                         this.updateHotPosts();
-
-                        // 重置表单
                         this.resetNewPostForm();
 
                         ElNotification({
@@ -382,25 +402,17 @@ export default {
             }
         },
 
-
         cleanHtml(content) {
-            // 将 <br> 标签替换为换行符
             let cleanedContent = content.replace(/<br\s*\/?>/gi, '<br/>');
-
-            // 保留 <span> 标签中的样式信息
             cleanedContent = cleanedContent.replace(/<span\s+style="font-family:\s*([^;]+);?">/gi, (match, fontFamily) => {
                 return `<span style="font-family:${fontFamily};">`;
             });
-
-            // 处理其他可能的格式标签
             cleanedContent = cleanedContent.replace(/<\/?span[^>]*>/gi, '');
-
             return cleanedContent;
         },
 
         renderContent(content) {
-            // 这里可以进一步处理内容，例如对其他 HTML 标签的处理
-            const plainText = content.replace(/<[^>]+>/g, ''); // 移除所有HTML标签
+            const plainText = content.replace(/<[^>]+>/g, '');
             return plainText.length > 40 ? plainText.slice(0, 40) + '...' : plainText;
         },
 
@@ -429,7 +441,19 @@ export default {
 </script>
 
 
+
 <style scoped>
+/* 添加置顶图标的样式 */
+.top-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    /* 根据实际图标大小调整 */
+    height: 30px;
+    z-index: 1;
+}
+
 /* 新增搜索框样式 */
 .search-box {
     height: 50px;
@@ -571,7 +595,7 @@ body {
     max-width: 100%;
     margin-top: 5vh;
     /* 在顶部留出导航栏的空间 */
-    overflow: auto;
+    overflow-y: scroll;
 }
 
 
@@ -621,6 +645,7 @@ body {
 }
 
 .post-item {
+    position: relative;
     background-color: rgba(255, 255, 255, 0.6);
     color: #000;
     padding: 20px;
@@ -628,6 +653,7 @@ body {
     border-radius: 5px;
     border: 2px solid #ddd;
 }
+
 
 .post-content {
     text-align: left;
