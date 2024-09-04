@@ -250,13 +250,13 @@ onMounted(() => {
   width: 100%;
   position: absolute;
   background-attachment: fixed;
-  top: 10vh;
+  top: 12vh;
   min-height: 100vh;
   left: 0;
 }
 .bot{
   position:absolute;
-  left: 480px;
+  left: 20%;
   top: 12px;
   width: 150px;
   height: 40px;
