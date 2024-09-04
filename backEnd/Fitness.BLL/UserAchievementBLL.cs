@@ -220,7 +220,7 @@ namespace Fitness.BLL
         {
             try
             {
-                vigorTokenBLL.UpdateBalance(userId, "每日登录，获得188活力币", 188);
+                //vigorTokenBLL.UpdateBalance(userId, "每日登录，获得188活力币", 188);
                 UpdateUserAchievement(userId, 2);
                 return true;
             }
