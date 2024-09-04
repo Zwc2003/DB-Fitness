@@ -162,6 +162,22 @@ namespace Fitness.BLL
             }
         }
 
+        //获取某一个课程的所有参与学员信息
+        public List<Trainee> GetAllTraineesByClassID(string token ,int classID) {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userID = tokenRes.userID;
+            try {
+                List<Trainee> trainees = new List<Trainee>();
+                trainees = TraineeDAL.GetAllTraineesByClassID(classID);
+                return trainees;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
         // 获取所有课程
         public string GetAllCourse(string token)
         {

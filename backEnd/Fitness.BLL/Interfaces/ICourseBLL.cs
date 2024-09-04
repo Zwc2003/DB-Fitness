@@ -18,7 +18,7 @@ namespace Fitness.BLL.Interfaces
         public string BeTrainee(string token, Trainee trainee);
         public string ReserveCourse(string token, int[] classID, string payMethod);
         public string PayCourseFare(string token, int[] bookID, int amount, string payMethod);
-
+        public List<Trainee> GetAllTraineesByClassID(string token, int classID);
         public List<BookCourseInfo> GetReservedCourseByUserID(string token);
 
         public string GetParticipatedCourseByUserID(string token);
