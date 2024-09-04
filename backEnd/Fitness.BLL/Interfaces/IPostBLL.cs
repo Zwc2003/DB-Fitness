@@ -19,11 +19,11 @@ namespace Fitness.BLL.Interfaces
         public List<Post> Search(string token, string query, string category = null, string dateRange = null, string sortBy = "postTime");
         // 评论区AI
         // 健身教练AI
-        public MessageRes FitCoachComment(string postType, string postContent);
+        public MessageRes FitCoachComment(string postTitle, string postContent);
         // 营养顾问AI
-        public MessageRes NutriExpertComment(string postContent);
+        public MessageRes NutriExpertComment(string postTitle,string postContent);
         // 激励导师AI
-        public MessageRes MotivatorComment(string postType, string postContent);
+        public MessageRes MotivatorComment(string postTitle, string postContent);
 
     }
 }

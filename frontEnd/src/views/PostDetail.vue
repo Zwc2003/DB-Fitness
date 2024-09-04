@@ -64,11 +64,16 @@
             <div class="comments-section">
                 <h3>评论区</h3>
                 <div class="comments-container" ref="commentsContainer">
-                    <CommentItem v-for="comment in comments" :key="comment.commentID" :comment="comment"
-                        @fetch-replies="fetchReplies" @like-comment="likeComment" @set-reply-target="setReplyTarget"
-                        @delete-comment="deleteComment" />
+                  <CommentItem
+                      v-for="comment in sortedComments"
+                      :key="comment.commentID"
+                      :comment="comment"
+                      @fetch-replies="fetchReplies"
+                      @like-comment="likeComment"
+                      @set-reply-target="setReplyTarget"
+                      @delete-comment="deleteComment"
+                  />
                 </div>
-
                 <!-- 回复目标显示 -->
                 <div v-if="replyingTo" class="replying-to">
                     <p>正在回复 @{{ replyingTo.userName }} 的评论：</p>
@@ -225,6 +230,12 @@ export default {
                 icon.style.height = '10px';
             });
         });
+    },
+    computed: {
+        // 根据 commentID 从大到小排序的 comments
+        sortedComments() {
+            return [...this.comments].sort((a, b) => b.commentID - a.commentID);
+        }
     },
     watch: {
         '$route.params.postID': {
@@ -511,6 +522,7 @@ export default {
                     axios.post(`http://localhost:8080/api/Comment/PublishComment?token=${token}`, newComment)
                         .then(response => {
                             if (response.data.message === '发布评论成功') {
+                                this.checkForAIComment(); // 检查并获取AI评论
                                 this.newCommentText = ""; // 清空输入框
                                 ElNotification({
                                     title: '成功',
@@ -534,6 +546,85 @@ export default {
                             });
                         });
                 }
+            }
+        },
+        checkForAIComment() {
+            let apiUrl = ''; // 定义一个变量来存储 API URL
+            let userID = 0;
+            let userName = '';
+            if (this.newCommentText.includes('@健身教练')) {
+                console.log('触发AI评论 - 健身教练');
+                apiUrl = 'http://localhost:8080/api/Post/GetFitCoachComment';
+                userID = 43;
+                userName = "FitCoachAI"
+            } else if (this.newCommentText.includes('@营养顾问')) {
+                console.log('触发AI评论 - 营养顾问');
+                apiUrl = 'http://localhost:8080/api/Post/GetNutriExpertComment';
+                userID = 44;
+                userName = "NutriExpertAI"
+            } else if (this.newCommentText.includes('@激励导师')) {
+                console.log('触发AI评论 - 激励导师');
+                apiUrl = 'http://localhost:8080/api/Post/GetMotivatorComment';
+                userID = 45;
+                userName = "MotivatorAI"
+            }
+
+            // 如果找到相应的@内容，调用API
+            if (apiUrl) {
+                axios.get(apiUrl, {
+                    params: {
+                        postTitle: this.post.postTitle, // 帖子标题
+                        postContent: this.post.postContent // 帖子内容
+                    }
+                })
+                .then(response => {
+                    if (response.data) {
+                        const aiComment = {
+                            commentID: -1, // 可以在数据库插入后由后端返回实际ID
+                            userID: userID,
+                            userName: userName, // 你可以根据需要自定义名字
+                            postID: this.post.postID,
+                            parentCommentID: -1,
+                            commentTime: new Date().toISOString(),
+                            likesCount: 0,
+                            content: response.data.message
+                        };
+
+                        // 向数据库插入AI评论
+                        axios.post(`http://localhost:8080/api/Comment/PublishComment?token=${localStorage.getItem('token')}`, aiComment)
+                        .then(dbResponse => {
+                            if (dbResponse.data.message === '发布评论成功') {
+                                // 插入数据库成功后，将AI评论显示到前端
+                                this.comments.push(aiComment);
+                                ElNotification({
+                                    title: 'AI评论',
+                                    message: 'AI评论已生成并保存',
+                                    type: 'success',
+                                });
+                            } else {
+                                ElNotification({
+                                    title: '错误',
+                                    message: '保存AI评论失败',
+                                    type: 'error',
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            ElNotification({
+                                title: '错误',
+                                message: '保存AI评论到数据库时发生错误',
+                                type: 'error',
+                            });
+                        });
+                    }
+                })
+                .catch(error => {
+                    ElNotification({
+                        title: '错误',
+                        message: '获取AI评论时发生错误',
+                        type: 'error',
+                    });
+                });
             }
         },
         likeComment(commentID) {

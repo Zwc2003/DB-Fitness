@@ -1,9 +1,11 @@
 <template>
     <div class="comment-item">
         <p>
-            <strong :class="{ 'current-user': isCurrentUser(comment.userName) }">{{ comment.userName }}</strong>:
-            {{ comment.content }}
+            <strong :class="{ 'current-user': isCurrentUser(comment.userName) }" style="font-weight: bold">{{ comment.userName }}</strong>:
         </p>
+        <div class="comment-content-container">
+              <span v-html="renderMarkdown(comment.content)"></span>
+        </div>
         <el-text class="comment-time">{{ formatDate(comment.commentTime) }}</el-text>
         <div class="comment-actions">
             <span @click="likeComment(comment.commentID)" @mouseover="highlightCommentAction"
@@ -29,6 +31,7 @@
 </template>
 
 <script>
+import MarkdownIt from 'markdown-it';
 export default {
     name: 'CommentItem',
     props: {
@@ -41,6 +44,7 @@ export default {
         return {
             showReplies: false,
             currentUser: localStorage.getItem('name'),
+            md: new MarkdownIt()
         };
     },
     methods: {
@@ -56,6 +60,9 @@ export default {
         },
         isCurrentUser(userName) {
             return this.currentUser === userName || this.$store.state.role === 'admin';
+        },
+        renderMarkdown(content) {
+          return this.md.render(content);
         },
         toggleReplies() {
             this.showReplies = !this.showReplies;
@@ -96,6 +103,7 @@ export default {
 
 .current-user {
     color: red;
+    font-weight: bold;
 }
 
 .comment-actions {
@@ -125,5 +133,11 @@ export default {
     cursor: pointer;
     font-size: 14px;
     border: none;
+}
+
+.comment-content-container {
+  padding-left: 20px; /* 调整左边距 */
+  margin-top: 10px;   /* 调整顶部间距 */
+  line-height: 1.6;   /* 调整文本的行高 */
 }
 </style>
