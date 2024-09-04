@@ -12,7 +12,7 @@
             <div class="meal-planner">
                 <MealPlanner />
             </div>
-            <CommonLayout />
+            <common-layout />
         </div>
     </div>
 </template>

@@ -2,19 +2,21 @@
     <div>
         <navigation-bar />
         <Forum />
-        <CommonLayout />
+        <!-- <common-layout /> -->
+        <notification-box />
+
     </div>
 </template>
 
 
 <script>
 import Forum from "../components/Forum.vue";
-import CommonLayout from "../components/CommonLayout.vue";
 import {commonMixin} from '../mixins/checkLoginState';
+import NotificationBox from '../components/NotificationBox.vue';
 
 export default {
   mixins: [commonMixin],
-  components: {Forum, CommonLayout},
+  components: {Forum,NotificationBox},
   created() {
     this.checkAvailable()
   }

@@ -415,6 +415,19 @@ namespace Fitness.DAL
             }
         }
 
+        public static string GetNameById(int userID) {
+            OracleParameter[]
+                oracleParameters = new OracleParameter[]
+                   {
+                    new OracleParameter("userID", OracleDbType.Int32) { Value = userID},
+                    new OracleParameter("isDelete", OracleDbType.Int32) { Value = 0 }
+                    };
+            DataTable dt = OracleHelper.ExecuteTable("SELECT \"userName\" FROM \"User\" WHERE \"userID\"=:userID AND \"isDelete\" = :isDelete"
+                , oracleParameters);
+            DataRow dr = dt.Rows[0];
+            return Convert.ToString(dr["userName"]);
+        }
+
         public static DateTime GetLastLoginTime(int userID)
         {
             OracleParameter[]
@@ -445,6 +458,25 @@ namespace Fitness.DAL
             {
                 Console.WriteLine(ex.Message);
                 return false;
+            }
+        }
+
+    public static string GetRole(int userID)
+        {
+            try
+            {
+                OracleParameter[] oracleParameters = new OracleParameter[]
+                {
+                    new OracleParameter("userID", OracleDbType.Int32) { Value = userID }
+                };
+                string sql = "SELECT \"Role\" FROM \"User\" WHERE \"userID\"=:userID";
+                var dt=OracleHelper.ExecuteTable(sql,oracleParameters);
+                return Convert.ToString(dt.Rows[0]["Role"]);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
             }
         }
 

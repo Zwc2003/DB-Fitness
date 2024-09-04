@@ -177,6 +177,11 @@ namespace Fitness.BLL
                 else return res;
             }
 
+        public string GetName(int userID) {
+            return UserDAL.GetNameById(userID);
+        
+        }
+
             public expandUserInfo GetProfileByUserID(string token, int userID)
             {
                 int st;

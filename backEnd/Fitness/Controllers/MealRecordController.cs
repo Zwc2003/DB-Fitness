@@ -73,6 +73,7 @@ namespace Fitness.Controllers
         public ActionResult<MessageRes> Update(UpdateMealRecordInfo updateMealRecordInfo)
         {
             Console.WriteLine($"更新饮食记录内容");
+            updateMealRecordInfo.mealTime = updateMealRecordInfo.mealTime.ToLocalTime();
             return _mealRecordBLL.UpdateMealRecords(updateMealRecordInfo);
         }
 

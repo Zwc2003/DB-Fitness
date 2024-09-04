@@ -1,4 +1,5 @@
 <template>
+    <notification-box />
     <div class="forum-bg">
         <el-backtop class="backtop-button" />
         <div class="back-button-container">
@@ -62,13 +63,18 @@
             <el-divider class="post-divider"
                 style="border-width: 8px; border-color:#E1FFFF; background-color: 	#E1FFFF;"></el-divider>
             <div class="comments-section">
-                <h3>评论</h3>
+                <h3>评论区</h3>
                 <div class="comments-container" ref="commentsContainer">
-                    <CommentItem v-for="comment in comments" :key="comment.commentID" :comment="comment"
-                        @fetch-replies="fetchReplies" @like-comment="likeComment" @set-reply-target="setReplyTarget"
-                        @delete-comment="deleteComment" />
+                  <CommentItem
+                      v-for="comment in sortedComments"
+                      :key="comment.commentID"
+                      :comment="comment"
+                      @fetch-replies="fetchReplies"
+                      @like-comment="likeComment"
+                      @set-reply-target="setReplyTarget"
+                      @delete-comment="deleteComment"
+                  />
                 </div>
-
                 <!-- 回复目标显示 -->
                 <div v-if="replyingTo" class="replying-to">
                     <p>正在回复 @{{ replyingTo.userName }} 的评论：</p>
@@ -168,7 +174,7 @@ import store from '../store/index.js';
 
 import { commonMixin } from '../mixins/checkLoginState';
 import CommentItem from '../components/CommentItem.vue';
-
+import NotificationBox from '../components/NotificationBox.vue';
 
 export default {
     mixins: [commonMixin],
@@ -178,6 +184,7 @@ export default {
         IconLink,
         EmojiButton,
         CommentItem,
+        NotificationBox
     },
     data() {
         return {
@@ -195,7 +202,10 @@ export default {
                 likesCount: null,
                 forwardCount: null,
                 commentsCount: null,
-                refrencePostID: null
+                refrencePostID: null,
+                imgUrl: '',
+                isPinned: 0,
+                isReported: 0,
             },
             postLiked: false,
             comments: [],
@@ -225,6 +235,12 @@ export default {
                 icon.style.height = '10px';
             });
         });
+    },
+    computed: {
+        // 根据 commentID 从大到小排序的 comments
+        sortedComments() {
+            return [...this.comments].sort((a, b) => b.commentID - a.commentID);
+        }
     },
     watch: {
         '$route.params.postID': {
@@ -309,6 +325,7 @@ export default {
                     console.log(response.data);
                     this.post = response.data;
                     this.fetchComments(postID);
+                    console.log("11",this.post.imgUrl);
                 })
                 .catch(error => {
                     ElNotification({
@@ -327,16 +344,19 @@ export default {
                 }
             })
                 .then(response => {
-                    this.comments = response.data.map(comment => {
-                        return {
-                            ...comment,
-                            likedByCurrentUser: false,
-                            showReplies: false,
-                            replies: [] // 确保replies数组存在
-                        };
-                    });
+                    // 对评论数据按发表时间升序排列
+                    this.comments = response.data
+                        .map(comment => {
+                            return {
+                                ...comment,
+                                likedByCurrentUser: false,
+                                showReplies: false,
+                                replies: [] // 确保replies数组存在
+                            };
+                        })
+                        .sort((a, b) => new Date(a.commentTime) - new Date(b.commentTime));  // 按发表时间升序排列
+
                     this.hasCommentsNotification = false; // 重置标志位
-                    console.log("获取评论成功")
                 })
                 .catch(error => {
                     if (error.response && error.response.status === 404) {
@@ -358,6 +378,7 @@ export default {
                     }
                 });
         },
+
         async fetchReplies(comment) {
             const token = localStorage.getItem('token');
             try {
@@ -371,9 +392,9 @@ export default {
                     return {
                         ...reply,
                         likedByCurrentUser: false,
-                        replies: [] // 确保每个回复都有自己的 replies 数组
+                        replies: []
                     };
-                });
+                }).sort((a, b) => new Date(a.commentTime) - new Date(b.commentTime)); // 按时间排序
                 comment.replies = replies;
             } catch (error) {
                 if (error.response && error.response.status === 404) {
@@ -507,6 +528,7 @@ export default {
                     axios.post(`http://localhost:8080/api/Comment/PublishComment?token=${token}`, newComment)
                         .then(response => {
                             if (response.data.message === '发布评论成功') {
+                                this.checkForAIComment(); // 检查并获取AI评论
                                 this.newCommentText = ""; // 清空输入框
                                 ElNotification({
                                     title: '成功',
@@ -530,6 +552,86 @@ export default {
                             });
                         });
                 }
+            }
+        },
+        checkForAIComment() {
+            let apiUrl = ''; // 定义一个变量来存储 API URL
+            let userID = 0;
+            let userName = '';
+            if (this.newCommentText.includes('@健身教练')) {
+                console.log('触发AI评论 - 健身教练');
+                apiUrl = 'http://localhost:8080/api/Post/GetFitCoachComment';
+                userID = 43;
+                userName = "健身教练AI"
+            } else if (this.newCommentText.includes('@营养顾问')) {
+                console.log('触发AI评论 - 营养顾问');
+                apiUrl = 'http://localhost:8080/api/Post/GetNutriExpertComment';
+                userID = 44;
+                userName = "营养顾问AI"
+            } else if (this.newCommentText.includes('@激励导师')) {
+                console.log('触发AI评论 - 激励导师');
+                apiUrl = 'http://localhost:8080/api/Post/GetMotivatorComment';
+                userID = 45;
+                userName = "激励导师AI"
+            }
+
+            // 如果找到相应的@内容，调用API
+            if (apiUrl) {
+                axios.get(apiUrl, {
+                    params: {
+                        postTitle: this.post.postTitle, // 帖子标题
+                        postContent: this.post.postContent // 帖子内容
+                    }
+                })
+                .then(response => {
+                    if (response.data) {
+                        const aiComment = {
+                            commentID: -1, // 可以在数据库插入后由后端返回实际ID
+                            userID: userID,
+                            userName: userName, // 你可以根据需要自定义名字
+                            postID: this.post.postID,
+                            parentCommentID: -1,
+                            commentTime: new Date().toISOString(),
+                            likesCount: 0,
+                            content: response.data.message
+                        };
+
+                        // 向数据库插入AI评论
+                        axios.post(`http://localhost:8080/api/Comment/PublishComment?token=${localStorage.getItem('token')}`, aiComment)
+                        .then(dbResponse => {
+                            if (dbResponse.data.message === '发布评论成功') {
+                                // 插入数据库成功后，将AI评论显示到前端
+                                this.comments.push(aiComment);
+                                this.fetchComments(this.post.postID); // 重新获取评论列表
+                                ElNotification({
+                                    title: 'AI评论',
+                                    message: 'AI评论已生成并保存',
+                                    type: 'success',
+                                });
+                            } else {
+                                ElNotification({
+                                    title: '错误',
+                                    message: '保存AI评论失败',
+                                    type: 'error',
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            ElNotification({
+                                title: '错误',
+                                message: '保存AI评论到数据库时发生错误',
+                                type: 'error',
+                            });
+                        });
+                    }
+                })
+                .catch(error => {
+                    ElNotification({
+                        title: '错误',
+                        message: '获取AI评论时发生错误',
+                        type: 'error',
+                    });
+                });
             }
         },
         likeComment(commentID) {
@@ -653,83 +755,83 @@ export default {
         },*/
         // 递归删除评论及其子评论
         async deleteComment(commentID) {
-            const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token');
 
-            try {
-                // 找到目标评论及其所在的父级评论数组（comments 或 replies）
-                const findComment = (commentID, comments) => {
-                    for (let i = 0; i < comments.length; i++) {
-                        if (comments[i].commentID === commentID) {
-                            return { comment: comments[i], parentArray: comments, index: i };
-                        }
-                        if (comments[i].replies && comments[i].replies.length > 0) {
-                            const result = findComment(commentID, comments[i].replies);
-                            if (result) return result;
-                        }
+        try {
+            // 找到目标评论及其所在的父级评论数组（comments 或 replies）
+            const findComment = (commentID, comments) => {
+                for (let i = 0; i < comments.length; i++) {
+                    if (comments[i].commentID === commentID) {
+                        return { comment: comments[i], parentArray: comments, index: i };
                     }
-                    return null;
-                };
-
-                // 递归删除子评论，返回删除的评论总数
-                const deleteRecursively = async (comment) => {
-                    let deletedCount = 0;
-                    if (comment.replies && comment.replies.length > 0) {
-                        for (let reply of comment.replies) {
-                            deletedCount += await deleteRecursively(reply);
-                        }
+                    if (comments[i].replies && comments[i].replies.length > 0) {
+                        const result = findComment(commentID, comments[i].replies);
+                        if (result) return result;
                     }
-
-                    // 删除当前评论
-                    const response = await axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
-                        params: {
-                            token: token,
-                            commentID: comment.commentID,
-                            postID: this.post.postID
-                        }
-                    });
-
-                    if (response.data === '评论删除成功') {
-                        deletedCount += 1;
-                    } else {
-                        throw new Error('删除评论失败');
-                    }
-
-                    return deletedCount;
-                };
-
-                const { comment, parentArray, index } = findComment(commentID, this.comments);
-
-                if (comment) {
-                    // 先递归删除子评论
-                    const deletedCount = await deleteRecursively(comment);
-
-                    // 从父级数组中移除当前评论
-                    parentArray.splice(index, 1);
-
-                    // 同步更新评论总数
-                    this.post.commentsCount -= deletedCount;
-
-                    ElNotification({
-                        title: '成功',
-                        message: '评论删除成功',
-                        type: 'success',
-                    });
-                } else {
-                    ElNotification({
-                        title: '错误',
-                        message: '未找到要删除的评论',
-                        type: 'error',
-                    });
                 }
-            } catch (error) {
-                console.log(error);
+                return null;
+            };
+
+            // 递归删除子评论，返回删除的评论总数
+            const deleteRecursively = async (comment) => {
+                let deletedCount = 0;
+                if (comment.replies && comment.replies.length > 0) {
+                    for (let reply of comment.replies) {
+                        deletedCount += await deleteRecursively(reply);
+                    }
+                }
+
+                // 删除当前评论
+                const response = await axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
+                    params: {
+                        token: token,
+                        commentID: comment.commentID,
+                        postID: this.post.postID
+                    }
+                });
+
+                if (response.data === '评论删除成功') {
+                    deletedCount += 1;
+                } else {
+                    throw new Error('删除评论失败');
+                }
+
+                return deletedCount;
+            };
+
+            const { comment, parentArray, index } = findComment(commentID, this.comments);
+
+            if (comment) {
+                // 先递归删除子评论
+                const deletedCount = await deleteRecursively(comment);
+
+                // 从父级数组中移除当前评论
+                parentArray.splice(index, 1);
+
+                // 同步更新评论总数
+                this.post.commentsCount -= deletedCount;
+
+                ElNotification({
+                    title: '成功',
+                    message: '评论删除成功',
+                    type: 'success',
+                });
+            } else {
                 ElNotification({
                     title: '错误',
-                    message: '删除评论时发生错误',
+                    message: '未找到要删除的评论',
                     type: 'error',
                 });
             }
-        },
+        } catch (error) {
+            console.log(error);
+            ElNotification({
+                title: '错误',
+                message: '删除评论时发生错误',
+                type: 'error',
+            });
+        }
+    },
 
         setReplyTarget(comment) {
             this.replyingTo = comment;

@@ -92,9 +92,9 @@ namespace Fitness.Controllers
         }
 
         [HttpPost]
-        public ActionResult<string> CancelCourse(string token, int bookID)
+        public ActionResult<string> CancelCourse(string token, int classID)
         {
-            return _courseBLL.CancelCourse(token, bookID);
+            return _courseBLL.CancelCourse(token, classID);
         }
 
         [HttpPost]

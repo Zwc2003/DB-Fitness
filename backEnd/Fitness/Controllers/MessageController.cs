@@ -1,9 +1,12 @@
 ﻿using Fitness.BLL;
+using Fitness.BLL.Core;
 using Fitness.DAL;
 using Fitness.Models;
+using Microsoft.AspNet.SignalR.Messaging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Message = Fitness.Models.Message;
 
 namespace Fitness.Controllers
 {
@@ -11,42 +14,33 @@ namespace Fitness.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
-        private readonly MessageBLL _messageBLL;
+        private readonly MessageBLL _messageBLL =new();
 
-        public MessageController(MessageBLL messageBLL)
+
+        private readonly JWTHelper _jwthelper =new();
+        [HttpGet]
+        public ActionResult<List<Message>> GetMessages(string token)
         {
-            _messageBLL = messageBLL;
+            int userID =_jwthelper.ValidateToken(token).userID;
+            List<Message> messages = MessageDAL.GetMessages(userID);
+            foreach (Message message in messages)
+            {
+                Console.WriteLine(message.isRead);
+            }
+            return messages;
         }
 
         [HttpGet]
-        public async Task Subscribe(int userID)
+        public ActionResult<string>  MarkedMessagesAsRead(int messageID)
         {
-            HttpContext.Response.Headers.Add("Content-Type", "text/event-stream");
-
-            int userId = userID; 
-
-            while (true)
-            {
-                Console.WriteLine("Subcribe");
-                var messages = GetUnreadMessages(userId);
-                if (messages != null && messages.Count > 0)
-                {
-                    string jsonMessages = JsonConvert.SerializeObject(messages);
-                    await HttpContext.Response.WriteAsync($"data: {jsonMessages}\n\n");
-                    await HttpContext.Response.Body.FlushAsync();
-
-                    // 标记这些消息为已读
-                    var messageIds = messages.Select(m => m.messageID).ToList();
-                    MessageDAL.MarkMessagesAsRead(messageIds);
-                }
-
-                await Task.Delay(1000); // 检查新消息的间隔时间
+            try {
+                MessageDAL.MarkMessagesAsRead(messageID);
+                return "标记成功";
             }
-        }
-
-        private List<Message> GetUnreadMessages(int userId)
-        {
-            return MessageDAL.GetUnreadMessages(userId);
+            catch (Exception ex) { 
+                Console.WriteLine(ex.Message);
+                return "标记失败";
+            }
         }
 
 

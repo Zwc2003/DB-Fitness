@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -79,7 +80,7 @@ namespace Fitness.BLL
         }
 
 
-        public Post GetPostByPostID(string token, int postID)
+        public PostInfo GetPostByPostID(string token, int postID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             try
@@ -135,7 +136,7 @@ namespace Fitness.BLL
             }
         }
 
-        public List<Post> GetAllPost(string token)
+        public string GetAllPost(string token)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             try
@@ -144,27 +145,29 @@ namespace Fitness.BLL
                 if (result == null || result.Rows.Count == 0)
                 {
                     return null;
-                } 
-                var posts = new List<Post>();
+                }
+                List<Dictionary<string, object>> posts = new List<Dictionary<string, object>>();
                 foreach (DataRow row in result.Rows)
                 {
-                    posts.Add(new Post()
-                    {
-                        postID = Convert.ToInt32(row["postID"]),
-                        userID = Convert.ToInt32(row["userID"]),
-                        postTitle = row["postTitle"].ToString(),
-                        postContent = row["postContent"].ToString(),
-                        postCategory = row["postCategory"].ToString(),
-                        postTime = Convert.ToDateTime(row["postTime"]),
-                        likesCount = Convert.ToInt32(row["likesCount"]),
-                        forwardCount = Convert.ToInt32(row["forwardCount"]),
-                        commentsCount = Convert.ToInt32(row["commentsCount"]),
-                        userName = row["userName"].ToString(),
-                        imgUrl = row["imgUrl"].ToString()
-                    });
+                    var res = PostDAL.GetIsPinnedAndIsReported(Convert.ToInt32(row["postID"]));
+                    var postInfo = new Dictionary<string, object> {
+                        { "postID" ,Convert.ToInt32(row["postID"]) },
+                        { "userID" ,Convert.ToInt32(row["userID"]) },
+                        {"postTitle",row["postTitle"].ToString() },
+                        { "postContent",row["postContent"].ToString() },
+                        {"postCategory",row["postCategory"].ToString() },
+                        { "postTime",Convert.ToDateTime(row["postTime"]) },
+                        {"likesCount",Convert.ToInt32(row["likesCount"]) },
+                        {"forwardCount",Convert.ToInt32(row["forwardCount"]) },
+                        { "commentsCount",Convert.ToInt32(row["commentsCount"])},
+                        { "userName",row["userName"].ToString() },
+                        { "imgUrl",row["imgUrl"].ToString() },
+                        { "isPinned",res.isPinned},
+                        { "isReported",res.isReported}
+                    };
+                    posts.Add(postInfo);
                 }
-
-                return posts;
+                return JsonConvert.SerializeObject(posts, Formatting.Indented);
             }
             catch (Exception ex)
             {
@@ -264,6 +267,84 @@ namespace Fitness.BLL
             }
         }
 
+        public string Report(string token, int postId) {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            if (PostDAL.Report(postId))
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "成功举报"
+                });
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "举报失败"
+                });
+            }
+
+        }
+
+
+        public string CancleReport(string token, int postId) {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            if (PostDAL.CancleReport(postId))
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "成功取消举报"
+                }) ;
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "取消举报失败"
+                });
+            }
+        }
+
+        public string Pin(string token, int postId)
+        {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            if (PostDAL.Pin(postId))
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "成功置顶"
+                });
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "置顶失败"
+                });
+            }
+
+        }
+
+
+        public string CanclePin(string token, int postId)
+        {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            if (PostDAL.CanclePin(postId))
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "成功取消置顶"
+                });
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "取消置顶失败"
+                });
+            }
+        }
+
         public string Forward(string token, int postId)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
@@ -301,7 +382,7 @@ namespace Fitness.BLL
         }
 
         // 评论区——健身教练AI
-        public MessageRes FitCoachComment(string postType,string postContent)
+        public MessageRes FitCoachComment(string postTitle,string postContent)
         {
 
             string sys = "- Role: 专业健身教练\r\n" +
@@ -310,16 +391,12 @@ namespace Fitness.BLL
                 "- Skills: 你具备运动生理学、营养学和运动心理学的知识，能够根据用户的身体状况、健身目标和生活习惯，设计出科学合理的健身计划。\r\n" +
                 "- Goals: 为用户提供专业的健身指导，帮助他们实现健身目标，提高身体素质和健康水平。\r\n" +
                 "- Constrains: 评论应保持专业严谨，注重实用性，避免使用过于复杂或专业的术语，确保用户易于理解和执行。\r\n" +
-                "- OutputFormat: 提供简洁明了的健身建议和指导，包括训练动作、频率、持续时间、注意事项等。\r\n" +
-                "- Workflow:\r\n  " +
-                "1. 阅读用户评论，了解其健身目标和当前状况。\r\n  " +
-                "2. 分析用户的健身需求，考虑其身体状况、时间安排和健身经验。\r\n  " +
-                "3. 提供个性化的健身建议，包括训练计划、饮食建议和生活习惯调整。\r\n  " +
-                "4. 根据用户的反馈，调整和优化训练计划。\r\n" ;
+                "- OutputFormat: 提供简洁明了的健身建议和指导，包括训练动作、频率、持续时间、注意事项等。因为只是评论，回复一定要简短！简短！简短！\r\n";
+
 
             MessageRes res = new();
 
-            string Prompt = "帖子类型为"+postType+",帖子内容为:" +postContent;
+            string Prompt = "帖子标题为"+postTitle+",帖子内容为:" +postContent;
             
             res.message = Qwen_VL.CallQWenSingle(sys, Prompt);
 
@@ -327,7 +404,7 @@ namespace Fitness.BLL
         }
 
         // 评论区——营养顾问AI
-        public MessageRes NutriExpertComment(string postContent)
+        public MessageRes NutriExpertComment(string postTitle,string postContent)
         {
 
             string sys = "- Role: 营养顾问\r\n" +
@@ -336,16 +413,12 @@ namespace Fitness.BLL
                 "- Skills: 你具备营养学、食品科学和健康饮食规划的知识，能够根据用户的健康状况、健身目标和口味偏好，设计出健康合理的饮食计划。\r\n" +
                 "- Goals: 为用户提供专业的营养指导，帮助他们实现健康饮食，改善身体状况，支持健身目标的达成。\r\n" +
                 "- Constrains: 评论应保持温和耐心，强调科学性，注重饮食和营养的重要性，避免使用过于复杂或专业的术语，确保用户易于理解和执行。\r\n" +
-                "- OutputFormat: 提供具体的食谱建议、营养搭配方案和饮食指导，包括食材选择、烹饪方法、饮食频率和注意事项等。\r\n" +
-                "- Workflow:\r\n  " +
-                "1. 阅读用户评论，了解其饮食目标和当前饮食习惯。\r\n  " +
-                "2. 分析用户的饮食习惯和营养需求，考虑其健康状况、健身目标和口味偏好。\r\n  " +
-                "3. 提供个性化的饮食建议，包括食谱推荐、营养搭配和饮食计划。\r\n  " +
-                "4. 根据用户的反馈，调整和优化饮食建议。";
+                "- OutputFormat: 提供具体的食谱建议、营养搭配方案和饮食指导，包括食材选择、烹饪方法、饮食频率和注意事项等。因为只是评论，回复一定要简短！简短！简短！\r\n";
+
 
             MessageRes res = new();
 
-            string Prompt = "帖子内容为:" + postContent;
+            string Prompt = "帖子的标题为"+ postTitle+"帖子内容为:" + postContent;
 
             res.message = Qwen_VL.CallQWenSingle(sys, Prompt);
 
@@ -353,7 +426,7 @@ namespace Fitness.BLL
         }
 
         // 评论区——激励导师AI
-        public MessageRes MotivatorComment(string postType, string postContent)
+        public MessageRes MotivatorComment(string postTitle, string postContent)
         {
 
             string sys = "- Role: 激励导师\r\n" +
@@ -362,17 +435,12 @@ namespace Fitness.BLL
                 "- Skills: 你具备心理学、沟通技巧和团队建设的知识，能够通过激励性的话语和活动激发用户的健身动力，促进社区内的互动和互助。\r\n" +
                 "- Goals: 帮助用户克服健身过程中的障碍，保持积极态度，鼓励他们坚持健身打卡，参与挑战和活动。\r\n" +
                 "- Constrains: 评论应充满正能量，语气热情，使用励志语句激发用户的健身动力，同时避免过度夸张或不切实际的承诺。\r\n" +
-                "- OutputFormat: 提供激励性的话语、励志故事、健身挑战和活动信息，以及正面反馈和支持。\r\n" +
-                "- Workflow:\r\n  " +
-                "1. 阅读用户评论，了解他们当前的健身状态和心理需求。\r\n  " +
-                "2. 根据用户的需求，提供相应的激励和支持，如励志语句、成功案例分享、健身挑战邀请等。\r\n  " +
-                "3. 鼓励用户参与社区内的互动和互助，如打卡、分享经验、互相鼓励等。\r\n  " +
-                "4. 定期更新激励内容，保持社区活力和用户的参与度。";
+                "- OutputFormat: 提供激励性的话语、励志故事、健身挑战和活动信息，以及正面反馈和支持。因为只是评论，一定要简短！简短！简短！\r\n";
 
 
             MessageRes res = new();
 
-            string Prompt = "帖子类型为" + postType + ",帖子内容为:" + postContent;
+            string Prompt = "帖子标题为" + postTitle + ",帖子内容为:" + postContent;
 
             res.message = Qwen_VL.CallQWenSingle(sys, Prompt);
 

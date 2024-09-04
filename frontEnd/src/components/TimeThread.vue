@@ -13,8 +13,8 @@
     >
       <el-timeline class="line">
         <el-timeline-item
-          v-for="(item, index) in week"
-          :key="index"
+          v-for="(item, index2) in week"
+          :key="index2"
           :timestamp="item.timestamp"
           class="custom-timeline-item"
           placement="top"
@@ -27,9 +27,9 @@
                   <template #footer>{{ item.workoutName }}</template>
                 </el-card>
               </template>
-              <div style="padding-left: 20px">
+              <div style="padding-left: 0">
                 <el-table :data="item.exercises" :row-style="{height:50+'px'}" stripe class="table">
-                  <el-table-column type="selection" width="55" />
+
                   <el-table-column prop="exerciseName" label="动作" width="150" />
                   <el-table-column prop="count" label="组数" />
                   <el-table-column prop="time" label="时间" />
@@ -42,6 +42,7 @@
                   </el-table-column>
                 </el-table>
               </div>
+              <el-button @click="finish(index*7+index2)" class="over" type="primary" :disabled="buttonDisabled[index*7+index2]"> {{ buttonText[index*7+index2] }}</el-button>
             </el-popover>
           </el-container>
         </el-timeline-item>
@@ -68,6 +69,11 @@
   position: relative;
   left: 10px;
   top: 10px;
+}
+.over{
+  position: relative;
+  margin-top: 10px;
+  left: 38%;
 }
 /* 自定义 el-timeline-item 的时间戳样式 */
 >>>.custom-timeline-item .el-timeline-item__timestamp {
@@ -143,6 +149,25 @@ const weeks = ref([]);
 const titles = ["第一周", "第二周", "第三周", "第四周"];
 const loading = ref(true);
 const activeName = ref([0]);
+const isDisable=ref(true);
+const buttonDisabled=ref([false, false, false, false, false, false, false,
+  false, false, false, false, false, false, false,
+  false, false, false, false, false, false, false,
+  false, false, false, false, false, false, false,]);
+const buttonText=ref(['完成计划','完成计划','完成计划','完成计划','完成计划','完成计划','完成计划',
+  '完成计划','完成计划','完成计划','完成计划','完成计划','完成计划','完成计划',
+  '完成计划','完成计划','完成计划','完成计划','完成计划','完成计划','完成计划',
+  '完成计划','完成计划','完成计划','完成计划','完成计划','完成计划','完成计划',])
+function finish(index){
+  buttonDisabled.value[index]=true;
+  buttonText.value[index]='今日计划已完成';
+  axios.post('http://localhost:8080/api/Achievement/UpdateFitnessPlanAchievement', {
+    params: {
+      token: localStorage.getItem('token'),
+      workoutIndex:index
+    }
+  })
+}
 function loadWeeksData() {
   loading.value = true;
   axios.get('http://localhost:8080/api/FitnessPlan/GetPlan', {
@@ -151,13 +176,36 @@ function loadWeeksData() {
     }
   }).then(response => {
     weeks.value = response.data; // 假设数据结构中 weeks 在顶层
+    if (response.data.message !== "fail") {
+      console.log(weeks.value.plan[1][1].isCompleted);
+      ElNotification({
+      message: "健身计划成功生成！",
+      type: 'success',
+      duration: 2000
+    });
+      for(let i=0;i<4;i++){
+        for(let j=0;j<7;j++){
+          if(weeks.value.plan[i][j].isCompleted=="true"){
+            buttonDisabled[i*7+j]=true;
+            buttonText[i*7+j]='今日计划已完成';
+          }
+          else{
+            buttonDisabled[i*7+j]=false;
+            buttonText[i*7+j]='完成计划';
+          }
+        }
+      }
+    }
+    else{
+      ElNotification({
+        message: "请先填写体测表！",
+        type: 'error',
+        duration: 2000
+      });
+    }
     //localStorage.setItem('savedFitnessPlan', JSON.stringify(weeks.value)); // 保存数据到本地存储
     loading.value = false;
-    ElNotification({
-            message: "健身计划成功生成！",
-            type: 'success',
-            duration: 2000
-          });
+
   }).catch(error => {
     console.error('Failed to fetch data:', error);
     loading.value = false;

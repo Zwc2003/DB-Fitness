@@ -1,4 +1,5 @@
 <template>
+  <common-layout />
   <div class="aaa">
     <div aria-label="A complete example of page header">
       <div class="kkk">
