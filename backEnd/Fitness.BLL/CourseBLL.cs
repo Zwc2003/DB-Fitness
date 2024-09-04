@@ -218,7 +218,7 @@ namespace Fitness.BLL
                         { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
                         { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
                         { "courseGrade", course.courseGrade.ToString() },
-                        { "coursePrice", course.coursePrice.ToString() },
+                        { "coursePrice", course.coursePrice },
                         { "coachName", coachName },
                         { "instructorHonors", instructorHonors },
                         { "iconURL", iconURL },
