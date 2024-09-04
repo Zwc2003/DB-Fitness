@@ -1,4 +1,5 @@
 <template>
+    <common-layout />
     <div class="forum-bg">
         <el-backtop class="backtop-button" />
         <div class="back-button-container">

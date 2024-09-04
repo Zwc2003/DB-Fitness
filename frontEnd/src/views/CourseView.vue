@@ -1,5 +1,6 @@
 <template>
   <navigation-bar />
+  <common-layout />
   <div class="trans">
     <router-link v-if="userRole === 'user'" to="/userhome">
       <el-button type="primary">我的主页</el-button>

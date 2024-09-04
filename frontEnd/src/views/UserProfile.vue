@@ -1,4 +1,5 @@
 <template>
+    <common-layout />
     <div class="bg">
         <div class="user-profile">
             <div class="profile-container">
