@@ -369,7 +369,7 @@ namespace Fitness.DAL
                 forwardCount = Convert.ToInt32(row["forwardCount"]),
                 commentsCount = Convert.ToInt32(row["commentsCount"]),
                 userName = row["userName"].ToString(),
-                imgUrl = row["userName"].ToString(),
+                imgUrl = row["imgUrl"].ToString(),
                 isPinned = Convert.ToInt32(row["isPinned"]),
                 isReported = Convert.ToInt32(row["isReported"])
             };
