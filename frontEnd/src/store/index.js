@@ -14,7 +14,8 @@ export default createStore({
     name: localStorage.getItem("name") || "",
     isPost: localStorage.getItem("isPost") || "",
     introduction: localStorage.getItem("introduction") || "",
-    iconUrl: localStorage.getItem("iconUrl") || "../assets/images/default-avatar.png",
+    iconUrl:
+      localStorage.getItem("iconUrl") || "../assets/images/default-avatar.png",
     // role: 'unAuthenticated',
     // username: '',
     // token: '',
@@ -31,7 +32,7 @@ export default createStore({
       "初学指南",
       "其他",
     ],
-    unreadIDs: [],//未读ID
+    unreadIDs: [], //未读ID
 
     targetInfomation: {
       id: "",
@@ -64,9 +65,17 @@ export default createStore({
     ADD_COURSES_TO_USER(state, newCourses) {
       state.usercourses = [...state.usercourses, ...newCourses];
     },
+    //课程加入购物车
+    ADD_COURSE_TO_CART(state, course) {
+      state.cartCourses.push(course);
+    },
     //购物车下单后从购物车除去
     REMOVE_COURSE_FROM_CART(state, index) {
       state.cartCourses.splice(index, 1);
+    },
+    //更新购物车
+    UPDATE_CART(state, course) {
+      state.cartCourses = course;
     },
     //更新用户课程表
     updateUserCourses(state, courses) {
@@ -86,10 +95,6 @@ export default createStore({
     ADD_TEACH_COURSE(state, newCourses) {
       state.teachcourses = [...state.teachcourses, ...newCourses];
       //state.teachcourses.push(newCourse);
-    },
-    //课程大厅点击预约进入购物车
-    ADD_COURSE_TO_CART(state, course) {
-      state.cartCourses.push(course);
     },
     setIsPost(state, isPost) {
       state.isPost = isPost;

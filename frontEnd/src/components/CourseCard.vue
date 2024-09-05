@@ -33,7 +33,9 @@
           <CaretRight />
         </el-icon>
         <b class="bolder">学习进度</b>
-        <div class="course-progress" :style="progressStyle">5节课/40节课</div>
+        <div class="course-progress" :style="progressStyle">
+          {{ nowprogress }}节课/{{ allprogress }}节课
+        </div>
       </div>
       <div class="card-secondrow">
         <el-icon>
@@ -41,7 +43,7 @@
         </el-icon>
         <b class="bolder">有效日期</b>
         <div class="course-time" :style="timeStyle">
-          {{ thecourse.courseStartTime }} - {{ thecourse.courseEndTime }}
+          {{ courseStartTim }} - {{ courseEndTim }}
         </div>
       </div>
     </el-card>
@@ -116,6 +118,14 @@ export default {
       showInputDialog: false,
       ratingValue: 0,
       inputText: "",
+      nowprogress: 0,
+      allprogress: 0,
+      courseStartTim: new Date(this.thecourse.courseStartTime)
+        .toISOString()
+        .split("T")[0],
+      courseEndTim: new Date(this.thecourse.courseEndTime)
+        .toISOString()
+        .split("T")[0],
     };
   },
 
@@ -136,6 +146,10 @@ export default {
     },
   },
 
+  mounted() {
+    this.calculateProgress();
+  },
+
   methods: {
     //评分
     handleStarClick() {
@@ -149,7 +163,7 @@ export default {
       }
     },
     //评论
-    handleChatClick(){
+    handleChatClick() {
       const currentTime = new Date();
       const courseEndTime = new Date(this.thecourse.courseEndTime);
       if (currentTime < courseEndTime) {
@@ -165,18 +179,45 @@ export default {
       gradeCourse();
       this.showRateDialog = false;
     },
+
     //提交评价
-    submitComment(){
+    submitComment() {
       commentCourse();
       this.showInputDialog = false;
     },
 
+    //计算课程进度
+    calculateProgress() {
+      const courseStartTime = new Date(this.courseStartTim);
+      const courseEndTime = new Date(this.courseEndTim);
+
+      const today = new Date();
+
+      // 计算allprogress，即课程总天数
+      const timeDiff = courseEndTime.getTime() - courseStartTime.getTime();
+      console.log(this.thecourse);
+      this.allprogress =
+        Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) /
+        this.thecourse.schedules.length; // 总天数
+
+      // 计算nowprogress
+      if (today < courseStartTime) {
+        this.nowprogress = 0;
+      } else if (today > courseEndTime) {
+        this.nowprogress = this.allprogress;
+      } else {
+        const currentTimeDiff = today.getTime() - courseStartTime.getTime();
+        this.nowprogress =
+          Math.ceil(currentTimeDiff / (1000 * 60 * 60 * 24)) /
+          this.thecourse.schedules.length; // 今天距离开始的天数
+      }
+    },
     //-------------------------------------- API接口函数-----------------------------------------------------
     //用户上传对课程的评分(完结版)
     gradeCourse() {
       const token = localStorage.getItem("token");
       const classID = thecourse.classID;
-      const postData={
+      const postData = {
         token: token,
         classID: classID,
         grade: this.ratingValue,
@@ -190,25 +231,25 @@ export default {
           console.error("评分失败:", error);
         });
     },
-    commentCourse(){
+    commentCourse() {
       const token = localStorage.getItem("token");
       const classID = thecourse.classID;
-      const postData={
+      const postData = {
         token: token,
         classID: classID,
         comment: this.inputText,
       };
-      axios.post("http://localhost:8080/api/Course/PublishComment",postData)
-      .then(
-      (response) => {
-        console.log("评论成功:", response.data);
-      })
-      .catch(
-      (error) => {
-        console.error("评论失败:", error);})
+      axios
+        .post("http://localhost:8080/api/Course/PublishComment", postData)
+        .then((response) => {
+          console.log("评论成功:", response.data);
+        })
+        .catch((error) => {
+          console.error("评论失败:", error);
+        });
     },
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
