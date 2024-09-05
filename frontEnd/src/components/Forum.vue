@@ -273,6 +273,7 @@ export default {
                     .sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
                 this.filteredPosts = this.allPosts;
                 this.updateHotPosts(); // 更新热帖
+                this.updatePostsOrder(); // 更新帖子顺序
             })
             .catch(error => {
                 ElNotification({
@@ -290,6 +291,7 @@ export default {
                     this.filteredPosts = this.allPosts;
                     console.log(this.allPosts);
                     this.updateHotPosts();
+                    this.updatePostsOrder();
                     return response;
                 })
                 .catch(error => {
@@ -303,69 +305,73 @@ export default {
         },
 
         putTop(postID) {
-        const token = localStorage.getItem('token');
-        const postIndex = this.allPosts.findIndex(post => post.postID === postID);
-        if (postIndex !== -1) {
-            const post = this.allPosts[postIndex];
-            if (!post.isPinned) {
-                // 调用置顶接口
-                axios.get('http://localhost:8080/api/Post/PinPost', {
-                    params: { token, postID }
-                })
-                .then(response => {
-                    if (response.data.message === '成功置顶') {
-                        post.isPinned = true;
-                        this.updatePostsOrder();
-                        ElNotification({
-                            title: '成功',
-                            message: '帖子已置顶',
-                            type: 'success',
-                        });
-                    }
-                })
-                .catch(error => {
+    const token = localStorage.getItem('token');
+    const postIndex = this.allPosts.findIndex(post => post.postID === postID);
+    if (postIndex !== -1) {
+        const post = this.allPosts[postIndex];
+        if (!post.isPinned) {
+            // 调用置顶接口
+            axios.get('http://localhost:8080/api/Post/PinPost', {
+                params: { token, postID }
+            })
+            .then(response => {
+                if (response.data.message === '成功置顶') {
+                    post.isPinned = true;
+                    this.updatePostsOrder(); // 重新排序
                     ElNotification({
-                        title: '错误',
-                        message: '置顶帖子时发生错误',
-                        type: 'error',
+                        title: '成功',
+                        message: '帖子已置顶',
+                        type: 'success',
                     });
+                }
+            })
+            .catch(error => {
+                ElNotification({
+                    title: '错误',
+                    message: '置顶帖子时发生错误',
+                    type: 'error',
                 });
-            } else {
-                // 调用取消置顶接口
-                axios.get('http://localhost:8080/api/Post/CanclePinPost', {
-                    params: { token, postID }
-                })
-                .then(response => {
-                    if (response.data.message === '成功取消置顶') {
-                        post.isPinned = false;
-                        this.updatePostsOrder();
-                        ElNotification({
-                            title: '成功',
-                            message: '帖子已取消置顶',
-                            type: 'success',
-                        });
-                    }
-                })
-                .catch(error => {
+            });
+        } else {
+            // 调用取消置顶接口
+            axios.get('http://localhost:8080/api/Post/CanclePinPost', {
+                params: { token, postID }
+            })
+            .then(response => {
+                if (response.data.message === '成功取消置顶') {
+                    post.isPinned = false;
+                    this.updatePostsOrder(); // 重新排序
                     ElNotification({
-                        title: '错误',
-                        message: '取消置顶时发生错误',
-                        type: 'error',
+                        title: '成功',
+                        message: '帖子已取消置顶',
+                        type: 'success',
                     });
+                }
+            })
+            .catch(error => {
+                ElNotification({
+                    title: '错误',
+                    message: '取消置顶时发生错误',
+                    type: 'error',
                 });
-            }
+            });
         }
-    },
+    }
+},
+
 
     // 更新帖子顺序，将置顶的帖子放在最前面
     updatePostsOrder() {
-        // 将所有置顶的帖子放在最前面
-        const pinnedPosts = this.allPosts.filter(post => post.isPinned);
-        const unpinnedPosts = this.allPosts.filter(post => !post.isPinned)
-                                           .sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
-        this.allPosts = [...pinnedPosts, ...unpinnedPosts];
-        this.filteredPosts = [...this.allPosts];
-    },
+    // 将置顶的帖子放在最前面，其余的按时间排序
+    const pinnedPosts = this.allPosts.filter(post => post.isPinned);
+    const unpinnedPosts = this.allPosts.filter(post => !post.isPinned)
+        .sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
+    
+    // 置顶帖子放在前面，未置顶的放在后面
+    this.allPosts = [...pinnedPosts, ...unpinnedPosts];
+    this.filteredPosts = [...this.allPosts];
+},
+
 
         filterByCategory(category) {
             this.selectedCategory = category;
