@@ -124,6 +124,8 @@
 
 <script>
 import { ElMessage } from "element-plus";
+import axios from "axios";
+
 
 export default {
   //传进来的数据,用于展示UI需要的所有变量
@@ -185,11 +187,30 @@ export default {
     addToCart() {
       // 创建课程对象
       const course = this.thecourse;
+      const classID =course.schedules[0].classID;
       // 调用 Vuex mutation，将课程添加到购物车中
       this.$store.commit("ADD_COURSE_TO_CART", course);
-      // 可选：添加成功后的提示
-      this.$message.success("课程已成功加入购物车！");
       //补充调用后端的接口：ReserveCourse
+      const postData ={
+        token: localStorage.getItem("token"),
+        classID: [classID],
+        payMethod:"活力币"
+      }
+      console.log(postData);
+
+      axios.post("http://localhost:8080/api/Course/ReserveCourse",postData)
+      .then((response) => {
+      console.log(response.data);
+      //添加成功后的提示
+      this.$message.success("课程已成功加入购物车！");
+      })
+     .catch((error) => {
+        console.error(error);
+        ElMessage({
+          message: "课程加入购物车失败，请稍后重试！",
+          type: "error",
+        });
+      }); 
     },
 
     //-------------------------------------- API接口------------------------------------------------------
