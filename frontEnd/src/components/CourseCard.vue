@@ -140,7 +140,7 @@ export default {
     //评分
     handleStarClick() {
       const currentTime = new Date();
-      const courseEndTime = new Date(this.endTime);
+      const courseEndTime = new Date(this.thecourse.courseEndTime);
       if (currentTime < courseEndTime) {
         // 如果课程未结束，显示提示弹窗
         this.showDialog = true;
@@ -148,26 +148,41 @@ export default {
         this.showRateDialog = true;
       }
     },
+    //评论
+    handleChatClick(){
+      const currentTime = new Date();
+      const courseEndTime = new Date(this.thecourse.courseEndTime);
+      if (currentTime < courseEndTime) {
+        // 如果课程未结束，显示提示弹窗
+        this.showDialog = true;
+      } else {
+        this.showInputDialog = true;
+      }
+    },
 
     //提交评分
     submitRating() {
-      gradeCourse(), console.log("提交评分:", this.ratingValue);
+      gradeCourse();
       this.showRateDialog = false;
+    },
+    //提交评价
+    submitComment(){
+      commentCourse();
+      this.showInputDialog = false;
     },
 
     //-------------------------------------- API接口函数-----------------------------------------------------
     //用户上传对课程的评分(完结版)
     gradeCourse() {
       const token = localStorage.getItem("token");
-      const classID = thecourse.course.classID;
+      const classID = thecourse.classID;
+      const postData={
+        token: token,
+        classID: classID,
+        grade: this.ratingValue,
+      };
       axios
-        .post(`http://localhost:8080//api/Course/GradeCourse`, {
-          params: {
-            token: token,
-            classID: classID,
-            grade: this.ratingValue,
-          },
-        })
+        .post(`http://localhost:8080/api/Course/GradeCourse`, postData)
         .then((response) => {
           console.log("评分成功:", response.data);
         })
@@ -175,10 +190,25 @@ export default {
           console.error("评分失败:", error);
         });
     },
-    //用户取消课程(等待完成)
-    //接口名为CancelCourse
-  },
-};
+    commentCourse(){
+      const token = localStorage.getItem("token");
+      const classID = thecourse.classID;
+      const postData={
+        token: token,
+        classID: classID,
+        comment: this.inputText,
+      };
+      axios.post("http://localhost:8080/api/Course/PublishComment",postData)
+      .then(
+      (response) => {
+        console.log("评论成功:", response.data);
+      })
+      .catch(
+      (error) => {
+        console.error("评论失败:", error);})
+    },
+  }
+}
 </script>
 
 <style scoped>

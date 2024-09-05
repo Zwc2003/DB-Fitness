@@ -189,7 +189,7 @@ export default {
       const course = this.thecourse;
       const classID =course.schedules[0].classID;
       // 调用 Vuex mutation，将课程添加到购物车中
-      this.$store.commit("ADD_COURSE_TO_CART", course);
+      //this.$store.commit("ADD_COURSE_TO_CART", course);
       //补充调用后端的接口：ReserveCourse
       const postData ={
         token: localStorage.getItem("token"),

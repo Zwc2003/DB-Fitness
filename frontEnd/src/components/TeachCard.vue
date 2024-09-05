@@ -12,7 +12,7 @@
         <div class="card-header">
           <div class="title-left">
             <b class="bolder">教学课单</b>
-            <b class="title-right">{{ eeditForm.courseName }}</b>
+            <b class="title-right">{{ editForm.courseName }}</b>
             <span class="learning-status">教学中</span>
           </div>
           <div class="icoin-container">
@@ -49,7 +49,7 @@
         </el-icon>
         <b class="bolder">课程时间</b>
         <div class="course-time" :style="timeStyle">
-          {{ eeditForm.courseStartTime }} - {{ eeditForm.courseEndTime }}
+          {{ editForm.courseStartTime }} - {{ editForm.courseEndTime }}
         </div>
       </div>
     </el-card>
@@ -63,16 +63,16 @@
   <CourseModal
     v-if="showModall"
     :isVisible="showModall"
-    :thecourse="eeditForm"
+    :thecourse="editForm"
     @close="showModall = false"
   />
 
   <!-- 编辑课程模态框 -->
   <el-dialog v-model="showModal" title="编辑课程" width="50%">
-    <el-form :model="form">
+    <el-form :model="editForm">
       <el-form-item label="课程名称">
         <el-input
-          v-model="eeditForm.courseName"
+          v-model="editForm.courseName"
           placeholder="例如:30到45分钟核心训练"
         ></el-input>
       </el-form-item>
@@ -86,8 +86,8 @@
         >
           <div class="image-upload-container">
             <el-image
-              v-if="eeditForm.coursePhotoUrl"
-              :src="eeditForm.coursePhotoUrl"
+              v-if="editForm.coursePhotoUrl"
+              :src="editForm.coursePhotoUrl"
               fit="cover"
             ></el-image>
             <div v-else class="upload-placeholder">
@@ -99,32 +99,32 @@
       </el-form-item>
       <el-form-item label="课程描述">
         <el-input
-          v-model="eeditForm.courseDescription"
+          v-model="editForm.courseDescription"
           placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程容量">
         <el-input
-          v-model="eeditForm.capacity"
+          v-model="editForm.capacity"
           placeholder="请填入课程容量"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程开始时间">
         <el-date-picker
-          v-model="eeditForm.courseStartTime"
+          v-model="editForm.courseStartTime"
           type="date"
           placeholder="选择日期"
         />
       </el-form-item>
       <el-form-item label="课程结束时间">
         <el-date-picker
-          v-model="eeditForm.courseEndTime"
+          v-model="editForm.courseEndTime"
           type="date"
           placeholder="选择日期"
         />
       </el-form-item>
       <el-form-item label="课程难度">
-        <el-radio-group v-model="eeditForm.courseGrade">
+        <el-radio-group v-model="editForm.courseGrade">
           <el-radio :label="1">1</el-radio>
           <el-radio :label="2">2</el-radio>
           <el-radio :label="3">3</el-radio>
@@ -134,7 +134,7 @@
       </el-form-item>
       <el-form-item label="课程价格">
         <el-input-number
-          v-model="eeditForm.coursePrice"
+          v-model="editForm.coursePrice"
           :min="0"
           :max="3000"
           :step="1"
@@ -144,7 +144,7 @@
       <el-form-item label="课程特征">
         <div>
           <el-tag
-            v-for="(feature, index) in eeditForm.features"
+            v-for="(feature, index) in editForm.features"
             :key="index"
             closable
             @close="removeFeature(index)"
@@ -155,13 +155,13 @@
           <el-input
             v-model="inputFeature"
             placeholder="输入并按回车,如 [力量, 增肌]"
-            @keyup.enter.native="addFeature"
+            @keyup.enter="addFeature"
             style="width: 200px"
           ></el-input>
         </div>
       </el-form-item>
       <el-form-item label="课程分类">
-        <el-select v-model="eeditForm.typeID" placeholder="请选择课程分类">
+        <el-select v-model="editForm.typeID" placeholder="请选择课程分类">
           <el-option label="高强度间歇" value="1"></el-option>
           <el-option label="儿童趣味课" value="3"></el-option>
           <el-option label="低强度塑形" value="2"></el-option>
@@ -201,11 +201,16 @@ export default {
   name: "TeachCard",
   props: {
     //作为传入的老师创建的教学课程的相关参数
-    editForm: Object,
+    editForm: {
+      type: Object,
+      required: true
+    }
   },
+  // props:['editForm'],
   data() {
     return {
-      eeditForm: {},
+      //eeditForm: {},
+      inputFeature :"",
       showModal: false, //编辑课程的视窗
       showModall: false, //查看课程的视窗
       showCommentsModal: false, //查看课程评论的视窗
@@ -229,24 +234,37 @@ export default {
       showDialog: false,
     };
   },
-  created() {
-    this.eeditForm = {
-      classID: this.editForm.classID,
-      typeID: this.editForm.typeID,
-      courseName: this.editForm.courseName,
-      capacity: this.editForm.capacity,
-      courseDescription: this.editForm.courseDescription,
-      coursePrice: this.editForm.coursePrice,
-      courseStartTime: this.editForm.courseStartTime,
-      courseEndTime: this.editForm.courseEndTime,
-      courseGrade: this.editForm.courseGrade,
-      coursePhotoUrl: this.editForm.coursePhotoUrl,
-      features: this.editForm.features,
-      isbooked: 1, // 默认值，可以根据需要调整
-    };
+  mounted() {
+    // 确保 editForm 被正确传入
+    console.log(this.editForm.courseName);
   },
+  // created() {
+  //   console.log(this.editForm.courseName);
+  //   // this.editForm = {
+  //   //   classID: this.editForm.classID,
+  //   //   typeID: this.editForm.typeID,
+  //   //   courseName: this.editForm.courseName,
+  //   //   capacity: this.editForm.capacity,
+  //   //   courseDescription: this.editForm.courseDescription,
+  //   //   coursePrice: this.editForm.coursePrice,
+  //   //   courseStartTime: this.editForm.courseStartTime,
+  //   //   courseEndTime: this.editForm.courseEndTime,
+  //   //   courseGrade: this.editForm.courseGrade,
+  //   //   coursePhotoUrl: this.editForm.coursePhotoUrl,
+  //   //   features: this.editForm.features,
+  //   //   isbooked: 1, // 默认值，可以根据需要调整
+  //   // };
+  // },
 
   methods: {
+    addFeature() {
+      const feature = this.inputFeature.trim();
+      if (feature && !this.newCourse.features.includes(feature)) {
+        this.newCourse.features.push(feature);
+      }
+      this.inputFeature = ""; // 清空输入框
+    },
+
     //教练查看课程
     handleDocumentClick() {
       this.showModall = true;
@@ -254,11 +272,11 @@ export default {
 
     //教练删除课程
     handleDeleteClick() {
-      this.$emit("delete-teachcourse", this.eeditForm.courseName);
+      this.$emit("delete-teachcourse", this.editForm.courseName);
     },
 
     handleFileUpload(file) {
-      this.eeditForm.coursePhotoUrl = URL.createObjectURL(file.raw);
+      this.editForm.coursePhotoUrl = URL.createObjectURL(file.raw);
     },
     beforeUpload(file) {
       this.imagePreview = "";
@@ -278,7 +296,7 @@ export default {
       reader.readAsDataURL(file);
       reader.onload = () => {
         this.imagePreview = reader.result;
-        this.eeditForm.coursePhotoUrl = this.imagePreview;
+        this.editForm.coursePhotoUrl = this.imagePreview;
       };
       return false;
     },
@@ -291,7 +309,7 @@ export default {
       axios
         .post(
           `http://localhost:8080/api/Course/ModifyCourse?token=${token}`,
-          this.eeditForm
+          this.editForm
         )
         .then((response) => {
           console.log("课程修改成功:", response.data);
@@ -316,7 +334,7 @@ export default {
     //教练删除课程的API(完结版)
     deleteCourseByClassID() {
       const token = localStorage.getItem("token");
-      const classID = this.eeditForm.classID;
+      const classID = this.editForm.classID;
       axios
         .delete(`http://localhost:8080/api/Course/DeleteCourseByClassID`, {
           params: {
