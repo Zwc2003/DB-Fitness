@@ -1,5 +1,6 @@
 <template>
     <notification-box />
+    <common-layout />
     <div class="forum-bg">
         <el-backtop class="backtop-button" />
         <div class="back-button-container">
@@ -1376,8 +1377,8 @@ textarea {
 
 .backtop-button {
     position: fixed;
-    bottom: 60px !important;
-    right: 25px !important;
+    bottom: 180px !important;
+    right: 20px !important;
     z-index: 2;
     width: 60px !important;
     /* 增加按钮的宽度 */
