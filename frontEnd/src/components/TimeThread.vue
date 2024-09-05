@@ -49,6 +49,12 @@
       </el-timeline>
     </el-collapse-item>
   </el-collapse>
+
+
+  <el-calendar
+      :range="[startDate, endDate]"
+      :date-cell="customDateCell"
+  ></el-calendar>
 </template>
 
 <style scoped>
@@ -99,6 +105,9 @@
 >>>.el-card:active{
   box-shadow:5px 10px 16px #ff5858 !important;
 }
+>>>.el-calendar__header {
+  display: none;
+}
 .card {
   max-width: 300px;
   height: 200px; /* 设定卡片的高度 */
@@ -131,6 +140,7 @@
 .gif:hover {
   content: url(../assets/images/strength.png); /* 鼠标悬停时显示的图片路径 */
 }
+
 .dialog-video{
   height:65%;
 }
@@ -144,6 +154,31 @@
 import { ref, onMounted } from 'vue';
 import {ElMessageBox, ElNotification} from 'element-plus';
 import axios from 'axios';
+import dayjs from 'dayjs';
+
+// 设置特定的开始日期，比如 2024年9月1日
+const startDate = ref(dayjs('2024-09-01').toDate());
+// 设置结束日期为28天后的日期
+const endDate = ref(dayjs(startDate.value).add(27, 'day').toDate());
+// 定义需要背景变蓝色的日期数组
+const blueDays = ['2024-09-03', '2024-09-10', '2024-09-15'];
+const customDateCell = ({ date }) => {
+  const dateString = dayjs(date).format('YYYY-MM-DD'); // 将日期格式化为字符串
+  const isBlueDay = blueDays.includes(dateString); // 判断是否是蓝色背景的日期
+
+  return h(
+      'div',
+      {
+        style: {
+          backgroundColor: isBlueDay ? 'blue' : '', // 设置蓝色背景
+          color: isBlueDay ? 'white' : 'black', // 确保蓝色背景下文字可读
+          padding: '10px',
+          borderRadius: '5px',
+        },
+      },
+      date.getDate() // 显示日期
+  );
+};
 
 const weeks = ref([]);
 const titles = ["第一周", "第二周", "第三周", "第四周"];
