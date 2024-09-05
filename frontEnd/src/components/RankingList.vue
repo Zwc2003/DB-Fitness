@@ -165,6 +165,7 @@ export default {
   props: {
     visible: Boolean,
     achievementId: Number, // 接收传递过来的 achievementId
+    currentTarget: Number, // 接收 currentTarget
   },
   data() {
     return {
@@ -203,7 +204,7 @@ export default {
         8: Achievement_8,
       },
       myProgress: null, // 我的进度
-      target: null, // 目标值
+      target: 100, // 目标值
       leaderboard: [], // 排行榜用户
     };
   },
@@ -219,6 +220,7 @@ export default {
     this.fetchAchievementTarget(); // 获取目标值
     this.fetchAchievementRanking();
     this.setAchievementDetails();
+    console.log("Current Target:", this.currentTarget); // 可以在这里使用 currentTarget
   },
   methods: {
     async fetchAchievementRanking() {
@@ -295,6 +297,7 @@ export default {
     async fetchAchievementTarget() {
       const token = localStorage.getItem("token"); // 从localStorage获取token
       const achievementId = parseInt(this.achievementId, 10);
+
       try {
         const response = await axios.get(
           "http://localhost:8080/api/Achievement/GetAchievement",
@@ -313,7 +316,7 @@ export default {
 
         if (achievement) {
           this.target = parseInt(achievement.target, 10);
-          this.target = achievement.target;
+
           console.log(
             `Received target for achievementId ${achievementId}: ${this.target}`
           ); // 记录target值
