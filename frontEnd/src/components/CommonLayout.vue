@@ -34,7 +34,6 @@
               </div>
             </el-footer>
           </el-container>
-
         </el-container>
       </el-container>
     </div>
@@ -164,6 +163,7 @@ export default {
             title: '信息：',
             message: '你收到了新的信息',
             type: 'info',
+            zIndex:10000003
           });
           store.commit('addUnreadID', senderID);
           store.commit('addMessage', msg);
@@ -186,7 +186,17 @@ export default {
 
       // 获取当前时间
       const currentTime = new Date().toLocaleString();
-
+      if (!store.state.targetInfomation.id) {
+        // 如果无发送用户
+        ElNotification({
+          title: '提示',
+          message: '请选择你要发送的用户',
+          type: 'info',
+          position: 'bottom-right', // 将通知显示在右下角
+          zIndex:10000003
+        });
+        return ;
+      }
       if (this.input) {
         // 构建消息对象并提交到 store
         var msg = {
@@ -233,6 +243,7 @@ export default {
           message: '输入不能为空',
           type: 'info',
           position: 'bottom-right', // 将通知显示在右下角
+          zIndex:10000003
         });
       }
     },
