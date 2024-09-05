@@ -122,10 +122,10 @@ namespace Fitness.BLL
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
 
-            if (tokenRes.Role != "admin" && tokenRes.Role != "coach")
+/*            if (tokenRes.Role != "admin" && tokenRes.Role != "coach")
             {
                 return "身份权限不符！";
-            }
+            }*/
 
                 OracleTransaction transaction = null;
                 try
@@ -696,13 +696,27 @@ namespace Fitness.BLL
         }
 
         // 根据课程ID获取评论+评分
-        public List<feedback> GetCourseCommentByClassID(string token,int classID)
+        public string GetCourseCommentByClassID(string token,int classID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             try
             {
                 List<feedback> comments = ParticipateDAL.GetCommentsByClassID(classID);
-                return comments;
+                List<Dictionary<string, object>> courseDetails = new List<Dictionary<string, object>>();
+                foreach (feedback feedback in comments)
+                {
+                    int st;
+                    User user = UserDAL.GetUserByUserID(feedback.traineeID, out st);
+                    var courseInfo = new Dictionary<string, object>
+                    {
+                        { "avatar", user.iconURL},
+                        { "nickname", user.userName },
+                        { "content", feedback.comment},
+                        { "rating", feedback.grade}
+                    };
+                    courseDetails.Add(courseInfo);
+                }
+                return JsonConvert.SerializeObject(courseDetails, Formatting.Indented);
             }
             catch (Exception ex)
             {

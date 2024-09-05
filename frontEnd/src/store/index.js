@@ -5,6 +5,7 @@ import axios from "axios";
 // 在 store.js 中
 export default createStore({
   state: {
+    connection: null,
     role: localStorage.getItem("role") || "unAuthenticated",
     username: localStorage.getItem("username") || "",
     email: localStorage.getItem("email") || "",
