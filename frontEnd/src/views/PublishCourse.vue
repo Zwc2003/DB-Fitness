@@ -109,6 +109,7 @@
                 v-model="newCourse.courseStartTime"
                 type="date"
                 placeholder="选择日期"
+                @change="handleDateChange"
               />
             </el-form-item>
             <el-form-item label="课程结束时间">
@@ -116,6 +117,7 @@
                 v-model="newCourse.courseEndTime"
                 type="date"
                 placeholder="选择日期"
+                @change="handleDateeChange"
               />
             </el-form-item>
             <el-form-item label="课程难度">
@@ -343,7 +345,6 @@ export default {
 
     //进入页面就要调用的接口
     this.fetchTodayCourseList();
-    //补充获取教练所有的教授的课程接口的方法
     this.fetchUserCourse();
 
     //进入页面就要获取的个人信息
@@ -481,6 +482,22 @@ export default {
       this.showModal = true;
     },
 
+    handleDateChange(value) {
+      const date = new Date(value);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      this.newCourse.courseStartTime = `${year}-${month}-${day}`;
+    },
+
+    handleDateeChange(value) {
+      const date = new Date(value);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      this.newCourse.courseEndTime = `${year}-${month}-${day}`;
+    },
+
     //---------------------------------------更新与删除课程的全局函数,具体实现在TeachCard-----------------------------------------------------
     //更新我的课程到store
     ...mapActions(["updateTeachCourses"]),
@@ -561,11 +578,12 @@ export default {
           `http://localhost:8080/api/Course/GetCoachParticipatedCourseByUserID?token=${token}`
         )
         .then((response) => {
+          console.log("教师获取教学课程成功:", response.data);
           const initialCourses = response.data;
-          this.addTeachCourses(initialCourses);
+          this.addTeachCourse(initialCourses);
         })
         .catch((error) => {
-          console.error("Error fetching course list:", error);
+          console.error("教师获取教学课程失败:", error);
         });
     },
 
@@ -651,13 +669,13 @@ export default {
             classID: "",
             typeID: "",
             courseName: "",
-            capacity: "",
+            capacity: 0,
             courseDescription: "",
-            coursePrice: "",
+            coursePrice: 0,
             courseStartTime: "",
             courseEndTime: "",
             courseLastDays: "",
-            courseGrade: "",
+            courseGrade: 0,
             coursePhotoUrl: "",
             courseVideoUrl: "",
             features: [],

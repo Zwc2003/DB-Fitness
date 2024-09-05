@@ -1,7 +1,7 @@
 <template>
   <div>
     <navigation-bar />
-    <CommonLayout />
+    <common-layout />
     <div class="back-button-container">
       <el-button @click="goBack" circle style="font-size: 24px; width: 50px; height: 50px;">
         <el-icon>
@@ -17,7 +17,6 @@
 
 <script>
 import MealRecord from "../components/MealRecord.vue";
-import CommonLayout from "../components/CommonLayout.vue";
 import {ElNotification} from "element-plus";
 import {useRouter} from "vue-router";
 import axios from "axios";
@@ -25,8 +24,7 @@ import { commonMixin } from '../mixins/checkLoginState';
 export default {
   mixins: [commonMixin],
   components: {
-    MealRecord,
-    CommonLayout
+    MealRecord
   },
   methods: {
     goBack() {

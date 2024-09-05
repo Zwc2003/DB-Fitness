@@ -1,5 +1,6 @@
 <template>
   <navigation-bar/>
+  <common-layout />
   <body class="container">
   <div>
     <el-button @click="dialogFormVisible = true" class="bot" type="primary">

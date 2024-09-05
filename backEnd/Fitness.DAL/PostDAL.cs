@@ -8,6 +8,7 @@ using Fitness.Models;
 using Fitness.DAL.Core;
 using System.Data;
 using Oracle.ManagedDataAccess.Types;
+using System.Runtime.CompilerServices;
 
 namespace Fitness.DAL
 {
@@ -44,9 +45,9 @@ namespace Fitness.DAL
         public static int Post(Post post)
         {
             string query = "INSERT INTO \"Posts\" " +
-                             "(\"userID\", \"postTitle\", \"postContent\", \"postCategory\", \"postTime\", \"likesCount\", \"forwardCount\", \"commentsCount\",\"refrencePostID\",\"userName\",\"imgUrl\") " +
+                             "(\"userID\", \"postTitle\", \"postContent\", \"postCategory\", \"postTime\", \"likesCount\", \"forwardCount\", \"commentsCount\",\"refrencePostID\",\"userName\",\"imgUrl\",\"isPinned\",\"isReported\") " +
                              "VALUES "+
-                             "(:userID, :postTitle, :postContent, :postCategory, :postTime, :likesCount, :forwardCount, :commentsCount,:refrencePostID, :userName, :imgUrl) "+
+                             "(:userID, :postTitle, :postContent, :postCategory, :postTime, :likesCount, :forwardCount, :commentsCount,:refrencePostID, :userName, :imgUrl, :isPinned,:isReported) " +
                              "RETURNING \"postID\" INTO :postID";
 
             OracleParameter[] parameters = new OracleParameter[]
@@ -62,14 +63,15 @@ namespace Fitness.DAL
                 new OracleParameter("refrencePostID", OracleDbType.Int32) { Value = post.refrencePostID },
                 new OracleParameter("userName",OracleDbType.NVarchar2){Value =post.userName},
                 new OracleParameter("imgUrl",OracleDbType.Clob){Value =post.imgUrl},
+                new OracleParameter("isPinned", OracleDbType.Int32) { Value =0},
+                new OracleParameter("isReported", OracleDbType.Int32) { Value = 0},
                 new OracleParameter("postID", OracleDbType.Int32, ParameterDirection.Output)
             };
 
             try
             {
                 OracleHelper.ExecuteNonQuery(query, null, parameters);
-                //var oracleInt = Convert.ToInt32(parameters[9].Value);
-                OracleDecimal  oracleInt = (OracleDecimal)parameters[11].Value;
+                OracleDecimal  oracleInt = (OracleDecimal)parameters[13].Value;
                 return oracleInt.ToInt32();
             }
             catch (Exception ex)
@@ -77,6 +79,20 @@ namespace Fitness.DAL
                 Console.WriteLine($"Error inserting post: {ex.Message}");
                 return 0;
             }
+        }
+
+        public static state GetIsPinnedAndIsReported(int postID) {
+            string selectCommand = "SELECT \"isPinned\",\"isReported\" FROM \"Posts\" WHERE \"postID\" = :postID ";
+            OracleParameter[] parameters = new OracleParameter[]
+            {
+                new OracleParameter("postID", OracleDbType.Int32) { Value = postID }
+            };
+            var dt = OracleHelper.ExecuteTable(selectCommand, parameters);
+            return new state()
+            {
+                isPinned = Convert.ToInt32(dt.Rows[0]["isPinned"]),
+                isReported = Convert.ToInt32(dt.Rows[0]["isReported"])
+            };
         }
 
         public static DataTable GetByPostID(int postID)
@@ -236,7 +252,99 @@ namespace Fitness.DAL
             }
         }
 
-        public static Post GetPostByPostID(int postId)
+        public static bool Report(int postId) {
+            try
+            {
+                string updateCommand = "UPDATE \"Posts\" SET \"isReported\" = 1 WHERE \"postID\" = :postID";
+
+                OracleParameter[] parameters = new OracleParameter[]
+                {
+                    new OracleParameter("postID", OracleDbType.Int32) { Value = postId }
+                };
+
+                int rowsAffected = OracleHelper.ExecuteNonQuery(updateCommand, null, parameters);
+
+                // 如果更新操作影响了行数，返回 true，表示更新成功
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error incrementing likes for post with postID {postId}: {ex.Message}");
+                return false;
+            }
+        }
+
+        public static bool CancleReport(int postId) {
+            try
+            {
+                string updateCommand = "UPDATE \"Posts\" SET \"isReported\" = 0 WHERE \"postID\" = :postID";
+
+                OracleParameter[] parameters = new OracleParameter[]
+                {
+                    new OracleParameter("postID", OracleDbType.Int32) { Value = postId }
+                };
+
+                int rowsAffected = OracleHelper.ExecuteNonQuery(updateCommand, null, parameters);
+
+                // 如果更新操作影响了行数，返回 true，表示更新成功
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error incrementing likes for post with postID {postId}: {ex.Message}");
+                return false;
+            }
+
+        }
+
+        public static bool Pin(int postId)
+        {
+            try
+            {
+                string updateCommand = "UPDATE \"Posts\" SET \"isPinned\" = 1 WHERE \"postID\" = :postID";
+
+                OracleParameter[] parameters = new OracleParameter[]
+                {
+                    new OracleParameter("postID", OracleDbType.Int32) { Value = postId }
+                };
+
+                int rowsAffected = OracleHelper.ExecuteNonQuery(updateCommand, null, parameters);
+
+                // 如果更新操作影响了行数，返回 true，表示更新成功
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error incrementing likes for post with postID {postId}: {ex.Message}");
+                return false;
+            }
+        }
+
+        public static bool CanclePin(int postId)
+        {
+            try
+            {
+                string updateCommand = "UPDATE \"Posts\" SET \"isPinned\" = 0 WHERE \"postID\" = :postID";
+
+                OracleParameter[] parameters = new OracleParameter[]
+                {
+                    new OracleParameter("postID", OracleDbType.Int32) { Value = postId }
+                };
+
+                int rowsAffected = OracleHelper.ExecuteNonQuery(updateCommand, null, parameters);
+
+                // 如果更新操作影响了行数，返回 true，表示更新成功
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error incrementing likes for post with postID {postId}: {ex.Message}");
+                return false;
+            }
+
+        }
+
+        public static PostInfo GetPostByPostID(int postId)
         {
             string selectCommand = "SELECT * FROM \"Posts\" WHERE \"postID\" = :postID";
 
@@ -248,7 +356,7 @@ namespace Fitness.DAL
             // 执行查询
             DataTable postTable = OracleHelper.ExecuteTable(selectCommand, parameters);
             DataRow row = postTable.Rows[0];
-            Post post = new Post
+            PostInfo postInfo = new()
             {
                 postID = Convert.ToInt32(row["postID"]),
                 userID = Convert.ToInt32(row["userID"]),
@@ -260,9 +368,13 @@ namespace Fitness.DAL
                 forwardCount = Convert.ToInt32(row["forwardCount"]),
                 commentsCount = Convert.ToInt32(row["commentsCount"]),
                 userName = row["userName"].ToString(),
-                imgUrl = row["imgUrl"].ToString()
+                imgUrl = row["imgUrl"].ToString(),
+                isPinned = Convert.ToInt32(row["isPinned"]),
+                isReported = Convert.ToInt32(row["isReported"])
             };
-            return post;
+            
+
+            return postInfo;
         }
     }
 }

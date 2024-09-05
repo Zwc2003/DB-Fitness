@@ -15,10 +15,11 @@ namespace Fitness.Controllers
         UserAchievementBLL userAchievementBll = new UserAchievementBLL();
         private readonly JWTHelper _jwtHelper = new();
         [HttpGet]
-        public string GetAchievement(string token)
+        public string GetAchievement(string token,int userID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
-            int userId = tokenRes.userID;
+            int userId = userID;
+            Console.WriteLine($"userID{userID}");
             return userAchievementBll.GetUserAchievement(userId);
         }
 
@@ -32,11 +33,12 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public string UpdateFitnessPlanAchievement(string token)
+        public string UpdateFitnessPlanAchievement(string token, int workoutIndex)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return userAchievementBll.UpdateFitnessPlanAchievement(userId);
+            Console.WriteLine($"收到用户：{userId} 的完成健身计划请求，date：{workoutIndex}");
+            return userAchievementBll.UpdateFitnessPlanAchievement(userId, workoutIndex);
         }
     }
 }

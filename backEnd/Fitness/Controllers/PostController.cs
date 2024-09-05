@@ -36,18 +36,18 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public ActionResult<Post> GetPostByPostID(string token,int postID)
+        public ActionResult<PostInfo> GetPostByPostID(string token,int postID)
         {
-            Post post = _postBLL.GetPostByPostID(token, postID);
+            PostInfo post = _postBLL.GetPostByPostID(token, postID);
             return post;
         }
 
         // 获取所有帖子
         [HttpGet]
-        public ActionResult<List<Post>> GetAllPost(string token)
+        public ActionResult<string> GetAllPost(string token)
         {
             Console.WriteLine("获取所有的帖子");
-            List<Post> posts = _postBLL.GetAllPost(token);
+            string posts = _postBLL.GetAllPost(token);
             return posts;
         }
 
@@ -74,6 +74,39 @@ namespace Fitness.Controllers
             string result = _postBLL.CancleLike(token, postID, postOwnerID);
             return result;
         }
+
+        // 举报帖子
+        [HttpGet]
+        public ActionResult<string> ReportPost(string token, int postID)
+        {
+            string result = _postBLL.Report(token, postID);
+            return result;
+        }
+
+        // 取消举报帖子
+        [HttpGet]
+        public ActionResult<string> CancleReportPost(string token, int postID)
+        {
+            string result = _postBLL.CancleReport(token, postID);
+            return result;
+        }
+
+        // 置顶帖子
+        [HttpGet]
+        public ActionResult<string> PinPost(string token, int postID)
+        {
+            string result = _postBLL.Pin(token, postID);
+            return result;
+        }
+
+        // 取消置顶帖子
+        [HttpGet]
+        public ActionResult<string> CanclePinPost(string token, int postID)
+        {
+            string result = _postBLL.CanclePin(token, postID);
+            return result;
+        }
+
 
         // 转发帖子
         [HttpGet]

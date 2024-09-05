@@ -11,10 +11,13 @@ namespace Fitness.BLL.Interfaces
     {
         public string Post(string token, Post post);
         public List<Post> GetPostByUserID(string token,int userID);
-        public List<Post> GetAllPost(string token);
+        public PostInfo GetPostByPostID(string token, int postID);
+        public string GetAllPost(string token);
         public string Delete(string token, int postId, int postOwnerID);
         public string LikePost(string token, int postId,int postOwnerID);
         public string CancleLike(string token, int postId, int postOwnerID);
+        public string Report(string token, int postId);
+        public string CancleReport(string token, int postId);
         public string Forward(string token, int postId);
         public List<Post> Search(string token, string query, string category = null, string dateRange = null, string sortBy = "postTime");
         // 评论区AI

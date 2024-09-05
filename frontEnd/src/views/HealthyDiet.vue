@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-      <CommonLayout />
+      <common-layout />
       <div class="navigation-bar">
          <navigation-bar />
       </div>
@@ -37,7 +37,6 @@
   </template>
   
   <script>
-  import CommonLayout from "../components/CommonLayout.vue";
   import {ElNotification} from "element-plus";
   import {useRouter} from "vue-router";
   import axios from "axios";
@@ -45,7 +44,6 @@
   export default {
     name: 'Tracking',
     components: {
-      CommonLayout
     },
     mixins: [commonMixin],
     methods: {

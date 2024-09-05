@@ -1,5 +1,6 @@
 <template>
   <navigation-bar />
+  <common-layout />
   <div class="trans">
     <router-link v-if="userRole === 'user'" to="/userhome">
       <el-button type="primary">我的主页</el-button>
@@ -269,6 +270,7 @@ export default {
         .get(`http://localhost:8080/api/Course/GetAllCourse?token=${token}`)
         .then((response) => {
           console.log("获取课程成功:", response.data);
+
           this.courses = response.data.map((item) => {
             if (item.features) {
               item.features = item.features.split("#");

@@ -1,4 +1,5 @@
 ﻿using Fitness.BLL;
+using Fitness.BLL.Core;
 using Fitness.DAL;
 using Fitness.Models;
 using Microsoft.AspNet.SignalR.Messaging;
@@ -13,25 +14,27 @@ namespace Fitness.Controllers
     [ApiController]
     public class MessageController : ControllerBase
     {
-        private readonly MessageBLL _messageBLL;
+        private readonly MessageBLL _messageBLL =new();
 
-        public MessageController(MessageBLL messageBLL)
-        {
-            _messageBLL = messageBLL;
-        }
 
+        private readonly JWTHelper _jwthelper =new();
         [HttpGet]
-        public ActionResult<List<Message>> GetMessages(int userID)
+        public ActionResult<List<Message>> GetMessages(string token)
         {
+            int userID =_jwthelper.ValidateToken(token).userID;
             List<Message> messages = MessageDAL.GetMessages(userID);
+            foreach (Message message in messages)
+            {
+                Console.WriteLine(message.isRead);
+            }
             return messages;
         }
 
         [HttpGet]
-        public ActionResult<string>  MarkedMessagesAsRead(List<int> messagesID)
+        public ActionResult<string>  MarkedMessagesAsRead(int messageID)
         {
             try {
-                MessageDAL.MarkMessagesAsRead(messagesID);
+                MessageDAL.MarkMessagesAsRead(messageID);
                 return "标记成功";
             }
             catch (Exception ex) { 

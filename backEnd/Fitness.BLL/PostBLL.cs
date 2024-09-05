@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -79,7 +80,7 @@ namespace Fitness.BLL
         }
 
 
-        public Post GetPostByPostID(string token, int postID)
+        public PostInfo GetPostByPostID(string token, int postID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             try
@@ -135,7 +136,7 @@ namespace Fitness.BLL
             }
         }
 
-        public List<Post> GetAllPost(string token)
+        public string GetAllPost(string token)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             try
@@ -144,27 +145,29 @@ namespace Fitness.BLL
                 if (result == null || result.Rows.Count == 0)
                 {
                     return null;
-                } 
-                var posts = new List<Post>();
+                }
+                List<Dictionary<string, object>> posts = new List<Dictionary<string, object>>();
                 foreach (DataRow row in result.Rows)
                 {
-                    posts.Add(new Post()
-                    {
-                        postID = Convert.ToInt32(row["postID"]),
-                        userID = Convert.ToInt32(row["userID"]),
-                        postTitle = row["postTitle"].ToString(),
-                        postContent = row["postContent"].ToString(),
-                        postCategory = row["postCategory"].ToString(),
-                        postTime = Convert.ToDateTime(row["postTime"]),
-                        likesCount = Convert.ToInt32(row["likesCount"]),
-                        forwardCount = Convert.ToInt32(row["forwardCount"]),
-                        commentsCount = Convert.ToInt32(row["commentsCount"]),
-                        userName = row["userName"].ToString(),
-                        imgUrl = row["imgUrl"].ToString()
-                    });
+                    var res = PostDAL.GetIsPinnedAndIsReported(Convert.ToInt32(row["postID"]));
+                    var postInfo = new Dictionary<string, object> {
+                        { "postID" ,Convert.ToInt32(row["postID"]) },
+                        { "userID" ,Convert.ToInt32(row["userID"]) },
+                        {"postTitle",row["postTitle"].ToString() },
+                        { "postContent",row["postContent"].ToString() },
+                        {"postCategory",row["postCategory"].ToString() },
+                        { "postTime",Convert.ToDateTime(row["postTime"]) },
+                        {"likesCount",Convert.ToInt32(row["likesCount"]) },
+                        {"forwardCount",Convert.ToInt32(row["forwardCount"]) },
+                        { "commentsCount",Convert.ToInt32(row["commentsCount"])},
+                        { "userName",row["userName"].ToString() },
+                        { "imgUrl",row["imgUrl"].ToString() },
+                        { "isPinned",res.isPinned},
+                        { "isReported",res.isReported}
+                    };
+                    posts.Add(postInfo);
                 }
-
-                return posts;
+                return JsonConvert.SerializeObject(posts, Formatting.Indented);
             }
             catch (Exception ex)
             {
@@ -260,6 +263,84 @@ namespace Fitness.BLL
                 return JsonConvert.SerializeObject(new
                 {
                     message = "取消点赞失败"
+                });
+            }
+        }
+
+        public string Report(string token, int postId) {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            if (PostDAL.Report(postId))
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "成功举报"
+                });
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "举报失败"
+                });
+            }
+
+        }
+
+
+        public string CancleReport(string token, int postId) {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            if (PostDAL.CancleReport(postId))
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "成功取消举报"
+                }) ;
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "取消举报失败"
+                });
+            }
+        }
+
+        public string Pin(string token, int postId)
+        {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            if (PostDAL.Pin(postId))
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "成功置顶"
+                });
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "置顶失败"
+                });
+            }
+
+        }
+
+
+        public string CanclePin(string token, int postId)
+        {
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            if (PostDAL.CanclePin(postId))
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "成功取消置顶"
+                });
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(new
+                {
+                    message = "取消置顶失败"
                 });
             }
         }
