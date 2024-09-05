@@ -38,7 +38,11 @@
           <span
             >{{ course.coursePrice }}<el-icon><Coin /></el-icon
           ></span>
-          <span>{{ course.courseStartTime }}-{{ course.courseEndTime }}</span>
+          <span
+            >{{ formatDate(course.courseStartTime) }}至{{
+              formatDate(course.courseEndTime)
+            }}</span
+          >
           <span class="delete-text" @click="removeCourse(index)">删除</span>
         </div>
         <!-- 统计信息 -->
@@ -61,14 +65,15 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import axios from "axios";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 export default {
   props: {
     cartCourses: {
       type: Array,
       required: true,
-      default: [],
+      default: () => [],
     },
     isCartVisible: {
       type: Boolean,
@@ -78,50 +83,108 @@ export default {
     usercourses: {
       type: Array,
       required: true,
-      default: [],
+      default: () => [],
     },
   },
-  emits: [
-    "update:isCartVisible",
-    "removeCourse",
-    "update:userCourses",
-    "checkout",
-  ],
-  setup(props, { emit }) {
-    const toggleCartSidebar = () => {
-      emit("update:isCartVisible", !props.isCartVisible);
+  data() {
+    return {
+      // 这里可以放置一些数据属性，如果需要的话
+      vitalityCoins: 0,
     };
+  },
 
-    const removeCourse = (index) => {
-      emit("removeCourse", index);
-    };
+  mounted() {
+    this.getVigorTokenBalance();
+  },
 
-    const selectedCourses = computed(() =>
-      props.cartCourses.filter((course) => course.selected)
-    );
-
-    const totalPrice = computed(() =>
-      selectedCourses.value.reduce(
+  computed: {
+    selectedCourses() {
+      return this.cartCourses.filter((course) => course.selected);
+    },
+    totalPrice() {
+      return this.selectedCourses.reduce(
         (total, course) => total + course.coursePrice,
         0
-      )
-    );
+      );
+    },
+  },
+  methods: {
+    formatDate(dateTimeString) {
+      return dateTimeString.split("T")[0];
+    },
+    toggleCartSidebar() {
+      this.$emit("update:isCartVisible", !this.isCartVisible);
+    },
+    removeCourse(index) {
+      this.$emit("removeCourse", index);
+    },
 
-    const checkout = () => {
-      emit("checkout", selectedCourses.value);
-    };
+    // 获取活力币余额
+    getVigorTokenBalance() {
+      const token = localStorage.getItem("token");
+      axios
+        .get(`http://localhost:8080/api/User/GetVigorTokenBalance`, {
+          params: {
+            token: token,
+            userID: localStorage.getItem("userID"),
+          },
+        })
+        .then((response) => {
+          this.vitalityCoins = response.data.balance;
+        })
+        .catch((error) => {
+          this.vigorTokenBalance = 0;
+          console.error("Error fetching vigorTokenBalance:", error);
+        });
+    },
 
-    return {
-      toggleCartSidebar,
-      removeCourse,
-      selectedCourses,
-      totalPrice,
-      checkout,
-    };
+    // 计算所选课程的总价格
+    checkout() {
+      const bookIDList = [];
 
-    //-------------------------------------- API接口------------------------------------------------------
-    //1.取消预约 :  接口名为CancelBook
-    //2.下单结算 ： (如需要的话)接口名为PayCourseFare
+      // 遍历选中的课程，并将它们的 bookID 添加到 bookIDList 数组中
+      this.selectedCourses.forEach((course) => {
+        bookIDList.push(course.bookID);
+      });
+      // 检查余额是否足够
+      if (this.vitalityCoins >= this.totalPrice) {
+        const token = localStorage.getItem("token");
+        //调用支付接口(完结版)
+        axios
+          .post("http://localhost:8080/api/Course/PayCourseFare", {
+            token: token,
+            bookID: bookIDList,
+            payMethod: "vigor",
+          })
+          .then((response) => {
+            //  this.UPDATE_VITALITY_COINS( this.totalPrice);
+            this.$store.commit("ADD_COURSES_TO_USER", this.selectedCourses);
+            this.selectedCourses.forEach((course) => {
+              const index = this.$store.state.cartCourses.indexOf(course);
+              if (index !== -1) {
+                this.removeCourse(index);
+              }
+            });
+            ElMessageBox.alert(
+              `下单成功！您剩余的活力币余额为：${this.vitalityCoins}`,
+              "订单确认",
+              {
+                confirmButtonText: "确定",
+                type: "success",
+              }
+            );
+          });
+      } else {
+        // 如果余额不足，弹出错误提示
+        ElMessage({
+          message: "余额不足，无法完成结算。",
+          type: "error",
+        });
+      }
+    },
+  },
+  watch: {
+    // 如果需要监听某些数据变化并做出响应，可以在这里添加 watch 选项
   },
 };
 </script>
