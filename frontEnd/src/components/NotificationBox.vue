@@ -12,9 +12,8 @@
         </div>
         <ul class="notification-list">
           <li v-for="(notification, index) in notifications" :key="index" class="notification-item" @click="toggleRead(index)">
-            <!-- <el-badge :value="notification.isRead ? '' : '未读'" :class="{'is-read': notification.isRead}"> -->
               <div class="notification-content">
-                <el-badge :value="notification.isRead ? '' : '未读'" :class="{'is-read': notification.isRead}">
+                <el-badge :value="notification.isRead  ? '' : '未读'" :class="{'is-read': notification.isRead}">
                 </el-badge>
                 <span class="notification-title">{{ notification.title }}</span>
                 <span class="notification-message">{{ notification.message }}</span>
@@ -277,11 +276,11 @@ export default {
 
 .notification-content {
   flex: 1;
-  text-align: left;
+  text-align: middle;
 }
 
 .notification-title {
-  text-align: left;
+  text-align: middle;
   font-weight: bold;
   font-size: 16px;
   color: #333;
@@ -291,7 +290,7 @@ export default {
   display: block;
   color: #666;
   margin-top: 5px;
-  text-align:left;
+  text-align:middle;
 }
 
 .notification-time {
