@@ -88,7 +88,7 @@ namespace Fitness.Controllers
         [HttpPost]
         public ActionResult<string> PayCourseFare([FromBody] PayFareRequest request)
         {
-            return _courseBLL.PayCourseFare(request.token, request.bookID, request.amount, request.payMethod);
+            return _courseBLL.PayCourseFare(request.token, request.bookID, request.payMethod);
         }
 
         [HttpPost]

@@ -23,7 +23,6 @@ namespace Fitness.Models
     public class PayFareRequest {
        public string token{get; set; }
        public int[] bookID { get; set; }
-       public int amount { get; set; }
        public string payMethod { get; set; }
     }
 

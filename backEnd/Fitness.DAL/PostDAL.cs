@@ -45,9 +45,9 @@ namespace Fitness.DAL
         public static int Post(Post post)
         {
             string query = "INSERT INTO \"Posts\" " +
-                             "(\"userID\", \"postTitle\", \"postContent\", \"postCategory\", \"postTime\", \"likesCount\", \"forwardCount\", \"commentsCount\",\"refrencePostID\",\"userName\",\"imgUrl\") " +
+                             "(\"userID\", \"postTitle\", \"postContent\", \"postCategory\", \"postTime\", \"likesCount\", \"forwardCount\", \"commentsCount\",\"refrencePostID\",\"userName\",\"imgUrl\",\"isPinned\",\"isReported\") " +
                              "VALUES "+
-                             "(:userID, :postTitle, :postContent, :postCategory, :postTime, :likesCount, :forwardCount, :commentsCount,:refrencePostID, :userName, :imgUrl) "+
+                             "(:userID, :postTitle, :postContent, :postCategory, :postTime, :likesCount, :forwardCount, :commentsCount,:refrencePostID, :userName, :imgUrl, :isPinned,:isReported) " +
                              "RETURNING \"postID\" INTO :postID";
 
             OracleParameter[] parameters = new OracleParameter[]
@@ -71,7 +71,6 @@ namespace Fitness.DAL
             try
             {
                 OracleHelper.ExecuteNonQuery(query, null, parameters);
-                //var oracleInt = Convert.ToInt32(parameters[9].Value);
                 OracleDecimal  oracleInt = (OracleDecimal)parameters[13].Value;
                 return oracleInt.ToInt32();
             }
@@ -345,7 +344,7 @@ namespace Fitness.DAL
 
         }
 
-        public static Post GetPostByPostID(int postId)
+        public static PostInfo GetPostByPostID(int postId)
         {
             string selectCommand = "SELECT * FROM \"Posts\" WHERE \"postID\" = :postID";
 
@@ -357,7 +356,7 @@ namespace Fitness.DAL
             // 执行查询
             DataTable postTable = OracleHelper.ExecuteTable(selectCommand, parameters);
             DataRow row = postTable.Rows[0];
-            Post post = new Post
+            PostInfo postInfo = new()
             {
                 postID = Convert.ToInt32(row["postID"]),
                 userID = Convert.ToInt32(row["userID"]),
@@ -369,9 +368,13 @@ namespace Fitness.DAL
                 forwardCount = Convert.ToInt32(row["forwardCount"]),
                 commentsCount = Convert.ToInt32(row["commentsCount"]),
                 userName = row["userName"].ToString(),
-                imgUrl = row["imgUrl"].ToString()
+                imgUrl = row["imgUrl"].ToString(),
+                isPinned = Convert.ToInt32(row["isPinned"]),
+                isReported = Convert.ToInt32(row["isReported"])
             };
-            return post;
+            
+
+            return postInfo;
         }
     }
 }

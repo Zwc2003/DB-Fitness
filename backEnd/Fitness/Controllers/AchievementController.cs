@@ -15,10 +15,11 @@ namespace Fitness.Controllers
         UserAchievementBLL userAchievementBll = new UserAchievementBLL();
         private readonly JWTHelper _jwtHelper = new();
         [HttpGet]
-        public string GetAchievement(string token)
+        public string GetAchievement(string token,int userID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
-            int userId = tokenRes.userID;
+            int userId = userID;
+            Console.WriteLine($"userID{userID}");
             return userAchievementBll.GetUserAchievement(userId);
         }
 

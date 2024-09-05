@@ -103,17 +103,19 @@ namespace Fitness.DAL
             }
         }
 
-        public static bool IsInBooked(int classID, int userID) {
+        public static bool IsBooked(int classID, int userID) {
             try
             {
-                string sql = "SELECT * FROM \"Book\" WHERE \"classID\" :classID AND \"traineeID\"= :userID";
+                string sql = "SELECT * FROM \"Book\" WHERE \"classID\"=:classID AND \"traineeID\"= :userID";
                 OracleParameter[] parameters = new OracleParameter[]
                {
                 new OracleParameter("classID", OracleDbType.Int32) { Value = classID },
                 new OracleParameter("traineeID", OracleDbType.Int32) { Value = userID }
            };
                 DataTable dt = OracleHelper.ExecuteTable(sql,parameters);
-                if (dt.Rows.Count != 0)
+                int state = Convert.ToInt32(dt.Rows[0]["bookStatus"]);
+
+                if (state == 2 || state == 1)
                     return true;
                 else
                     return false;
@@ -149,13 +151,12 @@ namespace Fitness.DAL
         }
 
         // 更新Book记录的状态和支付ID
-        public static bool UpdateBookStatusAndPaymentID(int bookID, int bookStatus, int paymentID)
-        {
+        public static bool UpdateBookStatusAndPaymentID(int bookID, int bookStatus, int paymentID) {
             OracleTransaction transaction = null;
 
             try
             {
-                string sql = "UPDATE \"Book\" SET \"bookStatus\" = :bookStatus, \"paymentID\" = :paymentID WHERE \"bookID\" = :bookID";
+                string sql = "UPDATE \"Book\" SET \"bookStatus\" = :bookStatus ,\"paymentID\" =:paymentID WHERE \"bookID\" = :bookID";
 
                 OracleParameter[] parameters = new OracleParameter[]
                 {
@@ -178,6 +179,39 @@ namespace Fitness.DAL
                 return false;
             }
         }
+        public static bool UpdateBookStatus(int bookID, int bookStatus)
+        {
+            OracleTransaction transaction = null;
+
+            try
+            {
+                string sql = "UPDATE \"Book\" SET \"bookStatus\" = :bookStatus WHERE \"bookID\" = :bookID";
+
+                OracleParameter[] parameters = new OracleParameter[]
+                {
+                new OracleParameter("bookStatus", OracleDbType.Int32) { Value = bookStatus },
+                new OracleParameter("bookID", OracleDbType.Int32) { Value = bookID }
+                };
+
+                OracleHelper.ExecuteNonQuery(sql, transaction, parameters);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (transaction != null)
+                {
+                    transaction.Rollback();
+                }
+                Console.WriteLine($"更新失败: {ex.Message}");
+                return false;
+            }
+        }
 
     }
 }
+
+
+
+
+       

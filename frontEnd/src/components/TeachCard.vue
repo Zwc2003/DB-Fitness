@@ -12,7 +12,7 @@
         <div class="card-header">
           <div class="title-left">
             <b class="bolder">教学课单</b>
-            <b class="title-right">{{ courseName }}</b>
+            <b class="title-right">{{ eeditForm.courseName }}</b>
             <span class="learning-status">教学中</span>
           </div>
           <div class="icoin-container">
@@ -39,9 +39,9 @@
           <CaretRight />
         </el-icon>
         <b class="bolder">教学进度</b>
-        <div class="course-progress" :style="progressStyle">
+        <!-- <div class="course-progress" :style="progressStyle">
           {{ courseProgress }}
-        </div>
+        </div> -->
       </div>
       <div class="card-secondrow">
         <el-icon>
@@ -49,13 +49,13 @@
         </el-icon>
         <b class="bolder">课程时间</b>
         <div class="course-time" :style="timeStyle">
-          {{ courseStartTime }} - {{ courseEndTime }}
+          {{ eeditForm.courseStartTime }} - {{ eeditForm.courseEndTime }}
         </div>
       </div>
     </el-card>
     <el-card class="continue-learn">
       <template #header class="header2"></template>
-      <div class="continue-btn" @click="showComments">查看评论</div>
+      <div class="continue-btn" @click="showComments = true">查看评论</div>
     </el-card>
   </div>
 
@@ -63,8 +63,7 @@
   <CourseModal
     v-if="showModall"
     :isVisible="showModall"
-    :thecourse="editForm"
-    :isbooked="1"
+    :thecourse="eeditForm"
     @close="showModall = false"
   />
 
@@ -73,49 +72,59 @@
     <el-form :model="form">
       <el-form-item label="课程名称">
         <el-input
-          v-model="editForm.courseName"
+          v-model="eeditForm.courseName"
           placeholder="例如:30到45分钟核心训练"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程图片">
         <el-upload
-          name="file"
-          action="/your-upload-api"
-          :on-success="handleImageUploadSuccess"
-          :on-change="handleImageChange"
-          :auto-upload="false"
+          class="upload-demo"
+          :file-list="fileList"
+          :on-change="handleFileUpload"
+          :before-upload="beforeUpload"
+          :show-file-list="false"
         >
-          <el-button size="small" type="primary">点击上传</el-button>
+          <div class="image-upload-container">
+            <el-image
+              v-if="eeditForm.coursePhotoUrl"
+              :src="eeditForm.coursePhotoUrl"
+              fit="cover"
+            ></el-image>
+            <div v-else class="upload-placeholder">
+              <el-icon><plus /></el-icon>
+              <span>点击上传</span>
+            </div>
+          </div>
         </el-upload>
       </el-form-item>
       <el-form-item label="课程描述">
         <el-input
-          v-model="editForm.courseDescription"
+          v-model="eeditForm.courseDescription"
           placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程容量">
         <el-input
-          v-model="editForm.capacity"
+          v-model="eeditForm.capacity"
           placeholder="请填入课程容量"
         ></el-input>
       </el-form-item>
       <el-form-item label="课程开始时间">
         <el-date-picker
-          v-model="editForm.courseStartTime"
+          v-model="eeditForm.courseStartTime"
           type="date"
           placeholder="选择日期"
         />
       </el-form-item>
       <el-form-item label="课程结束时间">
         <el-date-picker
-          v-model="editForm.courseEndTime"
+          v-model="eeditForm.courseEndTime"
           type="date"
           placeholder="选择日期"
         />
       </el-form-item>
       <el-form-item label="课程难度">
-        <el-radio-group v-model="editForm.courseGrade">
+        <el-radio-group v-model="eeditForm.courseGrade">
           <el-radio :label="1">1</el-radio>
           <el-radio :label="2">2</el-radio>
           <el-radio :label="3">3</el-radio>
@@ -125,7 +134,7 @@
       </el-form-item>
       <el-form-item label="课程价格">
         <el-input-number
-          v-model="editForm.coursePrice"
+          v-model="eeditForm.coursePrice"
           :min="0"
           :max="3000"
           :step="1"
@@ -135,7 +144,7 @@
       <el-form-item label="课程特征">
         <div>
           <el-tag
-            v-for="(feature, index) in editForm.features"
+            v-for="(feature, index) in eeditForm.features"
             :key="index"
             closable
             @close="removeFeature(index)"
@@ -152,11 +161,11 @@
         </div>
       </el-form-item>
       <el-form-item label="课程分类">
-        <el-select v-model="editForm.courseType" placeholder="请选择课程分类">
-          <el-option label="高强度间歇" value="高强度间歇"></el-option>
-          <el-option label="儿童趣味课" value="儿童趣味课"></el-option>
-          <el-option label="低强度塑形" value="低强度塑形"></el-option>
-          <el-option label="有氧训练" value="有氧训练"></el-option>
+        <el-select v-model="eeditForm.typeID" placeholder="请选择课程分类">
+          <el-option label="高强度间歇" value="1"></el-option>
+          <el-option label="儿童趣味课" value="3"></el-option>
+          <el-option label="低强度塑形" value="2"></el-option>
+          <el-option label="有氧训练" value="4"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -171,7 +180,7 @@
   </el-dialog>
 
   <!-- 评论模态框 -->
-  <el-dialog v-model="showCommentsModal" title="用户评论" width="40%">
+  <el-dialog v-model="showComments" title="用户评论" width="40%">
     <div v-for="(comment, index) in comments" :key="index" class="comment-row">
       <img :src="comment.avatar" class="comment-avatar" />
       <span class="comment-nickname">{{ comment.nickname }}</span>
@@ -196,6 +205,7 @@ export default {
   },
   data() {
     return {
+      eeditForm: {},
       showModal: false, //编辑课程的视窗
       showModall: false, //查看课程的视窗
       showCommentsModal: false, //查看课程评论的视窗
@@ -219,10 +229,21 @@ export default {
       showDialog: false,
     };
   },
-
-  mounted() {
-    //获取课程ID
-    classID = this.editForm.course.classID;
+  created() {
+    this.eeditForm = {
+      classID: this.editForm.classID,
+      typeID: this.editForm.typeID,
+      courseName: this.editForm.courseName,
+      capacity: this.editForm.capacity,
+      courseDescription: this.editForm.courseDescription,
+      coursePrice: this.editForm.coursePrice,
+      courseStartTime: this.editForm.courseStartTime,
+      courseEndTime: this.editForm.courseEndTime,
+      courseGrade: this.editForm.courseGrade,
+      coursePhotoUrl: this.editForm.coursePhotoUrl,
+      features: this.editForm.features,
+      isbooked: 1, // 默认值，可以根据需要调整
+    };
   },
 
   methods: {
@@ -233,7 +254,33 @@ export default {
 
     //教练删除课程
     handleDeleteClick() {
-      this.$emit("delete-teachcourse", this.editForm.course.courseName);
+      this.$emit("delete-teachcourse", this.eeditForm.courseName);
+    },
+
+    handleFileUpload(file) {
+      this.eeditForm.coursePhotoUrl = URL.createObjectURL(file.raw);
+    },
+    beforeUpload(file) {
+      this.imagePreview = "";
+      const isJPGorPNG =
+        file.type === "image/jpeg" || file.type === "image/png";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPGorPNG) {
+        this.$message.error("上传头像图片只能是 JPG 或 PNG 格式!");
+        return false;
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+        return false;
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+        this.eeditForm.coursePhotoUrl = this.imagePreview;
+      };
+      return false;
     },
 
     //-------------------------------------- API接口------------------------------------------------------
@@ -244,7 +291,7 @@ export default {
       axios
         .post(
           `http://localhost:8080/api/Course/ModifyCourse?token=${token}`,
-          this.editForm
+          this.eeditForm
         )
         .then((response) => {
           console.log("课程修改成功:", response.data);
@@ -269,16 +316,14 @@ export default {
     //教练删除课程的API(完结版)
     deleteCourseByClassID() {
       const token = localStorage.getItem("token");
-      const classID = this.editForm.course.classID;
+      const classID = this.eeditForm.classID;
       axios
-        .delete(
-          `http://localhost:8080/api/Course/DeleteCourseByClassID`,{
-            params:{
-              token:token,
-              classID: classID
-            }
-          }
-        )
+        .delete(`http://localhost:8080/api/Course/DeleteCourseByClassID`, {
+          params: {
+            token: token,
+            classID: classID,
+          },
+        })
         .then((response) => {
           console.log("教练删除课程成功:", response.data);
         })

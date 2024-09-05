@@ -16,10 +16,11 @@
             <b class="boldd">{{ this.thecourse.courseEndTime }}</b>
           </p>
           <p class="course-details">
-            上课时间：<b class="boldd">{{
-              this.thecourse.schedules.dayOfWeek
-            }}</b
-            ><b class="boldd">{{ this.thecourse.schedules.classTime }}</b>
+            上课时间：每周
+            <span v-for="(schedule, index) in thecourse.schedules" :key="index">
+              <b class="boldd">{{ getDayOfWeek(schedule.dayOfWeek) }}</b> <b class="boldd">{{ schedule.classTime }}</b>
+              <span v-if="index !== thecourse.schedules.length - 1">, </span>
+            </span>
           </p>
           <div class="features">
             <div
@@ -34,7 +35,7 @@
           </div>
           <div class="instructor-info">
             <img
-              :src="instructorImage"
+              :src="this.thecourse.iconURL"
               alt="Instructor"
               class="instructor-image"
             />
@@ -93,12 +94,15 @@
             </el-icon>
           </p>
           <p class="nandu">
+            <b class="boldd">课程剩余容量</b>：{{ this.thecourse.capacity}}
+          </p>
+          <p class="nandu">
             <b class="boldd">课程费用</b>：{{ this.thecourse.coursePrice
             }}<el-icon class="coinn"><Coin /></el-icon>
           </p>
         </div>
         <div>
-          <div v-if="this.thecourse.isbooked == 0" class="yuyue">
+          <div v-if="this.thecourse.isBooked == 0" class="yuyue">
             <el-icon style="font-size: 35px" class="ic"
               ><ShoppingTrolley
             /></el-icon>
@@ -120,6 +124,8 @@
 
 <script>
 import { ElMessage } from "element-plus";
+import axios from "axios";
+
 
 export default {
   //传进来的数据,用于展示UI需要的所有变量
@@ -139,7 +145,7 @@ export default {
     },
     modalHeight: {
       type: String,
-      default: "600px", // 默认高度
+      default: "650px", // 默认高度
     },
     modalBackground: {
       type: String,
@@ -155,6 +161,11 @@ export default {
   emits: ["close"],
 
   methods: {
+    getDayOfWeek(dayOfWeek) {
+      const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+      return days[dayOfWeek];
+    },
+
     //关闭课程模式
     closeModal() {
       this.$emit("close");
@@ -162,6 +173,7 @@ export default {
 
     //点击课程按钮
     handleButtonClick() {
+      console.log(this.currentTime);
       if (this.isDuringClass) {
         this.currentState = "signedIn";
       } else if (this.isAfterClass && this.currentState !== "signedIn") {
@@ -175,11 +187,30 @@ export default {
     addToCart() {
       // 创建课程对象
       const course = this.thecourse;
+      const classID =course.schedules[0].classID;
       // 调用 Vuex mutation，将课程添加到购物车中
       this.$store.commit("ADD_COURSE_TO_CART", course);
-      // 可选：添加成功后的提示
-      this.$message.success("课程已成功加入购物车！");
       //补充调用后端的接口：ReserveCourse
+      const postData ={
+        token: localStorage.getItem("token"),
+        classID: [classID],
+        payMethod:"活力币"
+      }
+      console.log(postData);
+
+      axios.post("http://localhost:8080/api/Course/ReserveCourse",postData)
+      .then((response) => {
+      console.log(response.data);
+      //添加成功后的提示
+      this.$message.success("课程已成功加入购物车！");
+      })
+     .catch((error) => {
+        console.error(error);
+        ElMessage({
+          message: "课程加入购物车失败，请稍后重试！",
+          type: "error",
+        });
+      }); 
     },
 
     //-------------------------------------- API接口------------------------------------------------------
@@ -228,15 +259,13 @@ export default {
     },
     //获取课程的开始时间与结束时间
     timeRange() {
-      this.thecourse.schedules.classTime = "10:00-12:00";
-      const [start, end] = this.thecourse.schedules.classTime
-        .split("-")
-        .map((time) => {
-          const [hours, minutes] = time.split(":");
-          const date = new Date();
-          date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-          return date;
-        });
+      //const [start, end] = this.thecourse.schedules.classTime;
+      const [start, end] = "10:00-12:00".split("-").map((time) => {
+        const [hours, minutes] = time.split(":");
+        const date = new Date();
+        date.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        return date;
+      });
       return { start, end };
     },
     //判断是否在课程时间之前

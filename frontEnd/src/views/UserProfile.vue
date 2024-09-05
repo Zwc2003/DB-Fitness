@@ -181,7 +181,7 @@
                                             <td>{{ record.recordID }}</td>
                                             <td>{{ record.reason }}</td>
                                             <td :class="{ positive: record.change > 0, negative: record.change < 0 }">
-                                                {{ record.change > 0 ? '+￥' : '￥' }}{{ record.change }}
+                                                {{ record.change > 0 ? '￥+' : '￥' }}{{ record.change }}
                                             </td>
                                             <td>{{ '￥' }}{{ record.balance }}</td>
                                             <td>{{ new Date(record.createTime).toLocaleString() }}</td>
@@ -407,7 +407,10 @@ export default {
         async fetchUserPosts() {
             const token = localStorage.getItem('token');
             try {
-                const response = await axios.get(`http://localhost:8080/api/Post/GetPersonalPost?token=${token}`);
+                const response = await axios.get(`http://localhost:8080/api/Post/GetPostByUserID?token=${token}`,
+                {params:{
+                      userID: this.$route.params.userID
+                      }});
                 this.posts = response.data;
                 console.log("获取用户帖子成功：", this.posts);
             } catch (error) {
@@ -430,11 +433,19 @@ export default {
             const isLt2M = file.size / 1024 / 1024 < 2;
 
             if (!isJPGorPNG) {
-                this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
+                ElNotification({
+                            title: '错误',
+                            message: '上传头像图片格式只能为JPEG或PNG',
+                            type: 'error',
+                        });
                 return false;
             }
             if (!isLt2M) {
-                this.$message.error('上传头像图片大小不能超过 2MB!');
+                ElNotification({
+                            title: '错误',
+                            message: '上传头像图片大小不能超过2MB!',
+                            type: 'error',
+                        });
                 return false;
             }
 
@@ -449,7 +460,10 @@ export default {
         async fetchAchievements() {
             const token = localStorage.getItem('token');
             try {
-                const response = await axios.get(`http://localhost:8080/api/Achievement/GetAchievement?token=${token}`);
+                const response = await axios.get(`http://localhost:8080/api/Achievement/GetAchievement?token=${token}`,
+                    {params:{
+                      userID: this.$route.params.userID
+                      }});
                 const data = response.data;
                 this.achievements = data.achievements.map(achievement => ({
                     achievementId: achievement.achievementId,
@@ -562,7 +576,10 @@ export default {
         async getVigorTokenBalance() {
             const token = localStorage.getItem('token');
             try {
-                const response = await axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`);
+                const response = await axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`,
+                {params:{
+                      userID: this.$route.params.userID
+                      }});
                 this.vigorTokenBalance = response.data.balance;
                 console.log("获取活力币余额成功：", this.vigorTokenBalance);
             } catch (error) {
@@ -576,7 +593,10 @@ export default {
         async getVigorTokenRecordsFromDB() {
             const token = localStorage.getItem('token');
             try {
-                const response = await axios.get(`http://localhost:8080/api/User/GetVigorTokenReacords?token=${token}`);
+                const response = await axios.get(`http://localhost:8080/api/User/GetVigorTokenReacords?token=${token}`,
+                {params:{
+                      userID: this.$route.params.userID
+                      }});
                 this.vigorTokenRecords = response.data.records.map(item => ({
                     recordID: item.recordID,
                     reason: item.reason,
@@ -986,10 +1006,12 @@ select {
 
 .positive {
     color: #005800;
+    font-size: 16px !important;
 }
 
 .negative {
     color: #910000;
+    font-size: 16px !important;
 }
 
 h3 {

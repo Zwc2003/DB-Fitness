@@ -1,6 +1,7 @@
 ﻿using Fitness.DAL.Core;
 using Fitness.Models;
 using Oracle.ManagedDataAccess.Client;
+using Oracle.ManagedDataAccess.Types;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -48,12 +49,13 @@ namespace Fitness.DAL
         }
 
         // 插入新的Payment记录
-        public static bool Insert(Payment payment,OracleTransaction transaction)
+        public static int Insert(Payment payment,OracleTransaction transaction)
         {
             try
             {
                 string sql = "INSERT INTO \"Payment\"(\"bookID\", \"Amount\", \"payMethod\", \"paymentStatus\", \"payTime\") " +
-                             "VALUES(:bookID, :Amount, :payMethod, :paymentStatus, :payTime)";
+                             "VALUES(:bookID, :Amount, :payMethod, :paymentStatus, :payTime) " +
+                             "RETURNING \"paymentID\" INTO :paymentID";
 
                 OracleParameter[] parameters = new OracleParameter[]
                 {
@@ -61,16 +63,19 @@ namespace Fitness.DAL
                 new OracleParameter("Amount", OracleDbType.Int32) { Value = payment.Amount },
                 new OracleParameter("payMethod", OracleDbType.Char) { Value = payment.payMethod },
                 new OracleParameter("paymentStatus", OracleDbType.Int32) { Value = payment.paymentStatus },
-                new OracleParameter("payTime", OracleDbType.Date) { Value = payment.payTime }
+                new OracleParameter("payTime", OracleDbType.Date) { Value = payment.payTime },
+                new OracleParameter("paymentID", OracleDbType.Int32, ParameterDirection.Output)
                 };
 
                 OracleHelper.ExecuteNonQuery(sql,transaction,parameters);
-                return true;
+                OracleDecimal oracleInt = (OracleDecimal)parameters[5].Value;
+                return oracleInt.ToInt32();
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"插入失败: {ex.Message}");
-                return false;
+                return -1;
             }
         }
 

@@ -1,324 +1,134 @@
-<!-- <template>
-  <div>
-    <Comment :myName="myName" :myHeader="myHeader" :comments="comments" />
-  </div>
-</template>
-
-<script>
-import Comment from "../components/Comment.vue";
-export default {
-  components: {
-    Comment,
-  },
-  data() {
-    return {
-      myName: "Lana Del Rey",
-      myHeader:
-        "https://ts1.cn.mm.bing.net/th/id/R-C.6de01afd0e169978aef940229ee2c1de?rik=nsSMkJyKNH2gXQ&riu=http%3a%2f%2fimg.touxiangwu.com%2fuploads%2fallimg%2f2022053119%2foygfaqbppgi.jpg&ehk=4cacxrzeaJv8mVIwBB3pMz17MHUdwML%2fHNn%2bl%2bmyPxQ%3d&risl=&pid=ImgRaw&r=0",
-      comments: [
-        {
-          name: "Lana Del Rey",
-          headImg:
-            "https://tse2-mm.cn.bing.net/th/id/OIP-C.Erum9yreLBLbYTOMWWzGIwAAAA?rs=1&pid=ImgDetMain",
-          comment: "我发布一张新专辑Norman Fucking Rockwell,大家快来听啊",
-          time: "2019年9月16日 18:43",
-          commentNum: 2,
-          like: 15,
-          inputShow: false,
-          reply: [
-            {
-              from: "Taylor Swift",
-              fromHeadImg:
-                "https://ae01.alicdn.com/kf/H94c78935ffa64e7e977544d19ecebf06L.jpg",
-              comment: "我很喜欢你的新专辑！！",
-              time: "2019年9月16日 18:43",
-              commentNum: 1,
-              like: 15,
-              inputShow: false,
-            },
-            {
-              from: "Ariana Grande",
-              fromHeadImg:
-                "https://ae01.alicdn.com/kf/Hf6c0b4a7428b4edf866a9fbab75568e6U.jpg",
-              comment: "别忘记宣传我们的合作单曲啊",
-              time: "2019年9月16日 18:43",
-              commentNum: 0,
-              like: 5,
-              inputShow: false,
-            },
-          ],
-        },
-        {
-          name: "Taylor Swift",
-          headImg:
-            "https://ae01.alicdn.com/kf/H94c78935ffa64e7e977544d19ecebf06L.jpg",
-          comment: "我发行了我的新专辑Lover",
-          time: "2019年9月16日 18:43",
-          commentNum: 1,
-          like: 5,
-          inputShow: false,
-          reply: [
-            {
-              from: "Lana Del Rey",
-              fromHeadImg:
-                "https://tse2-mm.cn.bing.net/th/id/OIP-C.O1dw-_dDk7WZCI1XK7lXiQAAAA?w=210&h=210&c=7&r=0&o=5&pid=1.7",
-              to: "Taylor Swift",
-              comment: "新专辑和speak now 一样棒！",
-              time: "2019年9月16日 18:43",
-              commentNum: 25,
-              like: 5,
-              inputShow: false,
-            },
-          ],
-        },
-        {
-          name: "Norman Fucking Rockwell",
-          headImg:
-            "https://tse2-mm.cn.bing.net/th/id/OIP-C.O1dw-_dDk7WZCI1XK7lXiQAAAA?w=210&h=210&c=7&r=0&o=5&pid=1.7",
-          comment: "Plz buy Norman Fucking Rockwell on everywhere",
-          time: "2019年9月16日 18:43",
-          commentNum: 0,
-          like: 5,
-          inputShow: false,
-          reply: [],
-        },
-      ],
-    };
-  },
-};
-</script> -->
 <template>
-  <span
-    class="all-courses"
-    :class="{ active: isActive }"
-    @click="handleAllCoursesClick"
+  <el-icon
+    :style="{ fontSize: '24px', marginRight: '20px' }"
+    @click="showModal = true"
   >
-    全部课程
-  </span>
-  <div class="search-container">
-    <!-- <span
-      :class="{ active: isAllCoursesActive }"
-      @click="onAllCoursesClick"
-      class="all-courses"
-      >全部课程</span
-    > -->
-    <!-- 搜索框 -->
-    <el-input
-      v-model="searchKeyword"
-      placeholder="请输入关键词"
-      @input="onSearch"
-      class="search-input"
-      clearable
-    >
-      <template #prefix>
-        <el-icon><Search /></el-icon>
-      </template>
-    </el-input>
+    <Edit />
+  </el-icon>
 
-    <!-- 筛选区域 -->
-    <div class="filters">
-      <!-- 课程类别 -->
-      <el-dropdown
-        @command="onCourseTypeChange"
-        v-model:visible="courseTypeVisible"
-        class="dropdown"
-        hide-on-click="false"
-      >
-        <span class="el-dropdown-link">
-          课程类别
-          <el-icon><CaretBottom /></el-icon>
-          <el-icon v-if="selectedCourseType"><SuccessFilled /></el-icon>
-        </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item
-              v-for="type in courseTypes"
-              :key="type"
-              :command="type"
-              :class="{ selected: selectedCourseType === type }"
-            >
-              {{ type }}
-              <el-icon v-if="selectedCourseType === type"><Check /></el-icon>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-
-      <!-- 价格区间 -->
-      <el-dropdown
-        @command="onPriceRangeChange"
-        v-model:visible="priceRangeVisible"
-        class="dropdown"
-        hide-on-click="false"
-      >
-        <span class="el-dropdown-link">
-          价格区间
-          <el-icon><CaretBottom /></el-icon>
-          <el-icon v-if="selectedPriceRange"><SuccessFilled /></el-icon>
-        </span>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item
-              v-for="range in priceRanges"
-              :key="range.label"
-              :command="range.label"
-              :class="{ selected: selectedPriceRange === range.label }"
-            >
-              {{ range.label }}
-              <el-icon v-if="selectedPriceRange === range.label"
-                ><Check
-              /></el-icon>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </div>
-  </div>
+  <!-- 编辑课程模态框 -->
+  <el-dialog v-model="showModal" title="编辑课程" width="50%">
+    <el-form :model="form">
+      <el-form-item label="课程名称">
+        <el-input
+          v-model="eeditForm.courseName"
+          placeholder="例如:30到45分钟核心训练"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="课程图片">
+        <el-upload
+          class="upload-demo"
+          :file-list="fileList"
+          :on-change="handleFileUpload"
+          :before-upload="beforeUpload"
+          :show-file-list="false"
+        >
+          <div class="image-upload-container">
+            <el-image
+              v-if="eeditForm.coursePhotoUrl"
+              :src="eeditForm.coursePhotoUrl"
+              fit="cover"
+            ></el-image>
+            <div v-else class="upload-placeholder">
+              <el-icon><plus /></el-icon>
+              <span>点击上传</span>
+            </div>
+          </div>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="课程描述">
+        <el-input
+          v-model="eeditForm.courseDescription"
+          placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="课程容量">
+        <el-input
+          v-model="eeditForm.capacity"
+          placeholder="请填入课程容量"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="课程开始时间">
+        <el-date-picker
+          v-model="eeditForm.courseStartTime"
+          type="date"
+          placeholder="选择日期"
+        />
+      </el-form-item>
+      <el-form-item label="课程结束时间">
+        <el-date-picker
+          v-model="eeditForm.courseEndTime"
+          type="date"
+          placeholder="选择日期"
+        />
+      </el-form-item>
+      <el-form-item label="课程难度">
+        <el-radio-group v-model="eeditForm.courseGrade">
+          <el-radio :label="1">1</el-radio>
+          <el-radio :label="2">2</el-radio>
+          <el-radio :label="3">3</el-radio>
+          <el-radio :label="4">4</el-radio>
+          <el-radio :label="5">5</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="课程价格">
+        <el-input-number
+          v-model="eeditForm.coursePrice"
+          :min="0"
+          :max="3000"
+          :step="1"
+          placeholder="请填入一个数字"
+        />
+      </el-form-item>
+      <el-form-item label="课程特征">
+        <div>
+          <el-tag
+            v-for="(feature, index) in eeditForm.features"
+            :key="index"
+            closable
+            @close="removeFeature(index)"
+            style="margin-right: 8px"
+          >
+            {{ feature }}
+          </el-tag>
+          <el-input
+            v-model="inputFeature"
+            placeholder="输入并按回车,如 [力量, 增肌]"
+            @keyup.enter.native="addFeature"
+            style="width: 200px"
+          ></el-input>
+        </div>
+      </el-form-item>
+      <el-form-item label="课程分类">
+        <el-select v-model="eeditForm.typeID" placeholder="请选择课程分类">
+          <el-option label="高强度间歇" value="1"></el-option>
+          <el-option label="儿童趣味课" value="3"></el-option>
+          <el-option label="低强度塑形" value="2"></el-option>
+          <el-option label="有氧训练" value="4"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm">提交</el-button>
+        <el-button @click="showModal = false">取消</el-button>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="showModal = false">取消</el-button>
+      <el-button type="primary" @click="submitEdit">保存修改</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
 import { ref } from "vue";
-import {
-  Search,
-  CaretBottom,
-  Check,
-  SuccessFilled,
-} from "@element-plus/icons-vue";
 
 export default {
-  components: {
-    [Search.name]: Search,
-    [CaretBottom.name]: CaretBottom,
-    [Check.name]: Check,
-    [SuccessFilled.name]: SuccessFilled,
-  },
-  setup() {
-    const searchKeyword = ref("");
-    const selectedCourseType = ref("");
-    const selectedPriceRange = ref("");
-    const isActive = ref(false);
-
-    const handleAllCoursesClick = () => {
-      isActive.value = !isActive.value;
-      selectedCourseType.value = "";
-      selectedPriceRange.value = "";
-      console.log("全部课程按钮被点击了！");
-      // 在这里添加你想要触发的其他逻辑
-    };
-
-    const courseTypes = ["高强度间歇", "低强度塑形", "儿童趣味课", "有氧训练"];
-    const priceRanges = [
-      { label: "0-40 活力币", min: 0, max: 40 },
-      { label: "40-80 活力币", min: 40, max: 80 },
-      { label: "80 以上 活力币", min: 80, max: null },
-    ];
-
-    const onSearch = () => {
-      isActive.value = false;
-      console.log("搜索关键词:", searchKeyword.value);
-    };
-
-    const onCourseTypeChange = (courseType) => {
-      isActive.value = false;
-      selectedCourseType.value = courseType;
-      console.log("选中的课程类别:", courseType);
-    };
-
-    const onPriceRangeChange = (priceRange) => {
-      isActive.value = false;
-      selectedPriceRange.value = priceRange;
-      const range = priceRanges.find((r) => r.label === priceRange);
-      console.log("选中的价格区间:", range.min, range.max);
-    };
-
+  data() {
     return {
-      handleAllCoursesClick,
-      isActive,
-      searchKeyword,
-      selectedCourseType,
-      selectedPriceRange,
-      courseTypes,
-      priceRanges,
-      onSearch,
-      onCourseTypeChange,
-      onPriceRangeChange,
+      aaa: "",
     };
   },
 };
 </script>
 
-<style scoped>
-/* .all-courses {
-  margin-left: 30px;
-} */
-.all-courses {
-  cursor: pointer;
-  color: black;
-  text-decoration: none;
-  margin-right: 100px;
-  font-size: 1.2rem;
-}
-
-.all-courses.active {
-  font-weight: bolder;
-  color: red;
-  position: relative;
-}
-
-.all-courses.active::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -5px;
-  width: 100%;
-  height: 2px;
-  background-color: red;
-}
-
-.search-container span.active {
-  color: red;
-  border-bottom: 2px solid red;
-}
-
-.filters .el-dropdown-link {
-  color: initial;
-}
-
-.filters .el-dropdown-menu .el-dropdown-item.selected {
-  background-color: initial;
-  color: initial;
-}
-
-.search-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.search-input {
-  width: 300px;
-}
-
-.filters {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.dropdown {
-  display: flex;
-  align-items: center;
-}
-
-.el-dropdown-link {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.selected {
-  background-color: #f0f9eb;
-  color: #67c23a;
-}
-</style>
+<style scoped></style>

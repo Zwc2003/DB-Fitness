@@ -11,6 +11,7 @@ namespace Fitness.BLL.Interfaces
     {
         public string Post(string token, Post post);
         public List<Post> GetPostByUserID(string token,int userID);
+        public PostInfo GetPostByPostID(string token, int postID);
         public string GetAllPost(string token);
         public string Delete(string token, int postId, int postOwnerID);
         public string LikePost(string token, int postId,int postOwnerID);
