@@ -266,12 +266,13 @@ export default {
 
         fetchAllPosts() {
         const token = localStorage.getItem('token');
-        this.getAllPosts(token)
+        axios.get(`http://localhost:8080/api/Post/GetAllPost?token=${token}`)
             .then(response => {
-                this.allPosts = response.data;
-                this.updatePostsOrder(); // 调用更新顺序的方法
+                this.allPosts = response.data
+                    .filter(post => post.isReported === 0) // 过滤掉被举报的帖子
+                    .sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
                 this.filteredPosts = this.allPosts;
-                this.updateHotPosts();
+                this.updateHotPosts(); // 更新热帖
             })
             .catch(error => {
                 ElNotification({

@@ -151,17 +151,18 @@
         </el-dialog>
 
         <!-- 举报弹窗 -->
-        <el-dialog title="确认举报" v-model:visible="reportDialogVisible" width="30%">
-            <div>
-                <p>你确定要举报此帖子吗？</p>
-            </div>
-            <template #footer>
-                <span class="dialog-footer">
-                    <el-button @click="reportDialogVisible = false">取消</el-button>
-                    <el-button type="danger" @click="confirmReport">确认举报</el-button>
-                </span>
-            </template>
-        </el-dialog>
+        <el-dialog title="确认举报" v-model="reportDialogVisible" width="30%">
+    <div>
+        <p>你确定要举报此帖子吗？</p>
+    </div>
+    <template #footer>
+        <span class="dialog-footer">
+            <el-button @click="reportDialogVisible = false">取消</el-button>
+            <el-button type="danger" @click="confirmReport">确认举报</el-button>
+        </span>
+    </template>
+</el-dialog>
+
     </div>
 </template>
 
@@ -714,123 +715,100 @@ export default {
                     });
             }
         },
-        /*deleteComment(commentID) {
-            const token = localStorage.getItem('token');
-            axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
-                params: {
-                    token: token,
-                    commentID: commentID,
-                    postID: this.post.postID
-
-                }
-            })
-                .then(response => {
-                    if (response.data === '评论删除成功') {
-                        this.comments = this.comments.filter(c => c.commentID !== commentID);
-                        this.comments.forEach(comment => {
-                            comment.replies = comment.replies.filter(r => r.commentID !== commentID);
-                        });
-                        this.post.commentsCount--;
-                        ElNotification({
-                            title: '成功',
-                            message: '评论删除成功',
-                            type: 'success',
-                        });
-                    } else {
-                        ElNotification({
-                            title: '错误',
-                            message: '删除评论失败',
-                            type: 'error',
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                    ElNotification({
-                        title: '错误',
-                        message: '删除评论时发生错误',
-                        type: 'error',
-                    });
-                });
-        },*/
+        
         // 递归删除评论及其子评论
         async deleteComment(commentID) {
-    const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token');
 
-    try {
-        // 找到目标评论及其所在的父级评论数组（comments 或 replies）
-        const findComment = (commentID, comments) => {
-            for (let i = 0; i < comments.length; i++) {
-                if (comments[i].commentID === commentID) {
-                    return { comment: comments[i], parentArray: comments, index: i };
+            try 
+            {
+                // 找到目标评论及其所在的父级评论数组（comments 或 replies）
+                const findComment = (commentID, comments) => 
+                {
+                    for (let i = 0; i < comments.length; i++) 
+                    {
+                        if (comments[i].commentID === commentID) 
+                        {
+                            return { comment: comments[i], parentArray: comments, index: i };
+                        }
+                        if (comments[i].replies && comments[i].replies.length > 0) 
+                        {
+                            const result = findComment(commentID, comments[i].replies);
+                            if (result) return result;
+                        }
+                    }
+                    return null;
+                };
+
+                // 递归删除子评论，返回删除的评论总数
+                const deleteRecursively = async (comment) => 
+                {
+                    let deletedCount = 0;
+                    if (comment.replies && comment.replies.length > 0)
+                    {
+                        for (let reply of comment.replies) 
+                        {
+                            deletedCount += await deleteRecursively(reply);
+                        }
+                    }
+
+                    // 删除当前评论
+                    const response = await axios.delete('http://localhost:8080/api/Comment/DeleteComment', 
+                    {
+                        params: 
+                        {
+                            token: token,
+                            commentID: comment.commentID,
+                            postID: this.post.postID
+                        }
+                    });
+
+                    if (response.data === '评论删除成功') 
+                    {
+                        deletedCount += 1;
+                    } 
+                    else 
+                    {
+                        throw new Error('删除评论失败');
+                    }
+
+                    return deletedCount;
+                };
+
+                const { comment, parentArray, index } = findComment(commentID, this.comments);
+
+                if (comment) 
+                {
+                    // 先递归删除子评论
+                    const deletedCount = await deleteRecursively(comment);
+
+                    // 从父级数组中移除当前评论
+                    parentArray.splice(index, 1);
+
+                    // 同步更新评论总数
+                    this.post.commentsCount -= deletedCount;
+
+                    ElNotification({
+                        title: '成功',
+                        message: '评论删除成功',
+                        type: 'success',
+                    });
+                } else 
+                {
+                    ElNotification({
+                        title: '错误',
+                        message: '未找到要删除的评论',
+                        type: 'error',
+                    });
                 }
-                if (comments[i].replies && comments[i].replies.length > 0) {
-                    const result = findComment(commentID, comments[i].replies);
-                    if (result) return result;
-                }
+            } catch (error) {
+                console.log(error);
+                ElNotification({
+                    title: '错误',
+                    message: '删除评论时发生错误',
+                    type: 'error',
+                });
             }
-            return null;
-        };
-
-        // 递归删除子评论，返回删除的评论总数
-        const deleteRecursively = async (comment) => {
-            let deletedCount = 0;
-            if (comment.replies && comment.replies.length > 0) {
-                for (let reply of comment.replies) {
-                    deletedCount += await deleteRecursively(reply);
-                }
-            }
-
-            // 删除当前评论
-            const response = await axios.delete('http://localhost:8080/api/Comment/DeleteComment', {
-                params: {
-                    token: token,
-                    commentID: comment.commentID,
-                    postID: this.post.postID
-                }
-            });
-
-            if (response.data === '评论删除成功') {
-                deletedCount += 1;
-            } else {
-                throw new Error('删除评论失败');
-            }
-
-            return deletedCount;
-        };
-
-        const { comment, parentArray, index } = findComment(commentID, this.comments);
-
-        if (comment) {
-            // 先递归删除子评论
-            const deletedCount = await deleteRecursively(comment);
-
-            // 从父级数组中移除当前评论
-            parentArray.splice(index, 1);
-
-            // 同步更新评论总数
-            this.post.commentsCount -= deletedCount;
-
-            ElNotification({
-                title: '成功',
-                message: '评论删除成功',
-                type: 'success',
-            });
-        } else {
-            ElNotification({
-                title: '错误',
-                message: '未找到要删除的评论',
-                type: 'error',
-            });
-        }
-    } catch (error) {
-        console.log(error);
-        ElNotification({
-            title: '错误',
-            message: '删除评论时发生错误',
-            type: 'error',
-        });
-    }
 },
 
 
@@ -858,16 +836,43 @@ export default {
             });
         },
         reportPost() {
-            this.reportDialogVisible = true;
-        },
-        confirmReport() {
+        this.reportDialogVisible = true; // 打开举报弹窗
+    },
+    confirmReport() {
+        const token = localStorage.getItem('token');
+        axios.get(`http://localhost:8080/api/Post/ReportPost`, {
+            params: {
+            token: token,
+            postID: this.post.postID
+            }
+        })
+        .then(response => {
+            if (response.data.message === '成功举报') {
+                ElNotification({
+                    title: '成功',
+                    message: '举报成功，感谢你的反馈。',
+                    type: 'success',
+                });
+                this.post.isReported = 1; // 更新isReported标志位
+                this.$router.push('/forum'); // 跳转回论坛页面
+            } else {
+                ElNotification({
+                    title: '错误',
+                    message: '举报失败，请稍后再试。',
+                    type: 'error',
+                });
+            }
+        })
+        .catch(error => {
+            console.log(error);
             ElNotification({
-                title: '成功',
-                message: '感谢你的反馈，举报已提交。',
-                type: 'success',
+                title: '错误',
+                message: '举报时发生错误，请稍后再试。',
+                type: 'error',
             });
-            this.reportDialogVisible = false;
-        },
+        });
+        this.reportDialogVisible = false; // 关闭举报弹窗
+    },
         goToAuthorProfile(userID) {
             const token = localStorage.getItem('token');
             axios.get(`http://localhost:8080/api/User/GetProfile`, {

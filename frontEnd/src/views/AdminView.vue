@@ -105,38 +105,40 @@
                             </el-table>
                         </div>
 
-                        <!-- 内容管理界面 -->
-                        <div v-if="active == 2">
-                            <el-table :data="contentList" style="width: 100%">
-                                <el-table-column prop="postTitle" label="标题"></el-table-column>
-                                <el-table-column prop="userName" label="作者"></el-table-column>
-                                <el-table-column prop="postCategory" label="类型">
-                                    <template #default="{ row }">
-                                        <el-tag :type="row.postID ? 'info' : 'warning'">{{ row.postID ? '帖子' : '评论'
-                                            }}</el-tag>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="postTime" label="发布时间">
-                                    <template #default="{ row }">
-                                        {{ formatDate(row.postTime) }}
-                                    </template>
-                                </el-table-column>
-                                <el-table-column prop="status" label="状态">
-                                    <template #default="{ row }">
-                                        <el-tag :type="getTagType(row)" :style="getTagStyle(row)">{{ row.status
-                                            }}</el-tag>
-                                    </template>
-                                </el-table-column>
-                                <el-table-column fixed="right" label="操作" width="250">
-                                    <template #default="{ row }">
-                                        <el-button size="small" type="danger" @click="deleteContent(row)"
-                                            :disabled="row.status === '删除'">删除</el-button>
-                                        <el-button size="small" @click="navigateToPost(row)"
-                                            :disabled="row.status === '删除'">查看评论</el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                        </div>
+                        
+                    <!-- 内容管理界面 -->
+                    <div v-if="active == 2">
+                        <el-table :data="contentList" style="width: 100%">
+                            <el-table-column prop="postTitle" label="标题"></el-table-column>
+                            <el-table-column prop="userName" label="作者"></el-table-column>
+                            <el-table-column prop="postCategory" label="类型">
+                                <template #default="{ row }">
+                                    <el-tag :type="row.postID ? 'info' : 'warning'">{{ row.postID ? '帖子' : '评论' }}</el-tag>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="postTime" label="发布时间">
+                                <template #default="{ row }">
+                                    {{ formatDate(row.postTime) }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="status" label="状态">
+                                <template #default="{ row }">
+                                    <el-tag :type="getTagType(row)" :style="getTagStyle(row)">{{ row.status }}</el-tag>
+                                </template>
+                            </el-table-column>
+                            <el-table-column fixed="right" label="操作" width="250">
+                                <template #default="{ row }">
+                                    <el-button size="small" type="danger" @click="deleteContent(row)"
+                                        :disabled="row.status === '删除'">删除</el-button>
+                                    <el-button size="small" @click="navigateToPost(row)"
+                                        :disabled="row.status === '删除'">查看评论</el-button>
+                                    <el-button size="small" type="primary" @click="cancelReport(row)"
+                                        :disabled="row.isReported === 0 || row.status === '删除'">取消举报</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                
 
                         <!--饮食管理界面-->
                         <div v-if="active === 3">
@@ -228,13 +230,19 @@ async function fetchPosts() {
         const token = localStorage.getItem('token');
         const response = await axios.get(`http://localhost:8080/api/Post/GetAllPost?token=${token}`);
         contentList.value = response.data;
+        console.log(contentList.value);
+        // 判断帖子是否被举报
+        contentList.value.forEach(post => {
+            console.log(post.isReported)
+            if (post.isReported === 1) {
+                post.status = '被举报';
+            } else {
+                post.status = '正常';
+            }
+        });
 
         // 按照发布时间从小到大排序
         contentList.value.sort((a, b) => new Date(a.postTime) - new Date(b.postTime));
-
-        contentList.value.forEach(post => {
-            post.status = '正常';
-        });
     } catch (error) {
         ElNotification({
             title: '错误',
@@ -243,6 +251,52 @@ async function fetchPosts() {
         });
     }
 }
+
+// 取消举报操作
+async function cancelReport(post) {
+    try {
+        const response = await axios.get('http://localhost:8080/api/Post/CancleReportPost', {
+            params: {
+            token: localStorage.getItem('token'),
+            postID: post.postID,
+            }
+        });
+        if (response.data.message === '成功取消举报') {
+            post.isReported = 0;
+            post.status = '正常';
+            ElNotification({
+                title: '成功',
+                message: `已成功取消举报该帖子：${post.postTitle}`,
+                type: 'success',
+            });
+        }
+    } catch (error) {
+        ElNotification({
+            title: '错误',
+            message: '取消举报失败，请稍后再试。',
+            type: 'error',
+        });
+    }
+}
+
+
+
+// 获取标签样式
+function getTagStyle(row) {
+    if (row.status === '正常') return { backgroundColor: 'green', color: 'white' };
+    if (row.status === '被举报') return { backgroundColor: 'orange', color: 'white' };
+    if (row.status === '删除') return { backgroundColor: 'red', color: 'white' };
+    return {};
+}
+
+// 获取标签类型
+function getTagType(row) {
+    if (row.status === '正常') return 'success';
+    if (row.status === '被举报') return 'warning';
+    if (row.status === '删除') return 'danger';
+    return 'info';
+}
+
 
 function checkAvailable() {
     let token = localStorage.getItem('token');
@@ -298,22 +352,6 @@ function formatDate(date) {
     const minutes = String(d.getMinutes()).padStart(2, '0');
     const seconds = String(d.getSeconds()).padStart(2, '0');
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
-
-// 获取标签样式
-function getTagStyle(row) {
-    if (row.status === '正常') return { backgroundColor: 'green', color: 'white' };
-    if (row.status === '禁言') return { backgroundColor: 'yellow', color: 'black' };
-    if (row.status === '删除') return { backgroundColor: 'red', color: 'white' };
-    return {};
-}
-
-// 获取标签类型
-function getTagType(row) {
-    if (row.status === '正常') return 'success';
-    if (row.status === '禁言') return 'warning';
-    if (row.status === '删除') return 'danger';
-    return 'info';
 }
 
 // 用户管理操作
