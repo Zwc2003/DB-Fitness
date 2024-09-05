@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div class="chat-button" @click="toggleChatWindow">
+    <div class="box-button" @click="toggleBoxWindow">
       ✉️
     </div>
-    <div class="overlay" @click="toggleChatWindow"></div> <!-- 遮罩层 -->
-    <div class="custom-common-layout">
+    <div class="box-overlay" @click="toggleBoxWindow"></div> <!-- 遮罩层 -->
+    <div class="box-common-layout">
       <div class="notifications-container">
         <div class="notifications-header">
           <h3>🔔 通知</h3>
@@ -95,10 +95,10 @@ export default {
         console.error('Error transmission of read:', error);
       }
     },
-    toggleChatWindow() {
-      const chatButton = document.querySelector('.chat-button');
-      const chatWindow = document.querySelector('.custom-common-layout');
-      const overlay = document.querySelector('.overlay');
+    toggleBoxWindow() {
+      const chatButton = document.querySelector('.box-button');
+      const chatWindow = document.querySelector('.box-common-layout');
+      const overlay = document.querySelector('.box-overlay');
       const isVisible = chatWindow.style.display === 'block';
 
       if (isVisible) {
@@ -126,7 +126,7 @@ export default {
 </script>
 
 <style scoped>
-.overlay {
+.box-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -140,7 +140,7 @@ export default {
   /* 默认隐藏 */
 }
 
-.custom-common-layout {
+.box-common-layout {
   position: fixed;
   top: var(--start-top, 50%);
   /* 动态设置起始点 */
@@ -164,7 +164,7 @@ export default {
   /* 使动画从中心展开 */
 }
 
-.custom-common-layout.open {
+.box-common-layout.open {
   top: 50%;
   /* 最终位置为屏幕中央 */
   left: 50%;
@@ -172,9 +172,9 @@ export default {
   /* 展开至全屏中央 */
 }
 
-.chat-button {
+.box-button {
   position: fixed;
-  bottom: 20px;
+  bottom: 100px;
   right: 20px;
   width: 60px;
   height: 60px;
@@ -195,7 +195,7 @@ export default {
 }
 
 /* 悬停效果 */
-.chat-button:hover {
+.box-button:hover {
   transform: scale(1.1);
   /* 放大效果 */
   background: linear-gradient(135deg, #aecc53, #aecc53);
@@ -203,7 +203,7 @@ export default {
 }
 
 /* 点击时的效果 */
-.chat-button:active {
+.box-button:active {
   transform: scale(0.9);
   /* 轻微缩小效果 */
 }
@@ -263,9 +263,11 @@ export default {
 
 .notification-content {
   flex: 1;
+  text-align: left;
 }
 
 .notification-title {
+  text-align: left;
   font-weight: bold;
   font-size: 16px;
   color: #333;
@@ -275,6 +277,7 @@ export default {
   display: block;
   color: #666;
   margin-top: 5px;
+  text-align:left;
 }
 
 .notification-time {

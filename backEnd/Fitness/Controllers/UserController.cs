@@ -130,21 +130,18 @@ namespace Fitness.Controllers
 
         // zwc 
         [HttpGet]
-        public ActionResult<BalanceRes> GetVigorTokenBalance(string token)
+        public ActionResult<BalanceRes> GetVigorTokenBalance(string token,int userID)
         {
-            Console.WriteLine("token:", token);
-            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
-            int userID = tokenRes.userID;
+            
 
-            Console.WriteLine($"获取活力币余额{tokenRes.userID}");
+            Console.WriteLine($"获取活力币余额{userID}");
             return _vigorTokenBLL.GetBalance(userID);
         }
 
         [HttpGet]
-        public ActionResult<VigorTokenRecordList> GetVigorTokenReacords(string token)
+        public ActionResult<VigorTokenRecordList> GetVigorTokenReacords(string token,int userID)
         {
-            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
-            int userID = tokenRes.userID;
+            
             Console.WriteLine("获取活力币记录");
             return _vigorTokenBLL.GetAllVigorTokenRecords(userID);
         }

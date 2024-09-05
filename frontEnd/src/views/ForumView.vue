@@ -2,7 +2,7 @@
     <div>
         <navigation-bar />
         <Forum />
-        <!-- <common-layout /> -->
+        <common-layout />
         <notification-box />
 
     </div>
