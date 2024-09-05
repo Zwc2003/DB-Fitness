@@ -148,7 +148,7 @@ export default {
   /* 动态设置起始点 */
   transform: translate(-50%, -50%) scale(0);
   /* 初始状态缩小到按钮大小 */
-  height: 50vh;
+  height: 70vh;
   width: 30vw;
   background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
@@ -229,13 +229,15 @@ export default {
 }
 
 .notifications-container {
-  max-height: 520px;
-  overflow-y: auto;
+  max-height: 68vh; /* 根据需要设置最大高度 */
+  overflow-y: auto; /* 当内容超出容器时显示滚动条 */
+  padding-right: 10px; /* 为了给滚动条留出空间 */
 }
+
 
 .notifications-header {
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
 
 .notifications-header h3 {

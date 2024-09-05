@@ -265,22 +265,22 @@ export default {
         },
 
         fetchAllPosts() {
-            const token = localStorage.getItem('token');
-            this.getAllPosts(token)
-                .then(response => {
-                    console.log(response.data);
-                    this.allPosts = response.data;
-                    this.filteredPosts = this.allPosts;
-                    this.updateHotPosts();
-                })
-                .catch(error => {
-                    ElNotification({
-                        title: '错误',
-                        message: '获取帖子时发生错误，请稍后再试。',
-                        type: 'error',
-                    });
+        const token = localStorage.getItem('token');
+        this.getAllPosts(token)
+            .then(response => {
+                this.allPosts = response.data;
+                this.updatePostsOrder(); // 调用更新顺序的方法
+                this.filteredPosts = this.allPosts;
+                this.updateHotPosts();
+            })
+            .catch(error => {
+                ElNotification({
+                    title: '错误',
+                    message: '获取帖子时发生错误，请稍后再试。',
+                    type: 'error',
                 });
-        },
+            });
+    },
 
         getAllPosts(token) {
             return axios.get(`http://localhost:8080/api/Post/GetAllPost?token=${token}`)
@@ -306,14 +306,10 @@ export default {
         const postIndex = this.allPosts.findIndex(post => post.postID === postID);
         if (postIndex !== -1) {
             const post = this.allPosts[postIndex];
-            
             if (!post.isPinned) {
                 // 调用置顶接口
                 axios.get('http://localhost:8080/api/Post/PinPost', {
-                    params: {
-                    token: token,
-                    postID: postID
-                    }
+                    params: { token, postID }
                 })
                 .then(response => {
                     if (response.data.message === '成功置顶') {
@@ -324,16 +320,9 @@ export default {
                             message: '帖子已置顶',
                             type: 'success',
                         });
-                    } else {
-                        ElNotification({
-                            title: '错误',
-                            message: '置顶帖子失败',
-                            type: 'error',
-                        });
                     }
                 })
                 .catch(error => {
-                    console.log(error);
                     ElNotification({
                         title: '错误',
                         message: '置顶帖子时发生错误',
@@ -343,10 +332,7 @@ export default {
             } else {
                 // 调用取消置顶接口
                 axios.get('http://localhost:8080/api/Post/CanclePinPost', {
-                    params: {
-                    token: token,
-                    postID: postID
-                    }
+                    params: { token, postID }
                 })
                 .then(response => {
                     if (response.data.message === '成功取消置顶') {
@@ -357,16 +343,9 @@ export default {
                             message: '帖子已取消置顶',
                             type: 'success',
                         });
-                    } else {
-                        ElNotification({
-                            title: '错误',
-                            message: '取消置顶失败',
-                            type: 'error',
-                        });
                     }
                 })
                 .catch(error => {
-                    console.log(error);
                     ElNotification({
                         title: '错误',
                         message: '取消置顶时发生错误',
@@ -379,6 +358,7 @@ export default {
 
     // 更新帖子顺序，将置顶的帖子放在最前面
     updatePostsOrder() {
+        // 将所有置顶的帖子放在最前面
         const pinnedPosts = this.allPosts.filter(post => post.isPinned);
         const unpinnedPosts = this.allPosts.filter(post => !post.isPinned)
                                            .sort((a, b) => new Date(b.postTime) - new Date(a.postTime));
