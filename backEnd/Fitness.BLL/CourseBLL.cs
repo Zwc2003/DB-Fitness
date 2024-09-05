@@ -458,18 +458,40 @@ namespace Fitness.BLL
         }
 
         // 根据userID获取课程
-        public List<BookCourseInfo> GetReservedCourseByUserID(string token)
+        public string GetReservedCourseByUserID(string token)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userID =tokenRes.userID;
             try
             {
-                return CourseDAL.GetReservedCourseByUserID(userID);
+                List<Dictionary<string, object>> courseDetails = new List<Dictionary<string, object>>();
+                var courses = CourseDAL.GetReservedCourseByUserID(userID);
+                foreach (var course in courses)
+                {
+                    //var schedules = CourseDAL.GetCourseByClassID()
+                    var schedule = CourseScheduleDAL.GetCourseSchedulesByClassID(course.classID);
+                    /*classID ,bookID,typeID ,courseName ,coursePrice ,courseStartTime,courseEndTime ,coursePhotoUrl,payMethod,bookStatus, bookTime*/
+                    var courseInfo = new Dictionary<string, object>
+                    {
+                        { "coursePhotoUrl", course.coursePhotoUrl },
+                        { "courseName", course.courseName },
+                        { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
+                        { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
+                        { "coursePrice", course.coursePrice},
+                        { "classID", course.classID },
+                        { "bookID", course.bookID },
+                        { "schedules", schedule }
+                    };
+                    courseDetails.Add(courseInfo);
+
+                }
+
+                return JsonConvert.SerializeObject(courseDetails, Formatting.Indented);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"获取课程时出错：{ex.Message}");
-                return new List<BookCourseInfo>();
+                return null;
             }
         }
 

@@ -93,7 +93,6 @@ namespace Fitness.Models
 
         public DateTime bookTime { get; set; }
 
-        /*classID ,typeID ,courseName ,coursePrice ,courseStartTime,courseEndTime ,coursePhotoUrl,payMethod,bookStatus, bookTime*/
     }
 
     public class Participate
