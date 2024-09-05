@@ -315,12 +315,13 @@ namespace Fitness.BLL
             
         }
 
-        public string UpdateFitnessPlanAchievement(int userId)
+        public string UpdateFitnessPlanAchievement(int userId, int date)
         {
             UpdateUserAchievement(userId, 8);
             bool isAchieved = UserAchievementDAL.GetIsAchieved(userId, 8);
             if (isAchieved == false)
                 vigorTokenBLL.UpdateBalance(userId, "完成健身计划，获得100活力币", 100);
+            UserFitnessPlanDAL.CompletePlan(userId, date);
             return JsonConvert.SerializeObject(new
             {
                 message = "successful"

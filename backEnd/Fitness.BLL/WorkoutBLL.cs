@@ -15,20 +15,6 @@ namespace Fitness.BLL
 {
     public sealed class WorkoutBLL
     {
-        static List<string> loseWeight = new List<string> { "HIIT燃脂", "上肢力量初级", "HIIT燃脂", "告别驼背计划", "HIIT燃脂", "告别粗腿", "HIIT燃脂",
-                                                     "HIIT燃脂", "燃胸计划", "HIIT燃脂", "上肢力量初级", "HIIT燃脂", "告别驼背计划", "HIIT燃脂",
-                                                     "HIIT燃脂", "上肢力量初级", "HIIT燃脂", "燃胸计划", "HIIT燃脂", "告别粗腿", "HIIT燃脂",
-                                                     "HIIT燃脂", "告别粗腿", "HIIT燃脂", "告别驼背计划", "HIIT燃脂", "燃胸计划", "HIIT燃脂"};
-
-        static List<string> buildMuscle = new List<string> { "轰炸麒麟臂", "告别驼背计划", "腹肌撕裂", "上肢力量初级", "背部增肌训练", "告别粗腿", "臀腿雕刻",
-                                                     "铠甲胸肌", "燃胸计划", "轰炸麒麟臂", "上肢力量初级", "腹肌撕裂", "背部增肌训练", "告别驼背计划",
-                                                     "轰炸麒麟臂", "燃胸计划", "上肢力量初级", "背部增肌训练", "臀腿雕刻", "告别粗腿", "告别驼背计划",
-                                                     "腹肌撕裂", "上肢力量初级", "腹肌撕裂", "告别驼背计划", "背部增肌训练", "告别粗腿", "臀腿雕刻"};
-
-        static List<string> bodySculpt = new List<string> { "HIIT燃脂", "上肢力量初级", "腹肌撕裂", "告别驼背计划", "燃胸计划", "告别粗腿", "HIIT燃脂",
-                                                     "HIIT燃脂", "告别驼背计划", "燃胸计划", "上肢力量初级", "腹肌撕裂", "臀腿雕刻", "HIIT燃脂",
-                                                     "HIIT燃脂", "上肢力量初级", "腹肌撕裂", "告别驼背计划", "燃胸计划", "告别粗腿", "HIIT燃脂",
-                                                     "HIIT燃脂", "告别驼背计划", "燃胸计划", "上肢力量初级", "腹肌撕裂", "臀腿雕刻", "HIIT燃脂"};
         private static readonly WorkoutBLL instance = new WorkoutBLL();
         private WorkoutBLL()
         {
@@ -52,16 +38,10 @@ namespace Fitness.BLL
             else return "星期日";
         }
 
-        private static string GenerateWorkout(string goal)
+        private static string GenerateWorkout(int userId)
         {
-            List<string> planList = new List<string>();
-            if (goal == "loseWeight")
-                planList = loseWeight;
-            else if (goal == "buildMuscle")
-                planList = buildMuscle;
-            else if (goal == "bodySculpting")
-                planList = bodySculpt;
-            List<object> plan = new List<object>();
+            DataTable workoutList = UserFitnessPlanDAL.GetPlan(userId);
+            //List<object> plan = new List<object>();
 
             var workoutPlan = new List<List<Dictionary<string, object>>>();
 
@@ -69,8 +49,10 @@ namespace Fitness.BLL
             {
                 var weekPlan = new List<Dictionary<string, object>>();
                 int num = 0;
-                foreach (var workoutName in planList.Skip(week * 7).Take(7)) // 每周七天的计划
+                //foreach (var workoutName in planList.Skip(week * 7).Take(7)) // 每周七天的计划
+                for(int i = week * 7; i < week * 7 + 7; i++)
                 {
+                    string workoutName = workoutList.Rows[i]["workoutName"].ToString();
                     num++;
                     DataTable workoutTable = WorkoutDAL.Get(workoutName);
 
@@ -78,7 +60,9 @@ namespace Fitness.BLL
                     {
                         { "workoutName", workoutName },
                         { "coverUrl", workoutTable.Rows[0]["coverUrl"].ToString() },
-                        { "timestamp", GetWeekday(num) }
+                        { "timestamp", GetWeekday(num) },
+                        { "isCompleted",  workoutList.Rows[i]["isCompleted"].ToString() == "1" ? "true" : "false"},
+                        { "workoutIndex", workoutList.Rows[i]["date"].ToString() }
                     };
 
                     var exercises = new List<Dictionary<string, object>>();
@@ -142,7 +126,7 @@ namespace Fitness.BLL
                     error = "未填写体测或体质表信息"
                 });
             }
-            return GenerateWorkout(data["goal"].ToString());
+            return GenerateWorkout(userId);
         }
     }
 }

@@ -33,6 +33,7 @@ namespace Fitness.BLL
             if (!UserFitnessPlanGoalDAL.Exist(userId))
                 UserFitnessPlanGoalDAL.Init(userId);
             UserFitnessPlanGoalDAL.Update(userId, goal, duration);
+            UserFitnessPlanDAL.GeneratePlan(userId, goal);
             return JsonConvert.SerializeObject(new
             {
                 isSuccessful = "true"

@@ -32,11 +32,11 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public string UpdateFitnessPlanAchievement(string token)
+        public string UpdateFitnessPlanAchievement(string token, int date)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return userAchievementBll.UpdateFitnessPlanAchievement(userId);
+            return userAchievementBll.UpdateFitnessPlanAchievement(userId, date);
         }
     }
 }
