@@ -32,7 +32,7 @@ namespace Fitness.BLL.Interfaces
 
         public string GradeCourse(string token, int classID, int grade);
         public string PublishComment(string token, int classID, string comment);
-        public List<feedback> GetCourseCommentByClassID(string token, int classID);
+        public string GetCourseCommentByClassID(string token, int classID);
         public double GetAverageGrade(string token, int classID);
     }
 }

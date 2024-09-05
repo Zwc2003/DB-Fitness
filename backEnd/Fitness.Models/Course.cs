@@ -27,6 +27,7 @@ namespace Fitness.Models
     }
 
     public class feedback {
+        public int traineeID { get; set; }
         public string comment { get; set; }
         public int grade { get; set; }
     }

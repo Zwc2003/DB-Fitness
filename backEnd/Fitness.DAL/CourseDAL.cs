@@ -1,5 +1,6 @@
 ﻿using Fitness.DAL.Core;
 using Fitness.Models;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
@@ -310,6 +311,8 @@ namespace Fitness.DAL
                 if (photoUrl != "null" && !UrlHelper.IsUrl(photoUrl))
                 {
                     string object_name = "course" + course.classID+ "_icon" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png";
+                    int base64Index = photoUrl.IndexOf("base64,")+7 ;
+                    photoUrl = photoUrl.Substring(base64Index);
                     OSSHelper.UploadBase64ImageToOss(photoUrl, object_name);
                     photoUrl = OSSHelper.GetPublicObjectUrl(object_name);
                 }

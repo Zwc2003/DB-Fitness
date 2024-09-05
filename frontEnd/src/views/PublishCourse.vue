@@ -95,14 +95,18 @@
             <el-form-item label="课程描述">
               <el-input
                 v-model="newCourse.courseDescription"
+                type="textarea"
                 placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
               ></el-input>
             </el-form-item>
             <el-form-item label="课程容量">
-              <el-input
+              <el-input-number
                 v-model="newCourse.capacity"
+                :min="0"
+                :max="100"
+                :step="1"
                 placeholder="请填入课程容量"
-              ></el-input>
+              />
             </el-form-item>
             <el-form-item label="课程开始时间">
               <el-date-picker
@@ -120,6 +124,46 @@
                 @change="handleDateeChange"
               />
             </el-form-item>
+            <!-- 每周上课时间段 -->
+      <el-form-item label="每周上课时间段">
+        <div v-for="(schedule, index) in schedules" :key="index" style="margin-bottom: 10px;">
+          <el-select
+            v-model="schedule.dayOfWeek"
+            placeholder="选择星期几"
+            style="width: 120px;"
+          >
+            <el-option v-for="(day, i) in weekDays" :key="i" :label="day.label" :value="day.value"></el-option>
+          </el-select>
+          <el-time-picker
+            v-model="schedule.classTime"
+            is-range
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            format="HH:mm"
+            value-format="HH:mm"
+            style="width: 220px; margin-left: 10px;"
+          ></el-time-picker>
+          <el-button type="danger" @click="removeSchedule(index)" style="margin-left: 10px;">删除</el-button>
+        </div>
+        <el-form-item>
+          <el-select v-model="newSchedule.dayOfWeek" placeholder="选择星期几" style="width: 120px;">
+            <el-option v-for="(day, i) in weekDays" :key="i" :label="day.label" :value="day.value"></el-option>
+          </el-select>
+          <el-time-picker
+            v-model="newSchedule.classTime"
+            is-range
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            format="HH:mm"
+            value-format="HH:mm"
+            style="width: 220px; margin-left: 10px;"
+          ></el-time-picker>
+          <el-button type="primary" @click="addSchedule" style="margin-left: 10px;">添加时间段</el-button>
+        </el-form-item>
+      </el-form-item>
+
             <el-form-item label="课程难度">
               <el-radio-group v-model="newCourse.courseGrade">
                 <el-radio :label="1">1</el-radio>
@@ -233,6 +277,7 @@ import * as echarts from "echarts";
 import TeachCard from "../components/TeachCard.vue";
 import { mapGetters, mapActions } from "vuex";
 import axios from "axios";
+import { ElNotification } from "element-plus";
 
 export default {
   components: {
@@ -241,6 +286,19 @@ export default {
 
   data() {
     return {
+      weekDays: [
+        { label: '周日', value: 0 },
+        { label: '周一', value: 1 },
+        { label: '周二', value: 2 },
+        { label: '周三', value: 3 },
+        { label: '周四', value: 4 },
+        { label: '周五', value: 5 },
+        { label: '周六', value: 6 }
+      ], // 星期几选项
+      schedules: [
+        { classID: -1, dayOfWeek: 0, classTime: ['08:00', '10:00'] } // 默认值
+        ],
+      newSchedule: { classID:-1,dayOfWeek: 0, classTime: [] }, // 新添加的时间段
       userName: "",
       userIcon: "",
       introduction: "",
@@ -261,6 +319,7 @@ export default {
         coursePhotoUrl: "",
         courseVideoUrl: "",
         features: [],
+        schedules: [], // 每周上课时间段列表
       },
       inputFeature: "",
       courseData: [
@@ -354,8 +413,27 @@ export default {
     this.userIcon = localStorage.getItem("iconUrl");
     this.introduction = localStorage.getItem("introduction");
   },
-
   methods: {
+    formatClassTime(schedule) {
+      console.log(schedule);
+
+      if (Array.isArray(schedule.classTime) && schedule.classTime.length === 2) {
+        // 将 classTime 数组转换为 "08:00-10:00" 格式的字符串
+        schedule.classTime = `${schedule.classTime[0]}-${schedule.classTime[1]}`;
+      }
+      return schedule;
+    },
+    addSchedule() {
+      if (this.newSchedule.dayOfWeek !== null && this.newSchedule.classTime.length === 2) {
+        this.schedules.push({ ...this.newSchedule });
+        this.newSchedule = { classID:-1,dayOfWeek: 0, classTime:[] }; // 重置新添加的时间段
+      } else {
+        this.$message.error('请完整填写时间段');
+      }
+    },
+    removeSchedule(index) {
+      this.schedules.splice(index, 1);
+    },
     //----------------------------------------------------所有的静态函数--------------------------------------------
     //回退<-back
     onBack() {
@@ -580,6 +658,7 @@ export default {
           `http://localhost:8080/api/Course/GetCoachParticipatedCourseByUserID?token=${token}`
         )
         .then((response) => {
+          this.$store.commit("updateTeachCourses", []);
           console.log("教师获取教学课程成功:", response.data);
           const initialCourses = response.data.map((item) => {
             if (item.features) {
@@ -631,12 +710,12 @@ export default {
         });
     },
 
-    //发布新课程的接口(完结版)  ：  ！！！！请看postData中的备注！！！！！
+    //发布新课程的接口
     submitForm() {
       this.newCourse.instructorHonors = this.intoduction;
       this.newCourse.instructorName = this.username;
       this.newCourse.instructorImage = this.userIcon;
-      this.addTeachCourse(this.newCourse);
+      this.addTeachCourse([this.newCourse]);
       // 转换日期字符串为 Date 对象
       var startDate = new Date(this.newCourse.courseStartTime);
       var endDate = new Date(this.newCourse.courseEndTime);
@@ -644,10 +723,18 @@ export default {
       var timeDiff = endDate - startDate;
       // 将时间差转换为天数
       var daysDiff = timeDiff / (1000 * 3600 * 24);
+      // 应用转换函数到每个元素
+      let schedules=this.schedules;
+      console.log("转换前的课程时间为:",schedules);
+      schedules = schedules.map(this.formatClassTime);
+      schedules.forEach(element => {
+        console.log("转换后的课程时间为:",element);
+      });
+
       const postData = {
         course: {
           classID: -1,
-          typeID: getCourseValue(this.newCourse.courseType),
+          typeID: this.getCourseValue(this.newCourse.courseType),
           courseName: this.newCourse.courseName,
           capacity: this.newCourse.capacity,
           courseDescription: this.newCourse.courseDescription,
@@ -660,18 +747,12 @@ export default {
           courseVideoUrl: "null",
           features: this.newCourse.features.join("#") + "#",
         },
-        //！！！！：这里一定要动态加入（使用一个循环），因为这里是一个数组，可能不只有一个时间段，不能直接赋值单个！！！！！
-        // courseSchedules: [
-        //   {
-        //     classID: -1,
-        //     dayOfWeek: this.Schedules.coursePhotoUrl,
-        //     classTime: this.Schedules.classTime,
-        //   },
-        // ],
+        courseSchedules:schedules
       };
+      console.log("上传数据为:",postData);
       axios
         .post(
-          `http://localhost:8080/api/Course/PublishCourse?token=${token}`,
+          `http://localhost:8080/api/Course/PublishCourse?token=${localStorage.getItem("token")}`,
           postData
         )
         .then((response) => {
@@ -692,12 +773,8 @@ export default {
             courseVideoUrl: "",
             features: [],
           };
-          this.Schedules = [
-            {
-              classID: "",
-              dayOfWeek: "",
-              classTime: "",
-            },
+          this.schedules = [
+          { classID: -1, dayOfWeek: 0, classTime: ['08:00', '10:00'] } // 默认值
           ];
 
           ElNotification({

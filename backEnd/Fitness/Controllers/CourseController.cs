@@ -151,7 +151,7 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<feedback>> GetCourseCommentByClassID(string token, int classID)
+        public ActionResult<string> GetCourseCommentByClassID(string token, int classID)
         {
             return _courseBLL.GetCourseCommentByClassID(token, classID);
         }

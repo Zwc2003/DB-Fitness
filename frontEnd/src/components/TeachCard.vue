@@ -55,7 +55,7 @@
     </el-card>
     <el-card class="continue-learn">
       <template #header class="header2"></template>
-      <div class="continue-btn" @click="showComments = true">查看评论</div>
+      <div class="continue-btn" @click="showCourseComments">查看评论</div>
     </el-card>
   </div>
 
@@ -100,8 +100,9 @@
       <el-form-item label="课程描述">
         <el-input
           v-model="editForm.courseDescription"
+          type="textarea"
           placeholder="核心肌群是身体的中心力量，对于维持姿势、提高运动表现和预防受伤至关重要。"
-        ></el-input>
+          ></el-input>
       </el-form-item>
       <el-form-item label="课程容量">
         <el-input
@@ -123,6 +124,30 @@
           placeholder="选择日期"
         />
       </el-form-item>
+      <!-- 每周上课时间段 -->
+      <el-form-item label="每周上课时间段">
+        <div v-for="(schedule, index) in editForm.schedules" :key="index" style="margin-bottom: 10px;">
+          <el-select
+            v-model="schedule.dayOfWeek"
+            placeholder="选择星期几"
+            style="width: 120px;"
+          >
+            <el-option v-for="(day, i) in weekDays" :key="i" :label="day.label" :value="day.value"></el-option>
+          </el-select>
+          <el-time-picker
+            v-model="schedule.classTime"
+            is-range
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            format="HH:mm"
+            value-format="HH:mm"
+            style="width: 220px; margin-left: 10px;"
+          ></el-time-picker>
+          <el-button type="danger" @click="removeSchedule(index)" style="margin-left: 10px;">删除</el-button>
+        </div>
+        </el-form-item>
+
       <el-form-item label="课程难度">
         <el-radio-group v-model="editForm.courseGrade">
           <el-radio :label="1">1</el-radio>
@@ -155,7 +180,7 @@
           <el-input
             v-model="inputFeature"
             placeholder="输入并按回车,如 [力量, 增肌]"
-            @keyup.enter="addFeature"
+            @keyup.enter.native="addFeature"
             style="width: 200px"
           ></el-input>
         </div>
@@ -185,7 +210,7 @@
       <img :src="comment.avatar" class="comment-avatar" />
       <span class="comment-nickname">{{ comment.nickname }}</span>
       <span class="comment-content">{{ comment.content }}</span>
-      <span class="comment-time">{{ comment.time }}</span>
+      <!-- <span class="comment-time">{{ comment.time }}</span> -->
       <span class="comment-rating">{{ comment.rating }} / 5</span>
     </div>
   </el-dialog>
@@ -193,6 +218,8 @@
 
 <script>
 import CourseModal from "../components/CourseModal.vue";
+import axios from "axios";
+import { ElNotification } from "element-plus";
 
 export default {
   components: {
@@ -206,31 +233,14 @@ export default {
       required: true
     }
   },
-  // props:['editForm'],
   data() {
     return {
-      //eeditForm: {},
       inputFeature :"",
       showModal: false, //编辑课程的视窗
       showModall: false, //查看课程的视窗
-      showCommentsModal: false, //查看课程评论的视窗
+      showComments: false, //查看课程评论的视窗
       //课程的相关评论
-      comments: [
-        {
-          avatar: "user1.jpg",
-          nickname: "用户1",
-          content: "课程很棒！",
-          time: "2024-08-20",
-          rating: 5,
-        },
-        {
-          avatar: "user2.jpg",
-          nickname: "用户2",
-          content: "内容很丰富",
-          time: "2024-08-21",
-          rating: 4,
-        },
-      ],
+      comments: [],
       showDialog: false,
     };
   },
@@ -238,33 +248,38 @@ export default {
     // 确保 editForm 被正确传入
     console.log(this.editForm.courseName);
   },
-  // created() {
-  //   console.log(this.editForm.courseName);
-  //   // this.editForm = {
-  //   //   classID: this.editForm.classID,
-  //   //   typeID: this.editForm.typeID,
-  //   //   courseName: this.editForm.courseName,
-  //   //   capacity: this.editForm.capacity,
-  //   //   courseDescription: this.editForm.courseDescription,
-  //   //   coursePrice: this.editForm.coursePrice,
-  //   //   courseStartTime: this.editForm.courseStartTime,
-  //   //   courseEndTime: this.editForm.courseEndTime,
-  //   //   courseGrade: this.editForm.courseGrade,
-  //   //   coursePhotoUrl: this.editForm.coursePhotoUrl,
-  //   //   features: this.editForm.features,
-  //   //   isbooked: 1, // 默认值，可以根据需要调整
-  //   // };
-  // },
-
   methods: {
+    showCourseComments(){
+      axios.get('http://localhost:8080/api/Course/GetCourseCommentByClassID',{
+        params:{
+          token:localStorage.getItem("token"),
+          classID: this.editForm.schedules[0].classID
+        }
+      })
+      .then((response) => {
+        this.comments = response.data;
+        if(this.comments.length>0){
+          this.showComments = true;
+        }
+        else{
+          ElNotification({
+            title: "提示",
+            message: "当前暂无课程评价",
+            type: "info",
+          });
+        }
+      })
+    },
     addFeature() {
       const feature = this.inputFeature.trim();
-      if (feature && !this.newCourse.features.includes(feature)) {
-        this.newCourse.features.push(feature);
+      if (feature && !this.editForm.features.includes(feature)) {
+        this.editForm.features.push(feature);
       }
       this.inputFeature = ""; // 清空输入框
     },
-
+    removeFeature(index) {
+      this.editForm.features.splice(index, 1);
+    },
     //教练查看课程
     handleDocumentClick() {
       this.showModall = true;
@@ -272,7 +287,27 @@ export default {
 
     //教练删除课程
     handleDeleteClick() {
-      this.$emit("delete-teachcourse", this.editForm.courseName);
+      console.log("删除课程ID",this.editForm.schedules[0].classID);
+
+      axios.delete("http://localhost:8080/api/Course/DeleteCourseByClassID",{
+        params:{
+          token:localStorage.getItem("token"),
+          classID: this.editForm.schedules[0].classID
+        }
+      })
+      .then((response)=>{
+        console.log("课程删除成功:", response.data);
+        ElNotification({
+            title: "成功",
+            message: "成功删除已发布课程",
+            type: "success",
+          });
+        this.$emit("delete-teachcourse", this.editForm.courseName);
+      })
+      .catch((err)=>{
+        console.log("课程删除失败:", err);
+      }
+    )
     },
 
     handleFileUpload(file) {
