@@ -125,5 +125,18 @@ namespace Fitness.DAL
                 Console.WriteLine($"Error updating UserFitnessPlanGoal: {ex.Message}");
             }
         }
+
+        public static string GetGoal(int userId)
+        {
+            string query = "SELECT \"planType\" FROM \"UserFitnessPlanGoal\" WHERE \"userID\" = :userID";
+
+            OracleParameter[] parameters = new OracleParameter[]
+            {
+                new OracleParameter(":userID", OracleDbType.Int32) { Value = userId }
+            };
+
+            DataTable goalData = OracleHelper.ExecuteTable(query, parameters);
+            return goalData.Rows[0]["planType"].ToString();
+        }
     }
 }

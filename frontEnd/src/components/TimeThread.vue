@@ -161,7 +161,7 @@ const buttonText=ref(['完成计划','完成计划','完成计划','完成计划
 function finish(index){
   buttonDisabled.value[index]=true;
   buttonText.value[index]='今日计划已完成';
-  axios.post('http://localhost:8080/api/Achievement/UpdateFitnessPlanAchievement', {
+  axios.get('http://localhost:8080/api/Achievement/UpdateFitnessPlanAchievement', {
     params: {
       token: localStorage.getItem('token'),
       workoutIndex:index
