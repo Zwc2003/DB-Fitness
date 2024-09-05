@@ -145,6 +145,7 @@ export default {
   data() {
     return {
       personalCourseList: [], //存储今日课程数组
+      userAllcourses:[],//储存所有用户参与课程
       userName: "", //用户名
       userIcon: "",
       email: "",
@@ -429,7 +430,13 @@ export default {
         .then((response) => {
           console.log("学生获取所有课程列表成功:", response.data);
           this.updateUserCourses("");
-          const initialCourses = response.data;
+          //this.userAllcourses = response.data;
+          const initialCourses = response.data.map((item) => {
+            if (item.features) {
+              item.features = item.features.split("#");
+            }
+            return item;
+          });
           this.addUserCourses(initialCourses);
         })
         .catch((error) => {
@@ -442,7 +449,12 @@ export default {
       const token = localStorage.getItem("token");
       axios
         .get(
-          `http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`
+          `http://localhost:8080/api/User/GetVigorTokenBalance`,{
+            params:{
+              token: token,
+              userID: localStorage.getItem("userID")
+            }
+          }
         )
         .then((response) => {
           this.vitalityCoins = response.data.balance;
@@ -456,15 +468,18 @@ export default {
     //获取预约课程（购物车内）API
     getReserved() {
       const token = localStorage.getItem("token");
-      var bookIDList = [];
+      //var bookIDList = [];
       //调用预约接口(完结)
       axios
         .get(
-          "http://localhost:8080/api/Course/GetReservedCourseByUserID?token=${token}"
+          `http://localhost:8080/api/Course/GetReservedCourseByUserID?token=${token}`
         )
         .then((response) => {
           console.log("学生获取预约课程列表成功:", response.data);
-          bookIDList = response.data;
+          const bookCourseList = response.data;
+          bookCourseList.forEach(item => {
+            this.$store.commit("ADD_COURSE_TO_CART", item);
+          });
         })
         .catch((error) => {
           console.error("用户获取预约课程列表错误:", error);
@@ -526,7 +541,7 @@ export default {
     },
     ...mapGetters(["getUserCourses"]),
 
-    // 获取用户购物车数组
+    //获取用户购物车数组
     ...mapState({
       cartCourses: (state) => state.cartCourses,
     }),

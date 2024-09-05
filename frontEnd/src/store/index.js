@@ -83,8 +83,9 @@ export default createStore({
       );
     },
     //增加教练课程
-    ADD_TEACH_COURSE(state, newCourse) {
-      state.teachcourses.push(newCourse);
+    ADD_TEACH_COURSE(state, newCourses) {
+      state.teachcourses = [...state.teachcourses, ...newCourses];
+      //state.teachcourses.push(newCourse);
     },
     //课程大厅点击预约进入购物车
     ADD_COURSE_TO_CART(state, course) {

@@ -568,7 +568,9 @@ export default {
         return "success";
       }
     },
-
+    addTeachCourse(newCourses) {
+      this.$store.commit("ADD_TEACH_COURSE", newCourses);
+    },
     //-------------------------------------- API接口函数-----------------------------------------------------
     //获取教授的所有课程(完结版)
     fetchUserCourse() {
@@ -579,7 +581,12 @@ export default {
         )
         .then((response) => {
           console.log("教师获取教学课程成功:", response.data);
-          const initialCourses = response.data;
+          const initialCourses = response.data.map((item) => {
+            if (item.features) {
+              item.features = item.features.split("#");
+            }
+            return item;
+          });
           this.addTeachCourse(initialCourses);
         })
         .catch((error) => {
@@ -608,7 +615,12 @@ export default {
       const token = localStorage.getItem("token");
       axios
         .get(
-          `http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`
+          `http://localhost:8080/api/User/GetVigorTokenBalance`,{
+            params:{
+              token: token,
+              userID: localStorage.getItem("userID"),
+            }
+          }
         )
         .then((response) => {
           this.vitalityCoins = response.data.balance;
