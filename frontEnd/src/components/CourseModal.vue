@@ -15,12 +15,13 @@
             -
             <b class="boldd">{{ this.thecourse.courseEndTime }}</b>
           </p>
-          <!-- <p class="course-details">
-            上课时间：<b class="boldd">{{
-               this.thecourse.schedules.dayOfWeek
-            }}</b
-            ><b class="boldd">{{ this.thecourse.schedules.classTime }}</b>
-          </p> -->
+          <p class="course-details">
+            上课时间：每周
+            <span v-for="(schedule, index) in thecourse.schedules" :key="index">
+              <b class="boldd">{{ getDayOfWeek(schedule.dayOfWeek) }}</b> <b class="boldd">{{ schedule.classTime }}</b>
+              <span v-if="index !== thecourse.schedules.length - 1">, </span>
+            </span>
+          </p>
           <div class="features">
             <div
               class="feature-item"
@@ -34,7 +35,7 @@
           </div>
           <div class="instructor-info">
             <img
-              :src="instructorImage"
+              :src="this.thecourse.iconURL"
               alt="Instructor"
               class="instructor-image"
             />
@@ -93,12 +94,15 @@
             </el-icon>
           </p>
           <p class="nandu">
+            <b class="boldd">课程剩余容量</b>：{{ this.thecourse.capacity}}
+          </p>
+          <p class="nandu">
             <b class="boldd">课程费用</b>：{{ this.thecourse.coursePrice
             }}<el-icon class="coinn"><Coin /></el-icon>
           </p>
         </div>
         <div>
-          <div v-if="this.thecourse.isbooked == 0" class="yuyue">
+          <div v-if="this.thecourse.isBooked == 0" class="yuyue">
             <el-icon style="font-size: 35px" class="ic"
               ><ShoppingTrolley
             /></el-icon>
@@ -139,7 +143,7 @@ export default {
     },
     modalHeight: {
       type: String,
-      default: "600px", // 默认高度
+      default: "650px", // 默认高度
     },
     modalBackground: {
       type: String,
@@ -155,6 +159,11 @@ export default {
   emits: ["close"],
 
   methods: {
+    getDayOfWeek(dayOfWeek) {
+      const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+      return days[dayOfWeek];
+    },
+
     //关闭课程模式
     closeModal() {
       this.$emit("close");
@@ -162,6 +171,7 @@ export default {
 
     //点击课程按钮
     handleButtonClick() {
+      console.log(this.currentTime);
       if (this.isDuringClass) {
         this.currentState = "signedIn";
       } else if (this.isAfterClass && this.currentState !== "signedIn") {
@@ -228,7 +238,7 @@ export default {
     },
     //获取课程的开始时间与结束时间
     timeRange() {
-      // const [start, end] = this.thecourse.schedules.classTime
+      //const [start, end] = this.thecourse.schedules.classTime;
       const [start, end] = "10:00-12:00".split("-").map((time) => {
         const [hours, minutes] = time.split(":");
         const date = new Date();

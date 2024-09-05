@@ -71,7 +71,6 @@ namespace Fitness.DAL
             try
             {
                 OracleHelper.ExecuteNonQuery(query, null, parameters);
-                //var oracleInt = Convert.ToInt32(parameters[9].Value);
                 OracleDecimal  oracleInt = (OracleDecimal)parameters[13].Value;
                 return oracleInt.ToInt32();
             }
