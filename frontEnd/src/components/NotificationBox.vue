@@ -12,15 +12,19 @@
         </div>
         <ul class="notification-list">
           <li v-for="(notification, index) in notifications" :key="index" class="notification-item" @click="toggleRead(index)">
-            <el-badge :value="notification.isRead ? '' : '未读'" :class="{'is-read': notification.isRead}">
+            <!-- <el-badge :value="notification.isRead ? '' : '未读'" :class="{'is-read': notification.isRead}"> -->
               <div class="notification-content">
+                <el-badge :value="notification.isRead ? '' : '未读'" :class="{'is-read': notification.isRead}">
+                </el-badge>
                 <span class="notification-title">{{ notification.title }}</span>
                 <span class="notification-message">{{ notification.message }}</span>
               </div>
-            </el-badge>
           </li>
         </ul>
-      </div>
+        <div class="notifications-footer">
+          <el-button type="warning" @click="clickAllRead">一键已读</el-button>
+        </div>
+        </div>
     </div>
   </div>
 </template>
@@ -41,6 +45,16 @@ export default {
     this.fetchNotifications();
   },
   methods: {
+    clickAllRead(){
+      this.notifications.forEach(async notification => {
+        if (notification.isRead === 0) {
+          notification.isRead = 1;  
+          const response = await axios.get(`http://localhost:8080/api/Message/MarkedMessagesAsRead?messageID=${notification.messageID}`);
+          console.log(response.data);
+        }
+      });
+    },
+
     async fetchNotifications(){
       try {
         const token = localStorage.getItem('token');
