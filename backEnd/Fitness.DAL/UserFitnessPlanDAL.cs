@@ -67,6 +67,9 @@ namespace Fitness.DAL
             };
 
             DataTable result = OracleHelper.ExecuteTable(selectCommand, parameters);
+            if(result.Rows.Count == 0)
+                GeneratePlan(userId, UserFitnessPlanGoalDAL.GetGoal(userId));
+            result = OracleHelper.ExecuteTable(selectCommand, parameters);
             return result;
         }
 
@@ -76,9 +79,9 @@ namespace Fitness.DAL
 
             OracleParameter[] parameters = new OracleParameter[]
             {
-                new OracleParameter(":date", OracleDbType.Int32) { Value = date },
+                new OracleParameter(":isCompleted", OracleDbType.Int32) { Value = 1 },
                 new OracleParameter(":userID", OracleDbType.Int32) { Value = userId },
-                new OracleParameter(":isCompleted", OracleDbType.Int32) { Value = 1 }
+                new OracleParameter(":date", OracleDbType.Int32) { Value = date }
             };
 
             OracleHelper.ExecuteNonQuery(updateCommand, null, parameters);

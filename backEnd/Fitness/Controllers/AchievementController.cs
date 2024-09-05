@@ -33,11 +33,12 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public string UpdateFitnessPlanAchievement(string token, int date)
+        public string UpdateFitnessPlanAchievement(string token, int workoutIndex)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            return userAchievementBll.UpdateFitnessPlanAchievement(userId, date);
+            Console.WriteLine($"收到用户：{userId} 的完成健身计划请求，date：{workoutIndex}");
+            return userAchievementBll.UpdateFitnessPlanAchievement(userId, workoutIndex);
         }
     }
 }
