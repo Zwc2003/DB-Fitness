@@ -1,6 +1,6 @@
 <template>
     <div class="forum-bg">
-        <el-backtop class="backtop-button" />
+        <el-backtop class="forum-backtop-button" />
         <div class="forum-container">
             <!-- 帖子卡片 -->
             <el-card class="card">
@@ -826,4 +826,21 @@ body {
     border-radius: 5px;
     display: inline-block;
 }
+
+.forum-backtop-button {
+  position: fixed;
+  bottom: 180px !important;
+  right: 20px !important;
+  z-index: 2;
+  width: 60px !important;
+  /* 增加按钮的宽度 */
+  height: 60px !important;
+  /* 增加按钮的高度 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.5s ease;
+  /* 添加缩放的过渡效果 */
+}
+
 </style>
