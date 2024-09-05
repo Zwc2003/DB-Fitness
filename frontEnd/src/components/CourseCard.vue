@@ -196,9 +196,10 @@ export default {
       // 计算allprogress，即课程总天数
       const timeDiff = courseEndTime.getTime() - courseStartTime.getTime();
       console.log(this.thecourse);
-      this.allprogress =
-        Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) /
-        this.thecourse.schedules.length; // 总天数
+      this.allprogress = Math.floor(
+        (Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) / 7) *
+          this.thecourse.schedules.length
+      ); // 总天数
 
       // 计算nowprogress
       if (today < courseStartTime) {
@@ -207,9 +208,10 @@ export default {
         this.nowprogress = this.allprogress;
       } else {
         const currentTimeDiff = today.getTime() - courseStartTime.getTime();
-        this.nowprogress =
-          Math.ceil(currentTimeDiff / (1000 * 60 * 60 * 24)) /
-          this.thecourse.schedules.length; // 今天距离开始的天数
+        this.nowprogress = Math.floor(
+          (Math.ceil(currentTimeDiff / (1000 * 60 * 60 * 24)) / 7) *
+            this.thecourse.schedules.length
+        ); // 今天距离开始的天数
       }
     },
     //-------------------------------------- API接口函数-----------------------------------------------------
