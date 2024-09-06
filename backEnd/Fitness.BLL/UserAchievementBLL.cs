@@ -10,10 +10,11 @@ using Newtonsoft.Json;
 using Fitness.DAL;
 using Fitness.BLL;
 using Fitness.Models;
+using Fitness.BLL.Interfaces;
 
 namespace Fitness.BLL
 {
-    public class UserAchievementBLL
+    public class UserAchievementBLL : IUserAchievementBLL
     {
         VigorTokenBLL vigorTokenBLL = new();
         public void Init(int userId)
@@ -140,7 +141,7 @@ namespace Fitness.BLL
         {
             try
             {
-                DataTable result = UserAchievementDAL.GetRankTable(achievementId=1);
+                DataTable result = UserAchievementDAL.GetRankTable(achievementId);
                 if (result == null || result.Rows.Count == 0)
                 {
                     return JsonConvert.SerializeObject(new

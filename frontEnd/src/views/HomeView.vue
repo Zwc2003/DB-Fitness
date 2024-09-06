@@ -22,7 +22,7 @@
           <span class="Wechat-icon"></span>
         </el-button>
       </el-tooltip>
-      <el-tooltip content="邮箱：2154286@tongji.edu.cn" placement="bottom-start" effect="light">
+      <el-tooltip content="邮箱：wcheng@tongji.edu.cn" placement="bottom-start" effect="light">
         <el-button circle>
           <span class="Telephone-icon"></span>
         </el-button>

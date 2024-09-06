@@ -187,40 +187,43 @@ onMounted(() => {
 })
 
 const showMask = ref(false)
+let notificationInstance = null;
 
 
-
-function showNotification(equipmentList,i) {
+function showNotification(equipmentList, i) {
     showMask.value = true; // 显示遮罩层
-    document.documentElement.classList.add('blur-active'); // 添加 blur-active 类
+    document.documentElement.classList.add('blur-active'); // 添加模糊效果
 
     // 使用 Vue 组件作为通知内容
-    const notificationInstance = ElNotification({
+    notificationInstance = ElNotification({
         title: equipmentList.value[i-1].equipmentName,
-        message: h(NotificationContent, { equipmentName: equipmentList.value[i-1].equipmentName }), // 传递 equipmentName
+        message: h(NotificationContent, { equipmentName: equipmentList.value[i-1].equipmentName }),
         duration: 0,
-        position: (i<=3) ?'top-left':'top-right',
+        position: (i <= 3) ? 'top-left' : 'top-right',
         customClass: 'custom-notification',
         dangerouslyUseHTMLString: true,
-        onClose: () => {
-            showMask.value = false; // 通知关闭时隐藏遮罩层
-            document.documentElement.classList.remove('blur-active'); // 移除 blur-active 类
-            document.removeEventListener('click', handleClickOutside); // 移除点击事件监听器
-        }
+        onClose: closeNotification
     });
 
-    // 确保通知显示后才添加点击事件监听器
+    // 延迟1秒后添加点击事件监听器
     setTimeout(() => {
-        document.addEventListener('click', handleClickOutside);
-    }, 0);
+        window.addEventListener('click', handleOutsideClick);
+    }, 1000); // 1秒延迟
+}
 
-    // 添加点击事件监听器，点击空白处关闭通知
-    const handleClickOutside = (event) => {
-        const notificationElement = document.querySelector('.custom-notification');
-        if (notificationElement && !notificationElement.contains(event.target)) {
-            notificationInstance.close(); // 关闭通知
-        }
-    };
+function handleOutsideClick(event) {
+    const notificationElement = document.querySelector('.el-notification');
+    // 确保点击的不是卡片本身，才触发关闭
+    if (notificationElement && !notificationElement.contains(event.target)) {
+        closeNotification();
+    }
+}
+
+function closeNotification() {
+    showMask.value = false; // 隐藏遮罩层
+    document.documentElement.classList.remove('blur-active'); // 移除模糊效果
+    notificationInstance && notificationInstance.close();
+    window.removeEventListener('click', handleOutsideClick); // 移除点击事件监听器
 }
 
 function openInNewTab(url) {

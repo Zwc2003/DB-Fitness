@@ -18,7 +18,8 @@
           <p class="course-details">
             上课时间：每周
             <span v-for="(schedule, index) in thecourse.schedules" :key="index">
-              <b class="boldd">{{ getDayOfWeek(schedule.dayOfWeek) }}</b> <b class="boldd">{{ schedule.classTime }}</b>
+              <b class="boldd">{{ getDayOfWeek(schedule.dayOfWeek) }}</b>
+              <b class="boldd">{{ schedule.classTime }}</b>
               <span v-if="index !== thecourse.schedules.length - 1">, </span>
             </span>
           </p>
@@ -94,7 +95,7 @@
             </el-icon>
           </p>
           <p class="nandu">
-            <b class="boldd">课程剩余容量</b>：{{ this.thecourse.capacity}}
+            <b class="boldd">课程剩余容量</b>：{{ this.thecourse.capacity }}
           </p>
           <p class="nandu">
             <b class="boldd">课程费用</b>：{{ this.thecourse.coursePrice
@@ -125,7 +126,6 @@
 <script>
 import { ElMessage } from "element-plus";
 import axios from "axios";
-
 
 export default {
   //传进来的数据,用于展示UI需要的所有变量
@@ -162,7 +162,7 @@ export default {
 
   methods: {
     getDayOfWeek(dayOfWeek) {
-      const days = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+      const days = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
       return days[dayOfWeek];
     },
 
@@ -187,30 +187,30 @@ export default {
     addToCart() {
       // 创建课程对象
       const course = this.thecourse;
-      const classID =course.schedules[0].classID;
-      // 调用 Vuex mutation，将课程添加到购物车中
-      this.$store.commit("ADD_COURSE_TO_CART", course);
+      const classID = course.schedules[0].classID;
+
       //补充调用后端的接口：ReserveCourse
-      const postData ={
+      const postData = {
         token: localStorage.getItem("token"),
         classID: [classID],
-        payMethod:"活力币"
-      }
+        payMethod: "活力币",
+      };
       console.log(postData);
 
-      axios.post("http://localhost:8080/api/Course/ReserveCourse",postData)
-      .then((response) => {
-      console.log(response.data);
-      //添加成功后的提示
-      this.$message.success("课程已成功加入购物车！");
-      })
-     .catch((error) => {
-        console.error(error);
-        ElMessage({
-          message: "课程加入购物车失败，请稍后重试！",
-          type: "error",
+      axios
+        .post("http://localhost:8080/api/Course/ReserveCourse", postData)
+        .then((response) => {
+          console.log(response.data);
+          //添加成功后的提示
+          this.$message.success("课程已成功加入购物车！");
+        })
+        .catch((error) => {
+          console.error(error);
+          ElMessage({
+            message: "课程加入购物车失败，请稍后重试！",
+            type: "error",
+          });
         });
-      }); 
     },
 
     //-------------------------------------- API接口------------------------------------------------------
@@ -288,9 +288,9 @@ export default {
       if (this.isBeforeClass) {
         return "准时上课";
       } else if (this.isDuringClass) {
-        return this.currentState === "signedIn" ? "已上课" : "签到";
+        return "正在上课";
       } else if (this.isAfterClass) {
-        return this.currentState === "signedIn" ? "已上课" : "补课";
+        return "课程结束";
       }
     },
     //按钮的样式

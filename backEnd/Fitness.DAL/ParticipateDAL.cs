@@ -85,7 +85,7 @@ namespace Fitness.DAL
         // 根据课程ID获取评论
         public static List<feedback> GetCommentsByClassID(int classID)
         {
-            string query = "SELECT \"Evaluate\",\"Grade\" FROM \"Participate\" WHERE \"classID\" = :classID";
+            string query = "SELECT \"traineeID\",\"Evaluate\",\"Grade\" FROM \"Participate\" WHERE \"classID\" = :classID";
             OracleParameter parameters = new OracleParameter("classID", OracleDbType.Int32) { Value = classID };
 
             DataTable dt = OracleHelper.ExecuteTable(query,parameters);
@@ -95,6 +95,7 @@ namespace Fitness.DAL
             {
                 comments.Add(new feedback()
                 {
+                    traineeID = Convert.ToInt32(row["traineeID"]),
                     comment = Convert.ToString(row["Evaluate"]),
                     grade = Convert.ToInt32(row["Grade"])
                 });

@@ -19,8 +19,10 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = userID;
-            Console.WriteLine($"userID{userID}");
-            return userAchievementBll.GetUserAchievement(userId);
+            Console.WriteLine($"收到用户{userID}的获取成就进度请求");
+            string result = userAchievementBll.GetUserAchievement(userId);
+            Console.WriteLine(result);
+            return result;
         }
 
         [HttpGet]
@@ -28,7 +30,7 @@ namespace Fitness.Controllers
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userId = tokenRes.userID;
-            Console.WriteLine($"收到用户：{userId} 的获取排行榜请求");
+            Console.WriteLine($"收到用户：{userId} 的获取成就 {achievementId} 排行榜请求");
             return userAchievementBll.GetAchievementRank(userId, achievementId);
         }
 

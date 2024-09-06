@@ -19,7 +19,6 @@
           @update:isCartVisible="handleCartVisibility"
           @removeCourse="removeCourseFromCart"
           @update:usercourses="updateUserCourses"
-          @checkout="handleCheckout"
           class="cart"
         />
       </div>
@@ -38,17 +37,11 @@
         <template #content>
           <div class="flexitems-center">
             <el-avatar class="mr-3" :size="32" :src="userIcon" />
-            <span>{{ userName }}</span>
-            <span
-              class="text-sm mr-2"
-              style="color: var(--el-text-color-regular)"
-            >
-              {{ email }}
-            </span>
+            <span>{{ userName }}&nbsp;&nbsp;</span>
+            <span style="font-size: 16px; color: var(--el-text-color-regular)">{{ email }}&nbsp;</span>
             <el-tag>欢迎您~</el-tag>
           </div>
         </template>
-
         <div class="poem-display">
           <div class="poem-content">
             <span class="poem-text" v-if="selectedPoem">
@@ -101,11 +94,6 @@
                 {{ getStatusText(course) }}
               </el-tag>
             </div>
-            <div class="square" @click="handleClick(course)">
-              <el-icon v-if="course.attended">
-                <Select />
-              </el-icon>
-            </div>
           </div>
         </el-row>
       </div>
@@ -145,6 +133,7 @@ export default {
   data() {
     return {
       personalCourseList: [], //存储今日课程数组
+      userAllcourses: [], //储存所有用户参与课程
       userName: "", //用户名
       userIcon: "",
       email: "",
@@ -260,11 +249,6 @@ export default {
       }
     },
 
-    //attended的确定
-    handleClick(course) {
-      course.attended = course.attended ? 0 : 1;
-    },
-
     //回退<-back
     onBack() {
       this.$router.go(-1);
@@ -333,26 +317,24 @@ export default {
     //获取今日课程状态
     getStatusText(course) {
       const currentTime = new Date();
-      const [startHour, startMinute] = "11:00 - 12:00"
+      const [startHour, startMinute] = course.classTime
         .split(" - ")[0]
         .split(":")
         .map(Number);
       const startTime = new Date();
       startTime.setHours(startHour, startMinute);
-      const [endHour, endMinute] = "11:00 - 12:00"
-        .split(" - ")[1]
+      const [endHour, endMinute] = course.classTime
+        .split("-")[1]
         .split(":")
         .map(Number);
       const endTime = new Date();
       endTime.setHours(endHour, endMinute);
       if (currentTime < startTime) {
-        return "提醒我";
-      } else if (currentTime > endTime && course.attended) {
-        return "已打卡";
-      } else if (currentTime > endTime && !course.attended) {
-        return "未打卡";
+        return "记得上课哦";
+      } else if (currentTime > endTime) {
+        return "课程已结束";
       } else {
-        return "进行中";
+        return "课程进行中";
       }
       return "";
     },
@@ -429,7 +411,12 @@ export default {
         .then((response) => {
           console.log("学生获取所有课程列表成功:", response.data);
           this.updateUserCourses("");
-          const initialCourses = response.data;
+          const initialCourses = response.data.map((item) => {
+            if (item.features) {
+              item.features = item.features.split("#");
+            }
+            return item;
+          });
           this.addUserCourses(initialCourses);
         })
         .catch((error) => {
@@ -441,9 +428,12 @@ export default {
     getVigorTokenBalance() {
       const token = localStorage.getItem("token");
       axios
-        .get(
-          `http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`
-        )
+        .get(`http://localhost:8080/api/User/GetVigorTokenBalance`, {
+          params: {
+            token: token,
+            userID: localStorage.getItem("userID"),
+          },
+        })
         .then((response) => {
           this.vitalityCoins = response.data.balance;
         })
@@ -456,67 +446,74 @@ export default {
     //获取预约课程（购物车内）API
     getReserved() {
       const token = localStorage.getItem("token");
-      var bookIDList = [];
-      //调用预约接口(完结)
       axios
         .get(
-          "http://localhost:8080/api/Course/GetReservedCourseByUserID?token=${token}"
+          `http://localhost:8080/api/Course/GetReservedCourseByUserID?token=${token}`
         )
         .then((response) => {
           console.log("学生获取预约课程列表成功:", response.data);
-          bookIDList = response.data;
+          this.$store.commit("UPDATE_CART", []);
+          const bookCourseList = response.data;
+          // 为每个课程项添加 selected 字段
+          const updatedBookCourseList = bookCourseList.map((item) => ({
+            ...item,
+            selected: false,
+          }));
+          updatedBookCourseList.forEach((item) => {
+            this.$store.commit("ADD_COURSE_TO_CART", item);
+          });
         })
         .catch((error) => {
           console.error("用户获取预约课程列表错误:", error);
         });
     },
 
-    // 计算所选课程的总价格
-    handleCheckout(selectedCourses) {
-      const totalPrice = selectedCourses.reduce(
-        (total, course) => total + course.coursePrice,
-        0
-      );
+    // // 计算所选课程的总价格
+    // handleCheckout(selectedCourses) {
+    //   const totalPrice = selectedCourses.reduce(
+    //     (total, course) => total + course.coursePrice,
+    //     0
+    //   );
 
-      // 检查余额是否足够
-      if (this.vitalityCoins >= totalPrice) {
-        const token = localStorage.getItem("token");
-        //调用支付接口(完结版)
-        axios
-          .post("http://localhost:8080/api/Course/PayCourseFare", {
-            params: {
-              token: token,
-              bookID: bookIDList,
-              amount: totalPrice,
-              PayMethod: "vigor",
-            },
-          })
-          .then((response) => {
-            this.UPDATE_VITALITY_COINS(totalPrice);
-            this.$store.commit("ADD_COURSES_TO_USER", selectedCourses);
-            selectedCourses.forEach((course) => {
-              const index = this.$store.state.cartCourses.indexOf(course);
-              if (index !== -1) {
-                this.removeCourseFromCart(index);
-              }
-            });
-            ElMessageBox.alert(
-              `下单成功！您剩余的活力币余额为：${this.vitalityCoins}`,
-              "订单确认",
-              {
-                confirmButtonText: "确定",
-                type: "success",
-              }
-            );
-          });
-      } else {
-        // 如果余额不足，弹出错误提示
-        ElMessage({
-          message: "余额不足，无法完成结算。",
-          type: "error",
-        });
-      }
-    },
+    //   // 检查余额是否足够
+    //   if (this.vitalityCoins >= totalPrice) {
+    //     const token = localStorage.getItem("token");
+    //     //调用支付接口(完结版)
+    //     axios
+    //       .post("http://localhost:8080/api/Course/PayCourseFare", {
+    //         params: {
+    //           token: token,
+    //           bookID: bookIDList,
+    //           amount: totalPrice,
+    //           PayMethod: "vigor",
+    //         },
+    //       })
+    //       .then((response) => {
+    //         this.UPDATE_VITALITY_COINS(totalPrice);
+    //         this.$store.commit("ADD_COURSES_TO_USER", selectedCourses);
+    //         selectedCourses.forEach((course) => {
+    //           const index = this.$store.state.cartCourses.indexOf(course);
+    //           if (index !== -1) {
+    //             this.removeCourseFromCart(index);
+    //           }
+    //         });
+    //         ElMessageBox.alert(
+    //           `下单成功！您剩余的活力币余额为：${this.vitalityCoins}`,
+    //           "订单确认",
+    //           {
+    //             confirmButtonText: "确定",
+    //             type: "success",
+    //           }
+    //         );
+    //       });
+    //   } else {
+    //     // 如果余额不足，弹出错误提示
+    //     ElMessage({
+    //       message: "余额不足，无法完成结算。",
+    //       type: "error",
+    //     });
+    //   }
+    // },
   },
 
   computed: {
@@ -526,7 +523,7 @@ export default {
     },
     ...mapGetters(["getUserCourses"]),
 
-    // 获取用户购物车数组
+    //获取用户购物车数组
     ...mapState({
       cartCourses: (state) => state.cartCourses,
     }),
@@ -710,11 +707,6 @@ h2 {
 
 .status-box {
   flex: 1;
-}
-
-.square {
-  margin-left: 5px;
-  font-size: 1.5rem;
 }
 
 .blue {

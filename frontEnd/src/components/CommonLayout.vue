@@ -57,7 +57,7 @@ export default {
   name: 'CommonLayout',
   data() {
     return {
-      connection: null,
+      // connection: null,
       input: '',
       message: {
         messageID: null,
@@ -94,10 +94,10 @@ export default {
     this.setupSignalRConnection();
     this.getFriendInformation();
   },
-  beforeDestroy() {
+  async beforeDestroy() {
     // 确保在组件销毁时断开连接
-    if (this.connection) {
-      this.connection.stop();
+    if (store.state.connection) {
+      await store.state.connection.stop();
     }
   },
 
@@ -134,8 +134,10 @@ export default {
     },
 
     async setupSignalRConnection() {
-      // 创建SignalR连接，并强制使用WebSocket传输
-      this.connection = new signalR.HubConnectionBuilder()
+      if (store.state.connection!=null){
+        return ;
+      }
+      store.state.connection = new signalR.HubConnectionBuilder()
         .withAutomaticReconnect() // 自动重连
         .configureLogging(signalR.LogLevel.Information) // 启用日志记录，帮助调试
         .withHubProtocol(new signalR.JsonHubProtocol()) // 使用JSON作为协议
@@ -144,7 +146,7 @@ export default {
         .build();
 
       //定义接收消息的方法并监听接收消息的事件
-      this.connection.on('ReceiveMessage', (messageID, senderID, receiverID, messageType, Content, sendTime) => {
+      store.state.connection.on('ReceiveMessage', (messageID, senderID, receiverID, messageType, Content, sendTime) => {
         console.log(parseInt(localStorage.getItem('userID')));
         if (receiverID === parseInt(localStorage.getItem('userID'))) {
           console.log('Received message:', messageID, senderID, receiverID, messageType, Content, sendTime);
@@ -171,7 +173,7 @@ export default {
       });
 
       // 开始连接
-      this.connection
+      await store.state.connection
         .start()
         .then(() => {
           console.log("SignalR connected.");
@@ -227,7 +229,7 @@ export default {
         //       .catch((err) => {
         //           console.error("Error invoking Sgn method:", err);
         //       });
-        this.connection
+        store.state.connection
           .invoke("Send", message.messageID, message.senderID, message.receiverID, message.messageType, message.Content, message.sendTime)
           .then(() => {
             console.log("Message sent.");

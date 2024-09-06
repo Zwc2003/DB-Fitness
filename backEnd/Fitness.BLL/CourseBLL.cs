@@ -122,10 +122,10 @@ namespace Fitness.BLL
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
 
-            if (tokenRes.Role != "admin" && tokenRes.Role != "coach")
+/*            if (tokenRes.Role != "admin" && tokenRes.Role != "coach")
             {
                 return "身份权限不符！";
-            }
+            }*/
 
                 OracleTransaction transaction = null;
                 try
@@ -458,18 +458,40 @@ namespace Fitness.BLL
         }
 
         // 根据userID获取课程
-        public List<BookCourseInfo> GetReservedCourseByUserID(string token)
+        public string GetReservedCourseByUserID(string token)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             int userID =tokenRes.userID;
             try
             {
-                return CourseDAL.GetReservedCourseByUserID(userID);
+                List<Dictionary<string, object>> courseDetails = new List<Dictionary<string, object>>();
+                var courses = CourseDAL.GetReservedCourseByUserID(userID);
+                foreach (var course in courses)
+                {
+                    //var schedules = CourseDAL.GetCourseByClassID()
+                    var schedule = CourseScheduleDAL.GetCourseSchedulesByClassID(course.classID);
+                    /*classID ,bookID,typeID ,courseName ,coursePrice ,courseStartTime,courseEndTime ,coursePhotoUrl,payMethod,bookStatus, bookTime*/
+                    var courseInfo = new Dictionary<string, object>
+                    {
+                        { "coursePhotoUrl", course.coursePhotoUrl },
+                        { "courseName", course.courseName },
+                        { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
+                        { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
+                        { "coursePrice", course.coursePrice},
+                        { "classID", course.classID },
+                        { "bookID", course.bookID },
+                        { "schedules", schedule }
+                    };
+                    courseDetails.Add(courseInfo);
+
+                }
+
+                return JsonConvert.SerializeObject(courseDetails, Formatting.Indented);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"获取课程时出错：{ex.Message}");
-                return new List<BookCourseInfo>();
+                return null;
             }
         }
 
@@ -504,9 +526,10 @@ namespace Fitness.BLL
                         { "courseDescription", course.courseDescription },
                         { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
                         { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
-                        { "courseGrade", course.courseGrade.ToString() },
-                        { "coursePrice", course.coursePrice.ToString() },
+                        { "courseGrade", course.courseGrade },
+                        { "coursePrice", course.coursePrice },
                         { "coachName", coachName },
+                        { "capacity",course.Capacity},
                         { "instructorHonors", instructorHonors },
                         { "iconURL", iconURL },
                         { "features", course.features },
@@ -556,10 +579,11 @@ namespace Fitness.BLL
                         { "courseDescription", course.courseDescription },
                         { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
                         { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
-                        { "courseGrade", course.courseGrade.ToString() },
-                        { "coursePrice", course.coursePrice.ToString() },
+                        { "courseGrade", course.courseGrade },
+                        { "coursePrice", course.coursePrice },
                         { "coachName", coachName },
                         { "instructorHonors", instructorHonors },
+                        { "capacity",course.Capacity},
                         { "iconURL", iconURL },
                         { "features", course.features },
                         { "courseType", typeName },
@@ -694,13 +718,27 @@ namespace Fitness.BLL
         }
 
         // 根据课程ID获取评论+评分
-        public List<feedback> GetCourseCommentByClassID(string token,int classID)
+        public string GetCourseCommentByClassID(string token,int classID)
         {
             TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
             try
             {
                 List<feedback> comments = ParticipateDAL.GetCommentsByClassID(classID);
-                return comments;
+                List<Dictionary<string, object>> courseDetails = new List<Dictionary<string, object>>();
+                foreach (feedback feedback in comments)
+                {
+                    int st;
+                    User user = UserDAL.GetUserByUserID(feedback.traineeID, out st);
+                    var courseInfo = new Dictionary<string, object>
+                    {
+                        { "avatar", user.iconURL},
+                        { "nickname", user.userName },
+                        { "content", feedback.comment},
+                        { "rating", feedback.grade}
+                    };
+                    courseDetails.Add(courseInfo);
+                }
+                return JsonConvert.SerializeObject(courseDetails, Formatting.Indented);
             }
             catch (Exception ex)
             {

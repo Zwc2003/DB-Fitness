@@ -574,7 +574,10 @@ export default {
     // 获取活力币余额
     getVigorTokenBalance() {
       const token = localStorage.getItem('token');
-      axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`)
+      axios.get(`http://localhost:8080/api/User/GetVigorTokenBalance?token=${token}`,
+          {params:{
+            userID:-1
+            }})
         .then(response => {
           this.vigorTokenBalance = response.data.balance;
           })

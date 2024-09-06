@@ -103,7 +103,7 @@ namespace Fitness.Controllers
          }
 
         [HttpGet]
-        public ActionResult<List<BookCourseInfo>> GetReservedCourseByUserID(string token)
+        public ActionResult<string> GetReservedCourseByUserID(string token)
         {
             return _courseBLL.GetReservedCourseByUserID(token);
         }
@@ -151,7 +151,7 @@ namespace Fitness.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<feedback>> GetCourseCommentByClassID(string token, int classID)
+        public ActionResult<string> GetCourseCommentByClassID(string token, int classID)
         {
             return _courseBLL.GetCourseCommentByClassID(token, classID);
         }
