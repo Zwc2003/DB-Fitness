@@ -98,6 +98,12 @@ namespace Fitness.BLL
                 }
                 var res = new LoginToken(_jwtHelper.GenerateToken(loginInfo.userID, role), "登录成功");
                 int userID = _jwtHelper.ValidateToken(res.token).userID;
+                bool isCoach = false;
+                isCoach = CoachDAL.IsIDInCoach(userID);
+                if (role == "coach" && !isCoach)
+                {
+                    return new LoginToken("Invalid", "身份权限不符");
+                }
                 DateTime dt_last = UserDAL.GetLastLoginTime(userID);
                 DateTime dt_now = DateTime.Now;
                 UserDAL.UpdateLoginTime(userID,dt_now);
