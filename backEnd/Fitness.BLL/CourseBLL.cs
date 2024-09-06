@@ -558,20 +558,15 @@ namespace Fitness.BLL
                 foreach (Course course in courses)
                 {
                     string typeName = CourseDAL.GetTypeNameByTypeID(course.typeID);
+                    int st;
+                    var user = UserDAL.GetUserByUserID(userID, out st);
                     int coachID = CourseDAL.GetCoachIDByClassID(course.classID);
-                    string coachName = string.Empty;
-                    string instructorHonors = string.Empty;
-                    string iconURL = string.Empty;
 
-                    var coach = CoachDAL.GetCoachByCoachID(coachID);
+                    string coachName = user.userName;
+                    string instructorHonors = user.Introduction;
+                    string iconURL = user.iconURL;
                     var schedule = CourseScheduleDAL.GetCourseSchedulesByClassID(course.classID);
 
-                    if (coach != null)
-                    {
-                        coachName = coach.coachName;
-                        instructorHonors = coach.instructorHonors;
-                        iconURL = coach.iconURL;
-                    };
                     var courseInfo = new Dictionary<string, object>
                     {
                         { "coursePhotoUrl", course.coursePhotoUrl },
