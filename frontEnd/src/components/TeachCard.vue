@@ -703,7 +703,7 @@ export default {
           courseGrade: this.editForm.courseGrade,
           coursePhotoUrl: this.editForm.coursePhotoUrl,
           courseVideoUrl: "null",
-          features: this.editForm.features.join("#") + "#",
+          features: this.editForm.features.join("#"),
         },
         courseSchedules:schedules
       };
