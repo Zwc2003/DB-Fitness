@@ -1,7 +1,7 @@
 <template>
     <div class="comment-item">
         <p>
-            <strong :class="{ 'current-user': isCurrentUser(comment.userName) }" style="font-weight: bold">{{ comment.userName }}</strong>:
+            <strong :class="{ 'current-user': isCurrentUser(comment.userName) }" style="font-weight: bold">{{ comment.userName }}:</strong>
         </p>
         <div class="comment-content-container">
               <span v-html="renderMarkdown(comment.content)"></span>
