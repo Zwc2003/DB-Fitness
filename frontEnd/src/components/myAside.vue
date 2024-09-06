@@ -167,7 +167,16 @@ export default {
 
         // 处理返回的搜索结果
         this.searchResults = response.data; 
-
+        console.log(response);
+        if (response.data === '') {
+          ElNotification({
+            title: '提示',
+            message: '并未查找到指定用户',
+            type: 'info',
+            position:'top-left',
+            zIndex:10000003
+          });
+        }
       } catch (error) {
         console.error('搜索请求失败:', error);
       }
@@ -221,13 +230,35 @@ export default {
       this.searchQuery = '';
       this.searchResults = [];
 
-      console.log(row.name);
-      
+      //判断要添加的好友是否为自己的好友
+      const foundUser = store.state.userList.find(user => user=== row.userID);
+      // console.log(store.state.userList);
+      // console.log(row.userID);
+      if (foundUser) {
+        ElNotification({
+            title: '提示',
+            message: `该用户已为您的好友`,
+            type: 'info',
+            position:'top-left',
+            zIndex:10000003
+        });
+        return;
+      }
+
       //调用后端添加好好友的API
       try {
         //调用后端搜索API，返回对应的搜索结果
         const token = localStorage.getItem('token');
-
+        if (row.userID===parseInt(localStorage.getItem('userID'))){
+          ElNotification({
+            title: '失败',
+            message: `无法添加自己为好友`,
+            type: 'error',
+            position:'top-left',
+            zIndex:10000003
+          });
+          return ;
+        }
         const response = await axios.get('http://localhost:8080/api/User/AddFriend', {
           params:{
             token: token, // 将 Token 和 friendID 作为请求体数据
