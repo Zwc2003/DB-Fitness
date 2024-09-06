@@ -54,16 +54,19 @@
       </div>
     </el-card>
     <el-card class="continue-learn">
-      <template #header class="header2"></template>
+      <!-- <template #header class="header2"></template> -->
+       <br/>
       <div class="continue-btn" @click="showCourseComments">查看评论</div>
+      <br/>
+      <div class="continue-btn" @click="showTraniees">查看学员</div>
     </el-card>
   </div>
 
-  <!-- 课程模态框,你这里isbooked就必须是1 -->
+  <!-- 课程模态框 -->
   <CourseModal
     v-if="showModall"
     :isVisible="showModall"
-    :thecourse="editForm"
+    :thecourse="processedForm"
     @close="showModall = false"
   />
 
@@ -126,22 +129,13 @@
       </el-form-item>
       <!-- 每周上课时间段 -->
       <el-form-item label="每周上课时间段">
-        <div
-          v-for="(schedule, index) in editForm.schedules"
-          :key="index"
-          style="margin-bottom: 10px"
-        >
+        <div v-for="(schedule, index) in editForm.schedules" :key="index" style="margin-bottom: 10px;">
           <el-select
             v-model="schedule.dayOfWeek"
             placeholder="选择星期几"
-            style="width: 120px"
+            style="width: 120px;"
           >
-            <el-option
-              v-for="(day, i) in weekDays"
-              :key="i"
-              :label="day.label"
-              :value="day.value"
-            ></el-option>
+            <el-option v-for="(day, i) in weekDays" :key="i" :label="day.label" :value="day.value"></el-option>
           </el-select>
           <el-time-picker
             v-model="schedule.classTime"
@@ -151,15 +145,26 @@
             end-placeholder="结束时间"
             format="HH:mm"
             value-format="HH:mm"
-            style="width: 220px; margin-left: 10px"
+            style="width: 220px; margin-left: 10px;"
           ></el-time-picker>
-          <el-button
-            type="danger"
-            @click="removeSchedule(index)"
-            style="margin-left: 10px"
-            >删除</el-button
-          >
+          <el-button type="danger" @click="removeSchedule(index)" style="margin-left: 10px;">删除</el-button>
         </div>
+        <el-form-item>
+          <el-select v-model="newSchedule.dayOfWeek" placeholder="选择星期几" style="width: 120px;">
+            <el-option v-for="(day, i) in weekDays" :key="i" :label="day.label" :value="day.value"></el-option>
+          </el-select>
+          <el-time-picker
+            v-model="newSchedule.classTime"
+            is-range
+            range-separator="至"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            format="HH:mm"
+            value-format="HH:mm"
+            style="width: 220px; margin-left: 10px;"
+          ></el-time-picker>
+          <el-button type="primary" @click="addSchedule" style="margin-left: 10px;">添加时间段</el-button>
+        </el-form-item>
       </el-form-item>
 
       <el-form-item label="课程难度">
@@ -250,6 +255,17 @@ export default {
   },
   data() {
     return {
+      processedForm: {},
+      weekDays: [
+        { label: '周日', value: 0 },
+        { label: '周一', value: 1 },
+        { label: '周二', value: 2 },
+        { label: '周三', value: 3 },
+        { label: '周四', value: 4 },
+        { label: '周五', value: 5 },
+        { label: '周六', value: 6 }
+      ], // 星期几选项
+      newSchedule: { classID:-1,dayOfWeek: 0, classTime: [] }, // 新添加的时间段
       inputFeature: "",
       showModal: false, //编辑课程的视窗
       showModall: false, //查看课程的视窗
@@ -412,7 +428,7 @@ export default {
           headImg:
             "data:image/jpeg;base64,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",
           comment: "这个课的老师特别认真，特别热情，能学到很多！",
-          time: "2019年9月16日 18:43",
+          time: "2024年9月06日 18:43",
           commentNum: 2,
           like: 15,
           inputShow: false,
@@ -422,7 +438,7 @@ export default {
               fromHeadImg:
                 "https://ae01.alicdn.com/kf/H94c78935ffa64e7e977544d19ecebf06L.jpg",
               comment: "我也很喜欢这个课！！",
-              time: "2019年9月16日 18:43",
+              time: "2024年9月01日 19:40",
               commentNum: 1,
               like: 15,
               inputShow: false,
@@ -432,7 +448,7 @@ export default {
               fromHeadImg:
                 "https://www.nd027.com/uploads/allimg/181229/1-1Q2291A155-50.jpg",
               comment: "谢谢你的支持",
-              time: "2019年9月16日 18:43",
+              time: "2024年9月02日 18:33",
               commentNum: 0,
               like: 5,
               inputShow: false,
@@ -444,7 +460,7 @@ export default {
           headImg:
             "https://tse4-mm.cn.bing.net/th/id/OIP-C.1vR3VjUC3xVg9iAIURF5PwHaHa?w=208&h=209&c=7&r=0&o=5&pid=1.7",
           comment: "永远记得最后一组结束的快乐",
-          time: "2019年9月16日 18:43",
+          time: "2024年9月02日 18:43",
           commentNum: 1,
           like: 5,
           inputShow: false,
@@ -455,7 +471,7 @@ export default {
                 "https://tse1-mm.cn.bing.net/th/id/OIP-C.jIURlW4dR3I4tVG1h3NcVAAAAA?w=198&h=198&c=7&r=0&o=5&pid=1.7",
               to: "Taylor Swift",
               comment: "最痛苦与最快乐相约而至",
-              time: "2019年9月16日 18:43",
+              time: "2024年9月02日 17:43",
               commentNum: 25,
               like: 5,
               inputShow: false,
@@ -467,7 +483,7 @@ export default {
           headImg:
             "https://tse2-mm.cn.bing.net/th/id/OIP-C.O1dw-_dDk7WZCI1XK7lXiQAAAA?w=210&h=210&c=7&r=0&o=5&pid=1.7",
           comment: "That's Great!",
-          time: "2019年9月16日 18:43",
+          time: "2024年9月03日 12:43",
           commentNum: 0,
           like: 5,
           inputShow: false,
@@ -486,8 +502,22 @@ export default {
     this.userName = localStorage.getItem("name");
     this.email = localStorage.getItem("email");
     this.userIcon = localStorage.getItem("iconUrl");
+    this.processedForm = this.formatForm;
+    console.log("格式化后的数据",this.processedForm)
+
   },
   methods: {
+    addSchedule() {
+      if (this.newSchedule.dayOfWeek !== null && this.newSchedule.classTime.length === 2) {
+        this.editForm.schedules.push({ ...this.newSchedule });
+        this.newSchedule = { classID:-1,dayOfWeek: 0, classTime:[] }; // 重置新添加的时间段
+      } else {
+        this.$message.error('请完整填写时间段');
+      }
+    },
+    removeSchedule(index) {
+      this.editForm.schedules.splice(index, 1);
+    },
     generateRandomComments() {
       this.comments[0].name =
         this.nnames[Math.floor(Math.random() * this.nnames.length)];
@@ -666,6 +696,27 @@ export default {
   },
 
   computed: {
+    formatForm() {
+      // 复制 editForm 的所有字段
+      let formattedForm = { ...this.editForm };
+
+      // 处理 schedules 字段中的 classTime
+      formattedForm.schedules = this.editForm.schedules.map(schedule => {
+        if (Array.isArray(schedule.classTime) && schedule.classTime.length === 2) {
+          return {
+            ...schedule, // 保留原 schedule 的其他字段
+            classTime: schedule.classTime.join('-') // 转换为 '8:00-10:00' 形式
+          };
+        }
+        return schedule;
+      });
+
+      // 将结果赋值给 processedForm 变量
+      this.processedForm = formattedForm;
+
+      // 返回处理后的表单，方便在模板中使用
+      return formattedForm;
+    },
     //课程卡片上的静态字体样式
     progressStyle() {
       return {

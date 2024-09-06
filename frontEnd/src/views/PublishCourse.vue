@@ -547,7 +547,6 @@ export default {
           return 0; // 如果输入的课程名称不在列表中，返回0或其他默认值
       }
     },
-
     //发布新课程的前端全局逻辑
     ...mapActions(["addTeachCourse"]),
     openModal() {
@@ -654,13 +653,23 @@ export default {
         )
         .then((response) => {
           this.$store.commit("updateTeachCourses", []);
-          console.log("教师获取教学课程成功:", response.data);
+          //把classTime字段转为['';'']形式
           const initialCourses = response.data.map((item) => {
             if (item.features) {
               item.features = item.features.split("#");
+            };
+            if(item.courseType){
+              item.courseType = this.getCourseValue(item.courseType).toString();
+            }
+            if (item.schedules) {
+              item.schedules = item.schedules.map((schedule) => ({
+              ...schedule,
+                classTime: schedule.classTime.split("-").map((time) => time.trim()),
+              }));
             }
             return item;
           });
+          console.log("教师获取教学课程成功:", initialCourses);
           this.addTeachCourse(initialCourses);
         })
         .catch((error) => {
