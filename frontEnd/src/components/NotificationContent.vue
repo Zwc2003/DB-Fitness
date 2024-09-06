@@ -122,6 +122,7 @@ const toggleConversation = () => {
 
 
 
+
 const handleSearch = (event) => {
     event.stopPropagation();  // 阻止事件冒泡，防止触发关闭逻辑
     if (loading.value) {
@@ -138,8 +139,8 @@ const handleSearch = (event) => {
     });
 
     nextTick(() => {
-            scrollToBottom(); // 确保滚动到底部
-        });
+        scrollToBottom(); // 确保滚动到底部
+    });
 
     queryKeyword.value = '';
 
@@ -153,7 +154,7 @@ const handleSearch = (event) => {
 
     // 使用EventSource处理流式输出
     const encodedMessages = encodeURIComponent(JSON.stringify(messageArray));
-    const eventSource = new EventSource(`http://localhost:8080/api/AIGuide/LLM?equipmentName=${props.equipmentName}&messages=${encodedMessages}`);
+    eventSource.value = new EventSource(`http://localhost:8080/api/AIGuide/LLM?equipmentName=${props.equipmentName}&messages=${encodedMessages}`);
 
     let assistantMessage = {
         content: '',
@@ -167,39 +168,36 @@ const handleSearch = (event) => {
 
     messages.value.push(assistantMessage); // 先添加一条空的消息
 
-    eventSource.onmessage = function (event) {
-    if (event.data === '[DONE]') {
-        eventSource.close();
-        loading.value = false;
-        return;
-    }
+    eventSource.value.onmessage = function (event) {
+        if (event.data === '[DONE]') {
+            eventSource.value.close();
+            loading.value = false;
+            return;
+        }
 
-    if (event.data) {
-        console.log("Received chunk:", event.data);
+        if (event.data) {
+            console.log("Received chunk:", event.data);
 
-        //event.data = event.data.replaceAll("xx", "\n");
-        var tmp = event.data.toString();
-        tmp = tmp.replaceAll("xx ", "\n")
-        assistantRawMessage.content+=tmp;
-        // 更新消息内容
-        assistantMessage.content = assistantRawMessage.content;
+            var tmp = event.data.toString();
+            tmp = tmp.replaceAll("xx ", "\n");
+            assistantRawMessage.content += tmp;
+            assistantMessage.content = assistantRawMessage.content;
 
-        // 强制刷新消息列表
-        messages.value = [...messages.value];
+            // 强制刷新消息列表
+            messages.value = [...messages.value];
 
-        nextTick(() => {
-            scrollToBottom(); // 确保滚动到底部
-        });
-    }
-};
+            nextTick(() => {
+                scrollToBottom(); // 确保滚动到底部
+            });
+        }
+    };
 
-    eventSource.onerror = function (event) {
+    eventSource.value.onerror = function (event) {
         console.error('EventSource failed:', event);
-        eventSource.close();
+        eventSource.value.close();
         loading.value = false;
     };
 };
-
 
 
 
@@ -212,15 +210,14 @@ function scrollToBottom() {
 
 
 
-
 const closeEventSource = (event) => {
-  event.stopPropagation();  // 阻止事件冒泡，防止触发关闭逻辑
-  loading.value = false;
-  if (eventSource.value) {
-    eventSource.value.close();
-  }
+    event?.stopPropagation();  // 阻止事件冒泡，防止触发关闭逻辑
+    loading.value = false;
+    if (eventSource.value) {
+        eventSource.value.close();
+        eventSource.value = null;  // 确保之后不会继续触发
+    }
 };
-
 
 
 onBeforeUnmount(() => {

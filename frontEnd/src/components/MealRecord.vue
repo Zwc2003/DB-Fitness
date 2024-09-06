@@ -659,7 +659,7 @@ export default {
           for (let i = 0; i < this.oneDayRecord[check].length; i++) {
             if (this.oneDayRecord[check][i].mealTime === requestData.mealTime) {
               this.oneDayRecord[check][i].recordID = response.data.recordID;
-              this.oneDayRecord[check][i].totalcalorie = response.data.totalCalorie;
+              this.oneDayRecord[check][i].totalCalorie = response.data.totalCalorie/100.0;
               //setTimeout(() => {
               this.getAISuggestions(this.oneDayRecord[check][i].recordID);
               //}, 10000);

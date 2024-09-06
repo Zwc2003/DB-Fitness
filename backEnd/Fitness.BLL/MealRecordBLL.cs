@@ -111,7 +111,7 @@ namespace Fitness.BLL
 
                     mealRecordRes.message = "饮食记录插入成功！";
                     mealRecordRes.recordID = recordID;
-                    mealRecordRes.totalCalorie = totalCalorie/100;
+                    mealRecordRes.totalCalorie = totalCalorie;
                     transaction.Commit();
 
                     // 异步任务在后台执行
