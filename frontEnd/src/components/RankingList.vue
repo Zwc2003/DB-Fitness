@@ -310,7 +310,9 @@ export default {
         const achievement = achievements.find(
           (item) => parseInt(item.achievementId, 10) === achievementId
         );
-
+          console.log(
+            `Received target for achievementId ${achievementId}: ${this.target}`
+          ); //
         if (achievement) {
           this.target = parseInt(achievement.target, 10);
           this.target = achievement.target;

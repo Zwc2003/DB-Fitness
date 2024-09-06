@@ -8,7 +8,7 @@
       <el-container style="height: 100vh; ">
         <el-header class="custom-header">
           {{ target.name }}
-        </el-header>
+        </el-header> 
         <el-container>
           <el-aside width="200px">
             <MyAside />
@@ -237,7 +237,16 @@ export default {
             console.log('清空输入框,输入框内容为：', this.input);
             store.commit('addMessage', msg);
           })
-          .catch((err) => console.error("Error sending message", err));
+          .catch((err) => {
+            console.error("Error sending message", err);
+            ElNotification({
+              title: '失败',
+              message: `网络连接出错，无法发送信息`,
+              type: 'error',
+              position:'top-left',
+              zIndex:10000003
+        });
+          });
       }
       else {
         ElNotification({
