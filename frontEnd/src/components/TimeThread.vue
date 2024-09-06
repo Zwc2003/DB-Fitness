@@ -185,7 +185,10 @@ p {
 .calendar-day {
   height: 30px;
   width: 30px;
-  background-color: blue;
+  /*background-color:blue;*/ 
+  background-image: url('../assets/images/complete.png');
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 .dialog-video{
   height:65%;
