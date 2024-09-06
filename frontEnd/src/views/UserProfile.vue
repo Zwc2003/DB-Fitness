@@ -1271,6 +1271,7 @@ select {
   border-radius: 50%;
   /* 保持圆形 */
   background-color: transparent;
+  cursor: pointer;
 }
 
 .achievement-item img {
