@@ -11,8 +11,9 @@ namespace Fitness.DAL.Core
     {
         public static bool IsUrl(string input)
         {
-            string urlPattern = @"^https?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]$";
+            string urlPattern = @"^(https?:\/\/)?([\p{L}\p{N}\-\.]+)\.([\p{L}]{2,})(:\d+)?(\/[-\p{L}\p{N}@:%_\+.~#?&//=]*)?$";
             return Regex.IsMatch(input, urlPattern, RegexOptions.IgnoreCase);
         }
+
     }
 }
