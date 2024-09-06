@@ -16,13 +16,8 @@
         <template #content>
           <div class="flexitems-center">
             <el-avatar class="mr-3" :size="32" :src="userIcon" />
-            <span>{{ userName }}</span>
-            <span
-              class="text-sm mr-2"
-              style="color: var(--el-text-color-regular)"
-            >
-              {{ email }}
-            </span>
+            <span>{{ userName }}&nbsp;&nbsp;</span>
+            <span style="font-size: 16px; color: var(--el-text-color-regular)">{{ email }}&nbsp;</span>
             <el-tag>欢迎您~</el-tag>
           </div>
         </template>
@@ -415,7 +410,7 @@ export default {
   },
   methods: {
     formatClassTime(schedule) {
-      console.log(schedule);
+      //console.log(schedule);
 
       if (Array.isArray(schedule.classTime) && schedule.classTime.length === 2) {
         // 将 classTime 数组转换为 "08:00-10:00" 格式的字符串
@@ -552,7 +547,6 @@ export default {
           return 0; // 如果输入的课程名称不在列表中，返回0或其他默认值
       }
     },
-
     //发布新课程的前端全局逻辑
     ...mapActions(["addTeachCourse"]),
     openModal() {
@@ -659,13 +653,23 @@ export default {
         )
         .then((response) => {
           this.$store.commit("updateTeachCourses", []);
-          console.log("教师获取教学课程成功:", response.data);
+          //把classTime字段转为['';'']形式
           const initialCourses = response.data.map((item) => {
             if (item.features) {
               item.features = item.features.split("#");
+            };
+            if(item.courseType){
+              item.courseType = this.getCourseValue(item.courseType).toString();
+            }
+            if (item.schedules) {
+              item.schedules = item.schedules.map((schedule) => ({
+              ...schedule,
+                classTime: schedule.classTime.split("-").map((time) => time.trim()),
+              }));
             }
             return item;
           });
+          console.log("教师获取教学课程成功:", initialCourses);
           this.addTeachCourse(initialCourses);
         })
         .catch((error) => {

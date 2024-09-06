@@ -276,7 +276,9 @@
                     class="achievement-item"
                     :style="{ '--progress': getProgress(achievement) }"
                     @mouseover="showTooltip(index)"
-                    @click="showPopup(achievement.achievementId)"
+                    @click="
+                      showPopup(achievement.achievementId, achievement.target)
+                    "
                     @mouseleave="hideTooltip"
                   >
                     <img
@@ -377,6 +379,7 @@ export default {
   data() {
     return {
       currentAchievementId: null, // 用于存储当前的 achievementId
+      currentTarget: null,
       isPopupVisible: false, // 控制弹窗是否可见
       profile: {
         userID: -1,
@@ -446,15 +449,19 @@ export default {
     this.fetchAchievements();
   },
   methods: {
-    showPopup(achievementId) {
+    showPopup(achievementId, target) {
       console.log("Popup show");
       this.isPopupVisible = true;
       this.currentAchievementId = parseInt(achievementId, 10); // 存储当前的 achievementId
       console.log("Current Achievement ID:", this.currentAchievementId);
+
+      this.currentTarget = parseInt(target, 10); // 存储当前的 achievementId
+      console.log("Current Target:", this.currentTarget);
     },
     hidePopup() {
       this.isPopupVisible = false;
-      this.currentAchievementId = null; // 隐藏弹窗时清空当前的 achievementId
+      this.currentAchievementId = null;
+      this.currentTarget = null; // 隐藏弹窗时清空当前的 achievementId
     },
     viewPost(postID) {
       this.$router.push({ name: "PostDetail", params: { postID: postID } });
@@ -1264,6 +1271,7 @@ select {
   border-radius: 50%;
   /* 保持圆形 */
   background-color: transparent;
+  cursor: pointer;
 }
 
 .achievement-item img {

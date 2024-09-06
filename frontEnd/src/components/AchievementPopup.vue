@@ -5,7 +5,10 @@
       <!-- 在这里展示弹窗内容 -->
       <!-- RankingList 自适应弹窗 -->
       <div class="ranking-list-wrapper">
-        <RankingList :achievementId="achievementId" />
+        <RankingList
+          :achievementId="achievementId"
+          :currentTarget="currentTarget"
+        />
       </div>
     </div>
   </div>
@@ -16,13 +19,18 @@ import RankingList from "./RankingList.vue"; // 确保导入正确的组件
 
 export default {
   components: { RankingList },
+  mounted() {
+    console.log("RankingList mounted. Current Target:", currentTarget);
+  },
   props: {
     visible: Boolean,
     achievementId: Number,
+    currentTarget: Number, // 新增 currentTarget 属性
   },
   methods: {
     closePopup() {
       this.$emit("update:visible", false);
+      console.log("Current Target:", this.currentTarget); // 可以在这里使用 currentTarget
     },
   },
 };

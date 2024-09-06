@@ -250,19 +250,19 @@ namespace Fitness.DAL
             try
             {
                 string iconUrl = expanduserInfo.iconURL;
-                if (expanduserInfo.iconURL != "null" && !UrlHelper.IsUrl(expanduserInfo.iconURL))
+                if (iconUrl != "null" && !UrlHelper.IsUrl(iconUrl))
                 {
                     string object_name = "user" + userID + "_icon" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".png";
-                    int base64Index = expanduserInfo.iconURL.IndexOf("base64,") + 7;
-                    expanduserInfo.iconURL = expanduserInfo.iconURL.Substring(base64Index);
-                    OSSHelper.UploadBase64ImageToOss(expanduserInfo.iconURL, object_name);
+                    int base64Index = iconUrl.IndexOf("base64,") + 7;
+                    iconUrl = iconUrl.Substring(base64Index);
+                    OSSHelper.UploadBase64ImageToOss(iconUrl, object_name);
                     iconUrl = OSSHelper.GetPublicObjectUrl(object_name);
                 }
                 OracleParameter[] oracleParameters = new OracleParameter[]
                 {
                     new OracleParameter("userName", OracleDbType.NVarchar2) {Value = expanduserInfo.userName},
                     new OracleParameter("iconURL", OracleDbType.Varchar2) {Value =iconUrl},
-                    new OracleParameter("Age", OracleDbType.Varchar2) {Value =expanduserInfo.Age},
+                    new OracleParameter("Age", OracleDbType.Int32) {Value =expanduserInfo.Age},
                     new OracleParameter("Gender", OracleDbType.Varchar2) {Value = expanduserInfo.Gender},
                     new OracleParameter("Introduction", OracleDbType.NVarchar2) {Value = expanduserInfo.Introduction},
                     new OracleParameter("isMember", OracleDbType.Varchar2) {Value = expanduserInfo.isMember},

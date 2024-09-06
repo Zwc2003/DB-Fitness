@@ -132,8 +132,11 @@ namespace Fitness.Controllers
         [HttpGet]
         public ActionResult<BalanceRes> GetVigorTokenBalance(string token,int userID)
         {
-            
 
+            TokenValidationResult tokenRes = _jwtHelper.ValidateToken(token);
+            int userIDToken = tokenRes.userID;
+            if (userID == -1)
+                userID = userIDToken;
             Console.WriteLine($"获取活力币余额{userID}");
             return _vigorTokenBLL.GetBalance(userID);
         }

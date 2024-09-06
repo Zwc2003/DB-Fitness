@@ -39,6 +39,27 @@ namespace Fitness.DAL
             }
             return coaches;
         }
+        public static bool IsIDInCoach(int coachID)
+        {
+            try
+            {
+                DataTable dt = OracleHelper.ExecuteTable("SELECT * FROM \"Coach\" WHERE \"coachID\"=:coachID",
+                    new OracleParameter("coachID", OracleDbType.Varchar2) { Value = coachID }
+                );
+
+                if (dt.Rows.Count != 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+
+        }
 
         // 插入新的 Coach 记录
         public static bool Insert(Coach coach)

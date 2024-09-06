@@ -165,6 +165,7 @@ export default {
   props: {
     visible: Boolean,
     achievementId: Number, // 接收传递过来的 achievementId
+    currentTarget: Number, // 接收 currentTarget
   },
   data() {
     return {
@@ -219,6 +220,7 @@ export default {
     this.fetchAchievementTarget(); // 获取目标值
     this.fetchAchievementRanking();
     this.setAchievementDetails();
+    console.log("Current Target:", this.currentTarget); // 可以在这里使用 currentTarget
   },
   methods: {
     async fetchAchievementRanking() {
@@ -295,38 +297,28 @@ export default {
     async fetchAchievementTarget() {
       const token = localStorage.getItem("token"); // 从localStorage获取token
       const achievementId = parseInt(this.achievementId, 10);
-      try {
-        const response = await axios.get(
-          "http://localhost:8080/api/Achievement/GetAchievement",
-          {
-            params: {
-              token: token,
-            },
-          }
-        );
 
-        const achievements = response.data.achievements;
-        // 查找与当前achievementId匹配的成就
-        const achievement = achievements.find(
-          (item) => parseInt(item.achievementId, 10) === achievementId
+      const predefinedTargets = {
+        1: 80,
+        2: 7,
+        3: 5,
+        4: 100,
+        5: 20,
+        6: 10,
+        7: 5,
+        8: 5,
+      };
+
+      // 如果achievementId为1到8，使用预定义的target值
+      if (predefinedTargets[achievementId] !== undefined) {
+        this.target = predefinedTargets[achievementId];
+        console.log(
+          `Using predefined target for achievementId ${achievementId}: ${this.target}`
         );
-          console.log(
-            `Received target for achievementId ${achievementId}: ${this.target}`
-          ); //
-        if (achievement) {
-          this.target = parseInt(achievement.target, 10);
-          this.target = achievement.target;
-          console.log(
-            `Received target for achievementId ${achievementId}: ${this.target}`
-          ); // 记录target值
-        } else {
-          console.error(`未找到id为 ${achievementId} 的成就`);
-        }
-      } catch (error) {
-        console.error("获取成就目标失败:", error);
+      } else {
+        console.error(`未找到id为 ${achievementId} 的预定义成就目标`);
       }
     },
-
     calculateProgress() {
       if (this.target) {
         this.progressPercentage = Math.min(

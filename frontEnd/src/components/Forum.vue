@@ -548,7 +548,7 @@ body {
   background-color: rgba(255, 255, 255, 0.6);
   padding: 10px 0;
   position: absolute;
-  width: 53%;
+  width: 51.6%;
   /*z-index: 100;*/
   top: 0;
   transition: background-color 0.3s ease;
@@ -564,7 +564,7 @@ body {
 .navbar-list {
   list-style: none;
   display: flex;
-  gap: 20px;
+  gap: 25px;
   margin: 0;
   padding: 0;
   align-items: center;

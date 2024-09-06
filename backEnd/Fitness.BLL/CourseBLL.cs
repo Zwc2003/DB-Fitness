@@ -192,11 +192,12 @@ namespace Fitness.BLL
                 {
                     string typeName = CourseDAL.GetTypeNameByTypeID(course.typeID);
                     int coachID = CourseDAL.GetCoachIDByClassID(course.classID);
-                    string coachName = string.Empty;
-                    string instructorHonors = string.Empty;
-                    string iconURL = string.Empty;
+                    int st;
+                    var user = UserDAL.GetUserByUserID(userID, out st);
+                    string coachName = user.userName;
+                    string instructorHonors = user.Introduction;
+                    string iconURL = user.iconURL;
 
-                    var coach = CoachDAL.GetCoachByCoachID(coachID);
                     var schedule = CourseScheduleDAL.GetCourseSchedulesByClassID(course.classID);
 
                     int isBooked = 0;
@@ -204,12 +205,6 @@ namespace Fitness.BLL
                     if(BookDAL.IsBooked(course.classID,userID))
                         isBooked = 1;
                     Console.WriteLine(isBooked);
-                    if (coach != null)
-                    {
-                        coachName = coach.coachName;
-                        instructorHonors = coach.instructorHonors;
-                        iconURL = coach.iconURL;
-                    }
 
                     var courseInfo = new Dictionary<string, object>
                     {
@@ -506,19 +501,13 @@ namespace Fitness.BLL
                 {
                     string typeName = CourseDAL.GetTypeNameByTypeID(course.typeID);
                     int coachID = CourseDAL.GetCoachIDByClassID(course.classID);
-                    string coachName = string.Empty;
-                    string instructorHonors = string.Empty;
-                    string iconURL = string.Empty;
-
-                    var coach = CoachDAL.GetCoachByCoachID(coachID);
+                    int st;
+                    var user = UserDAL.GetUserByUserID(userID, out st);
+                    string coachName = user.userName;
+                    string instructorHonors = user.Introduction;
+                    string iconURL = user.iconURL;
                     var schedule = CourseScheduleDAL.GetCourseSchedulesByClassID(course.classID);
 
-                    if (coach != null)
-                    {
-                        coachName = coach.coachName;
-                        instructorHonors = coach.instructorHonors;
-                        iconURL = coach.iconURL;
-                    };
                     var courseInfo = new Dictionary<string, object>
                     {
                         { "coursePhotoUrl", course.coursePhotoUrl },
@@ -526,8 +515,8 @@ namespace Fitness.BLL
                         { "courseDescription", course.courseDescription },
                         { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
                         { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
-                        { "courseGrade", course.courseGrade.ToString() },
-                        { "coursePrice", course.coursePrice.ToString() },
+                        { "courseGrade", course.courseGrade },
+                        { "coursePrice", course.coursePrice },
                         { "coachName", coachName },
                         { "capacity",course.Capacity},
                         { "instructorHonors", instructorHonors },
@@ -557,21 +546,15 @@ namespace Fitness.BLL
                 List<Course> courses = CourseDAL.GetPublishedCourseByUserID(userID);
                 foreach (Course course in courses)
                 {
-                    string typeName = CourseDAL.GetTypeNameByTypeID(course.typeID);
+                    string typeName = CourseDAL.GetTypeNameByTypeID(course.typeID);                    
                     int coachID = CourseDAL.GetCoachIDByClassID(course.classID);
-                    string coachName = string.Empty;
-                    string instructorHonors = string.Empty;
-                    string iconURL = string.Empty;
-
-                    var coach = CoachDAL.GetCoachByCoachID(coachID);
+                    int st;
+                    var user = UserDAL.GetUserByUserID(userID, out st);
+                    string coachName = user.userName;
+                    string instructorHonors = user.Introduction;
+                    string iconURL = user.iconURL;
                     var schedule = CourseScheduleDAL.GetCourseSchedulesByClassID(course.classID);
 
-                    if (coach != null)
-                    {
-                        coachName = coach.coachName;
-                        instructorHonors = coach.instructorHonors;
-                        iconURL = coach.iconURL;
-                    };
                     var courseInfo = new Dictionary<string, object>
                     {
                         { "coursePhotoUrl", course.coursePhotoUrl },
@@ -579,8 +562,8 @@ namespace Fitness.BLL
                         { "courseDescription", course.courseDescription },
                         { "courseStartTime", course.courseStartTime.ToString("yyyy-MM-dd") },
                         { "courseEndTime", course.courseEndTime.ToString("yyyy-MM-dd") },
-                        { "courseGrade", course.courseGrade.ToString() },
-                        { "coursePrice", course.coursePrice.ToString() },
+                        { "courseGrade", course.courseGrade },
+                        { "coursePrice", course.coursePrice },
                         { "coachName", coachName },
                         { "instructorHonors", instructorHonors },
                         { "capacity",course.Capacity},

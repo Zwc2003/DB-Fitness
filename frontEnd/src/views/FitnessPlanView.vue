@@ -4,7 +4,7 @@
   <body class="container">
   <div>
     <el-button @click="dialogFormVisible = true" class="bot" type="primary">
-      填写你的体测表
+      填写我的体测表
     </el-button>
   </div>
   <el-dialog v-model="dialogFormVisible" title="体测信息" width="400">

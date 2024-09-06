@@ -42,7 +42,7 @@ namespace Fitness.Models
         public string message { get; set; }
 
         public int recordID { get; set; }
-
+        
         public int totalCalorie { get; set; }
     }
 
