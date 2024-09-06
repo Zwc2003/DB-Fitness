@@ -10,10 +10,11 @@ using Newtonsoft.Json;
 using Fitness.DAL;
 using Fitness.BLL;
 using Fitness.Models;
+using Fitness.BLL.Interfaces;
 
 namespace Fitness.BLL
 {
-    public class UserAchievementBLL
+    public class UserAchievementBLL : IUserAchievementBLL
     {
         VigorTokenBLL vigorTokenBLL = new();
         public void Init(int userId)
