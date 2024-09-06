@@ -122,7 +122,8 @@ const toggleConversation = () => {
 
 
 
-const handleSearch = () => {
+const handleSearch = (event) => {
+    event.stopPropagation();  // 阻止事件冒泡，防止触发关闭逻辑
     if (loading.value) {
         return;
     }
@@ -212,7 +213,8 @@ function scrollToBottom() {
 
 
 
-const closeEventSource = () => {
+const closeEventSource = (event) => {
+  event.stopPropagation();  // 阻止事件冒泡，防止触发关闭逻辑
   loading.value = false;
   if (eventSource.value) {
     eventSource.value.close();
