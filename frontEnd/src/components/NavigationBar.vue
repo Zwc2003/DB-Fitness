@@ -21,7 +21,7 @@
                 <label for="home" class="home" @click="delayedNavigation('/home')">
                     <router-link to="/home" style="font-weight: bold;">
                         <el-icon>
-                            <House />
+                            <House style="position: relative; top: 3px;" />
                         </el-icon>
                         首页
                     </router-link>
@@ -29,7 +29,7 @@
                 <label for="plan" class="plan" @click="delayedNavigation('/fitnessplan')">
                     <router-link to="/fitnessplan" style="font-weight: bold;">
                         <el-icon>
-                            <Finished />
+                            <Finished style="position: relative; top: 3px;" />
                         </el-icon>
                         健身计划
                     </router-link>
@@ -37,14 +37,14 @@
                 <label for="aifit" class="aifit" @click="delayedNavigation('/aifit')">
                     <router-link to="/aifit" style="font-weight: bold;">
                         <el-icon>
-                            <Picture />
+                            <Picture style="position: relative; top: 3px;" />
                         </el-icon>
                         健身指导
                     </router-link>
                 </label>
                 <label for="course" class="course" @click="delayedNavigation('/course')">
                     <router-link to="/course" style="font-weight: bold;">
-                        <el-icon>
+                        <el-icon style="position: relative; top: 3px;">
                             <Notebook />
                         </el-icon>
                         健身课程
@@ -52,15 +52,14 @@
                 </label>
                 <label for="equipment" class="equipment" @click="delayedNavigation('/equipment')">
                     <router-link to="/equipment" style="font-weight: bold;">
-                        <el-icon>
-                            <ChatLineRound />
-                        </el-icon>
+                        <img src="../assets/images/equip.png"
+                            style="width: 19px; height: 19px;vertical-align: middle" />
                         健身器材
                     </router-link>
                 </label>
                 <label for="healthyDiet" class="healthyDiet" @click="delayedNavigation('/healthyDiet')">
                     <router-link to="/healthyDiet" style="font-weight: bold;">
-                        <el-icon>
+                        <el-icon style="position: relative; top: 3px;">
                             <Food />
                         </el-icon>
                         健康饮食
@@ -68,30 +67,12 @@
                 </label>
                 <label for="forum" class="forum" @click="delayedNavigation('/forum')">
                     <router-link to="/forum" style="font-weight: bold;">
-                        <el-icon>
-                            <Edit />
+                        <el-icon style="position: relative; top: 3px;">
+                            <ChatDotRound />
                         </el-icon>
                         健身论坛
                     </router-link>
                 </label>
-                <!--            <label for="achievement" class="achievement" @click="delayedNavigation('/achievements')">-->
-                <!--                    <router-link to="/achievements">-->
-                <!--                        <el-icon>-->
-                <!--                            <Medal />-->
-                <!--                        </el-icon>-->
-                <!--                        健身成就-->
-                <!--                    </router-link>-->
-                <!--                </label>-->
-
-                <!--<label for="chat" class="chat" @click="delayedNavigation('/chat')">
-                    <router-link to="/chat">
-                        <el-icon>
-                            <ChatLineRound />
-                        </el-icon>
-                        聊天室
-                    </router-link>
-                </label>-->
-
                 <div class="tab"></div>
             </nav>
         </div>
