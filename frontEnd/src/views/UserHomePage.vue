@@ -37,17 +37,11 @@
         <template #content>
           <div class="flexitems-center">
             <el-avatar class="mr-3" :size="32" :src="userIcon" />
-            <span>{{ userName }}</span>
-            <span
-              class="text-sm mr-2"
-              style="color: var(--el-text-color-regular)"
-            >
-              {{ email }}
-            </span>
+            <span>{{ userName }}&nbsp;&nbsp;</span>
+            <span style="font-size: 16px; color: var(--el-text-color-regular)">{{ email }}&nbsp;</span>
             <el-tag>欢迎您~</el-tag>
           </div>
         </template>
-
         <div class="poem-display">
           <div class="poem-content">
             <span class="poem-text" v-if="selectedPoem">
