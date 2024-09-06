@@ -34,7 +34,7 @@ namespace Fitness.DAL
             List<string> planList = new List<string>();
             if (goal == "loseWeight") planList = loseWeight;
             else if (goal == "buildMuscle") planList = buildMuscle;
-            else if (goal == "bodySculpt") planList = bodySculpt;
+            else if (goal == "bodySculpting") planList = bodySculpt;
             Random random = new Random();
             //string insert = "INSERT INTO \"Fitness\" (\"userID\", \"height\", \"weight\", \"BMI\", \"bodyFatRate\")" +
             //                        "VALUES (:\"userID\", :\"height\", :\"weight\", :\"BMI\", :\"bodyFatRate\")";
@@ -85,6 +85,18 @@ namespace Fitness.DAL
             };
 
             OracleHelper.ExecuteNonQuery(updateCommand, null, parameters);
+        }
+
+        public static void DeletePlan(int userId)
+        {
+            string deleteCommand = "DELETE FROM \"UserFitnessPlan\" WHERE \"userID\" = :userID";
+
+            OracleParameter[] parameters = new OracleParameter[]
+            {
+                new OracleParameter(":userID", OracleDbType.Int32) { Value = userId }
+            };
+
+            OracleHelper.ExecuteNonQuery(deleteCommand, null, parameters);
         }
     }
 }
