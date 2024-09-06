@@ -213,7 +213,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm">提交</el-button>
+        <el-button type="primary" @click="submitEdit">提交</el-button>
         <el-button @click="showModal = false">取消</el-button>
       </el-form-item>
     </el-form>
@@ -502,6 +502,7 @@ export default {
     this.userName = localStorage.getItem("name");
     this.email = localStorage.getItem("email");
     this.userIcon = localStorage.getItem("iconUrl");
+    console.log("格式化前的数据",this.editForm);
     this.processedForm = this.formatForm;
     console.log("格式化后的数据",this.processedForm)
 
@@ -644,16 +645,72 @@ export default {
       };
       return false;
     },
+    formatClassTime(schedule) {
+      console.log(schedule);
 
+      if (Array.isArray(schedule.classTime) && schedule.classTime.length === 2) {
+        // 将 classTime 数组转换为 "08:00-10:00" 格式的字符串
+        schedule.classTime = `${schedule.classTime[0]}-${schedule.classTime[1]}`;
+      }
+      return schedule;
+    },
+    getCourseValue(courseName) {
+      switch (courseName) {
+        case "高强度间歇":
+          return 1;
+        case "低强度塑形":
+          return 2;
+        case "儿童趣味课":
+          return 3;
+        case "有氧训练":
+          return 4;
+        default:
+          return 0; // 如果输入的课程名称不在列表中，返回0或其他默认值
+      }
+    },
     //-------------------------------------- API接口------------------------------------------------------
     //教练修改课程API(完结版)
     submitEdit() {
-      //!!!!editForm的最早的来源是GetCoachParticipatedCourse.API传入的数据
+      const token = localStorage.getItem("token");
+      // 转换日期字符串为 Date 对象
+      var startDate = new Date(this.editForm.courseStartTime);
+      var endDate = new Date(this.editForm.courseEndTime);
+      // 计算时间差（以毫秒为单位）
+      var timeDiff = endDate - startDate;
+      // 将时间差转换为天数
+      var daysDiff = timeDiff / (1000 * 3600 * 24);
+      console.log("是否为数组",Array.isArray(this.editForm.schedules));
+      // 应用转换函数到每个元素
+      let schedules=this.editForm.schedules;
+      // console.log("转换前的课程时间为:",schedules);
+      schedules = schedules.map(this.formatClassTime);
+      // schedules.forEach(element => {
+      //   console.log("转换后的课程时间为:",element);
+      // });
+
       this.showModal = false;
+      const postData = {
+        course: {
+          classID: schedules[0].classID,
+          typeID: parseInt(this.editForm.courseType),
+          courseName: this.editForm.courseName,
+          capacity: this.editForm.capacity,
+          courseDescription: this.editForm.courseDescription,
+          coursePrice: this.editForm.coursePrice,
+          courseStartTime: this.editForm.courseStartTime,
+          courseEndTime: this.editForm.courseEndTime,
+          courseLastDays: daysDiff,
+          courseGrade: this.editForm.courseGrade,
+          coursePhotoUrl: this.editForm.coursePhotoUrl,
+          courseVideoUrl: "null",
+          features: this.editForm.features.join("#") + "#",
+        },
+        courseSchedules:schedules
+      };
+      console.log("上传的数据为",postData);
       axios
         .post(
-          `http://localhost:8080/api/Course/ModifyCourse?token=${token}`,
-          this.editForm
+          `http://localhost:8080/api/Course/ModifyCourse?token=${token}`,postData
         )
         .then((response) => {
           console.log("课程修改成功:", response.data);

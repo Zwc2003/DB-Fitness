@@ -410,7 +410,7 @@ export default {
   },
   methods: {
     formatClassTime(schedule) {
-      console.log(schedule);
+      //console.log(schedule);
 
       if (Array.isArray(schedule.classTime) && schedule.classTime.length === 2) {
         // 将 classTime 数组转换为 "08:00-10:00" 格式的字符串
